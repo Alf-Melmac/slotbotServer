@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SlotbotApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="slotbotServer" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="de.webalf.slotbot.SlotbotApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
