@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
  * @since 22.06.2020
  */
 @Entity
-@Table(name = "slot")
+@Table(name = "slot", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,6 +31,8 @@ public class Slot extends AbstractIdEntity {
 	private int number;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "squad_id")
+	@JsonBackReference
 	private Squad squad;
 
 	@JoinColumn(name = "user_id")

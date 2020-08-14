@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.persistence.converter.LocalDateTimePersistenceConverter;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import java.util.Optional;
  * @since 22.06.2020
  */
 @Entity
-@Table(name = "event")
+@Table(name = "event", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,6 +44,7 @@ public class Event extends AbstractIdEntity {
 	private long channel;
 
 	@OneToMany(mappedBy = "event", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@JsonManagedReference
 	private List<Squad> squadList;
 
 	@Column(name = "event_info_msg")

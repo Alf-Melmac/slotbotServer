@@ -1,5 +1,7 @@
 package de.webalf.slotbot.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import java.util.Optional;
  * @since 22.06.2020
  */
 @Entity
-@Table(name = "squad")
+@Table(name = "squad", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,9 +27,12 @@ public class Squad extends AbstractIdEntity {
 	private String name;
 
 	@OneToMany(mappedBy = "squad", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@JsonManagedReference
 	private List<Slot> slotList;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "event_id")
+	@JsonBackReference
 	private Event event;
 
 	@Builder
