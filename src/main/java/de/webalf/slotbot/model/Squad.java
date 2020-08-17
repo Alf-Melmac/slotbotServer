@@ -60,4 +60,13 @@ public class Squad extends AbstractIdEntity {
 		}
 		return Optional.empty();
 	}
+
+	public void addSlot(Slot newSlot) {
+		newSlot.setSquad(this);
+		slotList.add(newSlot);
+	}
+
+	public void deleteSlot(Slot slot) {
+		this.getSlotList().remove(slot);
+	}
 }

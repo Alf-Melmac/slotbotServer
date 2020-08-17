@@ -41,13 +41,6 @@ public class EventController {
 		return EventAssembler.toDto(event);
 	}
 
-	@GetMapping("/channel/{id}")
-	public EventDto getEventByChannelId(@PathVariable(value = "id") long channel) {
-		log.trace("getEventByChannelId: " + channel);
-		Event event = eventService.findByChannel(channel);
-		return EventAssembler.toDto(event);
-	}
-
 	@PostMapping("")
 	public EventDto postEvent(@Valid @RequestBody EventDto event) {
 		log.trace("postEvent: " + event.getName());
@@ -58,20 +51,5 @@ public class EventController {
 	public Event updateChannelIds(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		log.trace("updateChannelIds: " + event.getName());
 		return eventService.updateEvent(eventId, event);
-	}
-
-	@PostMapping("/channel/{channelId}/slot/{slotNumber}")
-	public EventDto postSlotInEventByChannelId(@PathVariable(value = "channelId") long channel,
-	                                           @PathVariable(value = "slotNumber") int slotNumber,
-	                                           @RequestBody long userId) {
-		log.trace("postSlotInEventByChannelId: " + channel + " " + slotNumber + " " + userId);
-		return EventAssembler.toDto(eventService.slot(channel, slotNumber, userId));
-	}
-
-	@PostMapping("/channel/{channelId}/unslot")
-	public EventDto postUnslotInEventByChannelId(@PathVariable(value = "channelId") long channel,
-	                                             @RequestBody long userId) {
-		log.trace("postUnslotInEventByChannelId: " + channel + " " + userId);
-		return EventAssembler.toDto(eventService.unslot(channel, userId));
 	}
 }

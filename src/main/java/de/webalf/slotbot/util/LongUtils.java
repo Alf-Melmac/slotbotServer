@@ -1,7 +1,7 @@
 package de.webalf.slotbot.util;
 
 /**
- * @author Tim Augustin
+ * @author Alf
  * @since 08.08.2020
  */
 public class LongUtils {

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Tim Augustin
+ * @author Alf
  * @since 09.08.2020
  */
 @Getter

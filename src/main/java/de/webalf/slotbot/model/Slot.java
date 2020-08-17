@@ -67,4 +67,8 @@ public class Slot extends AbstractIdEntity {
 			throw new RuntimeException("Auf dem Slot befindet sich eine andere Person");
 		}
 	}
+
+	public void setUserIdString(String userIdString) {
+		setUserId(Long.parseLong(userIdString));
+	}
 }

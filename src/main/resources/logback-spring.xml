@@ -14,7 +14,7 @@
 	<appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOGS}/slotbot-server.log</file>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+			<Pattern>[%d %p] %C{1.} [%t] - %m%n</Pattern>
 		</encoder>
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

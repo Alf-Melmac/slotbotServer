@@ -1,11 +1,13 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.EventAssembler;
+import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.RequiredArgsConstructor;
@@ -91,6 +93,25 @@ public class EventService {
 
 	private Event unslot(Event event, Slot slot, long userId) {
 		slotService.unslot(slot, userId);
+		return event;
+	}
+
+	public Event addSlot(long channel, int squadNumber, SlotDto slotDto) {
+		Event event = findByChannel(channel);
+		event.getSquadList().get(squadNumber).addSlot(slotService.newSlot(slotDto));
+		//TODO Maybe use updateEvent(...)
+		return eventRepository.save(event);
+	}
+
+	public Event deleteSlot(long channel, int slotNumber) {
+		Event event = findByChannel(channel);
+		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		if (slot.getUserId() != 0) {
+			//TODO: Forbidden Exception
+			throw BusinessRuntimeException.builder().title("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden").build();
+		}
+		slot.getSquad().deleteSlot(slot);
+		slotService.deleteSlot(slot);
 		return event;
 	}
 }
