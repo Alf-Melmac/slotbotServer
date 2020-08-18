@@ -65,9 +65,9 @@ public class EventService {
 	}
 
 	/**
-	 * Sucht für den übergebenen Kanal das passende Event zu der Slotnummer und trägt, falls vorhanden, die übergebene UserId für den Slot ein.
+	 * Searches for the given channel the matching event and enters the given userId for the slot with given number, if available.
 	 *
-	 * @param channel    Event-Channel
+	 * @param channel    event channel
 	 * @param slotNumber Slot to slot into
 	 * @param userId     person that should be slotted
 	 * @return Event in which the person has been slotted
@@ -81,17 +81,40 @@ public class EventService {
 		return event;
 	}
 
+	/**
+	 * Searches for the given channel the matching event and removes the user, found by userId, from its slot.
+	 *
+	 * @param channel event channel
+	 * @param userId  person that should be unslotted
+	 * @return Event in which the person has been unslotted
+	 */
 	public Event unslot(long channel, long userId) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new);
 		return unslot(event, slot, userId);
 	}
 
+	/**
+	 * Removes the user from the given slot in the given event.
+	 *
+	 * @param event  event in which the unslot should be performed
+	 * @param slot   slot which should be freed from the user
+	 * @param userId user to unslot
+	 * @return Event in which the unslotted has been performed
+	 */
 	private Event unslot(Event event, Slot slot, long userId) {
 		slotService.unslot(slot, userId);
 		return event;
 	}
 
+	/**
+	 * Searches for the given channel the matching event and adds the given slot to the squad found by squadNumber.
+	 *
+	 * @param channel     event channel
+	 * @param squadNumber Counted, starting by 0
+	 * @param slotDto     slot to add
+	 * @return event in which the slot has been added
+	 */
 	public Event addSlot(long channel, int squadNumber, SlotDto slotDto) {
 		Event event = findByChannel(channel);
 		event.getSquadList().get(squadNumber).addSlot(slotService.newSlot(slotDto));
@@ -99,6 +122,13 @@ public class EventService {
 		return eventRepository.save(event);
 	}
 
+	/**
+	 * Searches for the given channel the matching event and removes the slot by number.
+	 *
+	 * @param channel    event channel
+	 * @param slotNumber to delete
+	 * @return event in which the slot has been deleted
+	 */
 	public Event deleteSlot(long channel, int slotNumber) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);

@@ -74,6 +74,12 @@ public class Event extends AbstractIdEntity {
 		this.slotListMsg = slotListMsg;
 	}
 
+	/**
+	 * Finds a slot by its number
+	 *
+	 * @param slotNumber associated to the slot
+	 * @return the slot or an empty Optional if slot with given number doesn't exist
+	 */
 	public Optional<Slot> findSlot(int slotNumber) {
 		for (Squad squad : getSquadList()) {
 			Optional<Slot> slotOptional = squad.findSlot(slotNumber);
@@ -84,6 +90,12 @@ public class Event extends AbstractIdEntity {
 		return Optional.empty();
 	}
 
+	/**
+	 * Finds a slot by its user
+	 *
+	 * @param userId associated to the slot
+	 * @return the slot or an empty Optional if slot with given user doesn't exist
+	 */
 	public Optional<Slot> findSlotOfUser(long userId) {
 		for (Squad squad : getSquadList()) {
 			Optional<Slot> slotOptional = squad.findSlotOfUser(userId);
@@ -94,12 +106,17 @@ public class Event extends AbstractIdEntity {
 		return Optional.empty();
 	}
 
+	/**
+	 * Checks whether the event has a slot with a non-unique slot number
+	 *
+	 * @return true if a duplicated slot number has been found
+	 */
 	public boolean hasDuplicatedSlotNumber() {
 		HashSet<Integer> slotNumbers = new HashSet<>();
 		for (Squad squad : getSquadList()) {
 			for (Slot slot : squad.getSlotList()) {
 				if (!slotNumbers.add(slot.getNumber())) {
-					log.info("Duplicated Slot number found: " + slot.getNumber() + slot.getName());
+					log.debug("Duplicated Slot number found: " + slot.getNumber() + slot.getName());
 					return true;
 				}
 			}
@@ -107,10 +124,20 @@ public class Event extends AbstractIdEntity {
 		return false;
 	}
 
+	/**
+	 * Sets the date part of the event DateTime
+	 *
+	 * @param date to set
+	 */
 	public void setDate(LocalDate date) {
 		setDateTime(getDateTime().withDayOfMonth(date.getDayOfMonth()).withMonth(date.getMonth().getValue()).withYear(date.getYear()));
 	}
 
+	/**
+	 * Sets the time part of the event DateTime
+	 *
+	 * @param time to set
+	 */
 	public void setTime(LocalTime time) {
 		setDateTime(getDateTime().withHour(time.getHour()).withMinute(time.getMinute()));
 	}

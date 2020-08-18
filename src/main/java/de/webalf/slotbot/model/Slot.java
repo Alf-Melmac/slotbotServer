@@ -48,6 +48,19 @@ public class Slot extends AbstractIdEntity {
 		this.userId = userId;
 	}
 
+	/**
+	 * Removes the given user from the slot if no other user occupies the slot
+	 *
+	 * @param userId user to unslot
+	 */
+	public void unslot(long userId) {
+		if (getUserId() == userId || getUserId() == 0) {
+			setUserId(0);
+		} else {
+			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
+		}
+	}
+
 	public boolean isSlotWithNumber(int slotNumber) {
 		return getNumber() == slotNumber;
 	}
@@ -58,14 +71,6 @@ public class Slot extends AbstractIdEntity {
 
 	public void slot(long userId) {
 		setUserId(userId);
-	}
-
-	public void unslot(long userId) {
-		if (getUserId() == userId || getUserId() == 0) {
-			setUserId(0);
-		} else {
-			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
-		}
 	}
 
 	public void setUserIdString(String userIdString) {
