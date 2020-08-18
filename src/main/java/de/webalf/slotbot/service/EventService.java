@@ -2,6 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
@@ -27,8 +28,7 @@ public class EventService {
 	public Event createEvent(EventDto eventDto) {
 		Event event = EventAssembler.fromDto(eventDto);
 		if (event.hasDuplicatedSlotNumber()) {
-			//TODO BusinessRuntimeException
-			throw new RuntimeException("Da ist nen doppelte Slotnummer. Die müssen aber eindeutig sein");
+			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
 		}
 
 		//Ich habe doch auch keine Ahnung was ich tue
@@ -71,16 +71,12 @@ public class EventService {
 	 * @param slotNumber Slot to slot into
 	 * @param userId     person that should be slotted
 	 * @return Event in which the person has been slotted
+	 * @throws BusinessRuntimeException if the slot is already occupied
 	 */
-	public Event slot(long channel, int slotNumber, long userId) {
+	public Event slot(long channel, int slotNumber, long userId) throws BusinessRuntimeException {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		try {
-			event.findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> unslot(event, alreadySlottedSlot, userId));
-		} catch (RuntimeException e) {
-			//TODO BRE
-			throw new RuntimeException("Der Slot ist belegt");
-		}
+		event.findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> unslot(event, alreadySlottedSlot, userId));
 		slotService.slot(slot, userId);
 		return event;
 	}
@@ -107,8 +103,7 @@ public class EventService {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		if (slot.getUserId() != 0) {
-			//TODO: Forbidden Exception
-			throw BusinessRuntimeException.builder().title("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden").build();
+			throw new ForbiddenException("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.");
 		}
 		slot.getSquad().deleteSlot(slot);
 		slotService.deleteSlot(slot);

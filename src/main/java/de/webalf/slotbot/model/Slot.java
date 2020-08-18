@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import de.webalf.slotbot.exception.BusinessRuntimeException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,8 +64,7 @@ public class Slot extends AbstractIdEntity {
 		if (getUserId() == userId || getUserId() == 0) {
 			setUserId(0);
 		} else {
-			//TODO BRE
-			throw new RuntimeException("Auf dem Slot befindet sich eine andere Person");
+			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}
 	}
 

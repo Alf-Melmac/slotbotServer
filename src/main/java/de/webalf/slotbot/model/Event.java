@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
+@Slf4j
 public class Event extends AbstractIdEntity {
 	@Column(name = "event_name", length = 100)
 	@NotEmpty
@@ -97,7 +99,7 @@ public class Event extends AbstractIdEntity {
 		for (Squad squad : getSquadList()) {
 			for (Slot slot : squad.getSlotList()) {
 				if (!slotNumbers.add(slot.getNumber())) {
-					System.out.println("Duplicated Slot number found: " + slot.getNumber() + slot.getName());
+					log.info("Duplicated Slot number found: " + slot.getNumber() + slot.getName());
 					return true;
 				}
 			}

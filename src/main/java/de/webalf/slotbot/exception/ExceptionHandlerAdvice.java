@@ -1,6 +1,5 @@
 package de.webalf.slotbot.exception;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Handles exceptions thrown in all layers.
  * <p>
- * This translated exceptions to human readable and valuable error messages for
- * the caller.
+ * This translated exceptions to human readable and valuable error messages for the caller.
  *
  * @author Alf
  * @since 09.08.2020
  */
 @ControllerAdvice
-@Slf4j
 class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(value = {ResourceNotFoundException.class, BusinessRuntimeException.class})
+	@ExceptionHandler(value = {ResourceNotFoundException.class, BusinessRuntimeException.class, ForbiddenException.class})
 	protected ResponseEntity<?> handleConflict(RuntimeException ex, HttpServletRequest request) {
 //		logger.warn("Exception:", ex);
 
