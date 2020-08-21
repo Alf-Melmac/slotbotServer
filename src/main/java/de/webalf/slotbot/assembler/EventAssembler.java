@@ -35,6 +35,9 @@ public final class EventAssembler {
 				.build();
 	}
 
+	/**
+	 * To be used if the focus relies on the event
+	 */
 	public static EventDto toDto(Event event) {
 		LocalDateTime dateTime = event.getDateTime();
 		return EventDto.builder()
@@ -44,7 +47,24 @@ public final class EventAssembler {
 				.startTime(dateTime.toLocalTime())
 				.description(event.getDescription())
 				.channel(Long.toString(event.getChannel()))
-				.squadList(SquadAssembler.toDtoList(event.getSquadList()))
+				.squadList(SquadAssembler.toEventDtoList(event.getSquadList()))
+				.infoMsg(Long.toString(event.getInfoMsg()))
+				.slotListMsg(Long.toString(event.getSlotListMsg()))
+				.build();
+	}
+
+	/**
+	 * To be used if the focus relies on a slot
+	 */
+	public static EventDto toSlotDto(Event event) {
+		LocalDateTime dateTime = event.getDateTime();
+		return EventDto.builder()
+				.id(event.getId())
+				.name(event.getName())
+				.date(dateTime.toLocalDate())
+				.startTime(dateTime.toLocalTime())
+				.description(event.getDescription())
+				.channel(Long.toString(event.getChannel()))
 				.infoMsg(Long.toString(event.getInfoMsg()))
 				.slotListMsg(Long.toString(event.getSlotListMsg()))
 				.build();

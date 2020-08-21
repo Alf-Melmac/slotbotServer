@@ -1,6 +1,7 @@
 package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.EventAssembler;
+import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.service.EventService;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Every action that can be performed in an event in a channel
@@ -56,5 +59,13 @@ public class EventChannelController {
 	                            @PathVariable(value = "slotNumber") int slotNumber) {
 		log.trace("postDelSlot: " + channel + " " + slotNumber);
 		return EventAssembler.toDto(eventService.deleteSlot(channel, slotNumber));
+	}
+
+	@GetMapping("/prepareSwap/{slotNumber}/{userId}")
+	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
+	                                 @PathVariable(value = "slotNumber") int slotNumber,
+	                                 @PathVariable(value = "userId") long userId) {
+		log.trace("getSwapSlots: " + channel + " SlotNumber: " + slotNumber + " userId: " + userId);
+		return SlotAssembler.toDtoList(eventService.findSwapSlots(channel, slotNumber, userId));
 	}
 }

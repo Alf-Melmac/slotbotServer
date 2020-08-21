@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Alf
  * @since 27.07.2020
@@ -138,5 +141,21 @@ public class EventService {
 		slot.getSquad().deleteSlot(slot);
 		slotService.deleteSlot(slot);
 		return event;
+	}
+
+	/**
+	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and userId
+	 *
+	 * @param channel    event channel
+	 * @param slotNumber slot1 to find by slotNumber
+	 * @param userId     slot2 to find by user
+	 * @return two Slots
+	 */
+	public List<Slot> findSwapSlots(long channel, int slotNumber, long userId) {
+		Event event = findByChannel(channel);
+		return Arrays.asList(
+				event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new),
+				event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new)
+		);
 	}
 }

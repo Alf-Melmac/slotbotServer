@@ -31,22 +31,35 @@ public final class SquadAssembler {
 				.build();
 	}
 
+	/**
+	 * To be used if the focus relies on the event
+	 */
+	public static SquadDto toEventDto(Squad squad) {
+		//Don't add Event here to prevent endless loops
+		return SquadDto.builder()
+				.id(squad.getId())
+				.name(squad.getName())
+				.slotList(SlotAssembler.toEventDtoList(squad.getSlotList()).stream().sorted(Comparator.comparing(SlotDto::getNumber)).collect(Collectors.toList()))
+				.build();
+	}
+
+	/**
+	 * To be used if the focus relies on a slot
+	 */
 	public static SquadDto toDto(Squad squad) {
 		return SquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.slotList(SlotAssembler.toDtoList(squad.getSlotList()).stream().sorted(Comparator.comparing(SlotDto::getNumber)).collect(Collectors.toList()))
-				//Gibt sonst ne Endlosschleife
-//				.event(EventAssembler.toDto(squad.getEvent()))
+				.event(EventAssembler.toSlotDto(squad.getEvent()))
 				.build();
 	}
 
-	public static List<SquadDto> toDtoList(List<Squad> squadList) {
-		return squadList.stream().map(SquadAssembler::toDto).collect(Collectors.toList());
+	public static List<SquadDto> toEventDtoList(List<Squad> squadList) {
+		return squadList.stream().map(SquadAssembler::toEventDto).collect(Collectors.toList());
 	}
 
-	public static Page<SquadDto> toDtoPage(Page<Squad> squadPage, Pageable pageable) {
-		List<SquadDto> squadDtoList = toDtoList(squadPage.getContent());
+	public static Page<SquadDto> toEventDtoPage(Page<Squad> squadPage, Pageable pageable) {
+		List<SquadDto> squadDtoList = toEventDtoList(squadPage.getContent());
 		return new PageImpl<>(squadDtoList, pageable, squadPage.getTotalElements());
 	}
 

@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
  */
 @Component
 public final class SlotAssembler {
+	/**
+	 * To be used if the focus relies on the slot
+	 */
 	public static Slot fromDto(SlotDto slotDto) {
 		if (slotDto == null) {
 			return null;
@@ -31,23 +34,64 @@ public final class SlotAssembler {
 				.build();
 	}
 
+	/**
+	 * To be used if the focus relies on the event
+	 */
+	public static Slot fromEventDto(SlotDto slotDto) {
+		if (slotDto == null) {
+			return null;
+		}
+
+		return Slot.builder()
+				.id(slotDto.getId())
+				.name(slotDto.getName())
+				.number(slotDto.getNumber())
+				.userId(LongUtils.parseLong(slotDto.getUserId()))
+				.build();
+	}
+
+	/**
+	 * To be used if the focus relies on the slot
+	 */
 	public static SlotDto toDto(Slot slot) {
 		return SlotDto.builder()
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
-				//Gibt sonst ne Endlosschleife
-//				.squad(SquadAssembler.toDto(slot.getSquad()))
+				.squad(SquadAssembler.toDto(slot.getSquad()))
 				.userId(Long.toString(slot.getUserId()))
 				.build();
 	}
 
+	/**
+	 * To be used if the focus relies on the event
+	 */
+	public static SlotDto toEventDto(Slot slot) {
+		//Don't add Squad here to prevent endless loops
+		return SlotDto.builder()
+				.id(slot.getId())
+				.name(slot.getName())
+				.number(slot.getNumber())
+				.userId(Long.toString(slot.getUserId()))
+				.build();
+	}
+
+	/**
+	 * To be used if the focus relies on the slot
+	 */
 	public static List<SlotDto> toDtoList(List<Slot> slotList) {
 		return slotList.stream().map(SlotAssembler::toDto).collect(Collectors.toList());
 	}
 
+	/**
+	 * To be used if the focus relies on the event
+	 */
+	public static List<SlotDto> toEventDtoList(List<Slot> slotList) {
+		return slotList.stream().map(SlotAssembler::toEventDto).collect(Collectors.toList());
+	}
+
 	public static Page<SlotDto> toDtoPage(Page<Slot> slotPage, Pageable pageable) {
-		List<SlotDto> slotDtoList = toDtoList(slotPage.getContent());
+		List<SlotDto> slotDtoList = toEventDtoList(slotPage.getContent());
 		return new PageImpl<>(slotDtoList, pageable, slotPage.getTotalElements());
 	}
 

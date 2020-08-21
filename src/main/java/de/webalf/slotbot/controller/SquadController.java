@@ -29,19 +29,19 @@ public class SquadController {
 	public Page<SquadDto> getSquads(Pageable pageable) {
 		log.debug("getSquads");
 		Page<Squad> squadPage = squadRepository.findAll(pageable);
-		return SquadAssembler.toDtoPage(squadPage, pageable);
+		return SquadAssembler.toEventDtoPage(squadPage, pageable);
 	}
 
 	@GetMapping("/{id}")
 	public SquadDto getSquadById(@PathVariable(value = "id") long eventId) {
 		log.debug("getSquadById: " + eventId);
 		Squad squad = squadRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
-		return SquadAssembler.toDto(squad);
+		return SquadAssembler.toEventDto(squad);
 	}
 
 	@PostMapping("")
 	public SquadDto postSquad(@Valid @RequestBody SquadDto squad) {
 		log.debug("postSquad: " + squad.getName());
-		return SquadAssembler.toDto(squadRepository.save(SquadAssembler.fromDto(squad)));
+		return SquadAssembler.toEventDto(squadRepository.save(SquadAssembler.fromDto(squad)));
 	}
 }

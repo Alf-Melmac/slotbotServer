@@ -35,4 +35,9 @@ public class SlotDto extends AbstractIdEntityDto {
 		this.squad = squad;
 		this.userId = userId;
 	}
+
+	public SlotDto slot(String userId) {
+		this.userId = userId;
+		return this;
+	}
 }
