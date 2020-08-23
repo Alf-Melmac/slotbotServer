@@ -129,7 +129,11 @@ public class EventService {
 	 */
 	public Event addSlot(long channel, int squadNumber, SlotDto slotDto) {
 		Event event = findByChannel(channel);
-		event.getSquadList().get(squadNumber).addSlot(slotService.newSlot(slotDto));
+		List<Squad> squad = event.getSquadList();
+		if (squad.size() < squadNumber) {
+			throw BusinessRuntimeException.builder().title("Den Squad konnte ich nicht finden.").build();
+		}
+		squad.get(squadNumber).addSlot(slotService.newSlot(slotDto));
 		assertUniqueSlotNumbers(event);
 		//TODO Maybe use updateEvent(...)
 		return eventRepository.save(event);
