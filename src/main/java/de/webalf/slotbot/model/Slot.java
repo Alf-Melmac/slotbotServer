@@ -70,6 +70,9 @@ public class Slot extends AbstractIdEntity {
 	}
 
 	public void slot(long userId) {
+		if (getUserId() != 0) {
+			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
+		}
 		setUserId(userId);
 	}
 

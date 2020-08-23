@@ -47,9 +47,10 @@ public class EventController {
 		return EventAssembler.toDto(eventService.createEvent(event));
 	}
 
-	@PutMapping("/{id}/msgIds")
-	public Event updateChannelIds(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		log.trace("updateChannelIds: " + event.getName());
-		return eventService.updateEvent(eventId, event);
+	@PutMapping("/{id}")
+	public Event updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+		log.trace("updateEvent: " + event.getName());
+		event.setId(eventId);
+		return eventService.updateEvent(event);
 	}
 }

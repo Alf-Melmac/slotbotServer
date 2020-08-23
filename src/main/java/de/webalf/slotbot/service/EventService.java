@@ -11,9 +11,11 @@ import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +31,11 @@ public class EventService {
 	private final SlotService slotService;
 
 	public Event createEvent(EventDto eventDto) {
-		Event event = EventAssembler.fromDto(eventDto);
-		if (event.hasDuplicatedSlotNumber()) {
-			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
+		if (!StringUtils.isEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
+			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
+		Event event = EventAssembler.fromDto(eventDto);
+		assertUniqueSlotNumbers(event);
 
 		//Ich habe doch auch keine Ahnung was ich tue
 		for (Squad squad : event.getSquadList()) {
@@ -49,8 +52,8 @@ public class EventService {
 		return eventRepository.findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	public Event updateEvent(long eventId, EventDto dto) {
-		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
+	public Event updateEvent(EventDto dto) {
+		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 		//TODO Validation
 
 		DtoUtils.ifPresent(dto.getName(), event::setName);
@@ -79,7 +82,13 @@ public class EventService {
 	public Event slot(long channel, int slotNumber, long userId) throws BusinessRuntimeException {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		event.findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> unslot(event, alreadySlottedSlot, userId));
+		event.findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> {
+			if (slot.equals(alreadySlottedSlot)) {
+				//TODO: Return a warning, not a exception
+				throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
+			}
+			unslot(event, alreadySlottedSlot, userId);
+		});
 		slotService.slot(slot, userId);
 		return event;
 	}
@@ -121,6 +130,7 @@ public class EventService {
 	public Event addSlot(long channel, int squadNumber, SlotDto slotDto) {
 		Event event = findByChannel(channel);
 		event.getSquadList().get(squadNumber).addSlot(slotService.newSlot(slotDto));
+		assertUniqueSlotNumbers(event);
 		//TODO Maybe use updateEvent(...)
 		return eventRepository.save(event);
 	}
@@ -157,5 +167,11 @@ public class EventService {
 				event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new),
 				event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new)
 		);
+	}
+
+	private void assertUniqueSlotNumbers(Event event) {
+		if (event.hasDuplicatedSlotNumber()) {
+			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
+		}
 	}
 }
