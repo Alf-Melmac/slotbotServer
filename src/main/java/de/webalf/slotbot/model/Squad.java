@@ -43,13 +43,15 @@ public class Squad extends AbstractIdEntity {
 		this.event = event;
 	}
 
+	// Getter
+
 	/**
 	 * Finds a slot by its number
 	 *
 	 * @param slotNumber associated to the slot
 	 * @return the slot or an empty Optional if slot with given number doesn't exist
 	 */
-	public Optional<Slot> findSlot(int slotNumber) {
+	Optional<Slot> findSlot(int slotNumber) {
 		for (Slot slot : getSlotList()) {
 			if (slot.isSlotWithNumber(slotNumber)) {
 				return Optional.of(slot);
@@ -64,7 +66,7 @@ public class Squad extends AbstractIdEntity {
 	 * @param userId associated to the slot
 	 * @return the slot or an empty Optional if slot with given user doesn't exist
 	 */
-	public Optional<Slot> findSlotOfUser(long userId) {
+	Optional<Slot> findSlotOfUser(long userId) {
 		for (Slot slot : getSlotList()) {
 			if (slot.isSlotWithSlottedUser(userId)) {
 				return Optional.of(slot);
@@ -72,6 +74,8 @@ public class Squad extends AbstractIdEntity {
 		}
 		return Optional.empty();
 	}
+
+	// Setter
 
 	/**
 	 * Adds a new slot to the squad
@@ -81,6 +85,7 @@ public class Squad extends AbstractIdEntity {
 	public void addSlot(Slot newSlot) {
 		newSlot.setSquad(this);
 		slotList.add(newSlot);
+		getEvent().updateSlotCount();
 	}
 
 	/**
@@ -89,6 +94,7 @@ public class Squad extends AbstractIdEntity {
 	 * @param slot to delete
 	 */
 	public void deleteSlot(Slot slot) {
-		this.getSlotList().remove(slot);
+		getSlotList().remove(slot);
+		getEvent().updateSlotCount();
 	}
 }

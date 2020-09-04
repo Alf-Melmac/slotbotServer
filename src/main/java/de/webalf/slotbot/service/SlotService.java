@@ -11,6 +11,7 @@ import de.webalf.slotbot.util.DtoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @since 27.07.2020
  */
 @Service
+@Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class SlotService {
 	private final SlotRepository slotRepository;
@@ -41,13 +43,14 @@ public class SlotService {
 	}
 
 	/**
-	 * Saves the given Slot and writed directly to the database. Useful if the returned Slot is needed later in this transaction.
+	 * Saves the given Slot
+	 * Be aware that no squad change can be saved atm see {@link SlotService#updateSlot(SlotDto)}
 	 *
 	 * @param dto to be saved
 	 * @return the saved slot
 	 */
-	private Slot updateAndFlush(SlotDto dto) {
-		return slotRepository.saveAndFlush(updateSlot(dto));
+	private Slot updateAndSave(SlotDto dto) {
+		return slotRepository.save(updateSlot(dto));
 	}
 
 	/**
@@ -94,8 +97,8 @@ public class SlotService {
 		}
 
 		String tempUserId = slotDtos.get(0).getUserId();
-		updateAndFlush(slotDtos.get(0).slot(slotDtos.get(1).getUserId()));
-		Slot savedSlot2 = updateAndFlush(slotDtos.get(1).slot(tempUserId));
+		updateAndSave(slotDtos.get(0).slot(slotDtos.get(1).getUserId()));
+		Slot savedSlot2 = updateAndSave(slotDtos.get(1).slot(tempUserId));
 
 		return savedSlot2.getSquad().getEvent();
 	}

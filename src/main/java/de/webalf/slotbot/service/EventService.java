@@ -15,6 +15,7 @@ import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import java.util.List;
  * @since 27.07.2020
  */
 @Service
+@Transactional/*(rollbackFor = BusinessRuntimeException.class)*/ //TODO: Check if rollback is needed
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventService {
 	private final EventRepository eventRepository;
@@ -35,7 +37,6 @@ public class EventService {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
 		Event event = EventAssembler.fromDto(eventDto);
-		assertUniqueSlotNumbers(event);
 
 		//Ich habe doch auch keine Ahnung was ich tue
 		for (Squad squad : event.getSquadList()) {
@@ -82,6 +83,7 @@ public class EventService {
 	public Event slot(long channel, int slotNumber, long userId) throws BusinessRuntimeException {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		//TODO: Move the service workflow to the slot. switch caused by a slot change in a event action
 		event.findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> {
 			if (slot.equals(alreadySlottedSlot)) {
 				//TODO: Return a warning, not a exception
@@ -134,7 +136,7 @@ public class EventService {
 			throw BusinessRuntimeException.builder().title("Den Squad konnte ich nicht finden.").build();
 		}
 		squad.get(squadNumber).addSlot(slotService.newSlot(slotDto));
-		assertUniqueSlotNumbers(event);
+		event.assertUniqueSlotNumbers();
 		//TODO Maybe use updateEvent(...)
 		return eventRepository.save(event);
 	}
@@ -171,11 +173,5 @@ public class EventService {
 				event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new),
 				event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new)
 		);
-	}
-
-	private void assertUniqueSlotNumbers(Event event) {
-		if (event.hasDuplicatedSlotNumber()) {
-			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
-		}
 	}
 }
