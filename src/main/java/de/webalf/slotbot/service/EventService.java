@@ -49,6 +49,13 @@ public class EventService {
 		return eventRepository.save(event);
 	}
 
+	/**
+	 * Returns the event associated with the given channelId
+	 *
+	 * @param channel to find event for
+	 * @return Event from channel
+	 * @throws ResourceNotFoundException if no event with this channelId could be found
+	 */
 	public Event findByChannel(long channel) {
 		return eventRepository.findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
 	}
@@ -83,14 +90,6 @@ public class EventService {
 	public Event slot(long channel, int slotNumber, long userId) throws BusinessRuntimeException {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		//TODO: Move the service workflow to the slot. switch caused by a slot change in a event action
-		event.findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> {
-			if (slot.equals(alreadySlottedSlot)) {
-				//TODO: Return a warning, not a exception
-				throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
-			}
-			unslot(event, alreadySlottedSlot, userId);
-		});
 		slotService.slot(slot, userId);
 		return event;
 	}
@@ -105,18 +104,6 @@ public class EventService {
 	public Event unslot(long channel, long userId) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new);
-		return unslot(event, slot, userId);
-	}
-
-	/**
-	 * Removes the user from the given slot in the given event.
-	 *
-	 * @param event  event in which the unslot should be performed
-	 * @param slot   slot which should be freed from the user
-	 * @param userId user to unslot
-	 * @return Event in which the unslotted has been performed
-	 */
-	private Event unslot(Event event, Slot slot, long userId) {
 		slotService.unslot(slot, userId);
 		return event;
 	}

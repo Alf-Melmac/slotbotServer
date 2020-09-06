@@ -54,13 +54,22 @@ public class SlotService {
 	}
 
 	/**
-	 * Slotts the given user to the given Slot
+	 * Slotts the given user to the given Slot. If the user is already slotted, it is removed from the other slot
 	 *
 	 * @param slot   in which slot should be performed
 	 * @param userId to be slotted
 	 * @return the updated slot
 	 */
 	public Slot slot(Slot slot, long userId) {
+		//Remove the user from any other slot in the Event
+		slot.getSquad().getEvent().findSlotOfUser(userId).ifPresent(alreadySlottedSlot -> {
+			if (slot.equals(alreadySlottedSlot)) {
+				//TODO: Return a warning, not a exception
+				throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
+			}
+			unslot(alreadySlottedSlot, userId);
+		});
+
 		slot.slot(userId);
 		return slotRepository.save(slot);
 	}
