@@ -329,8 +329,14 @@ public class Event extends AbstractIdEntity {
 	 * @param slot that is now empty
 	 */
 	void unslotPerformed(Slot slot) {
+		if (slot.getSquad().getName().equals(RESERVE_NAME)) {
+			//Do not move
+			return;
+		}
+
+		Optional<Squad> reserveSquadOptional = findSquadByName(RESERVE_NAME);
 		//Add reservist to empty slot
-		findSquadByName(RESERVE_NAME)
+		reserveSquadOptional
 				.flatMap(reserve -> reserve.getSlotList().stream().filter(reserveSlot -> !reserveSlot.isEmpty()).findFirst())
 				.ifPresent(reserveSlot -> {
 					//TODO: Move the service workflow to the slot. switch caused by a slot change in a event action
@@ -338,6 +344,16 @@ public class Event extends AbstractIdEntity {
 					slot.slot(reserveSlotUser);
 					reserveSlot.unslot(reserveSlotUser);
 				});
+
+		//Move up the reservists
+		reserveSquadOptional.ifPresent(reserveSquad -> {
+			List<User> reserveUsers = slot.getSquad().getSlotList().stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toList());
+			List<Slot> reserveSlots = reserveSquad.getSlotList();
+			for (int i = 0; i < reserveUsers.size(); i++) {
+				reserveSlots.get(i).setUser(reserveUsers.get(i));
+			}
+		});
+
 
 		changeReserveIfNeeded();
 	}
