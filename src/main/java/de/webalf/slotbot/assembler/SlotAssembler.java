@@ -2,7 +2,6 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.SlotDto;
-import de.webalf.slotbot.util.LongUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,7 @@ public final class SlotAssembler {
 				.name(slotDto.getName())
 				.number(slotDto.getNumber())
 				.squad(SquadAssembler.fromDto(slotDto.getSquad()))
-				.userId(LongUtils.parseLong(slotDto.getUserId()))
+				.user(UserAssembler.fromDto(slotDto.getUser()))
 				.build();
 	}
 
@@ -46,33 +45,33 @@ public final class SlotAssembler {
 				.id(slotDto.getId())
 				.name(slotDto.getName())
 				.number(slotDto.getNumber())
-				.userId(LongUtils.parseLong(slotDto.getUserId()))
+				.user(UserAssembler.fromDto(slotDto.getUser()))
 				.build();
 	}
 
 	/**
 	 * To be used if the focus relies on the slot
 	 */
-	public static SlotDto toDto(Slot slot) {
+	private static SlotDto toDto(Slot slot) {
 		return SlotDto.builder()
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
 				.squad(SquadAssembler.toDto(slot.getSquad()))
-				.userId(Long.toString(slot.getUserId()))
+				.user(UserAssembler.toDto(slot.getUser()))
 				.build();
 	}
 
 	/**
 	 * To be used if the focus relies on the event
 	 */
-	public static SlotDto toEventDto(Slot slot) {
+	private static SlotDto toEventDto(Slot slot) {
 		//Don't add Squad here to prevent endless loops
 		return SlotDto.builder()
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
-				.userId(Long.toString(slot.getUserId()))
+				.user(UserAssembler.toDto(slot.getUser()))
 				.build();
 	}
 
@@ -86,7 +85,7 @@ public final class SlotAssembler {
 	/**
 	 * To be used if the focus relies on the event
 	 */
-	public static List<SlotDto> toEventDtoList(List<Slot> slotList) {
+	static List<SlotDto> toEventDtoList(List<Slot> slotList) {
 		return slotList.stream().map(SlotAssembler::toEventDto).collect(Collectors.toList());
 	}
 
@@ -95,7 +94,7 @@ public final class SlotAssembler {
 		return new PageImpl<>(slotDtoList, pageable, slotPage.getTotalElements());
 	}
 
-	public static List<Slot> fromDtoList(List<SlotDto> slotDtoList) {
+	static List<Slot> fromDtoList(List<SlotDto> slotDtoList) {
 		return slotDtoList.stream().map(SlotAssembler::fromDto).collect(Collectors.toList());
 	}
 }

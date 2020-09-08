@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
+import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,16 +35,16 @@ public class EventChannelController {
 	@PostMapping("/slot/{slotNumber}")
 	public EventDto postSlot(@PathVariable(value = "channelId") long channel,
 	                         @PathVariable(value = "slotNumber") int slotNumber,
-	                         @RequestBody long userId) {
-		log.trace("postSlot: " + channel + " " + slotNumber + " " + userId);
-		return EventAssembler.toDto(eventService.slot(channel, slotNumber, userId));
+	                         @RequestBody UserDto userDto) {
+		log.trace("postSlot: " + channel + " " + slotNumber + " " + userDto.getId());
+		return EventAssembler.toDto(eventService.slot(channel, slotNumber, userDto));
 	}
 
 	@PostMapping("/unslot")
 	public EventDto postUnslot(@PathVariable(value = "channelId") long channel,
-	                           @RequestBody long userId) {
-		log.trace("postUnslot: " + channel + " " + userId);
-		return EventAssembler.toDto(eventService.unslot(channel, userId));
+	                           @RequestBody UserDto userDto) {
+		log.trace("postUnslot: " + channel + " " + userDto.getId());
+		return EventAssembler.toDto(eventService.unslot(channel, userDto));
 	}
 
 	@PostMapping("/addSlot/{squadNumber}")
@@ -61,11 +62,11 @@ public class EventChannelController {
 		return EventAssembler.toDto(eventService.deleteSlot(channel, slotNumber));
 	}
 
-	@GetMapping("/prepareSwap/{slotNumber}/{userId}")
+	@PutMapping("/prepareSwap/{slotNumber}")
 	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
-	                                 @PathVariable(value = "slotNumber") int slotNumber,
-	                                 @PathVariable(value = "userId") long userId) {
-		log.trace("getSwapSlots: " + channel + " SlotNumber: " + slotNumber + " userId: " + userId);
-		return SlotAssembler.toDtoList(eventService.findSwapSlots(channel, slotNumber, userId));
+	                                  @PathVariable(value = "slotNumber") int slotNumber,
+	                                  @RequestBody UserDto userDto) {
+		log.trace("getSwapSlots: " + channel + " SlotNumber: " + slotNumber + " user: " + userDto.getId());
+		return SlotAssembler.toDtoList(eventService.findSwapSlots(channel, slotNumber, userDto));
 	}
 }

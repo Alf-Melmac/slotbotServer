@@ -2,10 +2,7 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,7 +17,7 @@ import javax.validation.constraints.Size;
 @Table(name = "slot", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Slot extends AbstractIdEntity {
 	@Column(name = "slot_name", length = 100)
 	@Size(max = 80)
@@ -36,47 +33,52 @@ public class Slot extends AbstractIdEntity {
 	@JsonBackReference
 	private Squad squad;
 
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
-	private long userId;
+	private User user;
 
 	@Builder
-	public Slot(final long id, final String name, final int number, final Squad squad, final long userId) {
+	public Slot(long id, String name, int number, Squad squad, User user) {
 		this.id = id;
 		this.name = name;
 		this.number = number;
 		this.squad = squad;
-		this.userId = userId;
+		this.user = user;
 	}
 
 	// Getter
 
-	public boolean isSlotWithNumber(int slotNumber) {
+	boolean isSlotWithNumber(int slotNumber) {
 		return getNumber() == slotNumber;
 	}
 
-	public boolean isSlotWithSlottedUser(long userId) {
-		return getUserId() == userId;
+	boolean isSlotWithSlottedUser(User user) {
+		return isNotEmpty() && getUser().equals(user);
 	}
 
-	public boolean isEmpty() {
-		return getUserId() == 0;
+	boolean isEmpty() {
+		return getUser() == null;
+	}
+
+	public boolean isNotEmpty() {
+		return !isEmpty();
+	}
+
+	public Event getEvent() {
+		return getSquad().getEvent();
 	}
 
 	// Setter
 
-	public void setUserIdString(String userIdString) {
-		setUserId(Long.parseLong(userIdString));
-	}
-
 	/**
 	 * Adds the given user from the slot if no other user occupies the slot
 	 *
-	 * @param userId user to slot
+	 * @param user user to slot
 	 */
-	public void slot(long userId) {
+	public void slot(User user) {
 		if (isEmpty()) {
-			setUserId(userId);
-			getSquad().getEvent().slotPerformed();
+			setUser(user);
+			getEvent().slotPerformed();
 		} else {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}
@@ -85,12 +87,12 @@ public class Slot extends AbstractIdEntity {
 	/**
 	 * Removes the given user from the slot if no other user occupies the slot
 	 *
-	 * @param userId user to unslot
+	 * @param user user to unslot
 	 */
-	public void unslot(long userId) {
-		if (isSlotWithSlottedUser(userId) || isEmpty()) {
-			setUserId(0);
-			getSquad().getEvent().unslotPerformed(this);
+	public void unslot(User user) {
+		if (isSlotWithSlottedUser(user) || isEmpty()) {
+			setUser(null);
+			getEvent().unslotPerformed(this);
 		} else {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}

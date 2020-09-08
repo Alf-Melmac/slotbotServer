@@ -28,10 +28,10 @@ public final class EventAssembler {
 				.name(eventDto.getName())
 				.dateTime(LocalDateTime.of(eventDto.getDate(), eventDto.getStartTime()))
 				.description(eventDto.getDescription())
-				.channel(LongUtils.parseLong(eventDto.getChannel()))
+				.channel(LongUtils.parseLongWrapper(eventDto.getChannel()))
 				.squadList(SquadAssembler.fromDtoList(eventDto.getSquadList()))
-				.infoMsg(LongUtils.parseLong(eventDto.getInfoMsg()))
-				.slotListMsg(LongUtils.parseLong(eventDto.getSlotListMsg()))
+				.infoMsg(LongUtils.parseLongWrapper(eventDto.getInfoMsg()))
+				.slotListMsg(LongUtils.parseLongWrapper(eventDto.getSlotListMsg()))
 				.build();
 	}
 
@@ -46,17 +46,17 @@ public final class EventAssembler {
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.description(event.getDescription())
-				.channel(Long.toString(event.getChannel()))
+				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(SquadAssembler.toEventDtoList(event.getSquadList()))
-				.infoMsg(Long.toString(event.getInfoMsg()))
-				.slotListMsg(Long.toString(event.getSlotListMsg()))
+				.infoMsg(LongUtils.toString(event.getInfoMsg()))
+				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.build();
 	}
 
 	/**
 	 * To be used if the focus relies on a slot
 	 */
-	public static EventDto toSlotDto(Event event) {
+	static EventDto toSlotDto(Event event) {
 		LocalDateTime dateTime = event.getDateTime();
 		return EventDto.builder()
 				.id(event.getId())
@@ -64,9 +64,9 @@ public final class EventAssembler {
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.description(event.getDescription())
-				.channel(Long.toString(event.getChannel()))
-				.infoMsg(Long.toString(event.getInfoMsg()))
-				.slotListMsg(Long.toString(event.getSlotListMsg()))
+				.channel(LongUtils.toString(event.getChannel()))
+				.infoMsg(LongUtils.toString(event.getInfoMsg()))
+				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.build();
 	}
 

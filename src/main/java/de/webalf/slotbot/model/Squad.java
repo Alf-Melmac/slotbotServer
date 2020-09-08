@@ -2,10 +2,7 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -20,13 +17,13 @@ import java.util.Optional;
 @Table(name = "squad", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Squad extends AbstractIdEntity {
 	@Column(name = "squad_name")
 	@Size(max = 80)
 	private String name;
 
-	@OneToMany(mappedBy = "squad", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Slot> slotList;
 
@@ -36,7 +33,7 @@ public class Squad extends AbstractIdEntity {
 	private Event event;
 
 	@Builder
-	public Squad(final long id, final String name, final List<Slot> slotList, Event event) {
+	public Squad(long id, String name, List<Slot> slotList, Event event) {
 		this.id = id;
 		this.name = name;
 		this.slotList = slotList;
@@ -63,12 +60,12 @@ public class Squad extends AbstractIdEntity {
 	/**
 	 * Finds a slot by its user
 	 *
-	 * @param userId associated to the slot
+	 * @param user associated to the slot
 	 * @return the slot or an empty Optional if slot with given user doesn't exist
 	 */
-	Optional<Slot> findSlotOfUser(long userId) {
+	Optional<Slot> findSlotOfUser(User user) {
 		for (Slot slot : getSlotList()) {
-			if (slot.isSlotWithSlottedUser(userId)) {
+			if (slot.isSlotWithSlottedUser(user)) {
 				return Optional.of(slot);
 			}
 		}

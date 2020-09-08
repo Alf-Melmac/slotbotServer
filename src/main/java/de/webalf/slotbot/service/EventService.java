@@ -7,11 +7,14 @@ import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
+import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +34,9 @@ import java.util.List;
 public class EventService {
 	private final EventRepository eventRepository;
 	private final SlotService slotService;
+	private final UserService userService;
 
-	public Event createEvent(EventDto eventDto) {
+	public Event createEvent(@NonNull EventDto eventDto) {
 		if (!StringUtils.isEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
@@ -60,7 +64,7 @@ public class EventService {
 		return eventRepository.findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	public Event updateEvent(EventDto dto) {
+	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 		//TODO Validation
 
@@ -79,32 +83,34 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and enters the given userId for the slot with given number, if available.
+	 * Searches for the given channel the matching event and enters the given user for the slot with given number, if available.
 	 *
 	 * @param channel    event channel
 	 * @param slotNumber Slot to slot into
-	 * @param userId     person that should be slotted
+	 * @param userDto    person that should be slotted
 	 * @return Event in which the person has been slotted
 	 * @throws BusinessRuntimeException if the slot is already occupied
 	 */
-	public Event slot(long channel, int slotNumber, long userId) throws BusinessRuntimeException {
+	public Event slot(long channel, int slotNumber, UserDto userDto) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		slotService.slot(slot, userId);
+		User user = userService.find(userDto);
+		slotService.slot(slot, user);
 		return event;
 	}
 
 	/**
-	 * Searches for the given channel the matching event and removes the user, found by userId, from its slot.
+	 * Searches for the given channel the matching event and removes the user, found by user, from its slot.
 	 *
 	 * @param channel event channel
-	 * @param userId  person that should be unslotted
+	 * @param userDto person that should be unslotted
 	 * @return Event in which the person has been unslotted
 	 */
-	public Event unslot(long channel, long userId) {
+	public Event unslot(long channel, UserDto userDto) {
 		Event event = findByChannel(channel);
-		Slot slot = event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new);
-		slotService.unslot(slot, userId);
+		User user = userService.find(userDto);
+		Slot slot = event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new);
+		slotService.unslot(slot, user);
 		return event;
 	}
 
@@ -138,7 +144,7 @@ public class EventService {
 	public Event deleteSlot(long channel, int slotNumber) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		if (slot.getUserId() != 0) {
+		if (slot.isNotEmpty()) {
 			throw new ForbiddenException("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.");
 		}
 		slot.getSquad().deleteSlot(slot);
@@ -147,17 +153,18 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and userId
+	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and user
 	 *
 	 * @param channel    event channel
 	 * @param slotNumber slot1 to find by slotNumber
-	 * @param userId     slot2 to find by user
+	 * @param userDto    slot2 to find by user
 	 * @return two Slots
 	 */
-	public List<Slot> findSwapSlots(long channel, int slotNumber, long userId) {
+	public List<Slot> findSwapSlots(long channel, int slotNumber, UserDto userDto) {
 		Event event = findByChannel(channel);
+		User user = userService.find(userDto);
 		return Arrays.asList(
-				event.findSlotOfUser(userId).orElseThrow(ResourceNotFoundException::new),
+				event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new),
 				event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new)
 		);
 	}

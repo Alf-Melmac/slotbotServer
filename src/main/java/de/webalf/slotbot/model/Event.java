@@ -3,14 +3,11 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.persistence.converter.LocalDateTimePersistenceConverter;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,11 +26,11 @@ import java.util.stream.Collectors;
 @Table(name = "event", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Slf4j
 public class Event extends AbstractIdEntity {
 	@Column(name = "event_name", length = 100)
-	@NotEmpty
+	@NotBlank
 	@Size(max = 80)
 	private String name;
 
@@ -46,30 +43,30 @@ public class Event extends AbstractIdEntity {
 	private String description;
 
 	@Column(name = "event_channel")
-	private long channel;
+	private Long channel;
 
-	@OneToMany(mappedBy = "event", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Squad> squadList;
 
 	@Column(name = "event_info_msg")
-	private long infoMsg;
+	private Long infoMsg;
 
 	@Column(name = "event_slotlist_msg")
-	private long slotListMsg;
+	private Long slotListMsg;
 
 	@Transient
 	private int slotCount;
 
 	@Builder
-	public Event(final long id,
-	             final String name,
-	             final LocalDateTime dateTime,
-	             final String description,
-	             final long channel,
-	             final List<Squad> squadList,
-	             final long infoMsg,
-	             final long slotListMsg) {
+	public Event(long id,
+	             String name,
+	             LocalDateTime dateTime,
+	             String description,
+	             Long channel,
+	             List<Squad> squadList,
+	             Long infoMsg,
+	             Long slotListMsg) {
 		this.id = id;
 		this.name = name;
 		this.dateTime = dateTime;
@@ -106,12 +103,12 @@ public class Event extends AbstractIdEntity {
 	/**
 	 * Finds a slot by its user
 	 *
-	 * @param userId associated to the slot
+	 * @param user associated to the slot
 	 * @return the slot or an empty Optional if slot with given user doesn't exist
 	 */
-	public Optional<Slot> findSlotOfUser(long userId) {
+	public Optional<Slot> findSlotOfUser(User user) {
 		for (Squad squad : getSquadList()) {
-			Optional<Slot> slotOptional = squad.findSlotOfUser(userId);
+			Optional<Slot> slotOptional = squad.findSlotOfUser(user);
 			if (slotOptional.isPresent()) {
 				return slotOptional;
 			}
@@ -214,7 +211,7 @@ public class Event extends AbstractIdEntity {
 	/**
 	 * Recounts the slotCount and adjusts reserve if needed
 	 */
-	public void updateSlotCount() {
+	void updateSlotCount() {
 		setSlotCount(0);
 		for (Squad squad : getSquadList()) {
 			setSlotCount(getSlotCount() + squad.getSlotList().size());
@@ -228,7 +225,7 @@ public class Event extends AbstractIdEntity {
 	 *
 	 * @return Optional of the event if reserve has been or removed. Empty Optional if nothing has changed
 	 */
-	public Optional<Event> changeReserveIfNeeded() {
+	private Optional<Event> changeReserveIfNeeded() {
 		Optional<Squad> reserve = findSquadByName(RESERVE_NAME);
 		if (reserve.isEmpty()) {
 			//Add reserve if event is full and not already exists
@@ -247,8 +244,8 @@ public class Event extends AbstractIdEntity {
 	private Event adjustReserveSize() {
 		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
 			List<Slot> reserveSlots = reserve.getSlotList();
-			List<Long> reserveUsers = reserveSlots.stream().map(Slot::getUserId).collect(Collectors.toList());
-			final int reserveSizeToAchieve = getReserveSize();
+			List<User> reserveUsers = reserveSlots.stream().map(Slot::getUser).collect(Collectors.toList());
+			int reserveSizeToAchieve = getReserveSize();
 
 			//Reduce the reserve size so that all persons already slotted remain so
 			int newReserveSize = Math.max(reserveSizeToAchieve, reserveUsers.size());
@@ -260,7 +257,7 @@ public class Event extends AbstractIdEntity {
 						.squad(reserve)
 						.build();
 				if (i <= reserveUsers.size()) {
-					slot.setUserId(reserveUsers.get(i));
+					slot.setUser(reserveUsers.get(i));
 				}
 				newReserveSlots.add(slot);
 			}
@@ -304,7 +301,7 @@ public class Event extends AbstractIdEntity {
 	 * @throws RuntimeException if the given reserve has any slotted user
 	 */
 	private Event removeReserve(Squad reserve) {
-		if (reserve.getSlotList().stream().anyMatch(slot -> slot.getUserId() != 0)) {
+		if (reserve.getSlotList().stream().anyMatch(Slot::isNotEmpty)) {
 			log.error("Tried to delete non empty reserve in event " + getName());
 			throw new RuntimeException("Reserve is not empty. Can't delete");
 		}
@@ -314,7 +311,7 @@ public class Event extends AbstractIdEntity {
 	/**
 	 * Informs the event about an slot. Uses {@link Event#changeReserveIfNeeded()} to create reserve if needed
 	 */
-	public void slotPerformed() {
+	void slotPerformed() {
 		changeReserveIfNeeded();
 	}
 
@@ -323,13 +320,13 @@ public class Event extends AbstractIdEntity {
 	 *
 	 * @param slot that is now empty
 	 */
-	public void unslotPerformed(Slot slot) {
+	void unslotPerformed(Slot slot) {
 		//Add reservist to empty slot
 		findSquadByName(RESERVE_NAME)
 				.flatMap(reserve -> reserve.getSlotList().stream().filter(reserveSlot -> !reserveSlot.isEmpty()).findFirst())
 				.ifPresent(reserveSlot -> {
 					//TODO: Move the service workflow to the slot. switch caused by a slot change in a event action
-					final long reserveSlotUser = reserveSlot.getUserId();
+					User reserveSlotUser = reserveSlot.getUser();
 					slot.slot(reserveSlotUser);
 					reserveSlot.unslot(reserveSlotUser);
 				});

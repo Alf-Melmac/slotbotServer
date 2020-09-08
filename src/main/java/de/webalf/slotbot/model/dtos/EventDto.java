@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Alf
  * @since 23.06.2020
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class EventDto extends AbstractIdEntityDto {
 	@NotEmpty
@@ -41,15 +42,15 @@ public class EventDto extends AbstractIdEntityDto {
 	private String slotListMsg;
 
 	@Builder
-	public EventDto(final long id,
-	                final String name,
-	                final LocalDate date,
-	                final LocalTime startTime,
-	                final String description,
-	                final String channel,
-	                final List<SquadDto> squadList,
-	                final String infoMsg,
-	                final String slotListMsg) {
+	public EventDto(long id,
+	                String name,
+	                LocalDate date,
+	                LocalTime startTime,
+	                String description,
+	                String channel,
+	                List<SquadDto> squadList,
+	                String infoMsg,
+	                String slotListMsg) {
 		this.id = id;
 		this.name = name;
 		this.date = date;

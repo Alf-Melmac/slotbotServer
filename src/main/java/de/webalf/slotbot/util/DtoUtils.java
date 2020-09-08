@@ -1,5 +1,8 @@
 package de.webalf.slotbot.util;
 
+import de.webalf.slotbot.assembler.UserAssembler;
+import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.dtos.UserDto;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -45,6 +48,12 @@ public class DtoUtils {
 	public static void ifPresent(LocalTime value, Consumer<LocalTime> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);
+		}
+	}
+
+	public static void ifPresent(UserDto value, Consumer<User> consumer) {
+		if (isPresent(value)) {
+			consumer.accept(UserAssembler.fromDto(value));
 		}
 	}
 }

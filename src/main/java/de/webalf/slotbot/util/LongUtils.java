@@ -14,4 +14,12 @@ public class LongUtils {
 	public static long parseLong(String s) {
 		return s != null ? Long.parseLong(s) : 0;
 	}
+
+	public static Long parseLongWrapper(String s) {
+		return s != null ? Long.parseLong(s) : null;
+	}
+
+	public static String toString(Long l) {
+		return l != null ? Long.toString(l) : null;
+	}
 }

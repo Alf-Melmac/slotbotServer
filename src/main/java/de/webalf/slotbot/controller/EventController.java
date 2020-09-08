@@ -48,9 +48,9 @@ public class EventController {
 	}
 
 	@PutMapping("/{id}")
-	public Event updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+	public EventDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		log.trace("updateEvent: " + event.getName());
 		event.setId(eventId);
-		return eventService.updateEvent(event);
+		return EventAssembler.toDto(eventService.updateEvent(event));
 	}
 }

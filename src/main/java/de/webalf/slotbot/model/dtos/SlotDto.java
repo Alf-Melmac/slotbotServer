@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import javax.validation.constraints.Size;
  * @author Alf
  * @since 23.06.2020
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class SlotDto extends AbstractIdEntityDto {
 	@Size(max = 80)
@@ -20,24 +21,23 @@ public class SlotDto extends AbstractIdEntityDto {
 
 	private SquadDto squad;
 
-	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
-	private String userId;
+	private UserDto user;
 
 	@Builder
-	public SlotDto(final long id,
-	               final String name,
-	               final int number,
-	               final SquadDto squad,
-	               final String userId) {
+	public SlotDto(long id,
+	               String name,
+	               int number,
+	               SquadDto squad,
+	               UserDto user) {
 		this.id = id;
 		this.name = name;
 		this.number = number;
 		this.squad = squad;
-		this.userId = userId;
+		this.user = user;
 	}
 
-	public SlotDto slot(String userId) {
-		this.userId = userId;
+	public SlotDto slot(UserDto user) {
+		this.user = user;
 		return this;
 	}
 }

@@ -13,6 +13,6 @@ import javax.persistence.*;
 public abstract class AbstractIdEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", nullable = false, updatable = false)
+	@Column(name = "id", nullable = false, unique = true, updatable = false)
 	protected long id;
 }
