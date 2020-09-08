@@ -251,9 +251,13 @@ public class Event extends AbstractIdEntity {
 			int newReserveSize = Math.max(reserveSizeToAchieve, reserveUsers.size());
 			List<Slot> newReserveSlots = new ArrayList<>();
 			for (int i = 0; i < newReserveSize; i++) {
+				int slotNumber = 100 + i;
+				while (findSlot(slotNumber).isPresent()) {
+					slotNumber++;
+				}
 				Slot slot = Slot.builder()
-						.number(100 + i)
-						.name("Reserve " + i)
+						.number(slotNumber)
+						.name("Reserve " + (i + 1))
 						.squad(reserve)
 						.build();
 				if (i <= reserveUsers.size()) {
@@ -282,8 +286,12 @@ public class Event extends AbstractIdEntity {
 		//Add 25% Slots of slotCount to reserve. At least 1 Slot
 		List<Slot> reserveSlots = reserveSquad.getSlotList();
 		for (int i = 0; i < getReserveSize(); i++) {
+			int slotNumber = 100 + i;
+			while (findSlot(slotNumber).isPresent()) {
+				slotNumber++;
+			}
 			reserveSlots.add(Slot.builder()
-					.number(100 + i)
+					.number(slotNumber)
 					.name("Reserve " + (i + 1))
 					.squad(reserveSquad)
 					.build());
