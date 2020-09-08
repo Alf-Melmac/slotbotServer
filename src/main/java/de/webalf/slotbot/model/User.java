@@ -19,6 +19,7 @@ public class User {
 
 	@Id
 	@Column(name = "id")
+	//Workaround to ignore generated values
 	private long id;
 
 	@Builder
