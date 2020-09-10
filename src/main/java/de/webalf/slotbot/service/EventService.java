@@ -114,6 +114,20 @@ public class EventService {
 	}
 
 	/**
+	 * Searches for the given channel the matching event and removes the user, found by slotNumber, from its slot.
+	 *
+	 * @param channel    event channel
+	 * @param slotNumber slot that should be cleared
+	 * @return Event in which the unslot has been performed
+	 */
+	public Event unslot(long channel, int slotNumber) {
+		Event event = findByChannel(channel);
+		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		slotService.unslot(slot, slot.getUser());
+		return event;
+	}
+
+	/**
 	 * Searches for the given channel the matching event and adds the given slot to the squad found by squadNumber.
 	 *
 	 * @param channel     event channel

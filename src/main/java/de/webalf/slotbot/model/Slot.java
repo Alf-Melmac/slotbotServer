@@ -60,7 +60,7 @@ public class Slot extends AbstractIdEntity {
 		return getUser() == null;
 	}
 
-	public boolean isNotEmpty() {
+	boolean isNotEmpty() {
 		return !isEmpty();
 	}
 
@@ -115,7 +115,7 @@ public class Slot extends AbstractIdEntity {
 	 *
 	 * @throws BusinessRuntimeException If the slot is occupied by a user other than the given user
 	 */
-	void unslotWithoutUpdate(@NonNull User user) {
+	void unslotWithoutUpdate(User user) {
 		if (isSlotWithSlottedUser(user) || isEmpty()) {
 			setUser(null);
 		} else {

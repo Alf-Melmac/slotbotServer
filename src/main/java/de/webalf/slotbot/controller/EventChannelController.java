@@ -47,6 +47,13 @@ public class EventChannelController {
 		return EventAssembler.toDto(eventService.unslot(channel, userDto));
 	}
 
+	@PostMapping("/unslot/{slotNumber}")
+	public EventDto postUnslotSlot(@PathVariable(value = "channelId") long channel,
+	                               @PathVariable(value = "slotNumber") int slotNumber) {
+		log.trace("postUnslotSlot: " + channel + " " + slotNumber);
+		return EventAssembler.toDto(eventService.unslot(channel, slotNumber));
+	}
+
 	@PostMapping("/addSlot/{squadNumber}")
 	public EventDto postAddSlot(@PathVariable(value = "channelId") long channel,
 	                            @PathVariable(value = "squadNumber") int squadNumber,
