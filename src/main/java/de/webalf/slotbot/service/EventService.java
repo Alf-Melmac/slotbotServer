@@ -2,7 +2,6 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
@@ -144,10 +143,6 @@ public class EventService {
 	public Event deleteSlot(long channel, int slotNumber) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		if (slot.isNotEmpty()) {
-			throw new ForbiddenException("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.");
-		}
-		slot.getSquad().deleteSlot(slot);
 		slotService.deleteSlot(slot);
 		return event;
 	}

@@ -203,7 +203,7 @@ public class Event extends AbstractIdEntity {
 		setSlotListMsg(Long.parseLong(slotListMsgString));
 	}
 
-	private Event removeSquad(Squad squad) {
+	public Event removeSquad(Squad squad) {
 		getSquadList().remove(squad);
 		return this;
 	}

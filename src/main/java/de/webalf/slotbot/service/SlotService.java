@@ -2,9 +2,11 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
+import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
@@ -29,6 +31,7 @@ import java.util.List;
 public class SlotService {
 	private final SlotRepository slotRepository;
 	private final ActionLogService actionLogService;
+	private final SquadService squadService;
 
 	Slot newSlot(SlotDto dto) {
 		Slot slot = SlotAssembler.fromDto(dto);
@@ -61,7 +64,7 @@ public class SlotService {
 	/**
 	 * Slotts the given user to the given Slot. If the user is already slotted, it is removed from the other slot
 	 *
-	 * @param slot   in which slot should be performed
+	 * @param slot in which slot should be performed
 	 * @param user to be slotted
 	 * @return the updated slot
 	 */
@@ -84,7 +87,7 @@ public class SlotService {
 	/**
 	 * Removes the given user from the given slot
 	 *
-	 * @param slot   in which unslot should be performed
+	 * @param slot in which unslot should be performed
 	 * @param user to be unslotted
 	 */
 	void unslot(@NonNull Slot slot, User user) {
@@ -99,7 +102,14 @@ public class SlotService {
 	 * @param slot to remove
 	 */
 	void deleteSlot(Slot slot) {
+		if (slot.isNotEmpty()) {
+			throw new ForbiddenException("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.");
+		}
+		Squad squad = slot.getSquad();
+		squad.deleteSlot(slot);
 		slotRepository.delete(slot);
+
+		squadService.deleteSquadIfEmpty(squad);
 	}
 
 	/**
