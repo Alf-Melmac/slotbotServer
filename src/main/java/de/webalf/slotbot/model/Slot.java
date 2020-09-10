@@ -71,14 +71,29 @@ public class Slot extends AbstractIdEntity {
 	// Setter
 
 	/**
-	 * Adds the given user from the slot if no other user occupies the slot
+	 * Adds the given user to the slot if no other user occupies the slot. If already slotted on another slot in the same event the slot will be changed
 	 *
 	 * @param user user to slot
 	 */
 	public void slot(User user) {
-		if (isEmpty()) {
+		slotWithoutUpdate(user);
+		getEvent().slotUpdate();
+	}
+
+	/**
+	 * @see Slot#slot(User)
+	 * Doesn't trigger the slotUpdate
+	 *
+	 * @throws BusinessRuntimeException if the user is already slotted on this slot or the slot is already occupied
+	 */
+	void slotWithoutUpdate(@NonNull User user) {
+		if (user.equals(getUser())) {
+			//TODO: Return a warning, not a exception
+			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
+		} else if (isEmpty() || isSlotWithSlottedUser(user)) {
+			//Remove the user from any other slot in the Event
+			getEvent().findSlotOfUser(user).ifPresent(slot -> slot.unslotWithoutUpdate(user));
 			setUser(user);
-			getEvent().slotPerformed();
 		} else {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}
@@ -89,12 +104,33 @@ public class Slot extends AbstractIdEntity {
 	 *
 	 * @param user user to unslot
 	 */
-	public void unslot(User user) {
+	public void unslot(@NonNull User user) {
+		unslotWithoutUpdate(user);
+		getEvent().slotUpdate();
+	}
+
+	/**
+	 * @see Slot#unslot(User)
+	 * Doesn't trigger the slotUpdate
+	 *
+	 * @throws BusinessRuntimeException If the slot is occupied by a user other than the given user
+	 */
+	void unslotWithoutUpdate(@NonNull User user) {
 		if (isSlotWithSlottedUser(user) || isEmpty()) {
 			setUser(null);
-			getEvent().unslotPerformed(this);
 		} else {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}
+	}
+
+	/**
+	 * Swaps the users of the current and the given slot
+	 */
+	public void swapUsers(@NonNull Slot slot) {
+		User slotUser = getUser();
+		setUser(slot.getUser());
+		slot.setUser(slotUser);
+
+		getEvent().slotUpdate();
 	}
 }

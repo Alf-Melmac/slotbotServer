@@ -2,6 +2,7 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import de.webalf.slotbot.exception.ForbiddenException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -40,6 +41,8 @@ public class Squad extends AbstractIdEntity {
 		this.event = event;
 	}
 
+	static final String RESERVE_NAME = "Reserve";
+
 	// Getter
 
 	/**
@@ -72,6 +75,15 @@ public class Squad extends AbstractIdEntity {
 		return Optional.empty();
 	}
 
+	/**
+	 * Validates if the name equals {@link Squad#RESERVE_NAME}
+	 *
+	 * @return true if the name matches
+	 */
+	private boolean isReserve() {
+		return getName().equals(RESERVE_NAME);
+	}
+
 	// Setter
 
 	/**
@@ -80,18 +92,41 @@ public class Squad extends AbstractIdEntity {
 	 * @param newSlot to add
 	 */
 	public void addSlot(Slot newSlot) {
+		if (isReserve()) {
+			throw new ForbiddenException("Zur Reserve dürfen keine Slots hinzugefügt werden.");
+		}
+
 		newSlot.setSquad(this);
 		slotList.add(newSlot);
+		getEvent().assertUniqueSlotNumbers();
 		getEvent().updateSlotCount();
 	}
 
 	/**
-	 * Removes given Slot from the squad
+	 * Removes given slot from the squad
 	 *
 	 * @param slot to delete
 	 */
 	public void deleteSlot(Slot slot) {
+		if (isReserve()) {
+			throw new ForbiddenException("Ein Slot der Reserve kann nicht gelöscht werden.");
+		}
+		if (slot.isNotEmpty()) {
+			throw new ForbiddenException("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.");
+		}
+
 		getSlotList().remove(slot);
+		deleteSquadIfEmpty();
+
 		getEvent().updateSlotCount();
+	}
+
+	/**
+	 * Deletes the given squad, if no person is slotted on any slot
+	 */
+	private void deleteSquadIfEmpty() {
+		if (getSlotList().stream().noneMatch(Slot::isNotEmpty)) {
+			getEvent().removeSquad(this);
+		}
 	}
 }
