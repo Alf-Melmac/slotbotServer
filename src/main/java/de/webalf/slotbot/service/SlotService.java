@@ -67,6 +67,10 @@ public class SlotService {
 	 * @param user to be unslotted
 	 */
 	void unslot(@NonNull Slot slot, User user) {
+		if (user == null) {
+			//TODO warning instead of exception
+			throw BusinessRuntimeException.builder().title("Einen leeren Slot brauchst du nicht ausslotten").build();
+		}
 		slot.unslot(user);
 		actionLogService.logEventAction(LogAction.UNSLOT, slot.getEvent(), user);
 		slotRepository.save(slot);
