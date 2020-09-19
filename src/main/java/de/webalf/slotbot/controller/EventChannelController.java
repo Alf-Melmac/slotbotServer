@@ -3,6 +3,7 @@ package de.webalf.slotbot.controller;
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
@@ -48,10 +49,10 @@ public class EventChannelController {
 	}
 
 	@PostMapping("/unslot/{slotNumber}")
-	public EventDto postUnslotSlot(@PathVariable(value = "channelId") long channel,
-	                               @PathVariable(value = "slotNumber") int slotNumber) {
+	public EventRecipientDto postUnslotSlot(@PathVariable(value = "channelId") long channel,
+	                                        @PathVariable(value = "slotNumber") int slotNumber) {
 		log.trace("postUnslotSlot: " + channel + " " + slotNumber);
-		return EventAssembler.toDto(eventService.unslot(channel, slotNumber));
+		return eventService.unslot(channel, slotNumber);
 	}
 
 	@PostMapping("/addSlot/{squadNumber}")

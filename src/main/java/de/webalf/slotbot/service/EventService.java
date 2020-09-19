@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.repository.EventRepository;
@@ -120,11 +121,12 @@ public class EventService {
 	 * @param slotNumber slot that should be cleared
 	 * @return Event in which the unslot has been performed
 	 */
-	public Event unslot(long channel, int slotNumber) {
+	public EventRecipientDto unslot(long channel, int slotNumber) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		slotService.unslot(slot, slot.getUser());
-		return event;
+		User userToUnslot = slot.getUser();
+		slotService.unslot(slot, userToUnslot);
+		return EventAssembler.toActionDto(event, userToUnslot);
 	}
 
 	/**

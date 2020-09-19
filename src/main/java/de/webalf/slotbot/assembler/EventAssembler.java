@@ -1,12 +1,15 @@
 package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.util.LongUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,6 +71,15 @@ public final class EventAssembler {
 				.infoMsg(LongUtils.toString(event.getInfoMsg()))
 				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.build();
+	}
+
+	/**
+	 * To be used if a recipient must be defined
+	 */
+	public static EventRecipientDto toActionDto(Event event, User recipient) {
+		EventRecipientDto eventRecipientDto = EventRecipientDto.recipientBuilder().recipient(UserAssembler.toDto(recipient)).build();
+		ReflectionUtils.shallowCopyFieldState(toDto(event), eventRecipientDto);
+		return eventRecipientDto;
 	}
 
 	private static List<EventDto> toDtoList(List<Event> content) {
