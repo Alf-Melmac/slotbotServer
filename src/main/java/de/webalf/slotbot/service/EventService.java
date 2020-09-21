@@ -83,6 +83,15 @@ public class EventService {
 	}
 
 	/**
+	 * Searches for the given channel the matching event and deletes it
+	 *
+	 * @param channel event channel
+	 */
+	public void deleteEvent(long channel) {
+		eventRepository.delete(findByChannel(channel));
+	}
+
+	/**
 	 * Searches for the given channel the matching event and enters the given user for the slot with given number, if available.
 	 *
 	 * @param channel    event channel

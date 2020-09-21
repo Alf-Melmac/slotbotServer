@@ -33,6 +33,12 @@ public class EventChannelController {
 		return EventAssembler.toDto(eventService.findByChannel(channel));
 	}
 
+	@DeleteMapping("")
+	public void deleteEventByChannelId(@PathVariable(value = "channelId") long channel) {
+		log.trace("deleteEventByChannelId: " + channel);
+		eventService.deleteEvent(channel);
+	}
+
 	@PostMapping("/slot/{slotNumber}")
 	public EventDto postSlot(@PathVariable(value = "channelId") long channel,
 	                         @PathVariable(value = "slotNumber") int slotNumber,
