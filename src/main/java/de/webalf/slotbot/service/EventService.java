@@ -29,7 +29,7 @@ import java.util.List;
  * @since 27.07.2020
  */
 @Service
-@Transactional/*(rollbackFor = BusinessRuntimeException.class)*/ //TODO: Check if rollback is needed
+@Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventService {
 	private final EventRepository eventRepository;
