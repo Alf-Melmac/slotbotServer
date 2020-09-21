@@ -70,6 +70,14 @@ public class EventChannelController {
 		return EventAssembler.toDto(eventService.deleteSlot(channel, slotNumber));
 	}
 
+	@PutMapping("/renameSlot/{slotNumber}")
+	public EventDto putRenameSlot(@PathVariable(value = "channelId") long channel,
+	                              @PathVariable(value = "slotNumber") int slotNumber,
+	                              @RequestBody SlotDto slotDto) {
+		log.trace("putRenameSlot: " + channel + " " + slotNumber);
+		return EventAssembler.toDto(eventService.renameSlot(channel, slotNumber, slotDto.getName()));
+	}
+
 	@PutMapping("/prepareSwap/{slotNumber}")
 	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
 	                                  @PathVariable(value = "slotNumber") int slotNumber,

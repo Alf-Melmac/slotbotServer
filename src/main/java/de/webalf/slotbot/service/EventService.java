@@ -165,6 +165,21 @@ public class EventService {
 	}
 
 	/**
+	 * Searches for the given channel the matching event and renames the slot by number.
+	 *
+	 * @param channel    event channel
+	 * @param slotNumber to edit name of
+	 * @param slotName   new name
+	 * @return event in which the slot has been renamed
+	 */
+	public Event renameSlot(long channel, int slotNumber, String slotName) {
+		Event event = findByChannel(channel);
+		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		slotService.renameSlot(slot, slotName);
+		return event;
+	}
+
+	/**
 	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and user
 	 *
 	 * @param channel    event channel

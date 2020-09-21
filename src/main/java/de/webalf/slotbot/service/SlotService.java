@@ -77,6 +77,28 @@ public class SlotService {
 	}
 
 	/**
+	 * Renames the given slot
+	 *
+	 * @param slot     to rename
+	 * @param slotName new name
+	 */
+	void renameSlot(Slot slot, String slotName) {
+		slot.setName(slotName);
+		slotRepository.save(slot);
+	}
+
+	/**
+	 * Removes the given slot
+	 *
+	 * @param slot to remove
+	 */
+	void deleteSlot(Slot slot) {
+		Squad squad = slot.getSquad();
+		squad.deleteSlot(slot);
+		slotRepository.delete(slot);
+	}
+
+	/**
 	 * Swaps the users of the given slots
 	 *
 	 * @param slotDtos list with two slots from which the users should be swapped
@@ -92,16 +114,5 @@ public class SlotService {
 		slot1.swapUsers(slot2);
 
 		return slot1.getEvent();
-	}
-
-	/**
-	 * Removes the given slot
-	 *
-	 * @param slot to remove
-	 */
-	void deleteSlot(Slot slot) {
-		Squad squad = slot.getSquad();
-		squad.deleteSlot(slot);
-		slotRepository.delete(slot);
 	}
 }
