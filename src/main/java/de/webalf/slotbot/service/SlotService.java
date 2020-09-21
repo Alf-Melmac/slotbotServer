@@ -57,7 +57,7 @@ public class SlotService {
 	public Slot slot(@NonNull Slot slot, User user) {
 		slot.slot(user);
 		actionLogService.logEventAction(LogAction.SLOT, slot.getEvent(), user);
-		return slotRepository.save(slot);
+		return slot;
 	}
 
 	/**
@@ -73,7 +73,6 @@ public class SlotService {
 		}
 		slot.unslot(user);
 		actionLogService.logEventAction(LogAction.UNSLOT, slot.getEvent(), user);
-		slotRepository.save(slot);
 	}
 
 	/**
@@ -84,7 +83,6 @@ public class SlotService {
 	 */
 	void renameSlot(Slot slot, String slotName) {
 		slot.setName(slotName);
-		slotRepository.save(slot);
 	}
 
 	/**
@@ -95,7 +93,6 @@ public class SlotService {
 	void deleteSlot(Slot slot) {
 		Squad squad = slot.getSquad();
 		squad.deleteSlot(slot);
-		slotRepository.delete(slot);
 	}
 
 	/**

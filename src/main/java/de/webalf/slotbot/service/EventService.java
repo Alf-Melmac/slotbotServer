@@ -79,7 +79,7 @@ public class EventService {
 		//TODO Squad
 //		DtoUtils.ifPresent(dto.getSquadList(), event::setSquadList);
 
-		return eventRepository.save(event);
+		return event;
 	}
 
 	/**
@@ -140,14 +140,13 @@ public class EventService {
 	public Event addSlot(long channel, int squadNumber, SlotDto slotDto) {
 		Event event = findByChannel(channel);
 		List<Squad> squad = event.getSquadList();
-		if (squad.size() < squadNumber) {
+		if (squad.size() <= squadNumber) {
 			throw BusinessRuntimeException.builder().title("Den Squad konnte ich nicht finden.").build();
 		}
 
 		squad.get(squadNumber).addSlot(slotService.newSlot(slotDto));
 
-		//TODO Maybe use updateEvent(...)
-		return eventRepository.save(event);
+		return event;
 	}
 
 	/**
