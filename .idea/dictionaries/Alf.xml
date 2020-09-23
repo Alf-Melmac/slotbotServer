@@ -2,10 +2,13 @@
   <dictionary name="Alf">
     <words>
       <w>ausgeslottet</w>
+      <w>ausslotten</w>
       <w>dtos</w>
       <w>slotbot</w>
-      <w>slotts</w>
+      <w>slotlist</w>
       <w>unslot</w>
+      <w>unslotted</w>
+      <w>webalf</w>
     </words>
   </dictionary>
 </component>

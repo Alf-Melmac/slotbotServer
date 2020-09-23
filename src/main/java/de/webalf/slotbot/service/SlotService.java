@@ -48,7 +48,7 @@ public class SlotService {
 	}
 
 	/**
-	 * Slotts the given user to the given Slot. If the user is already slotted, it is removed from the other slot
+	 * Slots the given user to the given Slot. If the user is already slotted, it is removed from the other slot
 	 *
 	 * @param slot in which slot should be performed
 	 * @param user to be slotted
