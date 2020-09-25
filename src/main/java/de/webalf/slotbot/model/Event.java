@@ -40,10 +40,6 @@ public class Event extends AbstractIdEntity {
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 
-	@Column(name = "event_description", length = 4000)
-	@Size(max = 3200)
-	private String description;
-
 	@Column(name = "event_channel")
 	private Long channel;
 
@@ -57,6 +53,45 @@ public class Event extends AbstractIdEntity {
 	@Column(name = "event_slotlist_msg")
 	private Long slotListMsg;
 
+	@Column(name = "event_description", length = 4000)
+	@Size(max = 3200)
+	private String description;
+
+	@Column(name = "event_mission_type", length = 100)
+	@Size(max = 80)
+	private String missionType;
+
+	@Column(name = "event_mission_length", length = 100)
+	@Size(max = 80)
+	private String missionLength;
+
+	@Column(name = "event_reserve_participating")
+	private Boolean reserveParticipating;
+
+	@Column(name = "event_mod_pack", length = 100)
+	@Size(max = 80)
+	private String modPack;
+
+	@Column(name = "event_map", length = 100)
+	@Size(max = 80)
+	private String map;
+
+	@Column(name = "event_mission_time", length = 100)
+	@Size(max = 80)
+	private String missionTime;
+
+	@Column(name = "event_navigation", length = 100)
+	@Size(max = 80)
+	private String navigation;
+
+	@Column(name = "event_technical_teleport", length = 100)
+	@Size(max = 80)
+	private String technicalTeleport;
+
+	@Column(name = "event_medical_system", length = 100)
+	@Size(max = 80)
+	private String medicalSystem;
+
 	@Transient
 	private int slotCount;
 
@@ -64,19 +99,38 @@ public class Event extends AbstractIdEntity {
 	public Event(long id,
 	             String name,
 	             LocalDateTime dateTime,
-	             String description,
 	             Long channel,
 	             List<Squad> squadList,
 	             Long infoMsg,
-	             Long slotListMsg) {
+	             Long slotListMsg,
+	             String description,
+	             String missionType,
+	             String missionLength,
+	             Boolean reserveParticipating,
+	             String modPack,
+	             String map,
+	             String missionTime,
+	             String navigation,
+	             String technicalTeleport,
+	             String medicalSystem) {
 		this.id = id;
 		this.name = name;
 		this.dateTime = dateTime;
-		this.description = description;
 		this.channel = channel;
 		this.squadList = squadList;
 		this.infoMsg = infoMsg;
 		this.slotListMsg = slotListMsg;
+
+		this.description = description;
+		this.missionType = missionType;
+		this.missionLength = missionLength;
+		this.reserveParticipating = reserveParticipating;
+		this.modPack = modPack;
+		this.map = map;
+		this.missionTime = missionTime;
+		this.navigation = navigation;
+		this.technicalTeleport = technicalTeleport;
+		this.medicalSystem = medicalSystem;
 
 		assertUniqueSlotNumbers();
 		updateSlotCount();

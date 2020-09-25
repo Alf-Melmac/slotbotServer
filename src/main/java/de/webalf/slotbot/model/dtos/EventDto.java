@@ -29,9 +29,6 @@ public class EventDto extends AbstractIdEntityDto {
 	@NotNull
 	private LocalTime startTime;
 
-	@Size(max = 3200)
-	private String description;
-
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
 	private String channel;
 
@@ -41,24 +38,64 @@ public class EventDto extends AbstractIdEntityDto {
 
 	private String slotListMsg;
 
+	@Size(max = 3200)
+	private String description;
+	@Size(max = 80)
+	private String missionType;
+	@Size(max = 80)
+	private String missionLength;
+	@Size(max = 80)
+	private Boolean reserveParticipating;
+	@Size(max = 80)
+	private String modPack;
+	@Size(max = 80)
+	private String map;
+	@Size(max = 80)
+	private String missionTime;
+	@Size(max = 80)
+	private String navigation;
+	@Size(max = 80)
+	private String technicalTeleport;
+	@Size(max = 80)
+	private String medicalSystem;
+
 	@Builder
 	public EventDto(long id,
 	                String name,
 	                LocalDate date,
 	                LocalTime startTime,
-	                String description,
 	                String channel,
 	                List<SquadDto> squadList,
 	                String infoMsg,
-	                String slotListMsg) {
+	                String slotListMsg,
+	                String description,
+	                String missionType,
+	                String missionLength,
+	                Boolean reserveParticipating,
+	                String modPack,
+	                String map,
+	                String missionTime,
+	                String navigation,
+	                String technicalTeleport,
+	                String medicalSystem) {
 		this.id = id;
 		this.name = name;
 		this.date = date;
 		this.startTime = startTime;
-		this.description = description;
 		this.channel = channel;
 		this.squadList = squadList;
 		this.infoMsg = infoMsg;
 		this.slotListMsg = slotListMsg;
+
+		this.description = description;
+		this.missionType = missionType;
+		this.missionLength = missionLength;
+		this.reserveParticipating = reserveParticipating;
+		this.modPack = modPack;
+		this.map = map;
+		this.missionTime = missionTime;
+		this.navigation = navigation;
+		this.technicalTeleport = technicalTeleport;
+		this.medicalSystem = medicalSystem;
 	}
 }
