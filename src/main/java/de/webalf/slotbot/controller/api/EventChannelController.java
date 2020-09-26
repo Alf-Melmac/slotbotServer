@@ -1,4 +1,4 @@
-package de.webalf.slotbot.controller;
+package de.webalf.slotbot.controller.api;
 
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.SlotAssembler;
@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static de.webalf.slotbot.controller.Urls.API;
+
 /**
  * Every action that can be performed in an event in a channel
  *
  * @author Alf
  * @since 17.08.2020
  */
-@RequestMapping("/events/channel/{channelId}")
+@RequestMapping(API + "/events/channel/{channelId}")
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

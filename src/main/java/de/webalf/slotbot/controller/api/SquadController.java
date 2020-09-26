@@ -1,4 +1,4 @@
-package de.webalf.slotbot.controller;
+package de.webalf.slotbot.controller.api;
 
 import de.webalf.slotbot.assembler.SquadAssembler;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static de.webalf.slotbot.controller.Urls.API;
+
 /**
  * @author Alf
  * @since 23.06.2020
  */
-@RequestMapping("/squads")
+@RequestMapping(API + "/squads")
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

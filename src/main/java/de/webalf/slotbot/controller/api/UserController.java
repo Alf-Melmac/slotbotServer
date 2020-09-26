@@ -1,4 +1,4 @@
-package de.webalf.slotbot.controller;
+package de.webalf.slotbot.controller.api;
 
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static de.webalf.slotbot.controller.Urls.API;
+
 /**
  * @author Alf
  * @since 07.09.2020
  */
-@RequestMapping("/users")
+@RequestMapping(API + "/users")
 @RestController
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserController {

@@ -1,0 +1,12 @@
+body {
+  background-color: #3a3a3a;
+}
+
+body p, body li {
+  color: lightgray;
+}
+
+body:not(p, li) {
+  color: white;
+}
+

@@ -32,6 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				// the following URLs should be permitted without any authentication
 				.authorizeRequests()
 				.antMatchers("/status").permitAll()
+				.antMatchers("/*").permitAll()
+				.antMatchers("/assets/**").permitAll()
 
 				// all other requests must be authenticated
 				.anyRequest().fullyAuthenticated()
