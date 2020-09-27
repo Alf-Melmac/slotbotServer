@@ -1,0 +1,19 @@
+/*noinspection CssUnknownTarget*/
+#header {
+  background-image: url("/assets/img/backgrounds/gameplay.jpg");
+}
+
+section.bg-section {
+  background-size: cover;
+  background-position: bottom;
+}
+
+/*noinspection CssUnknownTarget*/
+#download {
+  background-image: url("/assets/img/backgrounds/fire.jpg");
+}
+
+/*noinspection CssUnknownTarget*/
+#contact {
+  background-image: url("/assets/img/backgrounds/street.jpg");
+}

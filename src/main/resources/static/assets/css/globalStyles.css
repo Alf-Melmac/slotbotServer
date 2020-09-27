@@ -10,3 +10,7 @@ body:not(p, li) {
   color: white;
 }
 
+.navbar-logo {
+  height: 80px;
+  margin-right: 10px;
+}
