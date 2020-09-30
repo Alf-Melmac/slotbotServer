@@ -22,6 +22,8 @@ public class User {
 	//Workaround to ignore generated values
 	private long id;
 
+	public static final long DEFAULT_USER_ID = 11111;
+
 	@Builder
 	public User(long id) {
 		this.id = id;

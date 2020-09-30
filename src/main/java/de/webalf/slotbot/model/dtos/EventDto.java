@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class EventDto extends AbstractIdEntityDto {
-	@NotEmpty
+	@NotBlank
 	@Size(max = 80)
 	private String name;
 

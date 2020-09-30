@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class SlotService {
 	private final SlotRepository slotRepository;
+	private final UserService userService;
 	private final ActionLogService actionLogService;
 
 	Slot newSlot(SlotDto dto) {
@@ -81,7 +84,7 @@ public class SlotService {
 	 * @param slot     to rename
 	 * @param slotName new name
 	 */
-	void renameSlot(Slot slot, String slotName) {
+	void renameSlot(@NonNull Slot slot, @NotBlank String slotName) {
 		slot.setName(slotName);
 	}
 
@@ -90,9 +93,22 @@ public class SlotService {
 	 *
 	 * @param slot to remove
 	 */
-	void deleteSlot(Slot slot) {
+	void deleteSlot(@NonNull Slot slot) {
 		Squad squad = slot.getSquad();
 		squad.deleteSlot(slot);
+	}
+
+	/**
+	 * Blocks the given slot and sets the replacement text
+	 *
+	 * @param slot            to block
+	 * @param replacementText to be shown instead the user
+	 */
+	void blockSlot(@NonNull Slot slot, String replacementText) {
+		if (StringUtils.isEmpty(replacementText)) {
+			replacementText = "Gesperrt";
+		}
+		slot.blockSlot(userService.find(User.DEFAULT_USER_ID), replacementText);
 	}
 
 	/**

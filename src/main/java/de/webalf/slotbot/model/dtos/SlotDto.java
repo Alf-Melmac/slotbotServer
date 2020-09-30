@@ -23,17 +23,22 @@ public class SlotDto extends AbstractIdEntityDto {
 
 	private UserDto user;
 
+	@Size(max = 80)
+	private String replacementText;
+
 	@Builder
 	public SlotDto(long id,
 	               String name,
 	               int number,
 	               SquadDto squad,
-	               UserDto user) {
+	               UserDto user,
+	               String replacementText) {
 		this.id = id;
 		this.name = name;
 		this.number = number;
 		this.squad = squad;
 		this.user = user;
+		this.replacementText = replacementText;
 	}
 
 	public SlotDto slot(UserDto user) {

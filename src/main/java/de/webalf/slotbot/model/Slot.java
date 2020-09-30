@@ -37,13 +37,18 @@ public class Slot extends AbstractIdEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@Column(name = "slot_replacement", length = 100)
+	@Size(max = 80)
+	private String replacementText;
+
 	@Builder
-	public Slot(long id, String name, int number, Squad squad, User user) {
+	public Slot(long id, String name, int number, Squad squad, User user, String replacementText) {
 		this.id = id;
 		this.name = name;
 		this.number = number;
 		this.squad = squad;
 		this.user = user;
+		this.replacementText = replacementText;
 	}
 
 	// Getter
@@ -87,10 +92,10 @@ public class Slot extends AbstractIdEntity {
 	 * @throws BusinessRuntimeException if the user is already slotted on this slot or the slot is already occupied
 	 */
 	void slotWithoutUpdate(@NonNull User user) {
-		if (user.equals(getUser())) {
+		if (isSlotWithSlottedUser(user)) {
 			//TODO: Return a warning, not a exception
 			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
-		} else if (isEmpty() || isSlotWithSlottedUser(user)) {
+		} else if (isEmpty()) {
 			//Remove the user from any other slot in the Event
 			getEvent().findSlotOfUser(user).ifPresent(slot -> slot.unslotWithoutUpdate(user));
 			setUser(user);
@@ -121,6 +126,14 @@ public class Slot extends AbstractIdEntity {
 		} else {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}
+	}
+
+	public void blockSlot(@NonNull User defaultUser, @NotBlank String replacementName) {
+		if (isNotEmpty()) {
+			throw BusinessRuntimeException.builder().title("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.").build();
+		}
+		setUser(defaultUser);
+		setReplacementText(replacementName);
 	}
 
 	/**

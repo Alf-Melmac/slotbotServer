@@ -188,7 +188,22 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and user
+	 * Searches for the given channel the matching event, blocks the slot by number and sets the replacement text.
+	 *
+	 * @param channel         event channel
+	 * @param slotNumber      to block
+	 * @param replacementName text to be shown instead of user
+	 * @return event in which the slot has been blocked
+	 */
+	public Event blockSlot(long channel, int slotNumber, String replacementName) {
+		Event event = findByChannel(channel);
+		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		slotService.blockSlot(slot, replacementName);
+		return event;
+	}
+
+	/**
+	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and user.
 	 *
 	 * @param channel    event channel
 	 * @param slotNumber slot1 to find by slotNumber
