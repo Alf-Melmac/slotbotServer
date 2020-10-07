@@ -1,7 +1,7 @@
-package de.webalf.slotbot.security;
+package de.webalf.slotbot.configuration;
 
-import de.webalf.slotbot.security.authentication.TokenAuthFilter;
-import de.webalf.slotbot.security.authentication.TokenAuthProvider;
+import de.webalf.slotbot.configuration.authentication.TokenAuthFilter;
+import de.webalf.slotbot.configuration.authentication.TokenAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package de.webalf.slotbot.security.authentication;
+package de.webalf.slotbot.configuration.authentication;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
