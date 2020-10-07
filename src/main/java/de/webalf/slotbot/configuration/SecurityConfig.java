@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import static de.webalf.slotbot.controller.Urls.API;
+
 /**
  * @author Alf
  * @since 23.09.2020
@@ -31,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 				// the following URLs should be permitted without any authentication
 				.authorizeRequests()
-				.antMatchers("/status").permitAll()
+				.antMatchers(API + "/status").permitAll()
 				.antMatchers("/*").permitAll()
 				.antMatchers("/assets/**").permitAll()
 
