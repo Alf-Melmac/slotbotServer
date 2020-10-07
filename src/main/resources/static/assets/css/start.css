@@ -1,6 +1,13 @@
 /*noinspection CssUnknownTarget*/
 #header {
+  min-height: 100%;
   background-image: url("/assets/img/backgrounds/gameplay.jpg");
+}
+
+@media (max-width: 360px) {
+  #header .brand-heading {
+    font-size: 49px;
+  }
 }
 
 section.bg-section {

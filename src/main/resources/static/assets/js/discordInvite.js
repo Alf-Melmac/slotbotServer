@@ -11,22 +11,22 @@ let discordInvite = function () {
                 const inviteCode = i.inviteCode;
                 if (inviteCode && inviteCode !== "") {
                     $(i.targetElement).append(
-                        '<div id="discordInvite">' +
-                        '   <h5 id="introText" class="noselect loadHidden">DU WURDEST EINGELADEN, EINEM SERVER BEIZUTRETEN</h5>' +
+                        '<div id="discordInvite" class="helvetica400">' +
+                        '   <h5 id="introText" class="helvetica600 noselect loadHidden">DU WURDEST EINGELADEN, EINEM SERVER BEIZUTRETEN</h5>' +
                         '   <div id="discordData">' +
                         '       <div id="serverImg" class="discordLink loadHidden"></div>' +
                         '       <div id="discordInfo">' +
                         '           <div id="serverNameBox" class="discordLink">' +
                         '               <span class="noselect" id="serverName">' + i.title + '</span>' +
                         '           </div>' +
-                        '           <div id="status" class="loadHidden">' +
+                        '           <div id="status" class="helvetica600 loadHidden">' +
                         '               <div id="statusIndicators" class="noselect">' +
                         '                   <i id="onlineInd"></i><span id="numOnline">... Online</span>' +
                         '                   <i id="offlineInd"></i><span id="numTotal">... Mitglieder</span>' +
                         '               </div>' +
                         '           </div>' +
                         '       </div>' +
-                        '       <button type="button" class="discordLink" id="callToAction">' +
+                        '       <button type="button" id="callToAction" class="helvetica500 discordLink">' +
                         '           <div id="buttonText" class="noselect">Beitreten</div>' +
                         '       </button>' +
                         '   </div>' +

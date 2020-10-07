@@ -17,6 +17,18 @@
   user-select: none;
 }
 
+.helvetica400 {
+  font: normal normal 400 normal 16px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.helvetica500 {
+  font: normal normal 500 normal 14px/20px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.helvetica600 {
+  font: normal normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 #discordInviteBox {
   background-color: #37393e;
   display: inline-block;
@@ -29,7 +41,6 @@
   background: rgba(47, 49, 54, .6);
   border: 1px solid rgba(47, 49, 54, .9);
   border-radius: 3px;
-  font: normal normal 400 normal 16px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 10px 15px 10px 10px;
   display: inline-block;
@@ -48,7 +59,6 @@
   letter-spacing: .5px;
   text-transform: uppercase;
   flex: 1 1 0;
-  font: normal normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0 0 8px;
 }
 
@@ -85,12 +95,11 @@
   justify-content: center;
   background: #43b581;
   border-radius: 3px;
-  font: normal normal 500 normal 14px/20px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   transition: background-color .17s ease 0s;
 }
 
 #callToAction:hover {
-  background-color: #3ca374;
+  opacity: 0.9;
 }
 
 #callToAction-clicked {
@@ -104,7 +113,6 @@
   background: rgba(0, 0, 0, 0);
   border: 1px solid rgba(114, 118, 126, .298);
   border-radius: 3px;
-  font: normal normal 500 normal 14px/20px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   transition: color .17s ease 0s, background-color .17s ease 0s, border-color .17s ease 0s;
 }
 
@@ -116,9 +124,11 @@
   bottom: 0;
   cursor: pointer;
   height: 40px;
+  width: 6vw !important;
   left: 0;
   min-height: 32px;
   min-width: 73px;
+  max-width: 157px;
   position: relative;
   right: 0;
   top: 0;
@@ -133,7 +143,6 @@
 }
 
 #status, #statusIndicators {
-  font: normal normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #72767d;
   height: 16px;
 }
@@ -155,31 +164,22 @@
 }
 
 #onlineInd {
-  color: #72767d;
-  column-rule-color: #72767d;
   background: #43b581;
-  font: italic normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #numOnline {
-  color: #72767d;
   display: block;
   height: 16px;
-  font: normal normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0 8px 0 0;
 }
 
 #offlineInd {
-  color: #72767d;
   background: #747f8d;
-  font: italic normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #numTotal {
-  color: #72767d;
   display: block;
   height: 16px;
-  font: normal normal 600 normal 12px/16px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #joinedDiscord {
@@ -189,7 +189,6 @@
   height: 20px;
   overflow-wrap: break-word;
   text-align: center;
-  font: normal normal 500 normal 14px/20px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   overflow: hidden;
 }
 
@@ -204,12 +203,8 @@
   display: flex;
   height: 20px;
   text-align: center;
-  font: normal normal 500 normal 14px/20px Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0 8.83px;
-}
-
-.discordInvite {
-  width: auto;
+  overflow: visible !important;
 }
 
 .discordLink.loadHidden {
@@ -219,4 +214,3 @@
 .loadHidden {
   display: none;
 }
-
