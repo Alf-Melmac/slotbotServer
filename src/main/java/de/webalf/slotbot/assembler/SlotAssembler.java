@@ -2,13 +2,11 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.SlotDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Alf
@@ -89,16 +87,15 @@ public final class SlotAssembler {
 	/**
 	 * To be used if the focus relies on the event
 	 */
-	static List<SlotDto> toEventDtoList(List<Slot> slotList) {
-		return slotList.stream().map(SlotAssembler::toEventDto).collect(Collectors.toList());
+	static List<SlotDto> toEventDtoList(Iterable<? extends Slot> slotList) {
+		return StreamSupport.stream(slotList.spliterator(), false)
+				.map(SlotAssembler::toEventDto)
+				.collect(Collectors.toList());
 	}
 
-	public static Page<SlotDto> toDtoPage(Page<Slot> slotPage, Pageable pageable) {
-		List<SlotDto> slotDtoList = toEventDtoList(slotPage.getContent());
-		return new PageImpl<>(slotDtoList, pageable, slotPage.getTotalElements());
-	}
-
-	static List<Slot> fromDtoList(List<SlotDto> slotDtoList) {
-		return slotDtoList.stream().map(SlotAssembler::fromDto).collect(Collectors.toList());
+	static List<Slot> fromDtoList(Iterable<? extends SlotDto> slotDtoList) {
+		return StreamSupport.stream(slotDtoList.spliterator(), false)
+				.map(SlotAssembler::fromDto)
+				.collect(Collectors.toList());
 	}
 }

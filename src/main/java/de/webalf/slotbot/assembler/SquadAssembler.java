@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Alf
@@ -46,7 +47,7 @@ public final class SquadAssembler {
 	/**
 	 * To be used if the focus relies on a slot
 	 */
-	public static SquadDto toDto(Squad squad) {
+	static SquadDto toDto(Squad squad) {
 		return SquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
@@ -54,8 +55,10 @@ public final class SquadAssembler {
 				.build();
 	}
 
-	public static List<SquadDto> toEventDtoList(List<Squad> squadList) {
-		return squadList.stream().map(SquadAssembler::toEventDto).collect(Collectors.toList());
+	static List<SquadDto> toEventDtoList(Iterable<? extends Squad> squadList) {
+		return StreamSupport.stream(squadList.spliterator(), false)
+				.map(SquadAssembler::toEventDto)
+				.collect(Collectors.toList());
 	}
 
 	public static Page<SquadDto> toEventDtoPage(Page<Squad> squadPage, Pageable pageable) {
@@ -63,7 +66,9 @@ public final class SquadAssembler {
 		return new PageImpl<>(squadDtoList, pageable, squadPage.getTotalElements());
 	}
 
-	public static List<Squad> fromDtoList(List<SquadDto> squadList) {
-		return squadList.stream().map(SquadAssembler::fromDto).collect(Collectors.toList());
+	static List<Squad> fromDtoList(Iterable<? extends SquadDto> squadList) {
+		return StreamSupport.stream(squadList.spliterator(), false)
+				.map(SquadAssembler::fromDto)
+				.collect(Collectors.toList());
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.util.ReflectionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Alf
@@ -109,8 +110,10 @@ public final class EventAssembler {
 		return eventRecipientDto;
 	}
 
-	private static List<EventDto> toDtoList(List<Event> content) {
-		return content.stream().map(EventAssembler::toDto).collect(Collectors.toList());
+	private static List<EventDto> toDtoList(Iterable<? extends Event> content) {
+		return StreamSupport.stream(content.spliterator(), false)
+				.map(EventAssembler::toDto)
+				.collect(Collectors.toList());
 	}
 
 	public static Page<EventDto> toDtoPage(Page<Event> eventPage, Pageable pageable) {
