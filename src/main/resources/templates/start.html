@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<!--suppress HtmlUnknownTarget, JSUnresolvedLibraryURL -->
-<html lang="de">
+<!--suppress JSUnresolvedLibraryURL -->
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 	<title>Arma macht Bock</title>
-	<meta property="og:image" content="/assets/img/amb_logo.jpg">
 	<meta name="description" content="Das besondere Arma 3 Milsim Erlebnis">
+
+	<meta property="og:image" content="/assets/img/amb_logo.jpg">
 	<meta property="og:type" content="website">
-	<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon/favicon-16x16.png">
-	<link rel="manifest" href="/assets/img/favicon/site.webmanifest">
-	<link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{assets/img/favicon/apple-touch-icon.png}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{assets/img/favicon/favicon-32x32.png}">
+	<link rel="icon" type="image/png" sizes="16x16" th:href="@{assets/img/favicon/favicon-16x16.png}">
+	<link rel="manifest" th:href="@{assets/img/favicon/site.webmanifest}">
+
+
+	<link rel="stylesheet" th:href="@{assets/bootstrap/css/bootstrap.min.css}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/css/lightbox.min.css">
-	<link rel="stylesheet" href="/assets/css/start.css">
-	<link rel="stylesheet" href="/assets/css/globalStyles.css">
-	<link rel="stylesheet" href="/assets/css/portfolio.css">
-	<link rel="stylesheet" href="/assets/css/discordInvite.css">
+	<link rel="stylesheet" th:href="@{assets/css/globalStyles.css}">
+
+	<link rel="stylesheet" th:href="@{assets/css/start.css}">
+	<link rel="stylesheet" th:href="@{assets/css/portfolio.css}">
+	<link rel="stylesheet" th:href="@{assets/css/discordInvite.css}">
 </head>
 
 <body id="page-top">
@@ -27,7 +31,7 @@
 	<div class="container">
 		<div>
 			<a href="#" class="js-scroll-trigger">
-				<img class="navbar-logo" src="/assets/img/amb_logo.jpg">
+				<img class="navbar-logo" th:attr="src=@{assets/img/amb_logo.jpg}" alt="AMB">
 				<a class="navbar-brand" href="#">Arma macht Bock</a>
 			</a>
 		</div>
@@ -45,7 +49,7 @@
 					<a class="nav-link js-scroll-trigger" href="#download">Launcher</a>
 				</li>
 				<li class="nav-item nav-link js-scroll-trigger" role="presentation">
-					<a class="nav-link js-scroll-trigger" href="#contact">Discord</a>
+					<a class="nav-link js-scroll-trigger" href="#discord">Discord</a>
 				</li>
 			</ul>
 		</div>
@@ -85,7 +89,7 @@
 				</p>
 				<p>
 					Egal ob dein Interesse nun geweckt ist, oder wir dich erst noch überzeugen müssen,
-					<a href="#contact" class="js-scroll-trigger">besuch uns einfach mal</a> und wir spielen, plaudern
+					<a href="#discord" class="js-scroll-trigger">besuch uns einfach mal</a> und wir spielen, plaudern
 					und finden zueinander. (Still a better lovestory than Twilight)
 				</p>
 			</div>
@@ -118,7 +122,7 @@
 			<div class="row no-gutters">
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
 					<a href="https://store.steampowered.com/app/107410/Arma_3/" target="_blank">
-						<img class="img-fluid image" src="/assets/img/games/arma3.png">
+						<img class="img-fluid image" th:attr="src=@{assets/img/games/arma3.png}">
 						<span class="description">
 							<span class="description-heading">Arma 3<br></span>
 							<span class="description-body">Ein bisschen Konsistenz brauchen wir ja auch. Deswegen gibt es immer Arma!<br><br></span>
@@ -127,7 +131,7 @@
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
 					<a href="https://store.steampowered.com/app/945360/Among_Us/" target="_blank">
-						<img class="img-fluid image" src="/assets/img/games/among-us.jpg">
+						<img class="img-fluid image" th:attr="src=@{assets/img/games/among-us.jpg}">
 						<span class="description">
 							<span class="description-heading"><br>Among Us<br></span>
 							<span class="description-body">Ein Spiel das besser darin ist seine Freunde zu Feinden zu machen als Monopoly? Wir haben es gefunden und spielen es.<br><br></span>
@@ -136,7 +140,7 @@
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
 					<a href="https://store.steampowered.com/app/1250410/Microsoft_Flight_Simulator/" target="_blank">
-						<img class="img-fluid image" src="/assets/img/games/flightsim.png">
+						<img class="img-fluid image" th:attr="src=@{assets/img/games/flightsim.png}">
 						<span class="description">
 							<span class="description-heading">Microsoft Flight Simulator<br></span>
 							<span class="description-body">Einmal abgestürzt ist es vorbei. Deswegen wird geübt, um den Urlaubsflieger endlich hijacken zu können.<br><br></span>
@@ -145,7 +149,7 @@
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
 					<a href="https://store.steampowered.com/app/427520/Factorio/" target="_blank">
-						<img class="img-fluid image" src="/assets/img/games/factorio.jpg">
+						<img class="img-fluid image" th:attr="src=@{assets/img/games/factorio.jpg}">
 						<span class="description">
 							<span class="description-heading">Factorio<br></span>
 							<span class="description-body">Irgendwas mit Zügen<br><br></span>
@@ -154,7 +158,7 @@
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
 					<a href="https://www.epicgames.com/store/de/product/snowrunner" target="_blank">
-						<img class="img-fluid image" src="/assets/img/games/snowrunner.jpg">
+						<img class="img-fluid image" th:attr="src=@{assets/img/games/snowrunner.jpg}">
 						<span class="description">
 							<span class="description-heading">Snowrunner<br></span>
 							<span class="description-body">Der matschige Nachfolger vom Euro Truck Simulator. Keine Garantie aus dem Schlamm wieder heraus zu kommen.<br><br></span>
@@ -163,7 +167,7 @@
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
 					<a href="https://store.steampowered.com/app/220200/Kerbal_Space_Program/" target="_blank">
-						<img class="img-fluid image" src="/assets/img/games/kerbal-space-program.jpg">
+						<img class="img-fluid image" th:attr="src=@{assets/img/games/kerbal-space-program.jpg}">
 						<span class="description">
 							<span class="description-heading">Kerbal Space Program<br></span>
 							<span class="description-body">Bevor wir die neue Generation ins All senden müssen noch die Reste verwendent werden.<br><br></span>
@@ -174,7 +178,7 @@
 		</section>
 	</div>
 </section>
-<section id="contact" class="content-section text-center bg-section">
+<section id="discord" class="content-section text-center bg-section">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 mx-auto">
@@ -198,8 +202,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
-<script src="/assets/js/app.js"></script>
-<script src="/assets/js/discordInvite.js"></script>
+<script th:src="@{assets/js/app.js}"></script>
+<script th:src="@{assets/js/discordInvite.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.8.2/js/lightbox.min.js"></script>
 <script>
     discordInvite.init({

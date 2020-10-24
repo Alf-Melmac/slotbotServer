@@ -6,11 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 	<meta property="og:image" content="/assets/img/amb_logo.jpg">
 	<meta property="og:type" content="website">
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
-	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
-	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
-	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{assets/img/favicon/apple-touch-icon.png}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{assets/img/favicon/favicon-32x32.png}">
+	<link rel="icon" type="image/png" sizes="16x16" th:href="@{assets/img/favicon/favicon-16x16.png}">
+	<link rel="manifest" th:href="@{assets/img/favicon/site.webmanifest}">
 
+	<link rel="stylesheet" th:href="@{assets/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{assets/css/globalStyles.css}">
 	<link rel="stylesheet" th:href="@{assets/css/login.css}">
 </head>
 <body>
@@ -24,7 +26,7 @@
 
 		<div sec:authorize="isAnonymous()">
 			<h1>Discord Login</h1>
-			<a th:href="@{/oauth2/authorization/discord}" class="button">Login with Discord</a>
+			<a th:href="@{/oauth2/authorization/discord}" class="button">Login mit Discord</a>
 		</div>
 	</div>
 </section>
