@@ -34,7 +34,7 @@
 			Hello, <strong th:text="${#authentication.name}">User</strong>!
 		</div>
 
-		<p th:utext="${#authentication}">Utext</p>
+		<p th:utext="${#authentication}" style="display: none;">Utext</p>
 
 		<div sec:authorize="isAnonymous()">
 			<h1>Discord Login</h1>

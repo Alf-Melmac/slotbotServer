@@ -45,6 +45,11 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales/de.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const getEventsUrl = /*[[${getEventsUrl}]]*/ '';
+    /*]]>*/
+</script>
 <script th:src="@{assets/js/events.js}"></script>
 </body>
 </html>

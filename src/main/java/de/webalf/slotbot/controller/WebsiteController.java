@@ -20,9 +20,4 @@ public class WebsiteController {
 	public ModelAndView getLogin() {
 		return new ModelAndView("login");
 	}
-
-	@GetMapping("/events")
-	public ModelAndView getEvent() {
-		return new ModelAndView("events");
-	}
 }
