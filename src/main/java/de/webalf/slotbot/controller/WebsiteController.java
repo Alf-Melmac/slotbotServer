@@ -4,6 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * @author Alf
+ * @since 27.09.2020
+ */
 @Controller
 public class WebsiteController {
 
@@ -17,4 +21,13 @@ public class WebsiteController {
 		return new ModelAndView("technicalSetup");
 	}
 
+	@GetMapping("/login")
+	public ModelAndView getLogin() {
+		return new ModelAndView("login");
+	}
+
+	@GetMapping("/event")
+	public ModelAndView getEvent() {
+		return new ModelAndView("event");
+	}
 }

@@ -37,7 +37,7 @@ public class SSLConfig {
 	}
 
 	/**
-	 * below method will route none-secure http request via port 8080 to secure port 8081
+	 * Routes none-secure http request via port 8080 to secure port {@link SSLConfig#serverPort}
 	 */
 	private Connector getHttpConnector() {
 		Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);

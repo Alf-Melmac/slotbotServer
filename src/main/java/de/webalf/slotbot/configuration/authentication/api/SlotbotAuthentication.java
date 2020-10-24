@@ -1,4 +1,4 @@
-package de.webalf.slotbot.configuration.authentication;
+package de.webalf.slotbot.configuration.authentication.api;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

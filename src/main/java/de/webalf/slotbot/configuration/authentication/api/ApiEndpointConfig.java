@@ -1,10 +1,10 @@
-package de.webalf.slotbot.configuration;
+package de.webalf.slotbot.configuration.authentication.api;
 
-import de.webalf.slotbot.configuration.authentication.TokenAuthFilter;
-import de.webalf.slotbot.configuration.authentication.TokenAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,8 +19,9 @@ import static de.webalf.slotbot.controller.Urls.API;
  */
 @Configuration
 @EnableWebSecurity
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class ApiEndpointConfig extends WebSecurityConfigurerAdapter {
 	private final TokenAuthFilter tokenAuthFilter;
 	private final TokenAuthProvider tokenAuthProvider;
 
@@ -31,11 +32,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 
-				// the following URLs should be permitted without any authentication
+				// only match API requests
+				.requestMatchers().antMatchers(API + "/**")
+				.and()
+
+				// status endpoint can be accessed without authentication
 				.authorizeRequests()
 				.antMatchers(API + "/status").permitAll()
-				.antMatchers("/*").permitAll()
-				.antMatchers("/assets/**").permitAll()
 
 				// all other requests must be authenticated
 				.anyRequest().fullyAuthenticated()

@@ -1,4 +1,4 @@
-package de.webalf.slotbot.configuration.authentication;
+package de.webalf.slotbot.configuration.authentication.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
