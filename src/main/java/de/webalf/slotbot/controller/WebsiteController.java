@@ -16,18 +16,13 @@ public class WebsiteController {
 		return new ModelAndView("start");
 	}
 
-	@GetMapping("/technicalSetup")
-	public ModelAndView getTechnicalSetup() {
-		return new ModelAndView("technicalSetup");
-	}
-
 	@GetMapping("/login")
 	public ModelAndView getLogin() {
 		return new ModelAndView("login");
 	}
 
-	@GetMapping("/event")
+	@GetMapping("/events")
 	public ModelAndView getEvent() {
-		return new ModelAndView("event");
+		return new ModelAndView("events");
 	}
 }

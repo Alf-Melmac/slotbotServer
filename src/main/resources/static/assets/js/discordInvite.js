@@ -12,7 +12,7 @@ let discordInvite = function () {
                 if (inviteCode && inviteCode !== "") {
                     $(i.targetElement).append(
                         '<div id="discordInvite" class="helvetica400">' +
-                        '   <h5 id="introText" class="helvetica600 noselect loadHidden">DU WURDEST EINGELADEN, EINEM SERVER BEIZUTRETEN</h5>' +
+                        '   <h5 id="introText" class="helvetica600 text-uppercase noselect loadHidden">DU WURDEST EINGELADEN, EINEM SERVER BEIZUTRETEN</h5>' +
                         '   <div id="discordData">' +
                         '       <div id="serverImg" class="discordLink loadHidden"></div>' +
                         '       <div id="discordInfo">' +

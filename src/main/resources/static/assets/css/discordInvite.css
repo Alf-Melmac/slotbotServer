@@ -57,7 +57,6 @@
 #introText {
   color: #b9bbbe;
   letter-spacing: .5px;
-  text-transform: uppercase;
   flex: 1 1 0;
   margin: 0 0 8px;
 }

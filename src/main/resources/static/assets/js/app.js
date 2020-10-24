@@ -1,6 +1,12 @@
 $(function ($) {
     "use strict";
 
+    discordInvite.init({
+        inviteCode: 'zMwnQgQ',
+        title: 'Arma macht Bock!',
+    });
+    discordInvite.render();
+
     // Smooth scrolling using jQuery easing
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').on('click', function () {
         if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '') && location.hostname === this.hostname) {
