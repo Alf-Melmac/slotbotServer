@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
-	<title>Title</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>AMB - Events</title>
+
+	<meta property="og:image" content="/assets/img/amb_logo.jpg">
+	<meta property="og:type" content="website">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{assets/img/favicon/apple-touch-icon.png}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{assets/img/favicon/favicon-32x32.png}">
+	<link rel="icon" type="image/png" sizes="16x16" th:href="@{assets/img/favicon/favicon-16x16.png}">
+	<link rel="manifest" th:href="@{assets/img/favicon/site.webmanifest}">
+
+	<link rel="stylesheet" th:href="@{assets/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
+	<link rel="stylesheet" th:href="@{assets/css/globalStyles.css}">
+	<link rel="stylesheet" th:href="@{assets/css/events.css}">
 </head>
 <body>
-	<p>Hier sind coole Events</p>
+<nav class="navbar navbar-light navbar-expand-md fixed-top" id="mainNav">
+	<div class="container">
+		<div>
+			<a href="#" class="js-scroll-trigger">
+				<img class="navbar-logo" th:attr="src=@{assets/img/amb_logo.jpg}" alt="AMB">
+				<a class="navbar-brand" href="#">Arma macht Bock</a>
+			</a>
+		</div>
+	</div>
+</nav>
+
+<section class="content-section">
+	<div class="container">
+		<h1 class="text-center">Events</h1>
+		<div id="calendar"></div>
+	</div>
+</section>
+
+<footer id="footer">
+	<div class="container text-center">
+		<p>Copyright ©&nbsp;Alf 2020</p>
+	</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales/de.js"></script>
+<script th:src="@{assets/js/events.js}"></script>
 </body>
 </html>
