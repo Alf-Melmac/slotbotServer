@@ -1,6 +1,7 @@
 package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.assembler.CalendarEventAssembler;
+import de.webalf.slotbot.controller.WebsiteController;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class EventsController {
 		mav.addObject("getEventsUrl", linkTo(methodOn(EventsController.class).getBetween(null, null))
 				.toUri().toString()
 				.split("\\?")[0]);
+		mav.addObject("startUrl", linkTo(methodOn(WebsiteController.class).getStart()).toUri().toString());
 
 		return mav;
 	}
