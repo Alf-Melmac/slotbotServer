@@ -33,23 +33,6 @@ public final class SlotAssembler {
 	}
 
 	/**
-	 * To be used if the focus relies on the event
-	 */
-	public static Slot fromEventDto(SlotDto slotDto) {
-		if (slotDto == null) {
-			return null;
-		}
-
-		return Slot.builder()
-				.id(slotDto.getId())
-				.name(slotDto.getName())
-				.number(slotDto.getNumber())
-				.user(UserAssembler.fromDto(slotDto.getUser()))
-				.replacementText(slotDto.getReplacementText())
-				.build();
-	}
-
-	/**
 	 * To be used if the focus relies on the slot
 	 */
 	private static SlotDto toDto(Slot slot) {

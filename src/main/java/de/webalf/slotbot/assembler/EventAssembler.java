@@ -5,16 +5,10 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.util.LongUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * @author Alf
@@ -108,16 +102,5 @@ public final class EventAssembler {
 		EventRecipientDto eventRecipientDto = EventRecipientDto.recipientBuilder().recipient(UserAssembler.toDto(recipient)).build();
 		ReflectionUtils.shallowCopyFieldState(toDto(event), eventRecipientDto);
 		return eventRecipientDto;
-	}
-
-	private static List<EventDto> toDtoList(Iterable<? extends Event> content) {
-		return StreamSupport.stream(content.spliterator(), false)
-				.map(EventAssembler::toDto)
-				.collect(Collectors.toList());
-	}
-
-	public static Page<EventDto> toDtoPage(Page<Event> eventPage, Pageable pageable) {
-		List<EventDto> eventDtoList = toDtoList(eventPage.getContent());
-		return new PageImpl<>(eventDtoList, pageable, eventPage.getTotalElements());
 	}
 }
