@@ -1,8 +1,8 @@
 package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.persistence.converter.LocalDateTimePersistenceConverter;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 

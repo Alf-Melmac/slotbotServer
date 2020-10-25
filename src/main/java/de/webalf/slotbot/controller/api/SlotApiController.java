@@ -24,7 +24,7 @@ import static de.webalf.slotbot.controller.Urls.API;
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class SlotController {
+public class SlotApiController {
 	private final SlotService slotService;
 
 	@PutMapping("/swap")

@@ -26,7 +26,7 @@ import static de.webalf.slotbot.controller.Urls.API;
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class EventChannelController {
+public class EventChannelApiController {
 	private final EventService eventService;
 
 	@GetMapping("")

@@ -16,7 +16,7 @@ import static de.webalf.slotbot.controller.Urls.API;
 @RequestMapping(API + "/status")
 @RestController
 @Slf4j
-public class StatusController {
+public class StatusApiController {
 	@GetMapping("")
 	public ResponseEntity<Void> ping() {
 		log.trace("ping");

@@ -1,4 +1,4 @@
-package de.webalf.slotbot.persistence.converter;
+package de.webalf.slotbot.converter.persistence;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

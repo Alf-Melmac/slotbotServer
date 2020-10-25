@@ -20,7 +20,7 @@ import static de.webalf.slotbot.controller.Urls.API;
 @RestController
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class EventController {
+public class EventApiController {
 	private final EventService eventService;
 
 	@PostMapping("")

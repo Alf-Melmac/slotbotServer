@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.model.enums.LogAction;
-import de.webalf.slotbot.persistence.converter.LocalDateTimePersistenceConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
