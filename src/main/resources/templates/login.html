@@ -30,16 +30,19 @@
 
 <section class="content-section text-center">
 	<div class="container">
+		<div class="alert alert-danger" role="alert" th:if="${#request.getParameter('error') != null}">
+			Es ist ein Fehler beim Login aufgetreten. Bitte später erneut versuchen.
+		</div>
+
+		<h1>Discord Login</h1>
 		<div sec:authorize="isAuthenticated()">
 			Hello, <strong th:text="${#authentication.name}">User</strong>!
 		</div>
-
-		<p th:utext="${#authentication}" style="display: none;">Utext</p>
-
 		<div sec:authorize="isAnonymous()">
-			<h1>Discord Login</h1>
 			<a th:href="@{/oauth2/authorization/discord}" class="button text-uppercase">Login mit Discord</a>
 		</div>
+
+		<p th:utext="${#authentication}" style="display: none;">Utext</p>
 	</div>
 </section>
 
