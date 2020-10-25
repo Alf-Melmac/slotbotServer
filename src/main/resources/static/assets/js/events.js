@@ -15,7 +15,8 @@ $(function () {
                 url: getEventsUrl,
                 color: 'blue'
             }
-        ]
+        ],
+        eventDidMount: (arg) => $(arg.el).tooltip({title: arg.event.extendedProps.description})
     });
     calendar.render();
 });
