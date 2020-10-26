@@ -28,4 +28,13 @@ public class EventWebController {
 
 		return mav;
 	}
+
+	@GetMapping("/new")
+	public ModelAndView getWizard() {
+		ModelAndView mav = new ModelAndView("eventWizard");
+
+		mav.addObject("startUrl", Urls.START_URL);
+
+		return mav;
+	}
 }
