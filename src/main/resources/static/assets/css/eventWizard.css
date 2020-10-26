@@ -1,0 +1,8 @@
+.btn-trash {
+  color: white;
+  font-size: 3vw;
+}
+
+.btn-trash:hover {
+  color: gray;
+}

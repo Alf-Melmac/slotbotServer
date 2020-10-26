@@ -20,6 +20,7 @@
 	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/css/tempusdominus-bootstrap-4.min.css"
 	      integrity="sha256-vi00YWza8MRCSI5GdsFLptAZIULny5MPn62PxEf/ZTY=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/eventWizard.css}">
 </head>
 <body>
 <nav class="navbar navbar-light" id="mainNav">
@@ -179,7 +180,7 @@
 								<input id="eventMedicalSystem" class="form-control" type="text" value="AMB">
 							</div>
 						</div>
-						<div class="form-row align-items-center">
+						<div class="form-row align-items-center mb-4">
 							<div class="form-group col-md-4">
 								<div class="custom-control custom-checkbox">
 									<input id="eventReserveParticipating" class="custom-control-input" type="checkbox">
@@ -198,17 +199,53 @@
 								       placeholder="GPS, Karte, Kompass, Nichts, ...">
 							</div>
 						</div>
+						<div class="form-row">
+							<div class="col-md-4"></div>
+							<div class="custom-file col-md-8">
+								<input id="eventPicture" class="custom-file-input" type="file" disabled>
+								<label class="custom-file-label" for="eventPicture">Eventbild hochladen
+									(Deaktiviert)</label>
+							</div>
+						</div>
 					</form>
 				</div>
 
 				<div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
 					<h3>Teilnahmeplatzaufzählung</h3>
-					Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-					industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
-					and scrambled it to make a type specimen book. It has survived not only five centuries, but also the
-					leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s
-					with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-					publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+					<div id="squads">
+						<div class="form-group">
+							<div class="form-row align-items-center js-squad">
+								<div class="col-md-11">
+									<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
+									       required>
+								</div>
+								<div class="col-md-1 d-flex btn btn-trash" type="button"><i class="fa fa-trash-o"></i></div>
+							</div>
+
+							<div class="ml-5 js-slots">
+								<div class="form-row align-items-center js-slot">
+									<div class="col-md-1">
+										<input class="form-control js-slot-number" type="number" required>
+									</div>
+									<div class="col-md-10">
+										<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
+										       required>
+									</div>
+									<div class="col-md-1 d-flex btn btn-trash" type="button"><i class="fa fa-trash-o"></i>
+									</div>
+								</div>
+								<div type="button" class="btn btn-success rounded-circle js-add-slot"
+								     title="Slot hinzufügen">
+									<i class="fa fa-plus"></i>
+								</div>
+							</div>
+						</div>
+
+						<div id="addSquad" type="button" class="btn btn-success rounded-circle"
+						     title="Squad hinzufügen">
+							<i class="fa fa-plus"></i>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -232,5 +269,6 @@
 <script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/js/tempusdominus-bootstrap-4.min.js"
         integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
 <script th:src="@{/assets/js/eventWizard.js}"></script>
+<script th:src="@{/assets/js/slotList.js}"></script>
 </body>
 </html>
