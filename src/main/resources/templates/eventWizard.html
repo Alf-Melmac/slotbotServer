@@ -216,6 +216,7 @@
 						<div class="form-group">
 							<div class="form-row align-items-center js-squad">
 								<div class="col-md-11">
+									<!--suppress HtmlFormInputWithoutLabel -->
 									<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 									       required>
 								</div>
@@ -226,10 +227,12 @@
 							<div class="ml-5 js-slots">
 								<div class="form-row align-items-center js-slot">
 									<div class="col-md-1">
+										<!--suppress HtmlFormInputWithoutLabel -->
 										<input class="form-control js-slot-number" type="number" min="1" value="1"
 										       required>
 									</div>
 									<div class="col-md-10">
+										<!--suppress HtmlFormInputWithoutLabel -->
 										<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
 										       required>
 									</div>
@@ -271,6 +274,11 @@
         integrity="sha256-aWAfUXm/D5kDckGqTrmZBEk9u7GnYegeUgLH0sw7SUk=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/js/tempusdominus-bootstrap-4.min.js"
         integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const eventsUrl = /*[[${eventsUrl}]]*/ '';
+    /*]]>*/
+</script>
 <script th:src="@{/assets/js/eventWizard.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
 </body>

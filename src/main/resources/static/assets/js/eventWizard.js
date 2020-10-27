@@ -6,7 +6,7 @@ $(function () {
     // Toolbar extra buttons
     const btnCancel = $('<button id="btnCancel" class="btn btn-danger">Abbrechen</button>')
         .on('click', function () {
-            $('#smartwizard').smartWizard("reset");
+            window.location.href = eventsUrl;
         });
     const btnFinish = $('<button id="btnFinish" class="btn btn-primary">Speichern</button>')
         .on('click', function () {

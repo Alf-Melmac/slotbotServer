@@ -23,6 +23,7 @@ public class EventWebController {
 
 		mav.addObject("getEventsUrl", linkTo(methodOn(EventController.class).getBetween(null, null))
 				.toUri().toString()
+				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
 		mav.addObject("startUrl", Urls.START_URL);
 
@@ -34,6 +35,7 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 
 		return mav;
 	}
