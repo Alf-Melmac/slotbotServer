@@ -6,7 +6,7 @@ $(function () {
     const newSlot =
         '<div class="form-row align-items-center js-slot">' +
         '   <div class="col-md-1">' +
-        '      <input class="form-control js-slot-number" type="number" required>' +
+        '      <input class="form-control js-slot-number" type="number" min="1" value="{defaultSlotValue}" required>' +
         '   </div>' +
         '   <div class="col-md-10">' +
         '      <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>' +
@@ -32,14 +32,14 @@ $(function () {
         '</div>';
 
     $('#addSquad').on('click', function () {
-        $squads.append(newSquad);
+        $squads.append(newSquad.replace('{defaultSlotValue}', findFirstUnusedSlotNumber()));
         $(this).appendTo($squads);
     });
 
     $squads.on('click', '.js-add-slot', function () {
         const $this = $(this);
         const $slots = $this.parent('.js-slots');
-        $slots.append(newSlot);
+        $slots.append(newSlot.replace('{defaultSlotValue}', findFirstUnusedSlotNumber()));
         $this.appendTo($slots);
     });
 
@@ -51,4 +51,23 @@ $(function () {
             $row.remove();
         }
     });
+
+    function findFirstUnusedSlotNumber() {
+        const slotNumbers = $.map($('.js-slot-number'), el => parseInt($(el).val()))
+            .sort((a, b) => a - b);
+        let slotNumber = 1;
+
+        for (let i = 0; i < slotNumbers.length; i++) {
+            const currentNumber = slotNumbers[i];
+            while (slotNumber < currentNumber) {
+                if (slotNumber !== currentNumber) {
+                    return slotNumber;
+                }
+
+                slotNumber++;
+            }
+            slotNumber++;
+        }
+        return slotNumber;
+    }
 });
