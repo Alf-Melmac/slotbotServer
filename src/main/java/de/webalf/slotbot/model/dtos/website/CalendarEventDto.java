@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model.dtos.website;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
  * @since 24.10.2020
  */
 @Builder
-@Getter
+@Value
 public class CalendarEventDto {
-	private String title;
+	String title;
 
-	private LocalDateTime start;
+	LocalDateTime start;
 
-	private String description;
+	String description;
+
+	String url;
 }

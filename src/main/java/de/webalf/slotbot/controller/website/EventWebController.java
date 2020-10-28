@@ -1,13 +1,20 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.configuration.authentication.api.TokenProvider;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.controller.Urls;
 import de.webalf.slotbot.controller.api.EventApiController;
+import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.repository.EventRepository;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,6 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventWebController {
 	private final TokenProvider tokenProvider;
+	private final EventRepository eventRepository;
 
 	@GetMapping
 	public ModelAndView getEventHtml() {
@@ -38,7 +46,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/new")
-	public ModelAndView getWizard() {
+	public ModelAndView getWizardHtml() {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		mav.addObject("startUrl", Urls.START_URL);
@@ -46,6 +54,17 @@ public class EventWebController {
 		mav.addObject("postEventUrl", linkTo(methodOn(EventApiController.class).postEvent(null)).toUri().toString());
 		mav.addObject("slotbotAuthTokenName", tokenProvider.getTokenName());
 		mav.addObject("slotbotAuthToken", tokenProvider.getSlotbotKey());
+		return mav;
+	}
+
+	@GetMapping("{id}")
+	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
+		ModelAndView mav = new ModelAndView("eventDetails");
+
+		mav.addObject("startUrl", Urls.START_URL);
+		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
+		mav.addObject("event", EventAssembler.toDto(event));
+		mav.addObject("defaultUserId", LongUtils.toString(User.DEFAULT_USER_ID));
 		return mav;
 	}
 }
