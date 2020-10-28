@@ -2,3 +2,8 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
+.tooltip-inner {
+  margin-left: 50%;
+  max-width: 40%;
+}
