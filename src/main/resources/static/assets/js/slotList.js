@@ -3,6 +3,9 @@ $(function () {
 
     const $squads = $('#squads');
 
+    //Only allow positive whole numbers
+    $squads.on('keypress', '.js-slot-number', event => (event.charCode === 8 || event.charCode === 0 || event.charCode === 13) ? null : event.charCode >= 48 && event.charCode <= 57);
+
     const newSlot =
         '<div class="form-row align-items-center js-slot">' +
         '   <div class="col-md-1">' +
@@ -15,7 +18,7 @@ $(function () {
         '</div>';
 
     const newSquad =
-        '<div class="form-group">' +
+        '<div class="form-group js-complete-squad">' +
         '   <div class="form-row align-items-center js-squad">' +
         '       <div class="col-md-11">' +
         '           <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>' +
@@ -46,7 +49,7 @@ $(function () {
     $squads.on('click', '.btn-trash', function () {
         const $row = $(this).parent('.form-row');
         if ($row.hasClass('js-squad')) {
-            $row.parent('.form-group').remove();
+            $row.parent('.js-complete-squad').remove();
         } else {
             $row.remove();
         }

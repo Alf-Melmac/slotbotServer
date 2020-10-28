@@ -1,7 +1,8 @@
 package de.webalf.slotbot.configuration.authentication.api;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TokenAuthProvider implements AuthenticationProvider {
-	@Value("${slotbot.auth.token}")
-	private String slotbotKey;
+	private final TokenProvider tokenProvider;
 
 	@Override
 	public Authentication authenticate(Authentication auth) throws AuthenticationException {
@@ -25,7 +26,7 @@ public class TokenAuthProvider implements AuthenticationProvider {
 
 		SlotbotAuthentication slotbotAuth = new SlotbotAuthentication(token);
 
-		if (token.equals(slotbotKey)) {
+		if (token.equals(tokenProvider.getSlotbotKey())) {
 			slotbotAuth.setAuthenticated(true);
 		} else {
 			log.warn("Invalid token " + token);

@@ -8,9 +8,81 @@ $(function () {
         .on('click', function () {
             window.location.href = eventsUrl;
         });
+
     const btnFinish = $('<button id="btnFinish" class="btn btn-primary">Speichern</button>')
         .on('click', function () {
-            alert('Finish Clicked');
+            // Manual leaveStepCheck
+            if (!areAllRequiredFieldsFilled()) {
+                return;
+            }
+
+            let event = {};
+            $('input,textarea,select')
+                .filter((index, element) => !$(element).attr('class').includes('squad') && !$(element).attr('class').includes('slot'))
+                .each(function (index, element) {
+                    const $el = $(element);
+                    const key = $el.data('dtokey');
+
+                    if (!key || key === '') {
+                        console.error('empty key');
+                        console.log($el);
+                        return;
+                    }
+
+                    // Special treatment, because this is a compound field
+                    if (key === 'missionType') {
+                        const missionTypeVal = event[key];
+                        if (!$el.is(':checkbox')) {
+                            if (missionTypeVal) {
+                                event[key] = $el.val() + missionTypeVal;
+                                return;
+                            }
+                        } else {
+                            const respawnText = $el.is(':checked') ? ', Respawn' : ', Kein Respawn';
+                            event[key] = missionTypeVal ? missionTypeVal + respawnText : respawnText;
+                            return;
+                        }
+                    }
+
+                    let value = $el.val();
+                    if ($el.is(":checkbox")) {
+                        value = $el.is(':checked');
+                    }
+                    if (value !== '') {
+                        event[key] = value;
+                    }
+                });
+
+            let squads = [];
+            $('#squads .js-complete-squad').each(function (index, element) {
+                const $completeSquad = $(element);
+                let squad = {
+                    name: $completeSquad.find('.js-squad-name').val(),
+                    slotList: []
+                };
+
+                $completeSquad.find('.js-slot').each(function (index, element) {
+                    const $slot = $(element)
+                    squad.slotList.push({
+                        name: $slot.find('.js-slot-name').val(),
+                        number: $slot.find('.js-slot-number').val()
+                    });
+                });
+
+                squads.push(squad);
+            });
+            event.squadList = squads;
+
+            $.ajax(postEventUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [slotbotAuthTokenName]: slotbotAuthToken
+                },
+                data: JSON.stringify(event)
+            })
+                .done(event => alert(JSON.stringify(event)))
+                .fail(() => alert('Event Erstellung fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
         });
 
     $smartWizard.smartWizard({
@@ -42,7 +114,9 @@ $(function () {
     });
 
     // Step leave event
-    $smartWizard.on("leaveStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
+    $smartWizard.on("leaveStep", areAllRequiredFieldsFilled);
+
+    function areAllRequiredFieldsFilled() {
         let valid = true;
         $('input,textarea,select').filter('[required]:visible').each(function (index, element) {
             const $el = $(element);
@@ -54,9 +128,8 @@ $(function () {
             }
         });
 
-        // Prevent page switch if inputs aren't valid
         return valid;
-    });
+    }
 
 
     // Date and time picker

@@ -1,6 +1,7 @@
 package de.webalf.slotbot.configuration.authentication.api;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,14 +19,14 @@ import java.io.IOException;
  * @since 23.09.2020
  */
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TokenAuthFilter extends OncePerRequestFilter {
-	@Value("${slotbot.auth.token.name:slotbot-auth-token}")
-	private String tokenName;
+	private final TokenProvider tokenProvider;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
 		// check if header contains auth token
-		String authToken = request.getHeader(tokenName);
+		String authToken = request.getHeader(tokenProvider.getTokenName());
 
 		// if there is an auth token, create an Authentication object
 		if (authToken != null) {
