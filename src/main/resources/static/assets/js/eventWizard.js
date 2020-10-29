@@ -16,6 +16,9 @@ $(function () {
                 return;
             }
 
+            // Disable Finish button to prevent spamming
+            $(this).prop("disabled",true);
+
             let event = {};
             $('input,textarea,select')
                 .filter((index, element) => !$(element).attr('class').includes('squad') && !$(element).attr('class').includes('slot'))
@@ -80,7 +83,7 @@ $(function () {
                 },
                 data: JSON.stringify(event)
             })
-                .done(event => alert(JSON.stringify(event)))
+                .done(event => window.location.href = eventDetailsUrl.replace('{eventId}', event.id))
                 .fail(response => alert(JSON.stringify(response) + '\nEvent Erstellung fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
         });
 
