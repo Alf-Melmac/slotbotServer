@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,6 +63,15 @@ public class EventService {
 	 */
 	public Event findByChannel(long channel) {
 		return eventRepository.findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	/**
+	 * Returns all events that take place in the specified period
+	 *
+	 * @return all events in given period
+	 */
+	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
+		return eventRepository.findAllByDateTimeBetween(start, end);
 	}
 
 	public Event updateEvent(@NonNull EventDto dto) {

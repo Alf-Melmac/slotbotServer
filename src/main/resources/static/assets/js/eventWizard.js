@@ -76,13 +76,12 @@ $(function () {
             $.ajax(postEventUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    [slotbotAuthTokenName]: slotbotAuthToken
+                    'Content-Type': 'application/json'
                 },
                 data: JSON.stringify(event)
             })
                 .done(event => alert(JSON.stringify(event)))
-                .fail(() => alert('Event Erstellung fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
+                .fail(response => alert(JSON.stringify(response) + '\nEvent Erstellung fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
         });
 
     $smartWizard.smartWizard({

@@ -4,7 +4,6 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.configuration.authentication.api.TokenProvider;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.controller.Urls;
-import de.webalf.slotbot.controller.api.EventApiController;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
@@ -51,9 +50,7 @@ public class EventWebController {
 
 		mav.addObject("startUrl", Urls.START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
-		mav.addObject("postEventUrl", linkTo(methodOn(EventApiController.class).postEvent(null)).toUri().toString());
-		mav.addObject("slotbotAuthTokenName", tokenProvider.getTokenName());
-		mav.addObject("slotbotAuthToken", tokenProvider.getSlotbotKey());
+		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		return mav;
 	}
 

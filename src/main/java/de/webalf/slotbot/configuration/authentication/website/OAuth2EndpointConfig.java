@@ -29,6 +29,9 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http // all non api requests handled here
+				//FIXME: This needs to be changed in future. Currently this allows the frontend to use backend endpoints
+				.csrf().disable()
+
 				.authorizeRequests()
 				// allow assets and startPage to be accessed by every user
 				.antMatchers("/").permitAll()
