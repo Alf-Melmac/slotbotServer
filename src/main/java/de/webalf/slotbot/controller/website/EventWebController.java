@@ -7,6 +7,7 @@ import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.repository.EventRepository;
+import de.webalf.slotbot.service.PermissionService;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,9 @@ public class EventWebController {
 				.toUri().toString()
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
+		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml()).toUri().toString());
 		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject("eventManageRoles", PermissionService.getEventManageRoles());
 
 		return mav;
 	}

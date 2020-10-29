@@ -1,5 +1,9 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
+import de.webalf.slotbot.service.PermissionService;
+import de.webalf.slotbot.service.external.DiscordApiService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +29,10 @@ import java.util.Objects;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
+	private final DiscordApiService discordApiService;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http // all non api requests handled here
@@ -36,6 +43,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				// allow assets and startPage to be accessed by every user
 				.antMatchers("/").permitAll()
 				.antMatchers("/assets/**").permitAll()
+				.antMatchers("/events/new").hasAnyRole(PermissionService.getEventManageRoles())
 
 				// all other requests must be authenticated
 				.anyRequest().authenticated()
@@ -64,7 +72,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
-		DefaultOAuth2UserService service = new DefaultOAuth2UserService();
+		DefaultOAuth2UserService service = new CustomOAuth2UserService(discordApiService);
 
 		service.setRequestEntityConverter(new OAuth2UserRequestEntityConverter() {
 			@Override
