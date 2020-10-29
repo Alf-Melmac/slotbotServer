@@ -152,8 +152,8 @@
 							</div>
 							<div class="col-md-8">
 								<div th:switch="${event.modPack}">
-									<p class="mb-0" th:case="'2008_ArmaMachtBock'">AMB</p>
-									<p class="mb-0" th:case="'Joined_Operations_2020'">Joint Ops</p>
+									<p class="mb-0" th:case="'2008_ArmaMachtBock'"><a th:href="@{/assets/download/Arma_3_Preset_AmB.html}" download>AMB</a></p>
+									<p class="mb-0" th:case="'Joined_Operations_2020'"><a th:href="@{/assets/download/Joined_Operations_2020.html}" download>Joint Ops</a></p>
 									<p class="mb-0" th:case="*" th:text="${event.modPack}"></p>
 								</div>
 							</div>
