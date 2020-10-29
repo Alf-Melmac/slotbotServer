@@ -61,6 +61,7 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
 		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 		mav.addObject("event", EventAssembler.toDto(event));
 		mav.addObject("defaultUserId", LongUtils.toString(User.DEFAULT_USER_ID));
