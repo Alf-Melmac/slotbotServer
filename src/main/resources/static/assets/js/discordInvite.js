@@ -50,10 +50,10 @@ let discordInvite = function () {
                             });
                             $(".loadHidden").show();
                         },
-                        error: function (i) {
+                        error: function (info) {
                             let e;
-                            if (void 0 !== i.responseJSON) {
-                                $("#buttonText").html(i.responseJSON.message);
+                            if (void 0 !== info.responseJSON) {
+                                $("#buttonText").html(info.responseJSON.message);
                                 $("#discordInfo").remove();
                             } else {
                                 $("#discordData").remove();

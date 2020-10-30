@@ -57,15 +57,15 @@ $(function () {
                 });
 
             let squads = [];
-            $('#squads .js-complete-squad').each(function (index, element) {
-                const $completeSquad = $(element);
+            $('#squads .js-complete-squad').each(function (completeSquadIndex, completeSquadElement) {
+                const $completeSquad = $(completeSquadElement);
                 let squad = {
                     name: $completeSquad.find('.js-squad-name').val(),
                     slotList: []
                 };
 
-                $completeSquad.find('.js-slot').each(function (index, element) {
-                    const $slot = $(element)
+                $completeSquad.find('.js-slot').each(function (slotIndex, slotElement) {
+                    const $slot = $(slotElement)
                     squad.slotList.push({
                         name: $slot.find('.js-slot-name').val(),
                         number: $slot.find('.js-slot-number').val()
@@ -83,7 +83,7 @@ $(function () {
                 },
                 data: JSON.stringify(event)
             })
-                .done(event => window.location.href = eventDetailsUrl.replace('{eventId}', event.id))
+                .done(savedEvent => window.location.href = eventDetailsUrl.replace('{eventId}', savedEvent.id))
                 .fail(response => alert(JSON.stringify(response) + '\nEvent Erstellung fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
         });
 
