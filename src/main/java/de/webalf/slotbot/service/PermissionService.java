@@ -2,9 +2,7 @@ package de.webalf.slotbot.service;
 
 import lombok.Value;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Alf
@@ -24,19 +22,41 @@ public class PermissionService {
 	 *
 	 * @return set of allowed role names
 	 */
-	public static String[] getEventManageRoles() {
-		List<String> administrativeRoles = new ArrayList<>(Arrays.asList(getAdministrativeRoles()));
-		administrativeRoles.add(ROLE_PREFIX + CREATOR);
+	public static Set<String> getEventManageRoles() {
+		Set<String> roles = new HashSet<>(getAdministrativeRoles());
+		roles.add(ROLE_PREFIX + CREATOR);
+		return roles;
+	}
+
+	/**
+	 * Role names tht are allowed to perform administrative functions
+	 *
+	 * @return array of allowed role names
+	 */
+	private static Set<String> getAdministrativeRoles() {
+		return Set.of(ROLE_PREFIX + ADMIN, ROLE_PREFIX + MOD);
+	}
+
+	/**
+	 * Role names that are allowed to manage events
+	 *
+	 * @return array of allowed role names
+	 */
+	public static String[] getEventManageRoleNames() {
+		List<String> administrativeRoles = new ArrayList<>(Arrays.asList(getAdministrativeRoleNames()));
+		administrativeRoles.add(CREATOR);
 		return administrativeRoles.toArray(String[]::new);
 	}
 
 	/**
-	 * Roles tht are allowed to performe administrative functions
+	 * Role names tht are allowed to perform administrative functions
 	 *
-	 * @return set of allowed role names
+	 * @return array of allowed role names
 	 */
-	private static String[] getAdministrativeRoles() {
-		return Arrays.asList(ROLE_PREFIX + ADMIN,
-				ROLE_PREFIX + MOD).toArray(String[]::new);
+	private static String[] getAdministrativeRoleNames() {
+		return Arrays.asList(
+				ADMIN,
+				MOD)
+				.toArray(String[]::new);
 	}
 }

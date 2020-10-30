@@ -43,7 +43,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				// allow assets and startPage to be accessed by every user
 				.antMatchers("/").permitAll()
 				.antMatchers("/assets/**").permitAll()
-				.antMatchers("/events/new").hasAnyRole(PermissionService.getEventManageRoles())
+				.antMatchers("/events/new").hasAnyRole(PermissionService.getEventManageRoleNames())
 
 				// all other requests must be authenticated
 				.anyRequest().authenticated()
