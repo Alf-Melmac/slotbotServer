@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static de.webalf.slotbot.controller.Urls.API;
 
@@ -28,7 +28,7 @@ public class SlotApiController {
 	private final SlotService slotService;
 
 	@PutMapping("/swap")
-	public EventDto putSwap(@RequestBody ArrayList<SlotDto> slots) {
+	public EventDto putSwap(@RequestBody List<SlotDto> slots) {
 		return EventAssembler.toDto(slotService.swap(slots));
 	}
 }

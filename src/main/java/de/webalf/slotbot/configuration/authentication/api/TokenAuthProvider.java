@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +18,7 @@ public class TokenAuthProvider implements AuthenticationProvider {
 	private String slotbotKey;
 
 	@Override
-	public Authentication authenticate(Authentication auth) throws AuthenticationException {
+	public Authentication authenticate(Authentication auth) throws BadCredentialsException {
 		// get the token from the authentication object
 		String token = auth.getCredentials().toString();
 

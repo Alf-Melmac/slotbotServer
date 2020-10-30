@@ -45,7 +45,7 @@ public class SlotbotAuthentication implements Authentication {
 	}
 
 	@Override
-	public void setAuthenticated(boolean arg0) throws IllegalArgumentException {
+	public void setAuthenticated(boolean arg0) {
 
 	}
 }

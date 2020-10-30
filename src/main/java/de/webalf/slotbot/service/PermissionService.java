@@ -10,7 +10,7 @@ import java.util.*;
  */
 @Value
 public class PermissionService {
-	static String ROLE_PREFIX = "ROLE_";
+	private static final String ROLE_PREFIX = "ROLE_";
 
 	public static final String ADMIN = "ADMIN";
 	public static final String MOD = "MOD";

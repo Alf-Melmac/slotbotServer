@@ -21,13 +21,15 @@ import static de.webalf.slotbot.service.PermissionService.*;
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
-	private final static Set<String> KNOWN_ROLE_NAMES = new HashSet<>() {{
-		add("Administrator");
-		add("Moderator");
-		add("Creator");
-		add("Gamer");
-	}};
+	private static final Set<String> KNOWN_ROLE_NAMES = new HashSet<>();
 	private static List<Role> roles = new ArrayList<>();
+
+	static {
+		KNOWN_ROLE_NAMES.add("Administrator");
+		KNOWN_ROLE_NAMES.add("Moderator");
+		KNOWN_ROLE_NAMES.add("Creator");
+		KNOWN_ROLE_NAMES.add("Gamer");
+	}
 
 	/**
 	 * Returns the role name that should be used for the given discord User

@@ -30,6 +30,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EventWebController {
 	private final EventRepository eventRepository;
 
+	private static final String START_URL = "startUrl";
+
 	@GetMapping
 	public ModelAndView getEventHtml() {
 		ModelAndView mav = new ModelAndView("events");
@@ -39,7 +41,7 @@ public class EventWebController {
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml()).toUri().toString());
-		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject(START_URL, Urls.START_URL);
 		mav.addObject("eventManageRoles", PermissionService.getEventManageRoles());
 
 		return mav;
@@ -49,7 +51,7 @@ public class EventWebController {
 	public ModelAndView getWizardHtml() {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
-		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject(START_URL, Urls.START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
@@ -63,7 +65,7 @@ public class EventWebController {
 	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
-		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject(START_URL, Urls.START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 		mav.addObject("event", EventAssembler.toDto(event));
