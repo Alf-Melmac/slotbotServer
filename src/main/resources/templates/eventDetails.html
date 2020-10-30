@@ -91,6 +91,7 @@
 			<div class="col-md-12">
 				<div class="tab-content">
 					<div class="tab-pane fade show active" id="slotlist" role="tabpanel" aria-labelledby="slotlist-tab">
+						<p class="text-center" th:if="${#lists.isEmpty(event.squadList)}">Keine Slotliste vorhanden.</p>
 						<div id="squads" th:unless="${#lists.isEmpty(event.squadList)}">
 							<div th:each="squad : ${event.squadList}">
 								<div class="form-group complete-squad">

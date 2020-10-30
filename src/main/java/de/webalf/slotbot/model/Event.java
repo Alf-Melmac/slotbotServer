@@ -5,6 +5,7 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.thymeleaf.util.ListUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -287,8 +288,8 @@ public class Event extends AbstractIdEntity {
 	private void changeReserveIfNeeded() {
 		Optional<Squad> reserve = findSquadByName(RESERVE_NAME);
 		if (reserve.isEmpty()) {
-			//Add reserve if event is full and not already exists
-			if (isFull()) {
+			//Add reserve if the event is full, squads exist and the reserve is not yet present
+			if (isFull() && !ListUtils.isEmpty(getSquadList())) {
 				addReserve();
 			}
 		} else if (!isFull()) {
