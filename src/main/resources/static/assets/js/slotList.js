@@ -14,7 +14,7 @@ $(function () {
         '   <div class="col-md-10">' +
         '      <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>' +
         '   </div>' +
-        '   <div class="col-md-1 d-flex btn btn-trash" type="button"><i class="fa fa-trash-o"></i></div>' +
+        '   <div class="col-md-1 d-flex btn btn-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
         '</div>';
 
     const newSquad =
@@ -23,13 +23,13 @@ $(function () {
         '       <div class="col-md-11">' +
         '           <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>' +
         '       </div>' +
-        '       <div class="col-md-1 d-flex btn btn-trash" type="button"><i class="fa fa-trash-o"></i></div>' +
+        '       <div class="col-md-1 d-flex btn btn-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
         '   </div>' +
         '' +
         '   <div class="ml-5 js-slots">' +
         newSlot +
         '       <div type="button" class="btn btn-success rounded-circle js-add-slot" title="Slot hinzufügen">' +
-        '           <i class="fa fa-plus"></i>' +
+        '           <em class="fa fa-plus"></em>' +
         '       </div>' +
         '   </div>' +
         '</div>';

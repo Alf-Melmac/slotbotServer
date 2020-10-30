@@ -9,3 +9,7 @@
 /httpRequests/
 
 /libraries
+
+#Sonarlint
+sonarlint-state.xml
+sonarlint/
