@@ -3,6 +3,8 @@ package de.webalf.slotbot.model.dtos.website;
 import lombok.Builder;
 import lombok.Value;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
@@ -12,10 +14,13 @@ import java.time.LocalDateTime;
 @Builder
 @Value
 public class CalendarEventDto {
+	@NotBlank
+	@Size(max = 80)
 	String title;
 
 	LocalDateTime start;
 
+	@Size(max = 3200)
 	String description;
 
 	String url;

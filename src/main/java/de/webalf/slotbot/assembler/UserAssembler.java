@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @since 07.09.2020
  */
 @Component
-public class UserAssembler {
+public final class UserAssembler {
 	public static User fromDto(UserDto userDto) {
 		if (userDto == null) {
 			return null;

@@ -1,7 +1,7 @@
 package de.webalf.slotbot.controller;
 
-import de.webalf.slotbot.assembler.CalendarEventAssembler;
 import de.webalf.slotbot.assembler.EventAssembler;
+import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.service.EventService;

@@ -28,4 +28,8 @@ public class User {
 	public User(long id) {
 		this.id = id;
 	}
+
+	public boolean isDefaultUser() {
+		return getId() == DEFAULT_USER_ID;
+	}
 }

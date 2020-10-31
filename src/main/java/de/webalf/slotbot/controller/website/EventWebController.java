@@ -1,11 +1,10 @@
 package de.webalf.slotbot.controller.website;
 
-import de.webalf.slotbot.assembler.EventAssembler;
+import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.controller.Urls;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.service.PermissionService;
 import de.webalf.slotbot.util.LongUtils;
@@ -29,6 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventWebController {
 	private final EventRepository eventRepository;
+	private final EventDetailsAssembler eventDetailsAssembler;
 
 	private static final String START_URL = "startUrl";
 
@@ -68,8 +68,7 @@ public class EventWebController {
 		mav.addObject(START_URL, Urls.START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
-		mav.addObject("event", EventAssembler.toDto(event));
-		mav.addObject("defaultUserId", LongUtils.toString(User.DEFAULT_USER_ID));
+		mav.addObject("event", eventDetailsAssembler.toDto(event));
 		return mav;
 	}
 }

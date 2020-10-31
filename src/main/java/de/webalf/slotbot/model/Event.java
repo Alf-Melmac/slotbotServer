@@ -9,6 +9,7 @@ import org.thymeleaf.util.ListUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ public class Event extends AbstractIdEntity {
 	private String name;
 
 	@Column(name = "event_date")
+	@NotNull
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 

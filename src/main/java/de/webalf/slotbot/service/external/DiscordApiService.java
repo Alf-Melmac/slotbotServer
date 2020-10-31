@@ -4,6 +4,7 @@ import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.util.ListUtils;
 
@@ -44,15 +45,18 @@ public class DiscordApiService {
 	}
 
 	/**
-	 * @see <a href="https://discord.com/developers/docs/resources/user#get-user" target="_top">https://discord.com/developers/docs/resources/user#get-user</a>
+	 * Returns the nickname for the given user(id) on the server or the username
+	 *
+	 * @param userId user to get name for
+	 * @return nickname on server or username if not set
 	 */
-	private User getUser(String userId) {
-		String url = "/users/" + userId;
-
-		return buildWebClient().get().uri(url)
-				.retrieve()
-				.bodyToMono(User.class)
-				.block();
+	public String getName(String userId) {
+		GuildMember guildMember = getGuildMember(userId);
+		if (!StringUtils.isEmpty(guildMember.getNick())) {
+			return guildMember.getNick();
+		} else {
+			return guildMember.getUser().getUsername();
+		}
 	}
 
 	/**
@@ -144,7 +148,7 @@ public class DiscordApiService {
 		private String nick;
 		private Set<Long> roles;
 
-		public String getNick() {
+		String getNick() {
 			return nick != null ? nick : user.getUsername();
 		}
 	}

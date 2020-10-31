@@ -6,6 +6,7 @@ import de.webalf.slotbot.exception.ForbiddenException;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Squad extends AbstractIdEntity {
 	@Column(name = "squad_name")
+	@NotBlank
 	@Size(max = 80)
 	private String name;
 

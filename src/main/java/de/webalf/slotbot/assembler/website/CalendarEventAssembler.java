@@ -1,8 +1,9 @@
-package de.webalf.slotbot.assembler;
+package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @author Alf
  * @since 24.10.2020
  */
-public class CalendarEventAssembler {
+@Component
+public final class CalendarEventAssembler {
 	private static CalendarEventDto toDto(Event event) {
 		return CalendarEventDto.builder()
 				.title(event.getName())

@@ -62,12 +62,17 @@
 					<div class="col-md-6">
 						<h5 th:text="${event.date + ', ' + event.startTime + ' Uhr'}">Datum</h5>
 					</div>
-					<div class="col-md-6" th:if="${!#strings.isEmpty(event.missionLength)}">
+					<div class="col-md-6" th:unless="${#strings.isEmpty(event.missionLength)}">
 						<h6 th:text="${'(Dauer: ' + event.missionLength + ')'}"></h6>
 					</div>
 				</div>
 
-				<div th:if="${!#strings.isEmpty(event.description)}">
+				<a th:unless="${#strings.isEmpty(event.channelUrl)}" class="btn btn-sm btn-default viewMore"
+				   role="button" th:href="${event.channelUrl}" target="_blank" rel="noopener noreferrer">
+					In Discord öffnen
+				</a>
+
+				<div th:unless="${#strings.isEmpty(event.description)}">
 					<p th:text="${event.description}" class="mb-0 text-truncate"></p>
 					<a class="btn btn-sm btn-default viewMore" data-toggle="collapse" aria-expanded="false"
 					   aria-controls="collapse-1" role="button" href="#collapse-1"></a>
@@ -111,15 +116,12 @@
 												<div class="col-md-5">
 													<p class="mb-1" th:text="${slot.name}"></p>
 												</div>
-												<div th:if="${slot.user == null}">
+												<div th:if="${#strings.isEmpty(slot.text)}">
 													<p class="mb-1 font-weight-bold">Freier Slot</p>
 												</div>
-												<div th:if="${slot.user?.id == defaultUserId}">
-													<p class="mb-1 font-italic" th:text="${slot.replacementText}">
-														Gesperrt</p>
-												</div>
-												<div th:unless="${slot.user?.id == defaultUserId}">
-													<p class="mb-1" th:text="${slot.user?.id}"></p>
+												<div th:unless="${#strings.isEmpty(slot.text)}">
+													<p class="mb-1" th:classappend="${slot.blocked} ? font-italic : ''"
+													   th:text="${slot.text}"></p>
 												</div>
 											</div>
 										</div>
@@ -130,7 +132,7 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
-						<div class="row" th:if="${!#strings.isEmpty(event.missionType)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.missionType)}">
 							<div class="col-md-4">
 								<label>Missionstyp</label>
 							</div>
@@ -147,19 +149,25 @@
 								<p class="mb-0" th:unless="${event.reserveParticipating}">Nein</p>
 							</div>
 						</div>
-						<div class="row" th:if="${!#strings.isEmpty(event.modPack)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.modPack)}">
 							<div class="col-md-4">
 								<label>Modpack</label>
 							</div>
 							<div class="col-md-8">
 								<div th:switch="${event.modPack}">
-									<p class="mb-0" th:case="'2008_ArmaMachtBock'"><a th:href="@{/assets/download/Arma_3_Preset_AmB.html}" download>AMB</a></p>
-									<p class="mb-0" th:case="'Joined_Operations_2020'"><a th:href="@{/assets/download/Joined_Operations_2020.html}" download>Joint Ops</a></p>
+									<p class="mb-0" th:case="'2008_ArmaMachtBock'">
+										<a th:href="@{/assets/download/Arma_3_Preset_AmB.html}" download>AMB</a>
+									</p>
+									<p class="mb-0" th:case="'Joined_Operations_2020'">
+										<a th:href="@{/assets/download/Joined_Operations_2020.html}" download>
+											Joint Ops
+										</a>
+									</p>
 									<p class="mb-0" th:case="*" th:text="${event.modPack}"></p>
 								</div>
 							</div>
 						</div>
-						<div class="row" th:if="${!#strings.isEmpty(event.technicalTeleport)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.technicalTeleport)}">
 							<div class="col-md-4">
 								<label>Technischer Teleport</label>
 							</div>
@@ -167,7 +175,7 @@
 								<p class="mb-0" th:text="${event.technicalTeleport}"></p>
 							</div>
 						</div>
-						<div class="row" th:if="${!#strings.isEmpty(event.medicalSystem)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.medicalSystem)}">
 							<div class="col-md-4">
 								<label>Medic-System</label>
 							</div>
@@ -175,7 +183,7 @@
 								<p class="mb-0" th:text="${event.medicalSystem}"></p>
 							</div>
 						</div>
-						<div class="row" th:if="${!#strings.isEmpty(event.map)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.map)}">
 							<div class="col-md-4">
 								<label>Karte</label>
 							</div>
@@ -183,7 +191,7 @@
 								<p class="mb-0" th:text="${event.map}"></p>
 							</div>
 						</div>
-						<div class="row" th:if="${!#strings.isEmpty(event.missionTime)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.missionTime)}">
 							<div class="col-md-4">
 								<label>Missionszeit</label>
 							</div>
@@ -191,7 +199,7 @@
 								<p class="mb-0" th:text="${event.missionTime}"></p>
 							</div>
 						</div>
-						<div class="row" th:if="${!#strings.isEmpty(event.navigation)}">
+						<div class="row" th:unless="${#strings.isEmpty(event.navigation)}">
 							<div class="col-md-4">
 								<label>Navigationssysteme</label>
 							</div>

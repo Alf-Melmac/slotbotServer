@@ -20,8 +20,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Slot extends AbstractIdEntity {
 	@Column(name = "slot_name", length = 100)
-	@Size(max = 80)
 	@NotBlank
+	@Size(max = 80)
 	private String name;
 
 	@Column(name = "slot_number")
