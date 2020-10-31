@@ -71,6 +71,10 @@
 				   role="button" th:href="${event.channelUrl}" target="_blank" rel="noopener noreferrer">
 					In Discord öffnen
 				</a>
+				<button th:if="${#strings.isEmpty(event.channelUrl) && hasEventManageRole}" class="btn btn-primary"
+				        disabled>
+					Kanal hinzufügen (Deaktiviert)
+				</button>
 
 				<div th:unless="${#strings.isEmpty(event.description)}">
 					<p th:text="${event.description}" class="mb-0 text-truncate"></p>

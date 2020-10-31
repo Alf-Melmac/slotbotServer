@@ -69,6 +69,7 @@ public class EventWebController {
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 		mav.addObject("event", eventDetailsAssembler.toDto(event));
+		mav.addObject("hasEventManageRole", PermissionService.hasEventManageRole());
 		return mav;
 	}
 }

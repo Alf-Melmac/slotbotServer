@@ -1,6 +1,7 @@
 package de.webalf.slotbot.service;
 
 import lombok.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
 
@@ -58,5 +59,10 @@ public class PermissionService {
 				ADMIN,
 				MOD)
 				.toArray(String[]::new);
+	}
+
+	public static boolean hasEventManageRole() {
+		return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+				.anyMatch(grantedAuthority -> getEventManageRoles().contains(grantedAuthority.getAuthority()));
 	}
 }
