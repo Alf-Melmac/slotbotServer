@@ -48,8 +48,10 @@
 		<div class="row mb-3">
 			<div class="col-md-4">
 				<div id="event-img">
-					<img class="img-fluid" alt="Event Bild"
-					     src="https://cdn.discordapp.com/attachments/739819127740301363/739843573620539402/Mission.png"/>
+					<img th:unless="${#strings.isEmpty(event.pictureUrl)}" class="img-fluid" alt="Custom Event Bild"
+					     th:src="${event.pictureUrl}"/>
+					<img th:if="${#strings.isEmpty(event.pictureUrl)}" class="img-fluid" alt="Event Bild"
+					     src="https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg"/>
 				</div>
 			</div>
 			<div class="col-md-6">

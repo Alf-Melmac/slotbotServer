@@ -35,6 +35,8 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 
 	@Size(max = 3200)
 	String description;
+	@Size(max = 1666)
+	String pictureUrl;
 	@Size(max = 80)
 	String missionType;
 	@Size(max = 80)
@@ -62,6 +64,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	                       String channelUrl,
 	                       List<EventDetailsSquadDto> squadList,
 	                       String description,
+	                       String pictureUrl,
 	                       String missionType,
 	                       String missionLength,
 	                       Boolean reserveParticipating,
@@ -79,6 +82,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 		this.squadList = squadList;
 
 		this.description = description;
+		this.pictureUrl = pictureUrl;
 		this.missionType = missionType;
 		this.missionLength = missionLength;
 		this.reserveParticipating = reserveParticipating;

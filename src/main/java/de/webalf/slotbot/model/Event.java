@@ -60,6 +60,10 @@ public class Event extends AbstractIdEntity {
 	@Size(max = 3200)
 	private String description;
 
+	@Column(name = "event_picture_url", length = 2083)
+	@Size(max = 1666)
+	private String pictureUrl;
+
 	@Column(name = "event_mission_type", length = 100)
 	@Size(max = 80)
 	private String missionType;
@@ -107,6 +111,7 @@ public class Event extends AbstractIdEntity {
 	             Long infoMsg,
 	             Long slotListMsg,
 	             String description,
+	             String pictureUrl,
 	             String missionType,
 	             String missionLength,
 	             Boolean reserveParticipating,
@@ -125,6 +130,7 @@ public class Event extends AbstractIdEntity {
 		this.slotListMsg = slotListMsg;
 
 		this.description = description;
+		this.pictureUrl = pictureUrl;
 		this.missionType = missionType;
 		this.missionLength = missionLength;
 		this.reserveParticipating = reserveParticipating;

@@ -41,6 +41,7 @@ public class EventDetailsAssembler {
 				.channelUrl(event.getChannel() != null ? channelUrl : null)
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.description(event.getDescription())
+				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
