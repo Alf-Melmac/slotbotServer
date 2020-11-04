@@ -4,6 +4,7 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -76,8 +77,12 @@ public final class SlotAssembler {
 				.collect(Collectors.toList());
 	}
 
-	static List<Slot> fromDtoList(Iterable<? extends SlotDto> slotDtoList) {
-		return StreamSupport.stream(slotDtoList.spliterator(), false)
+	static List<Slot> fromDtoList(Iterable<? extends SlotDto> slotList) {
+		if (slotList == null) {
+			return Collections.emptyList();
+		}
+
+		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(SlotAssembler::fromDto)
 				.collect(Collectors.toList());
 	}

@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.SquadDto;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +60,10 @@ public final class SquadAssembler {
 	}
 
 	static List<Squad> fromDtoList(Iterable<? extends SquadDto> squadList) {
+		if (squadList == null) {
+			return Collections.emptyList();
+		}
+
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(SquadAssembler::fromDto)
 				.collect(Collectors.toList());
