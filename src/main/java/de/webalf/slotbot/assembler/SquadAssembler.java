@@ -53,7 +53,7 @@ public final class SquadAssembler {
 				.build();
 	}
 
-	static List<SquadDto> toEventDtoList(Iterable<? extends Squad> squadList) {
+	public static List<SquadDto> toEventDtoList(Iterable<? extends Squad> squadList) {
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(SquadAssembler::toEventDto)
 				.collect(Collectors.toList());

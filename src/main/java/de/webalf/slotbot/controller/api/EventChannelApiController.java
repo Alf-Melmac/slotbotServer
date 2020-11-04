@@ -2,10 +2,12 @@ package de.webalf.slotbot.controller.api;
 
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.SlotAssembler;
+import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
+import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +32,9 @@ public class EventChannelApiController {
 	private final EventService eventService;
 
 	@GetMapping("")
-	public EventDto getEventByChannelId(@PathVariable(value = "channelId") long channel) {
+	public EventApiDto getEventByChannelId(@PathVariable(value = "channelId") long channel) {
 		log.trace("getEventByChannelId: " + channel);
-		return EventAssembler.toDto(eventService.findByChannel(channel));
+		return EventApiAssembler.toDto(eventService.findByChannel(channel));
 	}
 
 	@DeleteMapping("")

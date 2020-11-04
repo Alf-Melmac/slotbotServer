@@ -27,7 +27,7 @@ import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
  * @since 22.06.2020
  */
 @Entity
-@Table(name = "event", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
+@Table(name = "event", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "event_channel"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
