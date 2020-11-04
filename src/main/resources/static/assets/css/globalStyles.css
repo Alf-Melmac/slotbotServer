@@ -14,3 +14,7 @@ body:not(p, li) {
   height: 80px;
   margin-right: 10px;
 }
+
+.modal-content {
+  background-color: #3a3a3a;
+}
