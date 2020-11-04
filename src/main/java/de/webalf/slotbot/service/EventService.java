@@ -77,6 +77,10 @@ public class EventService {
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 		//TODO Validation
+		if (!StringUtils.isEmpty(dto.getChannel())
+				&& eventRepository.findByChannel(LongUtils.parseLong(dto.getChannel())).filter(event1 -> !event1.equals(event)).isPresent()) {
+			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
+		}
 
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
