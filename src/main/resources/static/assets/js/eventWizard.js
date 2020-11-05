@@ -12,12 +12,18 @@ $(function () {
     const btnFinish = $('<button id="btnFinish" class="btn btn-primary">Speichern</button>')
         .on('click', function () {
             // Manual leaveStepCheck
-            if (!areAllRequiredFieldsFilled()) {
+            if (!areAllRequiredFieldsFilled('[required]:visible')) {
+                return;
+            } else if (!areAllRequiredFieldsFilled('[required]')) {
+                alert('Wie auch immer du eine Seite übersprungen hast. Schau mal auf den vorhergehenden Seiten nach, du hast ein Pflichfeld nicht ausgefüllt.');
+                return;
+            } else if (!checkUniqueSlotNumbers()) {
+                $('#uniqueSlotNumbersError').show().fadeOut(5000);
                 return;
             }
 
             // Disable Finish button to prevent spamming
-            $(this).prop("disabled",true);
+            $(this).prop("disabled", true);
 
             let event = {};
             $('input,textarea,select')
@@ -116,11 +122,11 @@ $(function () {
     });
 
     // Step leave event
-    $smartWizard.on("leaveStep", areAllRequiredFieldsFilled);
+    $smartWizard.on("leaveStep", () => areAllRequiredFieldsFilled('[required]:visible'));
 
-    function areAllRequiredFieldsFilled() {
+    function areAllRequiredFieldsFilled(selector) {
         let valid = true;
-        $('input,textarea,select').filter('[required]:visible').each(function (index, element) {
+        $('input,textarea,select').filter(selector).each(function (index, element) {
             const $el = $(element);
             const value = $el.val();
             if (!value || value === '') {

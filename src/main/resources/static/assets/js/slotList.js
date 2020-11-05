@@ -1,6 +1,10 @@
 $(function () {
     "use strict";
 
+    // Sortable
+    const $sortable = $('.js-sortable');
+    $sortable.sortable();
+
     const $squads = $('#squads');
 
     //Only allow positive whole numbers
@@ -20,10 +24,11 @@ $(function () {
     const newSquad =
         '<div class="form-group js-complete-squad">' +
         '   <div class="form-row align-items-center js-squad">' +
+        '       <div><em class="fa fa-arrows-v"></em></div>' +
         '       <div class="col-md-11">' +
         '           <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>' +
         '       </div>' +
-        '       <div class="col-md-1 d-flex btn btn-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
+        '       <div class="d-flex btn btn-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
         '   </div>' +
         '' +
         '   <div class="ml-5 js-slots">' +
@@ -56,8 +61,7 @@ $(function () {
     });
 
     function findFirstUnusedSlotNumber() {
-        const slotNumbers = $.map($('.js-slot-number'), el => parseInt($(el).val()))
-            .sort((a, b) => a - b);
+        const slotNumbers = getSlotNumbers().sort((a, b) => a - b);
         let slotNumber = 1;
 
         for (let i = 0; i < slotNumbers.length; i++) {
@@ -74,3 +78,12 @@ $(function () {
         return slotNumber;
     }
 });
+
+function getSlotNumbers() {
+    return $.map($('.js-slot-number'), el => parseInt($(el).val()));
+}
+
+function checkUniqueSlotNumbers() {
+    const slotNumbers = getSlotNumbers();
+    return slotNumbers.length === new Set(slotNumbers).size;
+}
