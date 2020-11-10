@@ -48,6 +48,13 @@
 
 <section class="content-section">
 	<div class="container">
+		<div class="alert alert-info" role="alert">
+			Aktuell kann die Reihenfolge der Squads nicht verändert werden. Dazu muss ein Squad gelöscht und neu
+			hinzugefügt werden.<br>
+			Der Bot übernimmt hier getätigte Änderungen noch nicht automatisch. Entweder beim nächsten
+			Slot-/Unslot-Event oder manuell über !eventUpdate aktualisieren lassen.
+		</div>
+
 		<h3>Allgemeine Informationen</h3>
 		<form>
 			<div class="form-group">
@@ -223,7 +230,8 @@
 		<h3>Teilnahmeplatzaufzählung</h3>
 		<form>
 			<div id="squads" class="js-sortable">
-				<div class="form-group js-complete-squad" th:each="squad : ${event.squadList}" th:data-squadid="${squad.id}">
+				<div class="form-group js-complete-squad" th:each="squad : ${event.squadList}"
+				     th:data-squadid="${squad.id}">
 					<div class="form-row align-items-center js-squad">
 						<div><em class="fa fa-arrows-v"></em></div>
 						<div class="col-md-11">
@@ -237,7 +245,8 @@
 					</div>
 
 					<div class="ml-5 js-slots">
-						<div class="form-row align-items-center js-slot" th:each="slot : ${squad.slotList}" th:data-slotid="${slot.id}">
+						<div class="form-row align-items-center js-slot" th:each="slot : ${squad.slotList}"
+						     th:data-slotid="${slot.id}">
 							<div class="col-md-1">
 								<!--suppress HtmlFormInputWithoutLabel -->
 								<input class="form-control js-slot-number" type="number" min="1" value="1"
