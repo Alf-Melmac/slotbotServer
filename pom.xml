@@ -96,12 +96,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!--Only use during development-->
+		<!--<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<version>${springframework.boot.version}</version>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency>-->
 
 		<!--<dependency>
 			<groupId>org.postgresql</groupId>
