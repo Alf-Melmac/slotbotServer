@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
+import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.LongUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -37,8 +38,7 @@ public final class EventApiAssembler {
 				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
-				.missionType(event.getMissionType())
-				.respawn(event.getRespawn())
+				.missionTypeAndRespawn(EventUtils.getMissionTypeRespawnString(event.getMissionType(), event.getRespawn()))
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())

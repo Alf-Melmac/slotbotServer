@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model.dtos.website;
 
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -98,17 +98,6 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	}
 
 	public String getMissionTypeRespawnString() {
-		String compound = "";
-		boolean respawnExists = respawn != null;
-		if (StringUtils.isNotBlank(missionType)) {
-			compound += missionType;
-			if (respawnExists) {
-				compound += ", ";
-			}
-		}
-		if (respawnExists) {
-			compound += respawn ? "Respawn" : "Kein Respawn";
-		}
-		return compound;
+		return EventUtils.getMissionTypeRespawnString(missionType, respawn);
 	}
 }
