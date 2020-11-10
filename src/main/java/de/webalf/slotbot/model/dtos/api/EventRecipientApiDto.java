@@ -1,5 +1,7 @@
-package de.webalf.slotbot.model.dtos;
+package de.webalf.slotbot.model.dtos.api;
 
+import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.UserDto;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -11,12 +13,12 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class EventRecipientDto extends EventDto {
+public class EventRecipientApiDto extends EventDto {
 	@NotNull
 	private UserDto recipient;
 
 	@Builder(builderMethodName = "recipientBuilder")
-	public EventRecipientDto(UserDto recipient) {
+	public EventRecipientApiDto(UserDto recipient) {
 		this.recipient = recipient;
 	}
 }

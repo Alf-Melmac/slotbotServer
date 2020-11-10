@@ -61,7 +61,7 @@ public class EventWebController {
 		return mav;
 	}
 
-	@GetMapping("{id}")
+	@GetMapping("/{id}")
 	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
@@ -69,7 +69,21 @@ public class EventWebController {
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 		mav.addObject("event", eventDetailsAssembler.toDto(event));
+		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
 		mav.addObject("hasEventManageRole", PermissionService.hasEventManageRole());
+		return mav;
+	}
+
+	@GetMapping("/edit/{id}")
+	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
+		ModelAndView mav = new ModelAndView("eventEdit");
+
+		mav.addObject(START_URL, Urls.START_URL);
+		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
+		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
+		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
+		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
+		mav.addObject("event", eventDetailsAssembler.toDto(event));
 		return mav;
 	}
 }

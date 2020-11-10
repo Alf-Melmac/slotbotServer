@@ -20,7 +20,8 @@
 	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/css/tempusdominus-bootstrap-4.min.css"
 	      integrity="sha256-vi00YWza8MRCSI5GdsFLptAZIULny5MPn62PxEf/ZTY=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
-	<link rel="stylesheet" th:href="@{/assets/css/eventWizard.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/btnFit.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
 </head>
 <body>
 <nav class="navbar navbar-light" id="mainNav">
@@ -69,7 +70,7 @@
 								<label for="eventDate">Datum</label>
 								<div id="datepicker" class="input-group date" data-target-input="nearest">
 									<input id="eventDate" class="form-control datetimepicker-input" type="text"
-									       data-dtokey="date" data-target="#datepicker" required/>
+									       data-dtokey="date" data-target="#datepicker" required>
 									<div class="input-group-append" data-target="#datepicker"
 									     data-toggle="datetimepicker">
 										<div class="input-group-text"><em class="fa fa-calendar"></em></div>
@@ -80,7 +81,7 @@
 								<label for="eventStartTime">Startzeit</label>
 								<div id="datetime" class="input-group date" data-target-input="nearest">
 									<input id="eventStartTime" class="form-control datetimepicker-input" type="text"
-									       data-dtokey="startTime" data-target="#datetime" required/>
+									       data-dtokey="startTime" data-target="#datetime" required>
 									<div class="input-group-append" data-target="#datetime"
 									     data-toggle="datetimepicker">
 										<div class="input-group-text"><em class="fa fa-clock-o"></em></div>
@@ -90,7 +91,7 @@
 							<div class="form-group col-md-4">
 								<label for="eventMissionLength">Missionslänge</label>
 								<input id="eventMissionLength" class="form-control custom-select" type="text"
-								       list="missionLengths" data-dtokey="missionLength"/>
+								       list="missionLengths" data-dtokey="missionLength">
 								<datalist id="missionLengths">
 									<option>2 Stunden</option>
 									<option>3 Stunden</option>
@@ -107,7 +108,7 @@
 							<div class="form-group col-md-2">
 								<label for="eventMissionType">Missionstyp</label>
 								<select id="eventMissionType" class="form-control custom-select"
-								        data-dtokey="missionType" required>
+								        data-dtokey="missionType">
 									<option selected disabled>Auswählen...</option>
 									<option>COOP</option>
 									<option>Zeus</option>
@@ -119,14 +120,13 @@
 							<div class="col-md-6">
 								<div class="custom-control custom-checkbox mr-sm-2">
 									<input id="eventRespawn" class="custom-control-input" type="checkbox"
-									       data-dtokey="missionType">
+									       data-dtokey="respawn">
 									<label class="custom-control-label" for="eventRespawn">Respawn</label>
 								</div>
 							</div>
 							<div class="form-group col-md-4">
 								<label for="eventModPack">Modpack</label>
-								<select id="eventModPack" class="form-control custom-select" data-dtokey="modPack"
-								        required>
+								<select id="eventModPack" class="form-control custom-select" data-dtokey="modPack">
 									<option selected>2008_ArmaMachtBock</option>
 									<option>Joined_Operations_2020</option>
 								</select>
@@ -141,7 +141,7 @@
 						<div class="form-row mb-4">
 							<div class="form-group col-md-4">
 								<label for="eventMap">Karte</label>
-								<select id="eventMap" class="form-control custom-select" data-dtokey="map" required>
+								<select id="eventMap" class="form-control custom-select" data-dtokey="map">
 									<option selected disabled>Auswählen...</option>
 									<option>Altis</option>
 									<option>Bukovina</option>
@@ -220,52 +220,54 @@
 
 				<div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
 					<h3>Teilnahmeplatzaufzählung</h3>
-					<div id="squads" class="js-sortable">
-						<div class="form-group js-complete-squad">
-							<div class="form-row align-items-center js-squad">
-								<div><em class="fa fa-arrows-v"></em></div>
-								<div class="col-md-11">
-									<!--suppress HtmlFormInputWithoutLabel -->
-									<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
-									       required>
-								</div>
-								<div class="d-flex btn btn-trash" type="button">
-									<em class="fa fa-trash-o"></em>
-								</div>
-							</div>
-
-							<div class="ml-5 js-slots">
-								<div class="form-row align-items-center js-slot">
-									<div class="col-md-1">
+					<form>
+						<div id="squads" class="js-sortable">
+							<div class="form-group js-complete-squad">
+								<div class="form-row align-items-center js-squad">
+									<div><em class="fa fa-arrows-v"></em></div>
+									<div class="col-md-11">
 										<!--suppress HtmlFormInputWithoutLabel -->
-										<input class="form-control js-slot-number" type="number" min="1" value="1"
+										<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 										       required>
 									</div>
-									<div class="col-md-10">
-										<!--suppress HtmlFormInputWithoutLabel -->
-										<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
-										       required>
-									</div>
-									<div class="col-md-1 d-flex btn btn-trash" type="button">
+									<div class="d-flex btn btn-fit" type="button">
 										<em class="fa fa-trash-o"></em>
 									</div>
 								</div>
-								<div type="button" class="btn btn-success rounded-circle js-add-slot"
-								     title="Slot hinzufügen">
-									<em class="fa fa-plus"></em>
+
+								<div class="ml-5 js-slots">
+									<div class="form-row align-items-center js-slot">
+										<div class="col-md-1">
+											<!--suppress HtmlFormInputWithoutLabel -->
+											<input class="form-control js-slot-number" type="number" min="1" value="1"
+											       required>
+										</div>
+										<div class="col-md-10">
+											<!--suppress HtmlFormInputWithoutLabel -->
+											<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
+											       required>
+										</div>
+										<div class="col-md-1 d-flex btn btn-fit" type="button">
+											<em class="fa fa-trash-o"></em>
+										</div>
+									</div>
+									<div type="button" class="btn btn-success rounded-circle js-add-slot"
+									     title="Slot hinzufügen">
+										<em class="fa fa-plus"></em>
+									</div>
 								</div>
+							</div>
+
+							<div id="addSquad" type="button" class="btn btn-success rounded-circle"
+							     title="Squad hinzufügen">
+								<em class="fa fa-plus"></em>
 							</div>
 						</div>
 
-						<div id="addSquad" type="button" class="btn btn-success rounded-circle"
-						     title="Squad hinzufügen">
-							<em class="fa fa-plus"></em>
+						<div id="uniqueSlotNumbersError" class="alert alert-danger" role="alert" style="display: none">
+							Slotnummern müssen eindeutig sein. Bitte korrigieren.
 						</div>
-					</div>
-
-					<div id="uniqueSlotNumbersError" class="alert alert-danger" role="alert" style="display: none">
-						Slotnummern müssen eindeutig sein. Bitte korrigieren.
-					</div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -289,13 +291,19 @@
         integrity="sha256-aWAfUXm/D5kDckGqTrmZBEk9u7GnYegeUgLH0sw7SUk=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/js/tempusdominus-bootstrap-4.min.js"
         integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha256-/ijcOLwFf26xEYAjW75FizKVo5tnTYiQddPZoLUHHZ8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"
+        integrity="sha256-ecWZ3XYM7AwWIaGvSdmipJ2l1F4bN9RXW6zgpeAiZYI=" crossorigin="anonymous"></script>
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    const eventsUrl = /*[[${eventsUrl}]]*/ '';
-    const postEventUrl = /*[[${postEventUrl}]]*/ '';
-    const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
-    /*]]>*/
+	/*<![CDATA[*/
+	const eventsUrl = /*[[${eventsUrl}]]*/ '';
+	const postEventUrl = /*[[${postEventUrl}]]*/ '';
+	const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
+	/*]]>*/
 </script>
+<script th:src="@{/assets/js/datetimepicker.js}"></script>
+<script th:src="@{/assets/js/eventSave.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
 <script th:src="@{/assets/js/eventWizard.js}"></script>
 </body>

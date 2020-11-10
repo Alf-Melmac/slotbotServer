@@ -3,10 +3,12 @@ package de.webalf.slotbot.service.external;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.util.ListUtils;
+import org.thymeleaf.util.SetUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +40,7 @@ public class DiscordApiService {
 	 * @param userId user to get role for
 	 * @return authorization role name
 	 */
+	@Cacheable("highestDiscordRole")
 	public String getRole(String userId) {
 		Role highestRole = getHighestRole(getGuildMember(userId).getRoles());
 
@@ -50,6 +53,7 @@ public class DiscordApiService {
 	 * @param userId user to get name for
 	 * @return nickname on server or username if not set
 	 */
+	@Cacheable("discordNicknames")
 	public String getName(String userId) {
 		GuildMember guildMember = getGuildMember(userId);
 		if (!StringUtils.isEmpty(guildMember.getNick())) {
@@ -91,7 +95,11 @@ public class DiscordApiService {
 					.collect(Collectors.toList());
 		}
 
-		return roles.stream().filter(role -> roleIds.contains(role.getId())).findFirst().orElseGet(() -> Role.builder().name("USER").build());
+		Role userRole = Role.builder().name("USER").build();
+		if (SetUtils.isEmpty(roleIds)) {
+			return userRole;
+		}
+		return roles.stream().filter(role -> roleIds.contains(role.getId())).findFirst().orElse(userRole);
 	}
 
 	/**

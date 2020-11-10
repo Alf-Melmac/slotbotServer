@@ -1,12 +1,9 @@
 package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
-import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.util.LongUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +29,7 @@ public final class EventAssembler {
 				.description(eventDto.getDescription())
 				.pictureUrl(eventDto.getPictureUrl())
 				.missionType(eventDto.getMissionType())
+				.respawn(eventDto.getRespawn())
 				.missionLength(eventDto.getMissionLength())
 				.reserveParticipating(eventDto.getReserveParticipating())
 				.modPack(eventDto.getModPack())
@@ -60,6 +58,7 @@ public final class EventAssembler {
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
+				.respawn(event.getRespawn())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())
@@ -87,6 +86,7 @@ public final class EventAssembler {
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
+				.respawn(event.getRespawn())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())
@@ -96,14 +96,5 @@ public final class EventAssembler {
 				.technicalTeleport(event.getTechnicalTeleport())
 				.medicalSystem(event.getMedicalSystem())
 				.build();
-	}
-
-	/**
-	 * To be used if a recipient must be defined
-	 */
-	public static EventRecipientDto toActionDto(Event event, User recipient) {
-		EventRecipientDto eventRecipientDto = EventRecipientDto.recipientBuilder().recipient(UserAssembler.toDto(recipient)).build();
-		ReflectionUtils.shallowCopyFieldState(toDto(event), eventRecipientDto);
-		return eventRecipientDto;
 	}
 }

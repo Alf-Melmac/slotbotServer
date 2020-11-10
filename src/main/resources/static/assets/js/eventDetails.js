@@ -8,4 +8,6 @@ $(function () {
         document.execCommand('copy');
         $(".copied").text("Copied to clipboard").show().fadeOut(1200);
     });
+
+    $('#eventEdit').on('click', () => window.location.href = eventEditUrl);
 });

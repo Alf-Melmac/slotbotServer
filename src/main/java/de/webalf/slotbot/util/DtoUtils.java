@@ -39,6 +39,12 @@ public class DtoUtils {
 		}
 	}
 
+	public static void ifPresent(Boolean value, Consumer<Boolean> consumer) {
+		if (isPresent(value)) {
+			consumer.accept(value);
+		}
+	}
+
 	public static void ifPresent(LocalDate value, Consumer<LocalDate> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);

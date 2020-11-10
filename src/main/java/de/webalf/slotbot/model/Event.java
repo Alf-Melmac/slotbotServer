@@ -68,6 +68,9 @@ public class Event extends AbstractIdEntity {
 	@Size(max = 80)
 	private String missionType;
 
+	@Column(name = "event_respawn")
+	private Boolean respawn;
+
 	@Column(name = "event_mission_length", length = 100)
 	@Size(max = 80)
 	private String missionLength;
@@ -113,6 +116,7 @@ public class Event extends AbstractIdEntity {
 	             String description,
 	             String pictureUrl,
 	             String missionType,
+	             Boolean respawn,
 	             String missionLength,
 	             Boolean reserveParticipating,
 	             String modPack,
@@ -132,6 +136,7 @@ public class Event extends AbstractIdEntity {
 		this.description = description;
 		this.pictureUrl = pictureUrl;
 		this.missionType = missionType;
+		this.respawn = respawn;
 		this.missionLength = missionLength;
 		this.reserveParticipating = reserveParticipating;
 		this.modPack = modPack;
@@ -141,8 +146,7 @@ public class Event extends AbstractIdEntity {
 		this.technicalTeleport = technicalTeleport;
 		this.medicalSystem = medicalSystem;
 
-		assertUniqueSlotNumbers();
-		updateSlotCount();
+		validateAndRecount();
 	}
 
 	// Getter
@@ -204,6 +208,11 @@ public class Event extends AbstractIdEntity {
 	}
 
 	// Validator
+
+	public void validateAndRecount() {
+		assertUniqueSlotNumbers();
+		updateSlotCount();
+	}
 
 	/**
 	 * Checks whether the event has a slot with a non-unique slot number

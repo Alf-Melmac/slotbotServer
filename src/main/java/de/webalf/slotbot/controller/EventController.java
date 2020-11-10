@@ -33,4 +33,10 @@ public class EventController {
 	public EventDto postEvent(@Valid @RequestBody EventDto event) {
 		return EventAssembler.toDto(eventService.createEvent(event));
 	}
+
+	@PutMapping("/{id}")
+	public EventDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+		event.setId(eventId);
+		return EventAssembler.toDto(eventService.updateEvent(event));
+	}
 }

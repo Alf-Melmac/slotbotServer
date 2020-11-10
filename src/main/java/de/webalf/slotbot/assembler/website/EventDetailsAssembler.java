@@ -43,6 +43,7 @@ public class EventDetailsAssembler {
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
+				.respawn(event.getRespawn())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())

@@ -48,9 +48,9 @@ public class EventApiDto extends AbstractIdEntityDto {
 	String pictureUrl;
 	@Size(max = 80)
 	String missionType;
+	Boolean respawn;
 	@Size(max = 80)
 	String missionLength;
-	@Size(max = 80)
 	Boolean reserveParticipating;
 	@Size(max = 80)
 	String modPack;
@@ -78,6 +78,7 @@ public class EventApiDto extends AbstractIdEntityDto {
 	                   String description,
 	                   String pictureUrl,
 	                   String missionType,
+	                   Boolean respawn,
 	                   String missionLength,
 	                   Boolean reserveParticipating,
 	                   String modPack,
@@ -100,6 +101,7 @@ public class EventApiDto extends AbstractIdEntityDto {
 		this.description = description;
 		this.pictureUrl = pictureUrl;
 		this.missionType = missionType;
+		this.respawn = respawn;
 		this.missionLength = missionLength;
 		this.reserveParticipating = reserveParticipating;
 		this.modPack = modPack;

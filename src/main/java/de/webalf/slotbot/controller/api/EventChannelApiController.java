@@ -4,10 +4,10 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
-import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,8 +59,8 @@ public class EventChannelApiController {
 	}
 
 	@PostMapping("/unslot/{slotNumber}")
-	public EventRecipientDto postUnslotSlot(@PathVariable(value = "channelId") long channel,
-	                                        @PathVariable(value = "slotNumber") int slotNumber) {
+	public EventRecipientApiDto postUnslotSlot(@PathVariable(value = "channelId") long channel,
+	                                           @PathVariable(value = "slotNumber") int slotNumber) {
 		log.trace("postUnslotSlot: " + channel + " " + slotNumber);
 		return eventService.unslot(channel, slotNumber);
 	}

@@ -1,6 +1,8 @@
 $(function () {
     "use strict";
 
+    $(':checkbox').prop('indeterminate', true);
+
     const $smartWizard = $("#smartwizard");
 
     // Toolbar extra buttons
@@ -9,88 +11,10 @@ $(function () {
             window.location.href = eventsUrl;
         });
 
-    const btnFinish = $('<button id="btnFinish" class="btn btn-primary">Speichern</button>')
+    const btnFinish = $('<button id="btnFinish" class="btn btn-primary" tabindex="0" data-toggle="popover"' +
+        ' data-trigger="focus" data-content="Alle Pflichfelder ausfüllen!">Speichern</button>')
         .on('click', function () {
-            // Manual leaveStepCheck
-            if (!areAllRequiredFieldsFilled('[required]:visible')) {
-                return;
-            } else if (!areAllRequiredFieldsFilled('[required]')) {
-                alert('Wie auch immer du eine Seite übersprungen hast. Schau mal auf den vorhergehenden Seiten nach, du hast ein Pflichfeld nicht ausgefüllt.');
-                return;
-            } else if (!checkUniqueSlotNumbers()) {
-                $('#uniqueSlotNumbersError').show().fadeOut(5000);
-                return;
-            }
-
-            // Disable Finish button to prevent spamming
-            $(this).prop("disabled", true);
-
-            let event = {};
-            $('input,textarea,select')
-                .filter((index, element) => !$(element).attr('class').includes('squad') && !$(element).attr('class').includes('slot'))
-                .each(function (index, element) {
-                    const $el = $(element);
-                    const key = $el.data('dtokey');
-
-                    if (!key || key === '') {
-                        console.error('empty key');
-                        console.log($el);
-                        return;
-                    }
-
-                    // Special treatment, because this is a compound field
-                    if (key === 'missionType') {
-                        const missionTypeVal = event[key];
-                        if (!$el.is(':checkbox')) {
-                            if (missionTypeVal) {
-                                event[key] = $el.val() + missionTypeVal;
-                                return;
-                            }
-                        } else {
-                            const respawnText = $el.is(':checked') ? ', Respawn' : ', Kein Respawn';
-                            event[key] = missionTypeVal ? missionTypeVal + respawnText : respawnText;
-                            return;
-                        }
-                    }
-
-                    let value = $el.val();
-                    if ($el.is(":checkbox")) {
-                        value = $el.is(':checked');
-                    }
-                    if (value !== '') {
-                        event[key] = value;
-                    }
-                });
-
-            let squads = [];
-            $('#squads .js-complete-squad').each(function (completeSquadIndex, completeSquadElement) {
-                const $completeSquad = $(completeSquadElement);
-                let squad = {
-                    name: $completeSquad.find('.js-squad-name').val(),
-                    slotList: []
-                };
-
-                $completeSquad.find('.js-slot').each(function (slotIndex, slotElement) {
-                    const $slot = $(slotElement)
-                    squad.slotList.push({
-                        name: $slot.find('.js-slot-name').val(),
-                        number: $slot.find('.js-slot-number').val()
-                    });
-                });
-
-                squads.push(squad);
-            });
-            event.squadList = squads;
-
-            $.ajax(postEventUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: JSON.stringify(event)
-            })
-                .done(savedEvent => window.location.href = eventDetailsUrl.replace('{eventId}', savedEvent.id))
-                .fail(response => alert(JSON.stringify(response) + '\nEvent Erstellung fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
+            saveEvent($(this), postEventUrl, 'POST');
         });
 
     $smartWizard.smartWizard({
@@ -123,32 +47,4 @@ $(function () {
 
     // Step leave event
     $smartWizard.on("leaveStep", () => areAllRequiredFieldsFilled('[required]:visible'));
-
-    function areAllRequiredFieldsFilled(selector) {
-        let valid = true;
-        $('input,textarea,select').filter(selector).each(function (index, element) {
-            const $el = $(element);
-            const value = $el.val();
-            if (!value || value === '') {
-                $el.addClass('is-invalid');
-                $el.on('change', (event) => $(event.target).removeClass('is-invalid'));
-                valid = false;
-            }
-        });
-
-        return valid;
-    }
-
-
-    // Date and time picker
-    $('#datepicker').datetimepicker({
-        format: 'yyyy-MM-DD',
-        locale: 'de',
-        minDate: moment()
-    });
-
-    $('#datetime').datetimepicker({
-        format: 'LT',
-        locale: 'de'
-    });
 });

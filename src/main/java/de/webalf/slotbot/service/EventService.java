@@ -1,6 +1,7 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.EventAssembler;
+import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
@@ -8,9 +9,9 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
-import de.webalf.slotbot.model.dtos.EventRecipientDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
+import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
@@ -34,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventService {
 	private final EventRepository eventRepository;
+	private final SquadService squadService;
 	private final SlotService slotService;
 	private final UserService userService;
 
@@ -76,7 +78,7 @@ public class EventService {
 
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
-		//TODO Validation
+
 		if (!StringUtils.isEmpty(dto.getChannel())
 				&& eventRepository.findByChannel(LongUtils.parseLong(dto.getChannel())).filter(event1 -> !event1.equals(event)).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
@@ -85,14 +87,28 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
-		DtoUtils.ifPresent(dto.getDescription(), event::setDescription);
 		DtoUtils.ifPresent(dto.getChannel(), event::setChannelString);
 		DtoUtils.ifPresent(dto.getInfoMsg(), event::setInfoMsgString);
 		DtoUtils.ifPresent(dto.getSlotListMsg(), event::setSlotListMsgString);
+		DtoUtils.ifPresent(dto.getDescription(), event::setDescription);
+		DtoUtils.ifPresent(dto.getPictureUrl(), event::setPictureUrl);
+		DtoUtils.ifPresent(dto.getMissionType(), event::setMissionType);
+		DtoUtils.ifPresent(dto.getRespawn(), event::setRespawn);
+		DtoUtils.ifPresent(dto.getMissionLength(), event::setMissionLength);
+		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
+		DtoUtils.ifPresent(dto.getModPack(), event::setModPack);
+		DtoUtils.ifPresent(dto.getMap(), event::setMap);
+		DtoUtils.ifPresent(dto.getMissionTime(), event::setMissionTime);
+		DtoUtils.ifPresent(dto.getNavigation(), event::setNavigation);
+		DtoUtils.ifPresent(dto.getTechnicalTeleport(), event::setTechnicalTeleport);
+		DtoUtils.ifPresent(dto.getMedicalSystem(), event::setMedicalSystem);
 
-		//TODO Squad
-//		DtoUtils.ifPresent(dto.getSquadList(), event::setSquadList);
+		if (dto.getSquadList() != null) {
+			event.getSquadList().clear();
+			event.getSquadList().addAll(squadService.updateSquadList(dto.getSquadList()));
+		}
 
+		event.validateAndRecount();
 		return event;
 	}
 
@@ -144,12 +160,12 @@ public class EventService {
 	 * @param slotNumber slot that should be cleared
 	 * @return Event in which the unslot has been performed
 	 */
-	public EventRecipientDto unslot(long channel, int slotNumber) {
+	public EventRecipientApiDto unslot(long channel, int slotNumber) {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		User userToUnslot = slot.getUser();
 		slotService.unslot(slot, userToUnslot);
-		return EventAssembler.toActionDto(event, userToUnslot);
+		return EventApiAssembler.toActionDto(event, userToUnslot);
 	}
 
 	/**

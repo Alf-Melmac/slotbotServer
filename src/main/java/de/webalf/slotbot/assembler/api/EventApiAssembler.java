@@ -1,11 +1,15 @@
 package de.webalf.slotbot.assembler.api;
 
 import de.webalf.slotbot.assembler.SquadAssembler;
+import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.util.LongUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +38,7 @@ public final class EventApiAssembler {
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
+				.respawn(event.getRespawn())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())
@@ -43,5 +48,14 @@ public final class EventApiAssembler {
 				.technicalTeleport(event.getTechnicalTeleport())
 				.medicalSystem(event.getMedicalSystem())
 				.build();
+	}
+
+	/**
+	 * To be used if a recipient must be defined
+	 */
+	public static EventRecipientApiDto toActionDto(Event event, User recipient) {
+		EventRecipientApiDto eventRecipientApiDto = EventRecipientApiDto.recipientBuilder().recipient(UserAssembler.toDto(recipient)).build();
+		ReflectionUtils.shallowCopyFieldState(toDto(event), eventRecipientApiDto);
+		return eventRecipientApiDto;
 	}
 }

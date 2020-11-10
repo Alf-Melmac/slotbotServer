@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,14 +39,26 @@ public class SlotService {
 		return slotRepository.save(slot);
 	}
 
+	List<Slot> updateSlotList(List<SlotDto> slotList) {
+		List<Slot> eventSlotList = new ArrayList<>();
+		slotList.forEach(slotDto -> eventSlotList.add(updateSlot(slotDto)));
+		return eventSlotList;
+	}
+
+	/**
+	 * Updates a slot with the given values identified by its id
+	 * (!) Squad can not be changes
+	 *
+	 * @param dto with new values
+	 * @return updated Slot
+	 */
 	private Slot updateSlot(@NonNull SlotDto dto) {
 		Slot slot = slotRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
-		//TODO Squad
-//		DtoUtils.ifPresent(dto.getSquad(), slot::setSquad);
 		DtoUtils.ifPresent(dto.getUser(), slot::setUser);
+		DtoUtils.ifPresent(dto.getReplacementText(), slot::setReplacementText);
 
 		return slot;
 	}

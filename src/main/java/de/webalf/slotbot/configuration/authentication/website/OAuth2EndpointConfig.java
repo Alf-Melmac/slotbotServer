@@ -44,6 +44,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/assets/**").permitAll()
 				.antMatchers("/events/new").hasAnyRole(PermissionService.getEventManageRoleNames())
+				.antMatchers("/events/edit/*").hasAnyRole(PermissionService.getEventManageRoleNames())
 
 				// all other requests must be authenticated
 				.anyRequest().authenticated()
