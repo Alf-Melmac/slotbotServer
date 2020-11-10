@@ -1,12 +1,10 @@
 package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.SquadDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -38,7 +36,7 @@ public final class SquadAssembler {
 		return SquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.slotList(SlotAssembler.toEventDtoList(squad.getSlotList()).stream().sorted(Comparator.comparing(SlotDto::getNumber)).collect(Collectors.toList()))
+				.slotList(SlotAssembler.toEventDtoList(squad.getSlotList()))
 				.build();
 	}
 

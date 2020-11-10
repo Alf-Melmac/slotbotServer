@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -74,6 +75,7 @@ public final class SlotAssembler {
 	static List<SlotDto> toEventDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(SlotAssembler::toEventDto)
+				.sorted(Comparator.comparing(SlotDto::getNumber))
 				.collect(Collectors.toList());
 	}
 
