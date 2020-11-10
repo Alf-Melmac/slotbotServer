@@ -13,8 +13,6 @@ import org.thymeleaf.util.SetUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.service.PermissionService.*;
-
 /**
  * @author Alf
  * @since 29.10.2020
@@ -27,11 +25,16 @@ public class DiscordApiService {
 	private static final Set<String> KNOWN_ROLE_NAMES = new HashSet<>();
 	private static List<Role> roles = new ArrayList<>();
 
+	private static final String ROLE_ADMINISTRATOR = "Administrator";
+	private static final String ROLE_MODERATOR = "Moderator";
+	private static final String ROLE_CREATOR = "Creator";
+	private static final String ROLE_ARMA = "ArmA";
+
 	static {
-		KNOWN_ROLE_NAMES.add("Administrator");
-		KNOWN_ROLE_NAMES.add("Moderator");
-		KNOWN_ROLE_NAMES.add("Creator");
-		KNOWN_ROLE_NAMES.add("Gamer");
+		KNOWN_ROLE_NAMES.add(ROLE_ADMINISTRATOR);
+		KNOWN_ROLE_NAMES.add(ROLE_MODERATOR);
+		KNOWN_ROLE_NAMES.add(ROLE_CREATOR);
+		KNOWN_ROLE_NAMES.add(ROLE_ARMA);
 	}
 
 	/**
@@ -110,14 +113,14 @@ public class DiscordApiService {
 	 */
 	private static String getRoleName(@NonNull Role role) {
 		switch (role.getName()) {
-			case "Administrator":
-				return ADMIN;
-			case "Moderator":
-				return MOD;
-			case "Creator":
-				return CREATOR;
-			case "Gamer":
-				return GAMER;
+			case ROLE_ADMINISTRATOR:
+				return PermissionService.ADMIN;
+			case ROLE_MODERATOR:
+				return PermissionService.MOD;
+			case ROLE_CREATOR:
+				return PermissionService.CREATOR;
+			case ROLE_ARMA:
+				return PermissionService.ARMA;
 			default:
 				return "USER";
 		}

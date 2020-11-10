@@ -16,7 +16,7 @@ public class PermissionService {
 	public static final String ADMIN = "ADMIN";
 	public static final String MOD = "MOD";
 	public static final String CREATOR = "CREATOR";
-	public static final String GAMER = "GAMER";
+	public static final String ARMA = "ARMA";
 
 	/**
 	 * Roles that are allowed to manage events
