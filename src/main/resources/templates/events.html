@@ -13,7 +13,8 @@
 	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
 
 	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css" integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css"
+	      integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
 </head>
@@ -32,6 +33,11 @@
 <section class="content-section">
 	<div class="container">
 		<h1 class="text-center">Events</h1>
+		<div class="alert alert-danger" role="alert">
+			Dieser Kalender befindet sich in Entwicklung. Die folgenden Events sind aktuell für den Entwicklungstest.
+			Die tatsächliche Events findest du aktuell nur auf unserem
+			<a href="https://discord.gg/fZCTze5VD9" class="alert-link">Discord</a>. Schau doch mal vorbei!
+		</div>
 		<div id="calendar"></div>
 	</div>
 </section>
@@ -53,12 +59,12 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales/de.js"
         integrity="sha256-5NuY7bTFzA3O6ryPPZNjEcUTvOo4P7VXNtpiasi2tFo=" crossorigin="anonymous"></script>
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    const getEventsUrl = /*[[${getEventsUrl}]]*/ '';
-    const createEventUrl = /*[[${createEventUrl}]]*/ '';
-    const authentication = /*[[${#authentication}]]*/ '';
-    const eventManageRoles = /*[[${eventManageRoles}]]*/ '';
-    /*]]>*/
+	/*<![CDATA[*/
+	const getEventsUrl = /*[[${getEventsUrl}]]*/ '';
+	const createEventUrl = /*[[${createEventUrl}]]*/ '';
+	const authentication = /*[[${#authentication}]]*/ '';
+	const eventManageRoles = /*[[${eventManageRoles}]]*/ '';
+	/*]]>*/
 </script>
 <script th:src="@{/assets/js/events.js}"></script>
 </body>
