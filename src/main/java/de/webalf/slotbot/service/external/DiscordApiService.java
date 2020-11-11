@@ -1,11 +1,14 @@
 package de.webalf.slotbot.service.external;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
+import de.webalf.slotbot.service.PermissionService;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.util.ListUtils;
 import org.thymeleaf.util.SetUtils;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
@@ -59,22 +63,40 @@ public class DiscordApiService {
 	@Cacheable("discordNicknames")
 	public String getName(String userId) {
 		GuildMember guildMember = getGuildMember(userId);
-		if (!StringUtils.isEmpty(guildMember.getNick())) {
-			return guildMember.getNick();
-		} else {
-			return guildMember.getUser().getUsername();
-		}
+		return guildMember.getNick();
 	}
+
+	private boolean wait = false;
+	private long waitUntil;
 
 	/**
 	 * @see <a href="https://discord.com/developers/docs/resources/guild#get-guild-member" target="_top">https://discord.com/developers/docs/resources/guild#get-guild-member</a>
 	 */
-	private GuildMember getGuildMember(String userId) {
+	synchronized private GuildMember getGuildMember(String userId) {
 		String url = "/guilds/" + discordProperties.getGuild() + "/members/" + userId;
 
-		return buildWebClient().get().uri(url)
-				.retrieve()
-				.bodyToMono(GuildMember.class)
+		if (wait) {
+			try {
+				wait(Math.max(0, waitUntil - (System.currentTimeMillis() / 1000)));
+			} catch (InterruptedException e) {
+				log.error("Wait was interrupted", e);
+			}
+			wait = false;
+		}
+
+		return buildWebClient().get().uri(url).exchange()
+				.doOnSuccess(clientResponse -> {
+					HttpHeaders httpHeaders = clientResponse.headers().asHttpHeaders();
+					List<String> remainingHeaders = httpHeaders.get("x-ratelimit-remaining");
+					List<String> resetAfterHeaders = httpHeaders.get("x-ratelimit-reset-after");
+					if (!ListUtils.isEmpty(remainingHeaders) && !ListUtils.isEmpty(resetAfterHeaders)) {
+						if ("0".equals(remainingHeaders.get(0))) {
+							wait = true;
+							waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
+						}
+					}
+				})
+				.flatMap(clientResponse -> clientResponse.bodyToMono(GuildMember.class))
 				.block();
 	}
 
@@ -160,7 +182,13 @@ public class DiscordApiService {
 		private Set<Long> roles;
 
 		String getNick() {
-			return nick != null ? nick : user.getUsername();
+			if (nick != null) {
+				return nick;
+			} else if (user != null) {
+				return user.getUsername();
+			} else {
+				return null;
+			}
 		}
 	}
 }
