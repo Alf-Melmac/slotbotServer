@@ -118,7 +118,7 @@
 					<a class="btn btn-sm btn-default viewMore" data-toggle="collapse" aria-expanded="false"
 					   aria-controls="collapse-1" role="button" href="#collapse-1"></a>
 					<div id="collapse-1" class="collapse">
-						<p th:utext="${#strings.replace(#strings.escapeXml(event.description),'&#10;','&lt;br&gt;')}">
+						<p th:utext="${T(de.webalf.slotbot.util.DiscordMarkdown).toHtml(event.description)}">
 							Beschreibung
 						</p>
 					</div>
