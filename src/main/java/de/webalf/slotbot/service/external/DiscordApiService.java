@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.util.ListUtils;
 import org.thymeleaf.util.SetUtils;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,8 +50,15 @@ public class DiscordApiService {
 	 */
 	@Cacheable("highestDiscordRole")
 	public String getRole(String userId) {
-		Role highestRole = getHighestRole(getGuildMember(userId).getRoles());
+		GuildMember member = getGuildMember(userId);
+		if (member.getUser() == null) {
+			log.warn("Fetching user of id " + userId);
+			User user = getUser(userId);
+			member = GuildMember.builder().user(user).roles(Collections.emptySet()).build();
+		}
+		log.info("Login of: [" + userId + "] " + member.getUser().getUsername());
 
+		Role highestRole = getHighestRole(member.getRoles());
 		return "ROLE_" + getRoleName(highestRole);
 	}
 
@@ -64,6 +72,15 @@ public class DiscordApiService {
 	public String getName(String userId) {
 		GuildMember guildMember = getGuildMember(userId);
 		return guildMember.getNick();
+	}
+
+	/**
+	 * @see <a href="https://discord.com/developers/docs/resources/user#get-user" target"_top">https://discord.com/developers/docs/resources/user#get-user</a>
+	 */
+	private User getUser(String userId) {
+		String url = "/users/" + userId;
+
+		return buildWebClient().get().uri(url).retrieve().bodyToMono(User.class).block();
 	}
 
 	private boolean wait = false;
@@ -97,6 +114,7 @@ public class DiscordApiService {
 					}
 				})
 				.flatMap(clientResponse -> clientResponse.bodyToMono(GuildMember.class))
+				.onErrorResume(error -> Mono.just(new GuildMember()))
 				.block();
 	}
 
@@ -176,6 +194,9 @@ public class DiscordApiService {
 
 	@Getter
 	@Setter
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	private static class GuildMember {
 		private User user;
 		private String nick;
