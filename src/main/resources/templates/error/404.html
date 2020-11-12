@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>AMB - 404</title>
+
+	<meta property="og:image" content="/assets/img/amb_logo.jpg">
+	<meta property="og:type" content="website">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
+	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
+	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
+
+	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/error.css}">
+</head>
+<body>
+<nav class="navbar navbar-light" id="mainNav">
+	<div class="container">
+		<div>
+			<a href="/">
+				<img class="navbar-logo" th:attr="src=@{/assets/img/amb_logo.jpg}" alt="AMB">
+				<a class="navbar-brand" href="/">Arma macht Bock</a>
+			</a>
+		</div>
+	</div>
+</nav>
+
+<section class="content-section">
+	<!-- Original: https://codepen.io/SofiaSergio/-->
+	<div class="error-container">
+		<div class="error-text"><p>404</p></div>
+		<div class="error-container">
+			<!-- caveman left -->
+			<div class="caveman">
+				<div class="leg">
+					<div class="foot"><div class="fingers"></div></div>
+				</div>
+				<div class="leg">
+					<div class="foot"><div class="fingers"></div></div>
+				</div>
+				<div class="shape">
+					<div class="circle"></div>
+					<div class="circle"></div>
+				</div>
+				<div class="head">
+					<div class="eye"><div class="nose"></div></div>
+					<div class="mouth"></div>
+				</div>
+				<div class="arm-right"><div class="club"></div></div>
+			</div>
+			<!-- caveman right -->
+			<div class="caveman">
+				<div class="leg">
+					<div class="foot"><div class="fingers"></div></div>
+				</div>
+				<div class="leg">
+					<div class="foot"><div class="fingers"></div></div>
+				</div>
+				<div class="shape">
+					<div class="circle"></div>
+					<div class="circle"></div>
+				</div>
+				<div class="head">
+					<div class="eye"><div class="nose"></div></div>
+					<div class="mouth"></div>
+				</div>
+				<div class="arm-right"><div class="club"></div></div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>
