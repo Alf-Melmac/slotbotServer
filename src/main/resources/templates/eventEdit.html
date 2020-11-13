@@ -144,38 +144,11 @@
 				<div class="form-group col-md-4">
 					<label for="eventMap">Karte</label>
 					<select id="eventMap" class="form-control custom-select" data-dtokey="map">
-						<option th:text="${event.map}" selected th:disabled="${#strings.isEmpty(event.map)}">
+						<option th:with="mapEmpty=${#strings.isEmpty(event.map)}"
+						        th:text="${mapEmpty} ? 'Auswählen...' : ${event.map}" selected th:disabled="${mapEmpty}">
 							Auswählen...
 						</option>
-						<option>Altis</option>
-						<option>Bukovina</option>
-						<option>Bystrica</option>
-						<option>Chernarus (Herbst)</option>
-						<option>Chernarus (Sommer)</option>
-						<option>Chernarus (Winter)</option>
-						<option>Die Wüste</option>
-						<option>Kidal</option>
-						<option>Kunduz, Afghanistan</option>
-						<option>Livonia</option>
-						<option>Malden 2035</option>
-						<option>Porto</option>
-						<option>Proving Grounds</option>
-						<option>Rahmadi</option>
-						<option>Sahrani</option>
-						<option>Shapur</option>
-						<option>Southern Sahrani</option>
-						<option>Stratis</option>
-						<option>Summa</option>
-						<option>Summa winter</option>
-						<option>Takistan</option>
-						<option>Takistan Mountains</option>
-						<option>Tanoa</option>
-						<option>Tria</option>
-						<option>United Sahrani</option>
-						<option>Utes</option>
-						<option>Virolahti</option>
-						<option>Virtuelle Realität</option>
-						<option>Zargabad</option>
+						<option th:each="map : ${event.getMapsFiltered()}" th:text="${map}"></option>
 					</select>
 				</div>
 				<div class="form-group col-md-4">

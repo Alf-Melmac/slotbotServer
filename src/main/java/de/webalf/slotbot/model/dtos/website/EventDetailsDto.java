@@ -4,6 +4,7 @@ import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,5 +101,45 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 
 	public String getMissionTypeRespawnString() {
 		return EventUtils.getMissionTypeRespawnString(missionType, respawn);
+	}
+
+	@Getter
+	private static final List<String> MAPS = new ArrayList<>();
+
+	static {
+		MAPS.add("Altis");
+		MAPS.add("Bukovina");
+		MAPS.add("Bystrica");
+		MAPS.add("Chernarus (Herbst)");
+		MAPS.add("Chernarus (Sommer)");
+		MAPS.add("Chernarus (Winter)");
+		MAPS.add("Die Wüste");
+		MAPS.add("Kidal");
+		MAPS.add("Kunduz, Afghanistan");
+		MAPS.add("Livonia");
+		MAPS.add("Malden 2035");
+		MAPS.add("Porto");
+		MAPS.add("Proving Grounds");
+		MAPS.add("Rahmadi");
+		MAPS.add("Sahrani");
+		MAPS.add("Shapur");
+		MAPS.add("Southern Sahrani");
+		MAPS.add("Stratis");
+		MAPS.add("Summa");
+		MAPS.add("Summa winter");
+		MAPS.add("Takistan");
+		MAPS.add("Takistan Mountains");
+		MAPS.add("Tanoa");
+		MAPS.add("Tria");
+		MAPS.add("United Sahrani");
+		MAPS.add("Utes");
+		MAPS.add("Virolahti");
+		MAPS.add("Virtuelle Realität");
+		MAPS.add("Zargabad");
+	}
+
+	public List<String> getMapsFiltered() {
+		MAPS.remove(getMap());
+		return MAPS;
 	}
 }
