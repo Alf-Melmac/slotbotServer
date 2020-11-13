@@ -15,7 +15,7 @@ $(function ($) {
             if (target.length) {
                 $('html, body').animate({
                     scrollTop: target.offset().top - 48
-                }, 1000, "easeInOutExpo");
+                }, 1000, 'easeInOutExpo');
                 return false;
             }
         }
@@ -34,11 +34,11 @@ $(function ($) {
 
     // Collapse Navbar
     let navbarCollapse = function () {
-        const $mainNav = $("#mainNav");
+        const $mainNav = $('#mainNav');
         if ($mainNav.offset().top > 100) {
-            $mainNav.addClass("navbar-shrink");
+            $mainNav.addClass('navbar-shrink');
         } else {
-            $mainNav.removeClass("navbar-shrink");
+            $mainNav.removeClass('navbar-shrink');
         }
     };
     // Collapse now if page is not at top

@@ -19,7 +19,7 @@ function saveEvent($saveBtn, url, ajaxMethod, update) {
 
     if (!areAllRequiredFieldsFilled('[required]')) {
         $saveBtn.popover('show');
-        $saveBtn.prop("disabled", false);
+        $saveBtn.prop('disabled', false);
         return;
     } else {
         $saveBtn.popover('hide');
@@ -45,7 +45,7 @@ function saveEvent($saveBtn, url, ajaxMethod, update) {
             }
 
             let value = $el.val();
-            const isCheckbox = $el.is(":checkbox");
+            const isCheckbox = $el.is(':checkbox');
             if (isCheckbox) {
                 if ($el.is(':indeterminate')) {
                     return;

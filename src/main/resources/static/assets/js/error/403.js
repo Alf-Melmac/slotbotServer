@@ -15,8 +15,8 @@ $(function () {
 
         cx = 115 + 30 * x;
         cy = 50 + 30 * y;
-        $eyef.attr("cx", cx);
-        $eyef.attr("cy", cy);
+        $eyef.attr('cx', cx);
+        $eyef.attr('cy', cy);
     });
 
     $root.on('touchmove', function (e) {

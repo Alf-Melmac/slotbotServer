@@ -3,7 +3,7 @@ $(function () {
 
     $(':checkbox').prop('indeterminate', true);
 
-    const $smartWizard = $("#smartwizard");
+    const $smartWizard = $('#smartwizard');
 
     // Toolbar extra buttons
     const btnCancel = $('<button id="btnCancel" class="btn btn-danger">Abbrechen</button>')
@@ -20,6 +20,7 @@ $(function () {
     $smartWizard.smartWizard({
         theme: 'dots',
         darkMode: true,
+        enableURLhash: false,
         transition: {
             animation: 'fade',
             speed: '400'
@@ -35,16 +36,20 @@ $(function () {
     });
 
     // Step show event
-    $smartWizard.on("showStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
+    $smartWizard.on('showStep', function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
         const $btnFinish = $('#btnFinish');
 
-        $("#prev-btn").prop('disabled', stepPosition === 'first');
+        $('#prev-btn').prop('disabled', stepPosition === 'first');
 
         let last = stepPosition === 'last';
-        $("#next-btn").prop('disabled', last);
+        $('#next-btn').prop('disabled', last);
         $btnFinish.toggle(last);
     });
 
     // Step leave event
-    $smartWizard.on("leaveStep", () => areAllRequiredFieldsFilled('[required]:visible'));
+    $smartWizard.on('leaveStep', function(e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
+        if (stepDirection === 'forward') {
+            return areAllRequiredFieldsFilled('[required]:visible');
+        }
+    });
 });
