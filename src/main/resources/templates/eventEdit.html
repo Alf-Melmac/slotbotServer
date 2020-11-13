@@ -105,15 +105,14 @@
 				<div class="form-group col-md-2">
 					<label for="eventMissionType">Missionstyp</label>
 					<select id="eventMissionType" class="form-control custom-select" data-dtokey="missionType">
-						<option th:text="${event.missionType}" selected
-						        th:disabled="${#strings.isEmpty(event.missionType)}">
+						<option th:with="missionTypeEmpty=${#strings.isEmpty(event.missionType)}"
+						        th:text="${missionTypeEmpty} ? 'Auswählen...' : ${event.missionType}"
+						        selected
+						        th:disabled="${missionTypeEmpty}">
 							Auswählen...
 						</option>
-						<option>COOP</option>
-						<option>Zeus</option>
-						<option>TvT</option>
-						<option>Nebenevent</option>
-						<option>Anderes</option>
+						<option th:each="missionType : ${event.getMissionTypesFiltered()}"
+						        th:text="${missionType}"></option>
 					</select>
 				</div>
 				<div class="col-md-6">
@@ -126,11 +125,12 @@
 				<div class="form-group col-md-4">
 					<label for="eventModPack">Modpack</label>
 					<select id="eventModPack" class="form-control custom-select" data-dtokey="modPack">
-						<option th:text="${event.modPack}" selected
-						        th:disabled="${#strings.isEmpty(event.modPack)}">Auswählen...
+						<option th:with="modPackEmpty=${#strings.isEmpty(event.modPack)}"
+						        th:text="${modPackEmpty} ? 'Auswählen...' : ${event.modPack}" selected
+						        th:disabled="${modPackEmpty}">
+							Auswählen...
 						</option>
-						<option>2008_ArmaMachtBock</option>
-						<option>Joined_Operations_2020</option>
+						<option th:each="modPack : ${event.getModPacksFiltered()}" th:text="${modPack}"></option>
 					</select>
 				</div>
 			</div>
@@ -145,7 +145,8 @@
 					<label for="eventMap">Karte</label>
 					<select id="eventMap" class="form-control custom-select" data-dtokey="map">
 						<option th:with="mapEmpty=${#strings.isEmpty(event.map)}"
-						        th:text="${mapEmpty} ? 'Auswählen...' : ${event.map}" selected th:disabled="${mapEmpty}">
+						        th:text="${mapEmpty} ? 'Auswählen...' : ${event.map}" selected
+						        th:disabled="${mapEmpty}">
 							Auswählen...
 						</option>
 						<option th:each="map : ${event.getMapsFiltered()}" th:text="${map}"></option>

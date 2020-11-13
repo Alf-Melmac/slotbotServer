@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Alf
@@ -104,42 +104,49 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	}
 
 	@Getter
-	private static final List<String> MAPS = new ArrayList<>();
+	private static final List<String> MISSION_TYPES = List.of("COOP", "Zeus", "TvT", "Nebenevent", "Anderes");
+	private static final List<String> MOD_PACKS = List.of("2008_ArmaMachtBock", "Joined_Operations_2020");
+	@Getter
+	private static final List<String> MAPS = List.of("Altis", "Bukovina", "Bystrica", "Chernarus (Herbst)",
+			"Chernarus (Sommer)", "Chernarus (Winter)", "Die Wüste", "Kidal", "Kunduz, Afghanistan", "Livonia",
+			"Malden 2035", "Porto", "Proving Grounds", "Rahmadi", "Sahrani", "Shapur", "Southern Sahrani", "Stratis",
+			"Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa", "Tria", "United Sahrani", "Utes",
+			"Virolahti", "Virtuelle Realität", "Zargabad");
 
-	static {
-		MAPS.add("Altis");
-		MAPS.add("Bukovina");
-		MAPS.add("Bystrica");
-		MAPS.add("Chernarus (Herbst)");
-		MAPS.add("Chernarus (Sommer)");
-		MAPS.add("Chernarus (Winter)");
-		MAPS.add("Die Wüste");
-		MAPS.add("Kidal");
-		MAPS.add("Kunduz, Afghanistan");
-		MAPS.add("Livonia");
-		MAPS.add("Malden 2035");
-		MAPS.add("Porto");
-		MAPS.add("Proving Grounds");
-		MAPS.add("Rahmadi");
-		MAPS.add("Sahrani");
-		MAPS.add("Shapur");
-		MAPS.add("Southern Sahrani");
-		MAPS.add("Stratis");
-		MAPS.add("Summa");
-		MAPS.add("Summa winter");
-		MAPS.add("Takistan");
-		MAPS.add("Takistan Mountains");
-		MAPS.add("Tanoa");
-		MAPS.add("Tria");
-		MAPS.add("United Sahrani");
-		MAPS.add("Utes");
-		MAPS.add("Virolahti");
-		MAPS.add("Virtuelle Realität");
-		MAPS.add("Zargabad");
+	/**
+	 * Returns typical mod packs that can be filtered to allow pre-selection
+	 *
+	 * @param filter mod pack that shouldn't be shown
+	 * @return known mod packs without the given one
+	 */
+	public static List<String> getModPacks(String filter) {
+		return MOD_PACKS.stream().filter(modPack -> !modPack.equals(filter)).collect(Collectors.toList());
 	}
 
+	/**
+	 * Returns known mission types, except the one saved in the event
+	 *
+	 * @return known mission types except the saved one
+	 */
+	public List<String> getMissionTypesFiltered() {
+		return MISSION_TYPES.stream().filter(missionType -> !missionType.equals(getMissionType())).collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns known mod packs, except the one saved in the event
+	 *
+	 * @return known mod packs except the saved one
+	 */
+	public List<String> getModPacksFiltered() {
+		return getModPacks(getModPack());
+	}
+
+	/**
+	 * Returns known maps, except the one saved in the event
+	 *
+	 * @return known maps except the saved one
+	 */
 	public List<String> getMapsFiltered() {
-		MAPS.remove(getMap());
-		return MAPS;
+		return MAPS.stream().filter(map -> !map.equals(getMap())).collect(Collectors.toList());
 	}
 }

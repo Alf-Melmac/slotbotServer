@@ -110,11 +110,8 @@
 								<select id="eventMissionType" class="form-control custom-select"
 								        data-dtokey="missionType">
 									<option selected disabled>Auswählen...</option>
-									<option>COOP</option>
-									<option>Zeus</option>
-									<option>TvT</option>
-									<option>Nebenevent</option>
-									<option>Anderes</option>
+									<option th:each="missionType : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getMISSION_TYPES()}"
+									        th:text="${missionType}"></option>
 								</select>
 							</div>
 							<div class="col-md-6">
@@ -128,7 +125,8 @@
 								<label for="eventModPack">Modpack</label>
 								<select id="eventModPack" class="form-control custom-select" data-dtokey="modPack">
 									<option selected>2008_ArmaMachtBock</option>
-									<option>Joined_Operations_2020</option>
+									<option th:each="modPack : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getModPacks('2008_ArmaMachtBock')}"
+									        th:text="${modPack}"></option>
 								</select>
 							</div>
 						</div>
@@ -143,7 +141,8 @@
 								<label for="eventMap">Karte</label>
 								<select id="eventMap" class="form-control custom-select" data-dtokey="map">
 									<option selected disabled>Auswählen...</option>
-									<option th:each="map : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getMAPS()}" th:text="${map}"></option>
+									<option th:each="map : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getMAPS()}"
+									        th:text="${map}"></option>
 								</select>
 							</div>
 							<div class="form-group col-md-4">
