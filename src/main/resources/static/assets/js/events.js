@@ -1,5 +1,7 @@
 $(function () {
     "use strict";
+    const $spinner = $('#spinner');
+    $spinner.hide();
 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -21,6 +23,9 @@ $(function () {
             if (description) {
                 $(arg.el).tooltip({title: description, html: true, container: 'body', boundary: 'viewport'});
             }
+        },
+        eventClick: () => {
+            $spinner.show();
         }
     });
 
