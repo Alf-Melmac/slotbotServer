@@ -1,10 +1,12 @@
 package de.webalf.slotbot.controller.website;
 
-import de.webalf.slotbot.controller.Urls;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -16,7 +18,7 @@ public class LoginWebController {
 	@GetMapping
 	public ModelAndView getLogin() {
 		ModelAndView mav = new ModelAndView("login");
-		mav.addObject("startUrl", Urls.START_URL);
+		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 		return mav;
 	}
 }

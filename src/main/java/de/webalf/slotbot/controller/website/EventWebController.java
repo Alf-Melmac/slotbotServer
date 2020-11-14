@@ -2,7 +2,6 @@ package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
-import de.webalf.slotbot.controller.Urls;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.repository.EventRepository;
@@ -30,7 +29,8 @@ public class EventWebController {
 	private final EventRepository eventRepository;
 	private final EventDetailsAssembler eventDetailsAssembler;
 
-	private static final String START_URL = "startUrl";
+	private static final String START_URL_STRING = "startUrl";
+	private static final String START_URL = linkTo(methodOn(StartWebController.class).getStart()).toUri().toString();
 
 	@GetMapping
 	public ModelAndView getEventHtml() {
@@ -41,7 +41,7 @@ public class EventWebController {
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml()).toUri().toString());
-		mav.addObject(START_URL, Urls.START_URL);
+		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventManageRoles", PermissionService.getEventManageRoles());
 
 		return mav;
@@ -51,7 +51,7 @@ public class EventWebController {
 	public ModelAndView getWizardHtml() {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
-		mav.addObject(START_URL, Urls.START_URL);
+		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
@@ -65,7 +65,7 @@ public class EventWebController {
 	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
-		mav.addObject(START_URL, Urls.START_URL);
+		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 		mav.addObject("event", eventDetailsAssembler.toDto(event));
@@ -78,7 +78,7 @@ public class EventWebController {
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventEdit");
 
-		mav.addObject(START_URL, Urls.START_URL);
+		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
 		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());

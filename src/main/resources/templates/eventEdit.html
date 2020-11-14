@@ -92,7 +92,7 @@
 					<datalist id="missionLengths">
 						<option>2 Stunden</option>
 						<option>3 Stunden</option>
-						<option>>4 Stunden</option>
+						<option>über 4 Stunden</option>
 					</datalist>
 				</div>
 			</div>
@@ -124,14 +124,12 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventModPack">Modpack</label>
-					<select id="eventModPack" class="form-control custom-select" data-dtokey="modPack">
-						<option th:with="modPackEmpty=${#strings.isEmpty(event.modPack)}"
-						        th:text="${modPackEmpty} ? 'Auswählen...' : ${event.modPack}" selected
-						        th:disabled="${modPackEmpty}">
-							Auswählen...
-						</option>
-						<option th:each="modPack : ${event.getModPacksFiltered()}" th:text="${modPack}"></option>
-					</select>
+					<input id="eventModPack" class="form-control custom-select" type="text"
+					       list="modPacks" data-dtokey="modPack" th:value="${event.modPack}">
+					<datalist id="modPacks">
+						<option th:each="modPack : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getModPacksFiltered()}"
+						        th:text="${modPack}"></option>
+					</datalist>
 				</div>
 			</div>
 		</form>

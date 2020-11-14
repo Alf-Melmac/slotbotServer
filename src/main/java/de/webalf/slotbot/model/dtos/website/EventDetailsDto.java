@@ -2,6 +2,7 @@ package de.webalf.slotbot.model.dtos.website;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.util.ListUtils;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Alf
@@ -104,7 +104,8 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	}
 
 	@Getter
-	private static final List<String> MISSION_TYPES = List.of("COOP", "Zeus", "TvT", "Nebenevent", "Anderes");
+	private static final List<String> MISSION_TYPES = List.of("COOP", "COOP+", "Zeus", "TvT", "Training", "Spezial", "Anderes");
+	@Getter
 	private static final List<String> MOD_PACKS = List.of("2008_ArmaMachtBock", "Joined_Operations_2020");
 	@Getter
 	private static final List<String> MAPS = List.of("Altis", "Bukovina", "Bystrica", "Chernarus (Herbst)",
@@ -114,22 +115,12 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 			"Virolahti", "Virtuelle Realität", "Zargabad");
 
 	/**
-	 * Returns typical mod packs that can be filtered to allow pre-selection
-	 *
-	 * @param filter mod pack that shouldn't be shown
-	 * @return known mod packs without the given one
-	 */
-	public static List<String> getModPacks(String filter) {
-		return MOD_PACKS.stream().filter(modPack -> !modPack.equals(filter)).collect(Collectors.toList());
-	}
-
-	/**
 	 * Returns known mission types, except the one saved in the event
 	 *
 	 * @return known mission types except the saved one
 	 */
 	public List<String> getMissionTypesFiltered() {
-		return MISSION_TYPES.stream().filter(missionType -> !missionType.equals(getMissionType())).collect(Collectors.toList());
+		return ListUtils.getListFiltered(MISSION_TYPES, getMissionType());
 	}
 
 	/**
@@ -138,7 +129,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	 * @return known mod packs except the saved one
 	 */
 	public List<String> getModPacksFiltered() {
-		return getModPacks(getModPack());
+		return ListUtils.getListFiltered(MOD_PACKS, getModPack());
 	}
 
 	/**
@@ -147,6 +138,6 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	 * @return known maps except the saved one
 	 */
 	public List<String> getMapsFiltered() {
-		return MAPS.stream().filter(map -> !map.equals(getMap())).collect(Collectors.toList());
+		return ListUtils.getListFiltered(MAPS, getMap());
 	}
 }
