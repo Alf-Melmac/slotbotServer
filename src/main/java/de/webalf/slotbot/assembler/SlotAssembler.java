@@ -26,7 +26,7 @@ public final class SlotAssembler {
 
 		return Slot.builder()
 				.id(slotDto.getId())
-				.name(slotDto.getName())
+				.name(slotDto.getName().trim())
 				.number(slotDto.getNumber())
 				.squad(SquadAssembler.fromDto(slotDto.getSquad()))
 				.user(UserAssembler.fromDto(slotDto.getUser()))

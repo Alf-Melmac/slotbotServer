@@ -22,7 +22,7 @@ public final class SquadAssembler {
 
 		return Squad.builder()
 				.id(squadDto.getId())
-				.name(squadDto.getName())
+				.name(squadDto.getName().trim())
 				.slotList(SlotAssembler.fromDtoList(squadDto.getSlotList()))
 				.event(EventAssembler.fromDto(squadDto.getEvent()))
 				.build();

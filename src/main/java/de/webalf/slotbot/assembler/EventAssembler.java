@@ -20,7 +20,7 @@ public final class EventAssembler {
 
 		return Event.builder()
 				.id(eventDto.getId())
-				.name(eventDto.getName())
+				.name(eventDto.getName().trim())
 				.dateTime(LocalDateTime.of(eventDto.getDate(), eventDto.getStartTime()))
 				.channel(LongUtils.parseLongWrapper(eventDto.getChannel()))
 				.squadList(SquadAssembler.fromDtoList(eventDto.getSquadList()))

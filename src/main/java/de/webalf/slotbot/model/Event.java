@@ -203,7 +203,8 @@ public class Event extends AbstractIdEntity {
 		return true;
 	}
 
-	private int getReserveSize() {
+	private int getDesiredReserveSize() {
+		updateSlotCountWithoutMoving();
 		return getSlotCount() < 4 ? 1 : getSlotCount() / 4;
 	}
 
@@ -280,13 +281,20 @@ public class Event extends AbstractIdEntity {
 	}
 
 	/**
-	 * Recounts the slotCount and {@link Event#moveReservists()}
+	 * Recounts the slotCount but doesn't trigger the {@link Event#moveReservists()}
 	 */
-	void updateSlotCount() {
+	private void updateSlotCountWithoutMoving() {
 		setSlotCount(0);
 		for (Squad squad : getSquadList()) {
 			setSlotCount(getSlotCount() + squad.getSlotList().size());
 		}
+	}
+
+	/**
+	 * Recounts the slotCount and {@link Event#moveReservists()}
+	 */
+	void updateSlotCount() {
+		updateSlotCountWithoutMoving();
 
 		moveReservists();
 	}
@@ -312,7 +320,7 @@ public class Event extends AbstractIdEntity {
 		} else if (!isFull()) {
 			//Remove reserve if event is no longer full
 			removeReserve(reserve.get());
-		} else if (getReserveSize() != reserve.get().getSlotList().size()) {
+		} else if (getDesiredReserveSize() != reserve.get().getSlotList().size()) {
 			adjustReserveSize();
 		}
 	}
@@ -324,7 +332,7 @@ public class Event extends AbstractIdEntity {
 		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
 			List<Slot> reserveSlots = reserve.getSlotList();
 			List<User> reserveUsers = reserveSlots.stream().map(Slot::getUser).collect(Collectors.toList());
-			int reserveSizeToAchieve = getReserveSize();
+			int reserveSizeToAchieve = getDesiredReserveSize();
 
 			//Reduce the reserve size so that all persons already slotted remain so
 			int newReserveSize = Math.max(reserveSizeToAchieve, reserveUsers.size());
@@ -360,7 +368,7 @@ public class Event extends AbstractIdEntity {
 
 		//Add 25% Slots of slotCount to reserve. At least 1 Slot
 		List<Slot> reserveSlots = reserveSquad.getSlotList();
-		for (int i = 0; i < getReserveSize(); i++) {
+		for (int i = 0; i < getDesiredReserveSize(); i++) {
 			int slotNumber = 100 + i;
 			while (findSlot(slotNumber).isPresent()) {
 				slotNumber++;
