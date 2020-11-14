@@ -127,7 +127,7 @@
 					<input id="eventModPack" class="form-control custom-select" type="text"
 					       list="modPacks" data-dtokey="modPack" th:value="${event.modPack}">
 					<datalist id="modPacks">
-						<option th:each="modPack : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getModPacksFiltered()}"
+						<option th:each="modPack : ${event.getModPacksFiltered()}"
 						        th:text="${modPack}"></option>
 					</datalist>
 				</div>
