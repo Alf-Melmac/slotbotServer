@@ -24,3 +24,7 @@ section.bg-section {
 #discord {
   background-image: url("/assets/img/backgrounds/street.jpg");
 }
+
+#loading-error-text {
+  display: none;
+}

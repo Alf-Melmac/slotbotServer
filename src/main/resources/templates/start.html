@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--suppress JSUnresolvedLibraryURL -->
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
@@ -26,6 +25,9 @@
 </head>
 
 <body id="page-top">
+<h1 id="loading-error-text" style="background-color: red; z-index: 9000; position: absolute;">
+	Wenn du das hier siehst, ist etwas beim Laden schief gelaufen. Lade die Seite bitte mit Strg + Shift + R neu.
+</h1>
 <nav class="navbar navbar-light navbar-expand-md fixed-top" id="mainNav">
 	<div class="container">
 		<div>
@@ -118,7 +120,8 @@
 		<section class="portfolio-block projects compact-grid">
 			<div class="row no-gutters">
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/107410/Arma_3/" target="_blank" rel="noopener noreferrer">
+					<a href="https://store.steampowered.com/app/107410/Arma_3/" target="_blank"
+					   rel="noopener noreferrer">
 						<img class="img-fluid image" alt="Game1" th:attr="src=@{/assets/img/games/arma3.png}">
 						<span class="description">
 							<span class="description-heading">Arma 3<br></span>
@@ -127,7 +130,8 @@
 					</a>
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/945360/Among_Us/" target="_blank" rel="noopener noreferrer">
+					<a href="https://store.steampowered.com/app/945360/Among_Us/" target="_blank"
+					   rel="noopener noreferrer">
 						<img class="img-fluid image" alt="Game2" th:attr="src=@{/assets/img/games/among-us.jpg}">
 						<span class="description">
 							<span class="description-heading"><br>Among Us<br></span>
@@ -136,7 +140,8 @@
 					</a>
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/1250410/Microsoft_Flight_Simulator/" target="_blank" rel="noopener noreferrer">
+					<a href="https://store.steampowered.com/app/1250410/Microsoft_Flight_Simulator/" target="_blank"
+					   rel="noopener noreferrer">
 						<img class="img-fluid image" alt="Game2" th:attr="src=@{/assets/img/games/flightsim.png}">
 						<span class="description">
 							<span class="description-heading">Microsoft Flight Simulator<br></span>
@@ -145,7 +150,8 @@
 					</a>
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/427520/Factorio/" target="_blank" rel="noopener noreferrer">
+					<a href="https://store.steampowered.com/app/427520/Factorio/" target="_blank"
+					   rel="noopener noreferrer">
 						<img class="img-fluid image" alt="Game2" th:attr="src=@{/assets/img/games/factorio.jpg}">
 						<span class="description">
 							<span class="description-heading">Factorio<br></span>
@@ -154,7 +160,8 @@
 					</a>
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://www.epicgames.com/store/de/product/snowrunner" target="_blank" rel="noopener noreferrer">
+					<a href="https://www.epicgames.com/store/de/product/snowrunner" target="_blank"
+					   rel="noopener noreferrer">
 						<img class="img-fluid image" alt="Game2" th:attr="src=@{/assets/img/games/snowrunner.jpg}">
 						<span class="description">
 							<span class="description-heading">Snowrunner<br></span>
@@ -163,8 +170,10 @@
 					</a>
 				</div>
 				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/220200/Kerbal_Space_Program/" target="_blank" rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Game2" th:attr="src=@{/assets/img/games/kerbal-space-program.jpg}">
+					<a href="https://store.steampowered.com/app/220200/Kerbal_Space_Program/" target="_blank"
+					   rel="noopener noreferrer">
+						<img class="img-fluid image" alt="Game2"
+						     th:attr="src=@{/assets/img/games/kerbal-space-program.jpg}">
 						<span class="description">
 							<span class="description-heading">Kerbal Space Program<br></span>
 							<span class="description-body">Bevor wir die neue Generation ins All senden müssen noch die Reste verwendent werden.<br><br></span>
