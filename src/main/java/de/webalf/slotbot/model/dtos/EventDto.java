@@ -29,6 +29,10 @@ public class EventDto extends AbstractIdEntityDto {
 	@NotNull
 	private LocalTime startTime;
 
+	@NotBlank
+	@Size(max = 80)
+	private String creator;
+
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
 	private String channel;
 
@@ -66,6 +70,7 @@ public class EventDto extends AbstractIdEntityDto {
 	                String name,
 	                LocalDate date,
 	                LocalTime startTime,
+	                String creator,
 	                String channel,
 	                List<SquadDto> squadList,
 	                String infoMsg,
@@ -86,6 +91,7 @@ public class EventDto extends AbstractIdEntityDto {
 		this.name = name;
 		this.date = date;
 		this.startTime = startTime;
+		this.creator = creator;
 		this.channel = channel;
 		this.squadList = squadList;
 		this.infoMsg = infoMsg;

@@ -32,6 +32,7 @@ public final class EventApiAssembler {
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
+				.creator(event.getCreator())
 				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(SquadAssembler.toEventDtoList(event.getSquadList()))
 				.infoMsg(LongUtils.toString(event.getInfoMsg()))

@@ -86,14 +86,9 @@
 					</div>
 				</div>
 				<div class="form-group col-md-4">
-					<label for="eventMissionLength">Missionslänge</label>
-					<input id="eventMissionLength" class="form-control custom-select" type="text"
-					       list="missionLengths" data-dtokey="missionLength" th:value="${event.missionLength}">
-					<datalist id="missionLengths">
-						<option>2 Stunden</option>
-						<option>3 Stunden</option>
-						<option>über 4 Stunden</option>
-					</datalist>
+					<label for="eventCreator">Ersteller</label>
+					<input id="eventCreator" class="form-control" type="text"
+					       data-dtokey="creator" th:value="${event.creator}" required>
 				</div>
 			</div>
 			<div class="form-group">
@@ -115,12 +110,22 @@
 						        th:text="${missionType}"></option>
 					</select>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-2">
 					<div class="custom-control custom-checkbox mr-sm-2">
 						<input id="eventRespawn" class="custom-control-input" type="checkbox"
 						       data-dtokey="respawn" th:checked="${event.respawn}">
 						<label class="custom-control-label" for="eventRespawn">Respawn</label>
 					</div>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="eventMissionLength">Missionslänge</label>
+					<input id="eventMissionLength" class="form-control custom-select" type="text"
+					       list="missionLengths" data-dtokey="missionLength" th:value="${event.missionLength}">
+					<datalist id="missionLengths">
+						<option>2 Stunden</option>
+						<option>3 Stunden</option>
+						<option>über 4 Stunden</option>
+					</datalist>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventModPack">Modpack</label>

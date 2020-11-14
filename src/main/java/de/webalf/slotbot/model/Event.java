@@ -43,6 +43,11 @@ public class Event extends AbstractIdEntity {
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 
+	@Column(name = "event_creator")
+	@NotBlank
+	@Size(max = 80)
+	private String creator;
+
 	@Column(name = "event_channel")
 	private Long channel;
 
@@ -109,6 +114,7 @@ public class Event extends AbstractIdEntity {
 	public Event(long id,
 	             String name,
 	             LocalDateTime dateTime,
+	             String creator,
 	             Long channel,
 	             List<Squad> squadList,
 	             Long infoMsg,
@@ -128,6 +134,7 @@ public class Event extends AbstractIdEntity {
 		this.id = id;
 		this.name = name;
 		this.dateTime = dateTime;
+		this.creator = creator;
 		this.channel = channel;
 		this.squadList = squadList;
 		this.infoMsg = infoMsg;

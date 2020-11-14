@@ -32,6 +32,10 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@NotNull
 	LocalTime startTime;
 
+	@NotBlank
+	@Size(max = 80)
+	String creator;
+
 	String channelUrl;
 
 	List<EventDetailsSquadDto> squadList;
@@ -64,6 +68,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	                       String name,
 	                       LocalDate date,
 	                       LocalTime startTime,
+	                       String creator,
 	                       String channelUrl,
 	                       List<EventDetailsSquadDto> squadList,
 	                       String description,
@@ -82,6 +87,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 		this.name = name;
 		this.date = date;
 		this.startTime = startTime;
+		this.creator = creator;
 		this.channelUrl = channelUrl;
 		this.squadList = squadList;
 

@@ -38,6 +38,7 @@ public class EventDetailsAssembler {
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
+				.creator(event.getCreator())
 				.channelUrl(event.getChannel() != null ? channelUrl : null)
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.description(event.getDescription())
