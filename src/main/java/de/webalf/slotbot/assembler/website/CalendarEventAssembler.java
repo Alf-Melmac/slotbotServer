@@ -3,6 +3,7 @@ package de.webalf.slotbot.assembler.website;
 import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
+import de.webalf.slotbot.util.DiscordMarkdown;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public final class CalendarEventAssembler {
 		return CalendarEventDto.builder()
 				.title(event.getName())
 				.start(event.getDateTime())
-				.description(event.getDescription())
+				.description(DiscordMarkdown.toHtml(event.getDescription()))
 				.url(linkTo(methodOn(EventWebController.class).getEventDetailsHtml(event.getId())).toUri().toString())
 				.build();
 	}

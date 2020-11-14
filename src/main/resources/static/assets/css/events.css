@@ -4,6 +4,11 @@
 }
 
 .tooltip-inner {
-  margin-left: 50%;
-  max-width: 40%;
+  max-width: 100%;
+}
+
+.tooltip {
+  pointer-events: none;
+  margin-left: 5%;
+  margin-right: 5%;
 }

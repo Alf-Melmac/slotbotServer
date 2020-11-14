@@ -19,7 +19,7 @@ $(function () {
         eventDidMount: (arg) => {
             const description = arg.event.extendedProps.description;
             if (description) {
-                $(arg.el).tooltip({title: description});
+                $(arg.el).tooltip({title: description, html: true, container: 'body', boundary: 'viewport'});
             }
         }
     });
