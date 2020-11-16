@@ -131,9 +131,13 @@ public class Slot extends AbstractIdEntity {
 	public void blockSlot(@NonNull User defaultUser, @NotBlank String replacementName) {
 		if (isNotEmpty()) {
 			throw BusinessRuntimeException.builder().title("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.").build();
+		} else if (getSquad().isReserve()) {
+			throw BusinessRuntimeException.builder().title("In der Reserve kann kein Slot blockiert werden.").build();
 		}
 		setUser(defaultUser);
 		setReplacementText(replacementName);
+
+		getEvent().slotUpdate();
 	}
 
 	/**
