@@ -124,10 +124,14 @@ public class Squad extends AbstractIdEntity {
 
 	/**
 	 * Deletes the given squad, if no person is slotted on any slot
+	 *
+	 * @return true if Squad was deleted
 	 */
-	private void deleteSquadIfEmpty() {
+	public boolean deleteSquadIfEmpty() {
 		if (getSlotList().isEmpty()) {
 			getEvent().removeSquad(this);
+			return true;
 		}
+		return false;
 	}
 }

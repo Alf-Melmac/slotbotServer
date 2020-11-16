@@ -1,6 +1,6 @@
 package de.webalf.slotbot.service;
 
-import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.SquadDto;
 import de.webalf.slotbot.repository.SquadRepository;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,29 +26,40 @@ public class SquadService {
 	private final SquadRepository squadRepository;
 	private final SlotService slotService;
 
-	List<Squad> updateSquadList(@NonNull List<SquadDto> squadList) {
+	void updateSquadList(@NonNull List<SquadDto> squadList, @NonNull Event event) {
+		List<Squad> eventSquads = event.getSquadList();
+		if (eventSquads != null) {
+			eventSquads.clear();
+		} else {
+			event.setSquadList(new ArrayList<>());
+			eventSquads = event.getSquadList();
+		}
+
 		List<Squad> eventSquadList = new ArrayList<>();
-		squadList.forEach(squadDto -> eventSquadList.add(updateSquad(squadDto)));
-		return eventSquadList;
+		squadList.forEach(squadDto -> eventSquadList.add(updateSquad(squadDto, event)));
+		eventSquadList.removeAll(Collections.singletonList(null));
+		eventSquads.addAll(eventSquadList);
+
+		event.slotUpdateWithValidation();
 	}
 
 	/**
 	 * Updates a squad with the given values identified by its id
 	 * (!) Event can not be changes
 	 *
-	 * @param dto with new values
+	 * @param dto   with new values
+	 * @param event is required when a new squad must be created
 	 * @return updated Squad
 	 */
-	private Squad updateSquad(SquadDto dto) {
-		Squad squad = squadRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
+	private Squad updateSquad(@NonNull SquadDto dto, @NonNull Event event) {
+		Squad squad = squadRepository.findById(dto.getId()).orElseGet(() -> Squad.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getName(), squad::setName);
 
 		if (dto.getSlotList() != null) {
-			squad.getSlotList().clear();
-			squad.getSlotList().addAll(slotService.updateSlotList(dto.getSlotList()));
+			slotService.updateSlotList(dto.getSlotList(), squad);
 		}
 
-		return squad;
+		return squad.deleteSquadIfEmpty() ? null : squad;
 	}
 }

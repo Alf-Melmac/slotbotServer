@@ -39,10 +39,18 @@ public class SlotService {
 		return slotRepository.save(slot);
 	}
 
-	List<Slot> updateSlotList(List<SlotDto> slotList) {
+	void updateSlotList(@NonNull List<SlotDto> slotList, @NonNull Squad squad) {
+		List<Slot> squadSlots = squad.getSlotList();
+		if (squadSlots != null) {
+			squadSlots.clear();
+		} else {
+			squad.setSlotList(new ArrayList<>());
+			squadSlots = squad.getSlotList();
+		}
+
 		List<Slot> eventSlotList = new ArrayList<>();
-		slotList.forEach(slotDto -> eventSlotList.add(updateSlot(slotDto)));
-		return eventSlotList;
+		slotList.forEach(slotDto -> eventSlotList.add(updateSlot(slotDto, squad)));
+		squadSlots.addAll(eventSlotList);
 	}
 
 	/**
@@ -50,10 +58,11 @@ public class SlotService {
 	 * (!) Squad can not be changes
 	 *
 	 * @param dto with new values
+	 * @param squad is required when a new slot must be created
 	 * @return updated Slot
 	 */
-	private Slot updateSlot(@NonNull SlotDto dto) {
-		Slot slot = slotRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
+	private Slot updateSlot(@NonNull SlotDto dto, @NonNull Squad squad) {
+		Slot slot = slotRepository.findById(dto.getId()).orElseGet(() -> Slot.builder().squad(squad).build());
 
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);

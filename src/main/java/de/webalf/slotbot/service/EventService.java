@@ -104,9 +104,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getMedicalSystem(), event::setMedicalSystem);
 
 		if (dto.getSquadList() != null) {
-			event.getSquadList().clear();
-			event.getSquadList().addAll(squadService.updateSquadList(dto.getSquadList()));
-			event.slotUpdateWithValidation();
+			squadService.updateSquadList(dto.getSquadList(), event);
 		}
 
 		return event;
