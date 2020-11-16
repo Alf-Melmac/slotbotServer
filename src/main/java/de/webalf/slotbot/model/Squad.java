@@ -82,7 +82,7 @@ public class Squad extends AbstractIdEntity {
 	 *
 	 * @return true if the name matches
 	 */
-	private boolean isReserve() {
+	boolean isReserve() {
 		return getName().equals(RESERVE_NAME);
 	}
 
@@ -100,8 +100,7 @@ public class Squad extends AbstractIdEntity {
 
 		newSlot.setSquad(this);
 		slotList.add(newSlot);
-		getEvent().assertUniqueSlotNumbers();
-		getEvent().updateSlotCount();
+		getEvent().slotUpdateWithValidation();
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class Squad extends AbstractIdEntity {
 		getSlotList().remove(slot);
 		deleteSquadIfEmpty();
 
-		getEvent().updateSlotCount();
+		getEvent().slotUpdate();
 	}
 
 	/**

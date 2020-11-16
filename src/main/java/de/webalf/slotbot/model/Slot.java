@@ -143,7 +143,5 @@ public class Slot extends AbstractIdEntity {
 		User slotUser = getUser();
 		setUser(slot.getUser());
 		slot.setUser(slotUser);
-
-		getEvent().slotUpdate();
 	}
 }

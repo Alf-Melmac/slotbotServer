@@ -14,10 +14,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
@@ -107,9 +104,6 @@ public class Event extends AbstractIdEntity {
 	@Size(max = 80)
 	private String medicalSystem;
 
-	@Transient
-	private int slotCount;
-
 	@Builder
 	public Event(long id,
 	             String name,
@@ -153,7 +147,7 @@ public class Event extends AbstractIdEntity {
 		this.technicalTeleport = technicalTeleport;
 		this.medicalSystem = medicalSystem;
 
-		validateAndRecount();
+		validation();
 	}
 
 	// Getter
@@ -200,7 +194,7 @@ public class Event extends AbstractIdEntity {
 	}
 
 	private boolean isFull() {
-		for (Squad squad : getSquadList()) {
+		for (Squad squad : getSquadsExceptReserve()) {
 			for (Slot slot : squad.getSlotList()) {
 				if (slot.isEmpty()) {
 					return false;
@@ -210,17 +204,29 @@ public class Event extends AbstractIdEntity {
 		return true;
 	}
 
+	/**
+	 * Returns all usable squads. This excludes the reserve
+	 *
+	 * @return every squad that isn't the reserve
+	 */
+	private Set<Squad> getSquadsExceptReserve() {
+		return getSquadList().stream().filter(squad -> !squad.isReserve()).collect(Collectors.toUnmodifiableSet());
+	}
+
+	/**
+	 * Returns 25% of the slot counts but at least one
+	 *
+	 * @return how big the reserve squad should be
+	 */
 	private int getDesiredReserveSize() {
-		updateSlotCountWithoutMoving();
-		return getSlotCount() < 4 ? 1 : getSlotCount() / 4;
+		int slotCount = 0;
+		for (Squad squad : getSquadsExceptReserve()) {
+			slotCount += squad.getSlotList().size();
+		}
+		return slotCount < 4 ? 1 : slotCount / 4;
 	}
 
 	// Validator
-
-	public void validateAndRecount() {
-		assertUniqueSlotNumbers();
-		updateSlotCount();
-	}
 
 	/**
 	 * Checks whether the event has a slot with a non-unique slot number
@@ -245,10 +251,17 @@ public class Event extends AbstractIdEntity {
 	 *
 	 * @throws BusinessRuntimeException if a duplicated slot number has been found
 	 */
-	void assertUniqueSlotNumbers() {
+	private void assertUniqueSlotNumbers() {
 		if (hasDuplicatedSlotNumber()) {
 			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
 		}
+	}
+
+	/**
+	 * Validates the event. If the validation fails, an exception is thrown
+	 */
+	private void validation() {
+		assertUniqueSlotNumbers();
 	}
 
 	// Setter
@@ -288,30 +301,47 @@ public class Event extends AbstractIdEntity {
 	}
 
 	/**
-	 * Recounts the slotCount but doesn't trigger the {@link Event#moveReservists()}
-	 */
-	private void updateSlotCountWithoutMoving() {
-		setSlotCount(0);
-		for (Squad squad : getSquadList()) {
-			setSlotCount(getSlotCount() + squad.getSlotList().size());
-		}
-	}
-
-	/**
-	 * Recounts the slotCount and {@link Event#moveReservists()}
-	 */
-	void updateSlotCount() {
-		updateSlotCountWithoutMoving();
-
-		moveReservists();
-	}
-
-	/**
-	 * Informs the event about an slot update (slot, unslot swap).
+	 * Informs the event about an slot update (slot, unslot, new slot(s) created, slot(s) removed).
 	 * Uses {@link Event#moveReservists()} to change reserve if needed
 	 */
 	public void slotUpdate() {
 		moveReservists();
+	}
+
+	public void slotUpdateWithValidation() {
+		validation();
+		slotUpdate();
+	}
+
+	/**
+	 * Moves reservists to empty slots and closes gaps in the Reserve-Squad
+	 */
+	private void moveReservists() {
+		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
+			if (!isFull()) {
+				//Fills empty slots with reservists
+				List<Slot> emptySlots = getSquadList().stream().flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty)).collect(Collectors.toList());
+				emptySlots.forEach(slot -> reserve.getSlotList().stream()
+						.filter(reserveSlot -> !reserveSlot.isEmpty()).findFirst()
+						.ifPresent(reserveSlot -> {
+							User reserveSlotUser = reserveSlot.getUser();
+							reserveSlot.unslotWithoutUpdate(reserveSlotUser);
+							slot.slotWithoutUpdate(reserveSlotUser);
+						}));
+			}
+
+			List<Slot> reserveSlots = reserve.getSlotList();
+			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toList());
+
+			//Empty reserve
+			reserveSlots.forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));
+			//Fill reserve from the beginning to close gaps
+			for (int i = 0; i < reserveUsers.size(); i++) {
+				reserveSlots.get(i).slotWithoutUpdate(reserveUsers.get(i));
+			}
+		});
+
+		changeReserveIfNeeded();
 	}
 
 	/**
@@ -324,43 +354,15 @@ public class Event extends AbstractIdEntity {
 			if (isFull() && !ListUtils.isEmpty(getSquadList())) {
 				addReserve();
 			}
-		} else if (!isFull()) {
-			//Remove reserve if event is no longer full
-			removeReserve(reserve.get());
-		} else if (getDesiredReserveSize() != reserve.get().getSlotList().size()) {
-			adjustReserveSize();
-		}
-	}
-
-	/**
-	 * Changes the reserve size to match 25% of the event slots. Will not shrink below count of reservists
-	 */
-	private void adjustReserveSize() {
-		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
-			List<Slot> reserveSlots = reserve.getSlotList();
-			List<User> reserveUsers = reserveSlots.stream().map(Slot::getUser).collect(Collectors.toList());
-			int reserveSizeToAchieve = getDesiredReserveSize();
-
-			//Reduce the reserve size so that all persons already slotted remain so
-			int newReserveSize = Math.max(reserveSizeToAchieve, reserveUsers.size());
-			List<Slot> newReserveSlots = new ArrayList<>();
-			for (int i = 0; i < newReserveSize; i++) {
-				int slotNumber = 100 + i;
-				while (findSlot(slotNumber).isPresent()) {
-					slotNumber++;
-				}
-				Slot slot = Slot.builder()
-						.number(slotNumber)
-						.name("Reserve " + (i + 1))
-						.squad(reserve)
-						.build();
-				if (i <= reserveUsers.size()) {
-					slot.setUser(reserveUsers.get(i));
-				}
-				newReserveSlots.add(slot);
+		} else {
+			Squad reserveSquad = reserve.get();
+			if (!isFull()) {
+				//Remove reserve if event is no longer full
+				removeReserve(reserveSquad);
+			} else if (getDesiredReserveSize() != reserveSquad.getSlotList().size()) {
+				adjustReserveSize(reserveSquad);
 			}
-			reserve.setSlotList(newReserveSlots);
-		});
+		}
 	}
 
 	/**
@@ -391,34 +393,32 @@ public class Event extends AbstractIdEntity {
 	}
 
 	/**
-	 * Moves reservists to empty slots and closes gaps in the Reserve-Squad
+	 * Changes the reserve size to match 25% of the event slots. Will not shrink below count of reservists
+	 *
+	 * @param reserve reserve Squad
 	 */
-	private void moveReservists() {
-		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
-			if (!isFull()) {
-				//Fills empty slots with reservists
-				List<Slot> emptySlots = getSquadList().stream().flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty)).collect(Collectors.toList());
-				emptySlots.forEach(slot -> reserve.getSlotList().stream()
-						.filter(reserveSlot -> !reserveSlot.isEmpty()).findFirst()
-						.ifPresent(reserveSlot -> {
-							User reserveSlotUser = reserveSlot.getUser();
-							reserveSlot.unslotWithoutUpdate(reserveSlotUser);
-							slot.slot(reserveSlotUser);
-						}));
+	private void adjustReserveSize(@NonNull Squad reserve) {
+		List<User> reserveUsers = reserve.getSlotList().stream().map(Slot::getUser).collect(Collectors.toList());
+
+		//Reduce the reserve size so that all persons already slotted remain so
+		int newReserveSize = Math.max(getDesiredReserveSize(), reserveUsers.size());
+		List<Slot> newReserveSlots = new ArrayList<>();
+		for (int i = 0; i < newReserveSize; i++) {
+			int slotNumber = 100 + i;
+			while (findSlot(slotNumber).isPresent()) {
+				slotNumber++;
 			}
-
-			List<Slot> reserveSlots = reserve.getSlotList();
-			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toList());
-
-			//Empty reserve
-			reserveSlots.forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));
-			//Fill reserve from the beginning to close gaps
-			for (int i = 0; i < reserveUsers.size(); i++) {
-				reserveSlots.get(i).slotWithoutUpdate(reserveUsers.get(i));
+			Slot slot = Slot.builder()
+					.number(slotNumber)
+					.name("Reserve " + (i + 1))
+					.squad(reserve)
+					.build();
+			if (i <= reserveUsers.size()) {
+				slot.setUser(reserveUsers.get(i));
 			}
-		});
-
-		changeReserveIfNeeded();
+			newReserveSlots.add(slot);
+		}
+		reserve.setSlotList(newReserveSlots);
 	}
 
 	/**

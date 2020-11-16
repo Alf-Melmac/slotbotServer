@@ -106,9 +106,9 @@ public class EventService {
 		if (dto.getSquadList() != null) {
 			event.getSquadList().clear();
 			event.getSquadList().addAll(squadService.updateSquadList(dto.getSquadList()));
+			event.slotUpdateWithValidation();
 		}
 
-		event.validateAndRecount();
 		return event;
 	}
 
