@@ -1,9 +1,10 @@
 package de.webalf.slotbot.model.dtos;
 
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Size;
 
@@ -11,38 +12,20 @@ import javax.validation.constraints.Size;
  * @author Alf
  * @since 23.06.2020
  */
+@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Data
+@SuperBuilder
 public class SlotDto extends AbstractIdEntityDto {
 	@Size(max = 80)
-	private String name;
+	private final String name;
 
-	private int number;
+	private final int number;
 
-	private SquadDto squad;
+	private final SquadDto squad;
 
 	private UserDto user;
 
 	@Size(max = 80)
-	private String replacementText;
-
-	@Builder
-	public SlotDto(long id,
-	               String name,
-	               int number,
-	               SquadDto squad,
-	               UserDto user,
-	               String replacementText) {
-		this.id = id;
-		this.name = name;
-		this.number = number;
-		this.squad = squad;
-		this.user = user;
-		this.replacementText = replacementText;
-	}
-
-	public SlotDto slot(UserDto user) {
-		this.user = user;
-		return this;
-	}
+	private final String replacementText;
 }

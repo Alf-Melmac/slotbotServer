@@ -3,10 +3,10 @@ package de.webalf.slotbot.model.dtos.website;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.ListUtils;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,6 +21,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Value
+@SuperBuilder
 public class EventDetailsDto extends AbstractIdEntityDto {
 	@NotBlank
 	@Size(max = 80)
@@ -62,48 +63,6 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	String technicalTeleport;
 	@Size(max = 80)
 	String medicalSystem;
-
-	@Builder
-	public EventDetailsDto(long id,
-	                       String name,
-	                       LocalDate date,
-	                       LocalTime startTime,
-	                       String creator,
-	                       String channelUrl,
-	                       List<EventDetailsSquadDto> squadList,
-	                       String description,
-	                       String pictureUrl,
-	                       String missionType,
-	                       Boolean respawn,
-	                       String missionLength,
-	                       Boolean reserveParticipating,
-	                       String modPack,
-	                       String map,
-	                       String missionTime,
-	                       String navigation,
-	                       String technicalTeleport,
-	                       String medicalSystem) {
-		this.id = id;
-		this.name = name;
-		this.date = date;
-		this.startTime = startTime;
-		this.creator = creator;
-		this.channelUrl = channelUrl;
-		this.squadList = squadList;
-
-		this.description = description;
-		this.pictureUrl = pictureUrl;
-		this.missionType = missionType;
-		this.respawn = respawn;
-		this.missionLength = missionLength;
-		this.reserveParticipating = reserveParticipating;
-		this.modPack = modPack;
-		this.map = map;
-		this.missionTime = missionTime;
-		this.navigation = navigation;
-		this.technicalTeleport = technicalTeleport;
-		this.medicalSystem = medicalSystem;
-	}
 
 	public String getMissionTypeRespawnString() {
 		return EventUtils.getMissionTypeRespawnString(missionType, respawn);

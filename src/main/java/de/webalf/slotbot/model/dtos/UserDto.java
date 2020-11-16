@@ -12,5 +12,5 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDto {
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.
-	String id;
+	private String id;
 }

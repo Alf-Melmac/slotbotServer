@@ -1,9 +1,10 @@
 package de.webalf.slotbot.model.dtos;
 
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -12,21 +13,15 @@ import java.util.List;
  * @author Alf
  * @since 23.06.2020
  */
+@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Value
+@SuperBuilder
 public class SquadDto extends AbstractIdEntityDto {
 	@Size(max = 80)
-	private String name;
+	String name;
 
-	private List<SlotDto> slotList;
+	List<SlotDto> slotList;
 
-	private EventDto event;
-
-	@Builder
-	public SquadDto(long id, String name, List<SlotDto> slotList, EventDto event) {
-		this.id = id;
-		this.name = name;
-		this.slotList = slotList;
-		this.event = event;
-	}
+	EventDto event;
 }

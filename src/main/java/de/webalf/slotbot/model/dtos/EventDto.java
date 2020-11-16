@@ -1,9 +1,10 @@
 package de.webalf.slotbot.model.dtos;
 
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,8 +17,10 @@ import java.util.List;
  * @author Alf
  * @since 23.06.2020
  */
+@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Data
+@SuperBuilder
 public class EventDto extends AbstractIdEntityDto {
 	@NotBlank
 	@Size(max = 80)
@@ -64,50 +67,4 @@ public class EventDto extends AbstractIdEntityDto {
 	private String technicalTeleport;
 	@Size(max = 80)
 	private String medicalSystem;
-
-	@Builder
-	public EventDto(long id,
-	                String name,
-	                LocalDate date,
-	                LocalTime startTime,
-	                String creator,
-	                String channel,
-	                List<SquadDto> squadList,
-	                String infoMsg,
-	                String slotListMsg,
-	                String description,
-	                String pictureUrl,
-	                String missionType,
-	                Boolean respawn,
-	                String missionLength,
-	                Boolean reserveParticipating,
-	                String modPack,
-	                String map,
-	                String missionTime,
-	                String navigation,
-	                String technicalTeleport,
-	                String medicalSystem) {
-		this.id = id;
-		this.name = name;
-		this.date = date;
-		this.startTime = startTime;
-		this.creator = creator;
-		this.channel = channel;
-		this.squadList = squadList;
-		this.infoMsg = infoMsg;
-		this.slotListMsg = slotListMsg;
-
-		this.description = description;
-		this.pictureUrl = pictureUrl;
-		this.missionType = missionType;
-		this.respawn = respawn;
-		this.missionLength = missionLength;
-		this.reserveParticipating = reserveParticipating;
-		this.modPack = modPack;
-		this.map = map;
-		this.missionTime = missionTime;
-		this.navigation = navigation;
-		this.technicalTeleport = technicalTeleport;
-		this.medicalSystem = medicalSystem;
-	}
 }

@@ -23,7 +23,7 @@ import static de.webalf.slotbot.controller.Urls.API;
 public class EventApiController {
 	private final EventService eventService;
 
-	@PostMapping("")
+	@PostMapping
 	public EventDto postEvent(@Valid @RequestBody EventDto event) {
 		log.trace("postEvent: " + event.getName());
 		return EventAssembler.toDto(eventService.createEvent(event));

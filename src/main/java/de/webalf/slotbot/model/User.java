@@ -9,7 +9,7 @@ import javax.persistence.*;
  * @since 06.09.2020
  */
 @Entity
-@Table(name = "user", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})}, schema = "public")
+@Table(name = "discord_user", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})}, schema = "public")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter

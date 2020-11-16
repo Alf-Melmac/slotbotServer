@@ -55,7 +55,7 @@ public final class EventApiAssembler {
 	 * To be used if a recipient must be defined
 	 */
 	public static EventRecipientApiDto toActionDto(Event event, User recipient) {
-		EventRecipientApiDto eventRecipientApiDto = EventRecipientApiDto.recipientBuilder().recipient(UserAssembler.toDto(recipient)).build();
+		EventRecipientApiDto eventRecipientApiDto = EventRecipientApiDto.builder().recipient(UserAssembler.toDto(recipient)).build();
 		ReflectionUtils.shallowCopyFieldState(toDto(event), eventRecipientApiDto);
 		return eventRecipientApiDto;
 	}

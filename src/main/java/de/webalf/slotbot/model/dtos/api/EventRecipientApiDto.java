@@ -1,8 +1,9 @@
 package de.webalf.slotbot.model.dtos.api;
 
-import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.UserDto;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,15 +11,10 @@ import javax.validation.constraints.NotNull;
  * @author Alf
  * @since 11.09.2020
  */
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
-@Setter
-public class EventRecipientApiDto extends EventDto {
+@EqualsAndHashCode(callSuper = true)
+@Value
+@SuperBuilder
+public class EventRecipientApiDto extends EventApiDto {
 	@NotNull
-	private UserDto recipient;
-
-	@Builder(builderMethodName = "recipientBuilder")
-	public EventRecipientApiDto(UserDto recipient) {
-		this.recipient = recipient;
-	}
+	UserDto recipient;
 }

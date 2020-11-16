@@ -1,7 +1,8 @@
 package de.webalf.slotbot.model.dtos;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -12,8 +13,9 @@ import javax.validation.constraints.NotNull;
  * @since 23.06.2020
  */
 @MappedSuperclass
-@Getter
-@Setter
+@Data
+@RequiredArgsConstructor
+@SuperBuilder
 public class AbstractIdEntityDto {
 	@Id
 	@NotNull

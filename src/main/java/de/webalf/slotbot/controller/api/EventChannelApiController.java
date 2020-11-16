@@ -1,9 +1,7 @@
 package de.webalf.slotbot.controller.api;
 
-import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
-import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
@@ -31,31 +29,31 @@ import static de.webalf.slotbot.controller.Urls.API;
 public class EventChannelApiController {
 	private final EventService eventService;
 
-	@GetMapping("")
+	@GetMapping
 	public EventApiDto getEventByChannelId(@PathVariable(value = "channelId") long channel) {
 		log.trace("getEventByChannelId: " + channel);
 		return EventApiAssembler.toDto(eventService.findByChannel(channel));
 	}
 
-	@DeleteMapping("")
+	@DeleteMapping
 	public void deleteEventByChannelId(@PathVariable(value = "channelId") long channel) {
 		log.trace("deleteEventByChannelId: " + channel);
 		eventService.deleteEvent(channel);
 	}
 
 	@PostMapping("/slot/{slotNumber}")
-	public EventDto postSlot(@PathVariable(value = "channelId") long channel,
+	public EventApiDto postSlot(@PathVariable(value = "channelId") long channel,
 	                         @PathVariable(value = "slotNumber") int slotNumber,
 	                         @RequestBody UserDto userDto) {
 		log.trace("postSlot: " + channel + " " + slotNumber + " " + userDto.getId());
-		return EventAssembler.toDto(eventService.slot(channel, slotNumber, userDto));
+		return EventApiAssembler.toDto(eventService.slot(channel, slotNumber, userDto));
 	}
 
 	@PostMapping("/unslot")
-	public EventDto postUnslot(@PathVariable(value = "channelId") long channel,
+	public EventApiDto postUnslot(@PathVariable(value = "channelId") long channel,
 	                           @RequestBody UserDto userDto) {
 		log.trace("postUnslot: " + channel + " " + userDto.getId());
-		return EventAssembler.toDto(eventService.unslot(channel, userDto));
+		return EventApiAssembler.toDto(eventService.unslot(channel, userDto));
 	}
 
 	@PostMapping("/unslot/{slotNumber}")
@@ -74,33 +72,33 @@ public class EventChannelApiController {
 	}
 
 	@PutMapping("/blockSlot/{slotNumber}")
-	public EventDto putBlockSlot(@PathVariable(value = "channelId") long channel,
+	public EventApiDto putBlockSlot(@PathVariable(value = "channelId") long channel,
 	                             @PathVariable(value = "slotNumber") int slotNumber,
 	                             @RequestBody(required = false) String replacementName) {
 		log.trace("putBlockSlot: " + channel + " " + slotNumber + " " + replacementName);
-		return EventAssembler.toDto(eventService.blockSlot(channel, slotNumber, replacementName));
+		return EventApiAssembler.toDto(eventService.blockSlot(channel, slotNumber, replacementName));
 	}
 
 	@PostMapping("/addSlot/{squadNumber}")
-	public EventDto postAddSlot(@PathVariable(value = "channelId") long channel,
+	public EventApiDto postAddSlot(@PathVariable(value = "channelId") long channel,
 	                            @PathVariable(value = "squadNumber") int squadNumber,
 	                            @RequestBody SlotDto slotDto) {
 		log.trace("postAddSlot: " + channel + " " + squadNumber + " " + slotDto.getNumber());
-		return EventAssembler.toDto(eventService.addSlot(channel, squadNumber, slotDto));
+		return EventApiAssembler.toDto(eventService.addSlot(channel, squadNumber, slotDto));
 	}
 
 	@DeleteMapping("/delSlot/{slotNumber}")
-	public EventDto postDelSlot(@PathVariable(value = "channelId") long channel,
+	public EventApiDto postDelSlot(@PathVariable(value = "channelId") long channel,
 	                            @PathVariable(value = "slotNumber") int slotNumber) {
 		log.trace("postDelSlot: " + channel + " " + slotNumber);
-		return EventAssembler.toDto(eventService.deleteSlot(channel, slotNumber));
+		return EventApiAssembler.toDto(eventService.deleteSlot(channel, slotNumber));
 	}
 
 	@PutMapping("/renameSlot/{slotNumber}")
-	public EventDto putRenameSlot(@PathVariable(value = "channelId") long channel,
+	public EventApiDto putRenameSlot(@PathVariable(value = "channelId") long channel,
 	                              @PathVariable(value = "slotNumber") int slotNumber,
 	                              @RequestBody SlotDto slotDto) {
 		log.trace("putRenameSlot: " + channel + " " + slotNumber);
-		return EventAssembler.toDto(eventService.renameSlot(channel, slotNumber, slotDto.getName()));
+		return EventApiAssembler.toDto(eventService.renameSlot(channel, slotNumber, slotDto.getName()));
 	}
 }
