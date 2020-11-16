@@ -15,6 +15,7 @@ import org.thymeleaf.util.SetUtils;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -94,9 +95,9 @@ public class DiscordApiService {
 
 		if (wait) {
 			try {
-				wait(Math.max(0, waitUntil - (System.currentTimeMillis() / 1000)));
+				TimeUnit.SECONDS.sleep(Math.max(0, waitUntil - (System.currentTimeMillis() / 1000)));
 			} catch (InterruptedException e) {
-				log.error("Wait was interrupted", e);
+				log.error("Sleep was interrupted", e);
 			}
 			wait = false;
 		}
