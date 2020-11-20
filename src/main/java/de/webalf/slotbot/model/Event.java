@@ -223,7 +223,7 @@ public class Event extends AbstractIdEntity {
 		for (Squad squad : getSquadsExceptReserve()) {
 			slotCount += squad.getSlotList().size();
 		}
-		return slotCount < 4 ? 1 : slotCount / 4;
+		return slotCount < 4 ? 1 : (int) Math.ceil(slotCount / 4.);
 	}
 
 	// Validator
