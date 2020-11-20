@@ -4,7 +4,7 @@ $(function () {
     $('#datepicker').datetimepicker({
         format: 'yyyy-MM-DD',
         locale: 'de',
-        minDate: moment()
+        minDate: moment().subtract(1, 'days')
     });
 
     $('#datetime').datetimepicker({
