@@ -71,13 +71,18 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@Getter
 	private static final List<String> MISSION_TYPES = List.of("COOP", "COOP+", "Zeus", "TvT", "Training", "Spezial", "Anderes");
 	@Getter
-	private static final List<String> MOD_PACKS = List.of("2008_ArmaMachtBock", "Joined_Operations_2020");
+	private static final List<String> MOD_PACKS = List.of("2012_ArmaMachtBock", "Joined_Operations_2020", "Alliance_2021v1");
 	@Getter
-	private static final List<String> MAPS = List.of("Altis", "Bukovina", "Bystrica", "Chernarus (Herbst)",
-			"Chernarus (Sommer)", "Chernarus (Winter)", "Die Wüste", "Kidal", "Kunduz, Afghanistan", "Livonia",
-			"Malden 2035", "Porto", "Proving Grounds", "Rahmadi", "Sahrani", "Shapur", "Southern Sahrani", "Stratis",
-			"Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa", "Tria", "United Sahrani", "Utes",
-			"Virolahti", "Virtuelle Realität", "Zargabad");
+	private static final List<String> MAPS = List.of("Aliabad Region", "Altis", "Anizay", "Beketow", "Bukovina",
+			"Bystrica", "Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Chernarus 2020",
+			"Chongo, Angola v1.30", "CLA Clafghan", "Desert Island", "Die Wüste", "Everon", "Hebontes", "Hellanmaa",
+			"Hellanmaa winter", "Khoramshahr", "Kolgujev", "Livonia", "Malden", "Malden 2035", "Nogova", "Porto",
+			"Prei Khmaoch Luong", "Proving Grounds", "Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani",
+			"SE Angola 1974 v1.30", "Shapur", "Southern Sahrani", "Stratis", "Summa", "Summa winter", "Takistan",
+			"Takistan Mountains", "Tanoa", "United Sahrani", "Utes", "Vinjesvingen", "Virolahti", "Virtuelle Realität",
+			"Zargabad",
+
+			"Kidal", "Kunduz, Afghanistan", "Tria"); //OLD
 
 	/**
 	 * Returns known mission types, except the one saved in the event
