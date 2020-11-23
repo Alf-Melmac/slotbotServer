@@ -68,6 +68,17 @@ public class EventService {
 	}
 
 	/**
+	 * Returns the event associated with the given eventId
+	 *
+	 * @param eventId to find event for
+	 * @return Event found by id
+	 * @throws ResourceNotFoundException if no event with this eventId could be found
+	 */
+	public Event findById(long eventId) {
+		return eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	/**
 	 * Returns all events that take place in the specified period
 	 *
 	 * @return all events in given period

@@ -54,7 +54,7 @@ public class PermissionService {
 	 *
 	 * @return array of allowed role names
 	 */
-	private static String[] getAdministrativeRoleNames() {
+	public static String[] getAdministrativeRoleNames() {
 		return Arrays.asList(
 				ADMIN,
 				MOD)

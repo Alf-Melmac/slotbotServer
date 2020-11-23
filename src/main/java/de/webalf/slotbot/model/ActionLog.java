@@ -1,15 +1,12 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
+import de.webalf.slotbot.converter.persistence.DurationPersistenceConverter;
 import de.webalf.slotbot.model.enums.LogAction;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.time.Duration;
 
 /**
  * @author Alf
@@ -18,16 +15,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "log", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class ActionLog extends AbstractIdEntity {
 	@Column(name = "action")
 	@Enumerated(EnumType.STRING)
 	@NotBlank
 	private LogAction action;
 
-	@Column(name = "time")
-	@Convert(converter = LocalDateTimePersistenceConverter.class)
+	@Column(name = "time_gap")
+	@Convert(converter = DurationPersistenceConverter.class)
 	@NonNull
-	private LocalDateTime time;
+	private Duration timeGap;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -39,11 +37,17 @@ public class ActionLog extends AbstractIdEntity {
 
 	@Builder
 	ActionLog(@NonNull LogAction action,
+	          @NonNull Duration timeGap,
 	          @NonNull User user,
 	          long actionObjectId) {
 		this.action = action;
-		time = LocalDateTime.now();
+		this.timeGap = timeGap;
 		this.user = user;
 		this.actionObjectId = actionObjectId;
+	}
+
+	public String getTimeGapString() {
+		long sec = getTimeGap().getSeconds();
+		return String.format("%02d:%02d", sec/3600, (sec%3600)/60);
 	}
 }

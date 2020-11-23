@@ -1,6 +1,10 @@
 package de.webalf.slotbot.model.dtos;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @author Alf
@@ -8,7 +12,7 @@ import lombok.*;
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDto {
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.

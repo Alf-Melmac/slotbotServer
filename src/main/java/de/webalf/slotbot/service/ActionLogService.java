@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotEmpty;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * @author Alf
@@ -23,13 +25,24 @@ import javax.validation.constraints.NotEmpty;
 public class ActionLogService {
 	private final ActionLogRepository logRepository;
 
-	void logEventAction(@NonNull LogAction action, @NonNull Event event, User user) {
-		logAction(action, event.getId(), user);
+	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User user) {
+		logAction(action, Duration.between(LocalDateTime.now(), event.getDateTime()), event.getId(), user);
 	}
 
-	private void logAction(@NonNull LogAction action, @NotEmpty long actionObjectId, User user) {
+	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User user1, @NonNull User user2) {
+		Duration timeGap = Duration.between(LocalDateTime.now(), event.getDateTime());
+		logAction(action, timeGap, event.getId(), user1);
+		logAction(action, timeGap, event.getId(), user2);
+	}
+
+	private void logAction(@NonNull LogAction action, @NonNull Duration timeGap, @NotEmpty long actionObjectId, @NonNull User user) {
+		if (user.isDefaultUser()) {
+			return;
+		}
+
 		ActionLog actionLog = ActionLog.builder()
 				.action(action)
+				.timeGap(timeGap)
 				.actionObjectId(actionObjectId)
 				.user(user)
 				.build();

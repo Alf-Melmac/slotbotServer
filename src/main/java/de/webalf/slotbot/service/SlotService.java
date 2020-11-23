@@ -57,7 +57,7 @@ public class SlotService {
 	 * Updates a slot with the given values identified by its id
 	 * (!) Squad can not be changes
 	 *
-	 * @param dto with new values
+	 * @param dto   with new values
 	 * @param squad is required when a new slot must be created
 	 * @return updated Slot
 	 */
@@ -147,6 +147,8 @@ public class SlotService {
 		Slot slot1 = slotRepository.findById(slotDtos.get(0).getId()).orElseThrow(ResourceNotFoundException::new);
 		Slot slot2 = slotRepository.findById(slotDtos.get(1).getId()).orElseThrow(ResourceNotFoundException::new);
 		slot1.swapUsers(slot2);
+
+		actionLogService.logEventAction(LogAction.SWAP, slot1.getEvent(), slot1.getUser(), slot2.getUser());
 
 		return slot1.getEvent();
 	}

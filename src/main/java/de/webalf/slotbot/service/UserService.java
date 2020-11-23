@@ -3,7 +3,9 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
+import de.webalf.slotbot.model.dtos.website.UserNameDto;
 import de.webalf.slotbot.repository.UserRepository;
+import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserService {
 	private final UserRepository userRepository;
+	private final DiscordApiService discordApiService;
 
 	private User createUser(@NonNull UserDto userDto) {
 		User user = UserAssembler.fromDto(userDto);
@@ -35,5 +38,10 @@ public class UserService {
 
 	User find(long id) {
 		return userRepository.findById(id).orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
+	}
+
+	public UserNameDto getUserNameDto(User user) {
+		String userIdString = LongUtils.toString(user.getId());
+		return UserNameDto.builder().id(userIdString).name(discordApiService.getName(userIdString)).build();
 	}
 }

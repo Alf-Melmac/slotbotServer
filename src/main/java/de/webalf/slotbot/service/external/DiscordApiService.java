@@ -29,7 +29,7 @@ public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
 	private static final Set<String> KNOWN_ROLE_NAMES = new HashSet<>();
-	private static List<Role> roles = new ArrayList<>();
+	private List<Role> roles = new ArrayList<>();
 
 	private static final String ROLE_ADMINISTRATOR = "Administrator";
 	private static final String ROLE_MODERATOR = "Moderator";
@@ -51,12 +51,7 @@ public class DiscordApiService {
 	 */
 	@Cacheable("highestDiscordRole")
 	public String getRole(String userId) {
-		GuildMember member = getGuildMember(userId);
-		if (member.getUser() == null) {
-			log.warn("Fetching user of id " + userId);
-			User user = getUser(userId);
-			member = GuildMember.builder().user(user).roles(Collections.emptySet()).build();
-		}
+		GuildMember member = getGuildMemberWithUser(userId);
 		log.info("Login of: [" + userId + "] " + member.getUser().getUsername());
 
 		Role highestRole = getHighestRole(member.getRoles());
@@ -71,7 +66,7 @@ public class DiscordApiService {
 	 */
 	@Cacheable("discordNicknames")
 	public String getName(String userId) {
-		GuildMember guildMember = getGuildMember(userId);
+		GuildMember guildMember = getGuildMemberWithUser(userId);
 		return guildMember.getNick();
 	}
 
@@ -90,7 +85,7 @@ public class DiscordApiService {
 	/**
 	 * @see <a href="https://discord.com/developers/docs/resources/guild#get-guild-member" target="_top">https://discord.com/developers/docs/resources/guild#get-guild-member</a>
 	 */
-	synchronized private GuildMember getGuildMember(String userId) {
+	private synchronized GuildMember getGuildMember(String userId) {
 		String url = "/guilds/" + discordProperties.getGuild() + "/members/" + userId;
 
 		if (wait) {
@@ -107,16 +102,30 @@ public class DiscordApiService {
 					HttpHeaders httpHeaders = clientResponse.headers().asHttpHeaders();
 					List<String> remainingHeaders = httpHeaders.get("x-ratelimit-remaining");
 					List<String> resetAfterHeaders = httpHeaders.get("x-ratelimit-reset-after");
-					if (!ListUtils.isEmpty(remainingHeaders) && !ListUtils.isEmpty(resetAfterHeaders)) {
-						if ("0".equals(remainingHeaders.get(0))) {
-							wait = true;
-							waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
-						}
+					if (!ListUtils.isEmpty(remainingHeaders) && !ListUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.get(0))) {
+						wait = true;
+						waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
 					}
 				})
 				.flatMap(clientResponse -> clientResponse.bodyToMono(GuildMember.class))
 				.onErrorResume(error -> Mono.just(new GuildMember()))
 				.block();
+	}
+
+	/**
+	 * Returns the guild member. If not found it searches for the user itself and builds a {@link GuildMember}
+	 *
+	 * @param userId user to seach for
+	 * @return {@link GuildMember} with the given user
+	 */
+	private GuildMember getGuildMemberWithUser(String userId) {
+		GuildMember member = getGuildMember(userId);
+		if (member.getUser() == null) {
+			log.warn("Fetching user of id " + userId);
+			User user = getUser(userId);
+			member = GuildMember.builder().user(user).roles(Collections.emptySet()).build();
+		}
+		return member;
 	}
 
 	/**

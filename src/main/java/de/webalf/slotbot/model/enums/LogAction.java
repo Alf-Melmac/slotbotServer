@@ -6,5 +6,6 @@ package de.webalf.slotbot.model.enums;
  */
 public enum LogAction {
 	SLOT,
-	UNSLOT
+	UNSLOT,
+	SWAP //Logs only one user
 }

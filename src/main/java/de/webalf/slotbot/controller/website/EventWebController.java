@@ -2,9 +2,7 @@ package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
-import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.repository.EventRepository;
+import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.PermissionService;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +24,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/events")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventWebController {
-	private final EventRepository eventRepository;
+	private final EventService eventService;
 	private final EventDetailsAssembler eventDetailsAssembler;
 
 	private static final String START_URL_STRING = "startUrl";
 	private static final String START_URL = linkTo(methodOn(StartWebController.class).getStart()).toUri().toString();
+	private static final String EVENTS_URL_STRING = "eventsUrl";
+	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString();
 
 	@GetMapping
 	public ModelAndView getEventHtml() {
@@ -52,7 +52,7 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		mav.addObject(START_URL_STRING, START_URL);
-		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
+		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
 				.getEventDetailsHtml(Long.MIN_VALUE))
@@ -66,9 +66,8 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
 		mav.addObject(START_URL_STRING, START_URL);
-		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
-		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
-		mav.addObject("event", eventDetailsAssembler.toDto(event));
+		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
+		mav.addObject("event", eventDetailsAssembler.toDto(eventService.findById(eventId)));
 		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
 		mav.addObject("hasEventManageRole", PermissionService.hasEventManageRole());
 		return mav;
@@ -79,11 +78,10 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventEdit");
 
 		mav.addObject(START_URL_STRING, START_URL);
-		mav.addObject("eventsUrl", linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString());
+		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
-		Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
-		mav.addObject("event", eventDetailsAssembler.toDto(event));
+		mav.addObject("event", eventDetailsAssembler.toDto(eventService.findById(eventId)));
 		return mav;
 	}
 }

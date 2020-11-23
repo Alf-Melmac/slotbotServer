@@ -46,6 +46,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/discord").permitAll()
 				.antMatchers("/events/new").hasAnyRole(PermissionService.getEventManageRoleNames())
 				.antMatchers("/events/edit/*").hasAnyRole(PermissionService.getEventManageRoleNames())
+				.antMatchers("/logs").hasAnyRole(PermissionService.getAdministrativeRoleNames())
 
 				// all other requests must be authenticated
 				.anyRequest().authenticated()
