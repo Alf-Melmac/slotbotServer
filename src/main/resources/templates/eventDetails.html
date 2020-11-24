@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
 	      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
-	<link rel="stylesheet" th:href="@{/assets/css/btnFit.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/copy.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/eventDetails.css}">
@@ -62,7 +62,7 @@
 						<h1 th:text="${event.name}">Event Titel</h1>
 					</div>
 					<div class="col-md-1 float-right" th:if="${hasEventManageRole}">
-						<div id="eventEdit" class="btn btn-fit" type="button"><em class="fa fa-edit"></em></div>
+						<div id="eventEdit" class="btn btn-xl btn-wht" type="button"><em class="fa fa-edit"></em></div>
 					</div>
 				</div>
 				<div class="row">

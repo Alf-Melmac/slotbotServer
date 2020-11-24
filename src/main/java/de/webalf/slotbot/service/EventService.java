@@ -84,7 +84,10 @@ public class EventService {
 	 * @return all events in given period
 	 */
 	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
-		return eventRepository.findAllByDateTimeBetween(start, end);
+		if (PermissionService.hasEventManageRole()) {
+			return eventRepository.findAllByDateTimeBetween(start, end);
+		}
+		return eventRepository.findAllByDateTimeBetweenAndHiddenFalse(start, end);
 	}
 
 	public Event updateEvent(@NonNull EventDto dto) {
@@ -98,6 +101,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
+		DtoUtils.ifPresent(dto.getHidden(), event::setHidden);
 		DtoUtils.ifPresent(dto.getChannel(), event::setChannelString);
 		DtoUtils.ifPresent(dto.getInfoMsg(), event::setInfoMsgString);
 		DtoUtils.ifPresent(dto.getSlotListMsg(), event::setSlotListMsgString);

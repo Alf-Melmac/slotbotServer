@@ -86,6 +86,8 @@ function saveEvent($saveBtn, url, ajaxMethod, update) {
     });
     event.squadList = squads;
 
+    event.hidden = $('#eventHidden').find('.fa').hasClass('fa-eye-slash');
+
     $.ajax(url, {
         method: ajaxMethod,
         headers: {

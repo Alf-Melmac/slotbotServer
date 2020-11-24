@@ -1,0 +1,11 @@
+.btn-wht {
+  color: white;
+}
+
+.btn-wht:hover {
+  color: gray;
+}
+
+.btn-xl {
+  font-size: 2em;
+}

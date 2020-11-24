@@ -18,7 +18,7 @@ $(function () {
         '   <div class="col-md-10">' +
         '      <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>' +
         '   </div>' +
-        '   <div class="col-md-1 d-flex btn btn-fit" type="button"><em class="fa fa-trash-o"></em></div>' +
+        '   <div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
         '</div>';
 
     const newSquad =
@@ -28,7 +28,7 @@ $(function () {
         '       <div class="col-md-11">' +
         '           <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>' +
         '       </div>' +
-        '       <div class="d-flex btn btn-fit" type="button"><em class="fa fa-trash-o"></em></div>' +
+        '       <div class="d-flex btn btn-xl btn-wht js-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
         '   </div>' +
         '' +
         '   <div class="ml-5 js-slots">' +
@@ -51,7 +51,7 @@ $(function () {
         $this.appendTo($slots);
     });
 
-    $squads.on('click', '.btn-fit', function () {
+    $squads.on('click', '.js-trash', function () {
         const $row = $(this).parent('.form-row');
         if ($row.hasClass('js-squad')) {
             $row.parent('.js-complete-squad').remove();

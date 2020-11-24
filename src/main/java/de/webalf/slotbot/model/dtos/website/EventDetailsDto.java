@@ -37,6 +37,8 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@Size(max = 80)
 	String creator;
 
+	Boolean hidden;
+
 	String channelUrl;
 
 	List<EventDetailsSquadDto> squadList;

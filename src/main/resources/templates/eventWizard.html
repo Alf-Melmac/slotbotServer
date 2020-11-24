@@ -20,7 +20,7 @@
 	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/css/tempusdominus-bootstrap-4.min.css"
 	      integrity="sha256-vi00YWza8MRCSI5GdsFLptAZIULny5MPn62PxEf/ZTY=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
-	<link rel="stylesheet" th:href="@{/assets/css/btnFit.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
 </head>
 <body>
@@ -60,10 +60,17 @@
 				<div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
 					<h3>Allgemeine Informationen</h3>
 					<form>
-						<div class="form-group">
-							<label for="eventName">Titel</label>
-							<input id="eventName" class="form-control" type="text" data-dtokey="name"
-							       placeholder="Event Name" required>
+						<div class="form-row">
+							<div class="form-group col-md-11">
+								<label for="eventName">Titel</label>
+								<input id="eventName" class="form-control" type="text" data-dtokey="name"
+								       placeholder="Event Name" required>
+							</div>
+							<div class="form-group col-md-1">
+								<div id="eventHidden" class="btn btn-xl btn-wht pull-right" title="Sichtbarkeit">
+									<em class="fa fa-eye"></em>
+								</div>
+							</div>
 						</div>
 						<div class="form-row">
 							<div class="form-group col-md-4">
@@ -207,7 +214,7 @@
 										<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 										       required>
 									</div>
-									<div class="d-flex btn btn-fit" type="button">
+									<div class="d-flex btn btn-xl btn-wht js-trash" type="button">
 										<em class="fa fa-trash-o"></em>
 									</div>
 								</div>
@@ -224,7 +231,7 @@
 											<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
 											       required>
 										</div>
-										<div class="col-md-1 d-flex btn btn-fit" type="button">
+										<div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button">
 											<em class="fa fa-trash-o"></em>
 										</div>
 									</div>
@@ -285,6 +292,7 @@
 <script th:src="@{/assets/js/datetimepicker.js}"></script>
 <script th:src="@{/assets/js/eventSave.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
+<script th:src="@{/assets/js/event.js}"></script>
 <script th:src="@{/assets/js/eventWizard.js}"></script>
 </body>
 </html>

@@ -17,4 +17,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	Optional<Event> findByChannel(long channel);
 
 	List<Event> findAllByDateTimeBetween(LocalDateTime start, LocalDateTime end);
+
+	List<Event> findAllByDateTimeBetweenAndHiddenFalse(LocalDateTime start, LocalDateTime end);
 }

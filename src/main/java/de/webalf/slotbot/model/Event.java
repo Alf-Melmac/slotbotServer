@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.util.BooleanUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.util.ListUtils;
@@ -44,6 +45,9 @@ public class Event extends AbstractIdEntity {
 	@NotBlank
 	@Size(max = 80)
 	private String creator;
+
+	@Column(name = "event_hidden")
+	private boolean hidden;
 
 	@Column(name = "event_channel")
 	private Long channel;
@@ -109,6 +113,7 @@ public class Event extends AbstractIdEntity {
 	             String name,
 	             LocalDateTime dateTime,
 	             String creator,
+	             Boolean hidden,
 	             Long channel,
 	             List<Squad> squadList,
 	             Long infoMsg,
@@ -129,6 +134,7 @@ public class Event extends AbstractIdEntity {
 		this.name = name;
 		this.dateTime = dateTime;
 		this.creator = creator;
+		this.hidden = BooleanUtils.falseIfNull(hidden);
 		this.channel = channel;
 		this.squadList = squadList;
 		this.infoMsg = infoMsg;

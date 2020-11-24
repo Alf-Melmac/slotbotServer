@@ -36,6 +36,8 @@ public class EventDto extends AbstractIdEntityDto {
 	@Size(max = 80)
 	private String creator;
 
+	private Boolean hidden;
+
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
 	private String channel;
 
