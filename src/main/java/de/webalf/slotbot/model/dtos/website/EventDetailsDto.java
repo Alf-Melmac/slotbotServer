@@ -53,6 +53,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	Boolean reserveParticipating;
 	@Size(max = 80)
 	String modPack;
+	String modPackUrl;
 	@Size(max = 80)
 	String map;
 	@Size(max = 80)

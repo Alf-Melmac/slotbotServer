@@ -1,6 +1,10 @@
 package de.webalf.slotbot.util;
 
+import de.webalf.slotbot.controller.website.DownloadController;
 import org.springframework.util.StringUtils;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -25,5 +29,23 @@ public class EventUtils {
 			compound += respawn ? "Respawn" : "Kein Respawn";
 		}
 		return compound;
+	}
+
+	public static String getModPackUrl(String modPack) {
+		if (modPack == null) {
+			return null;
+		}
+		switch (modPack) {
+			case "2008_ArmaMachtBock":
+				return linkTo(methodOn(DownloadController.class).getFile("Arma_3_Preset_2008_ArmaMachtBock.html")).toUri().toString();
+			case "2012_ArmaMachtBock":
+				return linkTo(methodOn(DownloadController.class).getFile("Arma_3_Preset_2012_ArmaMachtBock_Full.html")).toUri().toString();
+			case "Joined_Operations_2020":
+				return linkTo(methodOn(DownloadController.class).getFile("Joined_Operations_2020.html")).toUri().toString();
+			case "Alliance_2021v1":
+				return linkTo(methodOn(DownloadController.class).getFile("Alliance_2021v1.html")).toUri().toString();
+			default:
+				return null;
+		}
 	}
 }

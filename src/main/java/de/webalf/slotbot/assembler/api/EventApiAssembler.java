@@ -43,6 +43,7 @@ public final class EventApiAssembler {
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())
+				.modPackUrl(EventUtils.getModPackUrl(event.getModPack()))
 				.map(event.getMap())
 				.missionTime(event.getMissionTime())
 				.navigation(event.getNavigation())

@@ -199,23 +199,10 @@
 							</div>
 							<div class="col-md-8">
 								<div th:switch="${event.modPack}">
-									<p class="mb-0" th:case="'2008_ArmaMachtBock'">
-										<a th:href="@{/assets/download/Arma_3_Preset_2008_ArmaMachtBock.html}" download>
-											AMB 08-2020</a>
+									<p class="mb-0" th:unless="${#strings.isEmpty(event.modPackUrl)}">
+										<a th:href="${event.modPackUrl}" th:text="${event.modPack}"></a>
 									</p>
-									<p class="mb-0" th:case="'2012_ArmaMachtBock'">
-										<a th:href="@{/assets/download/Arma_3_Preset_2012_ArmaMachtBock_Full.html}"
-										   download>AMB</a>
-									</p>
-									<p class="mb-0" th:case="'Joined_Operations_2020'">
-										<a th:href="@{/assets/download/Joined_Operations_2020.html}" download>
-											Joint Ops 2020
-										</a>
-									</p>
-									<p class="mb-0" th:case="'Alliance_2021v1'">
-										<a th:href="@{/assets/download/Alliance_2021v1.html}" download>Joint Ops</a>
-									</p>
-									<p class="mb-0" th:case="*" th:text="${event.modPack}"></p>
+									<p class="mb-0" th:if="${#strings.isEmpty(event.modPackUrl)}" th:text="${event.modPack}"></p>
 								</div>
 							</div>
 						</div>

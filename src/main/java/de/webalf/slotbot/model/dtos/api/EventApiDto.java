@@ -17,9 +17,11 @@ import javax.validation.constraints.Size;
 @SuperBuilder
 public class EventApiDto extends EventDto {
 	@NotBlank
-	private String url;
+	private final String url;
 
 	//Replacement for missionType and respawn
 	@Size(max = 94)
-	private String missionTypeAndRespawn;
+	private final String missionTypeAndRespawn;
+
+	private String modPackUrl;
 }

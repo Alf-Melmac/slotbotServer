@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class EventDetailsAssembler {
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.modPack(event.getModPack())
+				.modPackUrl(EventUtils.getModPackUrl(event.getModPack()))
 				.map(event.getMap())
 				.missionTime(event.getMissionTime())
 				.navigation(event.getNavigation())

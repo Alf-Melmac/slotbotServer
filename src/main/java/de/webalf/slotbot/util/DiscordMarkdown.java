@@ -2,8 +2,6 @@ package de.webalf.slotbot.util;
 
 import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * @author Alf
  * @since 12.11.2020
@@ -26,7 +24,11 @@ public class DiscordMarkdown {
 	 * @return marked down string
 	 * @see <a href="https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-" target"_top">https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-</a>
 	 */
-	public static String toHtml(@NotBlank String s) {
+	public static String toHtml(String s) {
+		if (StringUtils.isEmpty(s)) {
+			return null;
+		}
+
 		String markdown;
 		markdown = s.replaceAll("\n", "<br>");
 		markdown = replace(markdown, "~~", STRIKETHROUGH, "s");
