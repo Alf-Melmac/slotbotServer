@@ -75,7 +75,7 @@
 				</div>
 
 				<a th:unless="${#strings.isEmpty(event.channelUrl)}" class="btn btn-sm btn-default viewMore"
-				   role="button" th:href="${event.channelUrl}" target="_blank" rel="noopener noreferrer">
+				   role="button" th:href="${event.channelUrl}" rel="noopener noreferrer">
 					In Discord öffnen
 				</a>
 				<button th:if="${#strings.isEmpty(event.channelUrl) && hasEventManageRole}" type="button"

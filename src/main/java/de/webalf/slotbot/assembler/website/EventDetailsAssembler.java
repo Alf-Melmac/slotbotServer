@@ -32,7 +32,7 @@ public class EventDetailsAssembler {
 
 	public EventDetailsDto toDto(Event event) {
 		LocalDateTime dateTime = event.getDateTime();
-		String channelUrl = "https://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
+		String channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
 
 		return EventDetailsDto.builder()
 				.id(event.getId())
