@@ -6,9 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URL;
 
 /**
  * @author Alf
@@ -17,8 +15,6 @@ import java.nio.file.Paths;
 @Service
 @Slf4j
 public class FileService {
-	private static final Path ROOT = Paths.get("src/main/resources/static/download");
-
 	/**
 	 * Returns the given file by name as a {@link Resource}
 	 *
@@ -27,16 +23,14 @@ public class FileService {
 	 * @throws ResourceNotFoundException if file doesn't exists or the path is a malformedURL
 	 */
 	public Resource loadDownload(String filename) {
-		try {
-			Resource resource = new UrlResource(ROOT.resolve(filename).toUri());
+		URL url = FileService.class.getClassLoader().getResource("static/download/" + filename);
+		if (url != null) {
+			Resource resource = new UrlResource(url);
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
-			} else {
-				throw new ResourceNotFoundException(filename);
 			}
-		} catch (MalformedURLException e) {
-			log.error("MalformedURLException encountered while loading file " + filename, e);
-			throw new ResourceNotFoundException(filename);
 		}
+
+		throw new ResourceNotFoundException(filename);
 	}
 }
