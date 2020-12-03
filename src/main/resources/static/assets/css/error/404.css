@@ -49,6 +49,9 @@
     left: 80px;
     width: 350px;
     z-index: -1;
+
+    animation: shadow-anima 1.2s infinite cubic-bezier(0.55, 0.01, 0.16, 1.34);
+    animation-delay: 0.1s;
 }
 
 /*caveman */
@@ -425,11 +428,6 @@
     100% {
         height: 5px;
     }
-}
-
-.error-container:after {
-    animation: shadow-anima 1.2s infinite cubic-bezier(0.55, 0.01, 0.16, 1.34);
-    animation-delay: 0.1s;
 }
 
 @keyframes shadow-anima {
