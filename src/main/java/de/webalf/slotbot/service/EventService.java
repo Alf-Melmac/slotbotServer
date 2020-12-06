@@ -101,6 +101,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
+		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresent(dto.getHidden(), event::setHidden);
 		DtoUtils.ifPresent(dto.getChannel(), event::setChannelString);
 		DtoUtils.ifPresent(dto.getInfoMsg(), event::setInfoMsgString);
