@@ -67,6 +67,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@Size(max = 80)
 	String medicalSystem;
 
+	@SuppressWarnings("unused") //eventDetails.html
 	public String getMissionTypeRespawnString() {
 		return EventUtils.getMissionTypeRespawnString(missionType, respawn);
 	}
@@ -83,15 +84,14 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 			"Prei Khmaoch Luong", "Proving Grounds", "Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani",
 			"SE Angola 1974 v1.30", "Shapur", "Southern Sahrani", "Stratis", "Summa", "Summa winter", "Takistan",
 			"Takistan Mountains", "Tanoa", "United Sahrani", "Utes", "Vinjesvingen", "Virolahti", "Virtuelle Realität",
-			"Zargabad",
-
-			"Kidal", "Kunduz, Afghanistan", "Tria"); //OLD
+			"Zargabad");
 
 	/**
 	 * Returns known mission types, except the one saved in the event
 	 *
 	 * @return known mission types except the saved one
 	 */
+	@SuppressWarnings("unused") //eventEdit.html
 	public List<String> getMissionTypesFiltered() {
 		return ListUtils.getListFiltered(MISSION_TYPES, getMissionType());
 	}
@@ -101,6 +101,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	 *
 	 * @return known mod packs except the saved one
 	 */
+	@SuppressWarnings("unused") //eventEdit.html
 	public List<String> getModPacksFiltered() {
 		return ListUtils.getListFiltered(MOD_PACKS, getModPack());
 	}
@@ -110,6 +111,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	 *
 	 * @return known maps except the saved one
 	 */
+	@SuppressWarnings("unused") //eventEdit.html
 	public List<String> getMapsFiltered() {
 		return ListUtils.getListFiltered(MAPS, getMap());
 	}
