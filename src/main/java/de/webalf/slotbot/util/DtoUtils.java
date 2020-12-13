@@ -33,6 +33,12 @@ public class DtoUtils {
 		}
 	}
 
+	public static void ifPresentOrEmpty(String value, Consumer<String> consumer) {
+		if (isPresent((Object) value)) {
+			consumer.accept(value);
+		}
+	}
+
 	public static void ifPresent(int value, Consumer<Integer> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);

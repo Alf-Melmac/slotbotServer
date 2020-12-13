@@ -103,21 +103,21 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresent(dto.getHidden(), event::setHidden);
-		DtoUtils.ifPresent(dto.getChannel(), event::setChannelString);
-		DtoUtils.ifPresent(dto.getInfoMsg(), event::setInfoMsgString);
-		DtoUtils.ifPresent(dto.getSlotListMsg(), event::setSlotListMsgString);
-		DtoUtils.ifPresent(dto.getDescription(), event::setDescription);
-		DtoUtils.ifPresent(dto.getPictureUrl(), event::setPictureUrl);
-		DtoUtils.ifPresent(dto.getMissionType(), event::setMissionType);
+		DtoUtils.ifPresentOrEmpty(dto.getChannel(), event::setChannelString);
+		DtoUtils.ifPresentOrEmpty(dto.getInfoMsg(), event::setInfoMsgString);
+		DtoUtils.ifPresentOrEmpty(dto.getSlotListMsg(), event::setSlotListMsgString);
+		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
+		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), event::setPictureUrl);
+		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresent(dto.getRespawn(), event::setRespawn);
-		DtoUtils.ifPresent(dto.getMissionLength(), event::setMissionLength);
+		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
-		DtoUtils.ifPresent(dto.getModPack(), event::setModPack);
-		DtoUtils.ifPresent(dto.getMap(), event::setMap);
-		DtoUtils.ifPresent(dto.getMissionTime(), event::setMissionTime);
-		DtoUtils.ifPresent(dto.getNavigation(), event::setNavigation);
-		DtoUtils.ifPresent(dto.getTechnicalTeleport(), event::setTechnicalTeleport);
-		DtoUtils.ifPresent(dto.getMedicalSystem(), event::setMedicalSystem);
+		DtoUtils.ifPresentOrEmpty(dto.getModPack(), event::setModPack);
+		DtoUtils.ifPresentOrEmpty(dto.getMap(), event::setMap);
+		DtoUtils.ifPresentOrEmpty(dto.getMissionTime(), event::setMissionTime);
+		DtoUtils.ifPresentOrEmpty(dto.getNavigation(), event::setNavigation);
+		DtoUtils.ifPresentOrEmpty(dto.getTechnicalTeleport(), event::setTechnicalTeleport);
+		DtoUtils.ifPresentOrEmpty(dto.getMedicalSystem(), event::setMedicalSystem);
 
 		if (dto.getSquadList() != null) {
 			squadService.updateSquadList(dto.getSquadList(), event);

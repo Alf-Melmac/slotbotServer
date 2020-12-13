@@ -18,3 +18,11 @@ body:not(p, li) {
 .modal-content {
   background-color: #3a3a3a;
 }
+
+input::-moz-selection,
+input::selection,
+textarea::-moz-selection,
+textarea::selection {
+  color: lightgray;
+  background: cornflowerblue;
+}

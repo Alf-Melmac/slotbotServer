@@ -16,10 +16,14 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
 	      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 	<link rel="stylesheet"
-	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/css/tempusdominus-bootstrap-4.min.css"
-	      integrity="sha256-vi00YWza8MRCSI5GdsFLptAZIULny5MPn62PxEf/ZTY=" crossorigin="anonymous">
+	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css"
+	      integrity="sha256-VL9T9QfjO/EGCzuu5CtTWWzIksAkGDTs+fO51ALqMjg=" crossorigin="anonymous">
+	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap3-editable/css/bootstrap-editable.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/editable.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
 </head>
 <body>
@@ -48,6 +52,12 @@
 
 <section class="content-section">
 	<div class="container">
+		<div>
+			<a class="font-s" th:href="${eventDetailsUrl}">
+				<em class="fa fa-chevron-circle-left"> Zurück</em>
+			</a>
+		</div>
+
 		<div class="alert alert-info" role="alert">
 			Aktuell kann die Reihenfolge der Squads nicht verändert werden. Dazu muss ein Squad gelöscht und neu
 			hinzugefügt werden.<br>
@@ -60,8 +70,7 @@
 			<div class="form-row">
 				<div class="form-group col-md-11">
 					<label for="eventName">Titel</label>
-					<input id="eventName" class="form-control" type="text" data-dtokey="name"
-					       placeholder="Event Name" required th:value="${event.name}">
+					<a id="eventName" class="form-control" href="#"></a>
 				</div>
 				<div class="form-group col-md-1">
 					<div id="eventHidden" class="btn btn-xl btn-wht pull-right" title="Sichtbarkeit">
@@ -94,21 +103,19 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventCreator">Ersteller</label>
-					<input id="eventCreator" class="form-control" type="text"
-					       data-dtokey="creator" th:value="${event.creator}" required>
+					<a id="eventCreator" class="form-control" href="#"></a>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="eventDescription">Beschreibung</label>
-				<textarea id="eventDescription" class="form-control" type="text" data-dtokey="description"
-				          placeholder="Beschreibung" th:text="${event.description}"></textarea>
+				<textarea id="eventDescription" class="form-control"></textarea>
 			</div>
 			<div class="form-row align-items-center">
 				<div class="form-group col-md-2">
 					<label for="eventMissionType">Missionstyp</label>
-					<select id="eventMissionType" class="form-control custom-select" data-dtokey="missionType">
-						<option th:with="missionTypeEmpty=${#strings.isEmpty(event.missionType)}"
-						        th:text="${missionTypeEmpty} ? 'Auswählen...' : ${event.missionType}"
+					<select id="eventMissionType" class="form-control custom-select" data-dtokey="missionType"
+					        th:with="missionTypeEmpty=${#strings.isEmpty(event.missionType)}">
+						<option th:text="${missionTypeEmpty} ? 'Auswählen...' : ${event.missionType}"
 						        selected
 						        th:disabled="${missionTypeEmpty}">
 							Auswählen...
@@ -126,8 +133,7 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventMissionLength">Missionslänge</label>
-					<input id="eventMissionLength" class="form-control custom-select" type="text"
-					       list="missionLengths" data-dtokey="missionLength" th:value="${event.missionLength}">
+					<a id="eventMissionLength" class="form-control custom-select" href="#"></a>
 					<datalist id="missionLengths">
 						<option>2 Stunden</option>
 						<option>3 Stunden</option>
@@ -136,8 +142,7 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventModPack">Modpack</label>
-					<input id="eventModPack" class="form-control custom-select" type="text"
-					       list="modPacks" data-dtokey="modPack" th:value="${event.modPack}">
+					<a id="eventModPack" class="form-control custom-select" href="#"></a>
 					<datalist id="modPacks">
 						<option th:each="modPack : ${event.getModPacksFiltered()}"
 						        th:text="${modPack}"></option>
@@ -164,14 +169,11 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventTechnicalTeleport">Technischer Teleport</label>
-					<input id="eventTechnicalTeleport" class="form-control" type="text"
-					       data-dtokey="technicalTeleport" placeholder="Objekt, Position etc."
-					       th:value="${event.technicalTeleport}">
+					<a id="eventTechnicalTeleport" class="form-control" href="#"></a>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventMedicalSystem">Medic-System</label>
-					<input id="eventMedicalSystem" class="form-control" type="text"
-					       data-dtokey="medicalSystem" value="AMB" th:value="${event.medicalSystem}">
+					<a id="eventMedicalSystem" class="form-control" href="#"></a>
 				</div>
 			</div>
 			<div class="form-row align-items-center mb-4">
@@ -186,15 +188,11 @@
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventMissionTime">Missionszeit</label>
-					<input id="eventMissionTime" class="form-control" type="text"
-					       data-dtokey="missionTime" placeholder="Dämmerung, Tag, Nacht, ..."
-					       th:value="${event.missionTime}">
+					<a id="eventMissionTime" class="form-control" href="#"></a>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventNavigation">Navigation</label>
-					<input id="eventNavigation" class="form-control" type="text"
-					       data-dtokey="navigation" placeholder="GPS, Karte, Kompass, Nichts, ..."
-					       th:value="${event.navigation}">
+					<a id="eventNavigation" class="form-control" href="#"></a>
 				</div>
 			</div>
 			<div class="form-row">
@@ -203,8 +201,7 @@
 					<label for="eventPicture">
 						Bild-URL
 					</label>
-					<input id="eventPicture" class="form-control" type="text" data-dtokey="pictureUrl"
-					       th:value="${event.pictureUrl}">
+					<a id="eventPicture" class="form-control" href="#"></a>
 				</div>
 			</div>
 		</form>
@@ -263,9 +260,9 @@
 			</div>
 		</form>
 		<div class="row float-right">
-			<button id="btnCancel" class="btn btn-danger">Abbrechen</button>
-			<button id="btnFinish" class="btn btn-primary" tabindex="0" data-toggle="popover"
-			        data-trigger="focus" data-content="Alle Pflichfelder ausfüllen!">Speichern
+			<button id="btnSaveSlotlist" class="btn btn-primary" tabindex="0" data-toggle="popover"
+			        data-trigger="focus" data-content="Alle Pflichfelder ausfüllen!">
+				Slotliste speichern
 			</button>
 		</div>
 	</div>
@@ -280,23 +277,50 @@
 	</div>
 </footer>
 
+<div class="position-relative" aria-live="polite" aria-atomic="true">
+	<div id="savedToast" class="toast bottom-right" data-delay="2000">
+		<div class="toast-header">
+			<span class="rounded mr-2 square-em-1 bg-success"></span>
+			<strong class="mr-auto">Änderungen gespeichert</strong>
+			<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</div>
+</div>
+
+<div class="position-relative" aria-live="polite" aria-atomic="true">
+	<div id="errorToast" class="toast bottom-right" data-delay="5000">
+		<div class="toast-header">
+			<span class="rounded mr-2 square-em-1 bg-danger"></span>
+			<strong class="mr-auto">Fehler aufgetreten</strong>
+			<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script th:src="@{/assets/3rd/jquery-ui-1.12.1.custom/jquery-ui.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment-with-locales.min.js"
-        integrity="sha256-E3Snwx6F4t7DiA/L3DgPk6In2M1747JSau+3PWjtS5I=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/dist/locale/de.js"
-        integrity="sha256-aWAfUXm/D5kDckGqTrmZBEk9u7GnYegeUgLH0sw7SUk=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.1.2/build/js/tempusdominus-bootstrap-4.min.js"
-        integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"
+        integrity="sha256-c95CVJWVMOTR2b7FhjeRhPlrSVPaz5zV5eK917/s7vc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/de.js"
+        integrity="sha256-dJBC1pkYTxgcWOD6TgelpziCdVAo/s6+kh7WyUjwGdQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/js/tempusdominus-bootstrap-4.min.js"
+        integrity="sha256-VpqYzVoiXWnJ6OWGzqbreWjWS5pu3mLoqyQSLyQD6aE=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha256-/ijcOLwFf26xEYAjW75FizKVo5tnTYiQddPZoLUHHZ8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"
         integrity="sha256-ecWZ3XYM7AwWIaGvSdmipJ2l1F4bN9RXW6zgpeAiZYI=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/x-editable@1.5.1/dist/bootstrap3-editable/js/bootstrap-editable.min.js"
+        integrity="sha256-+fnaOx6GCnrPNNkJicdgSX4Vtl5jpxdMGykaxRQjDi4=" crossorigin="anonymous"></script>
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const eventsUrl = /*[[${eventsUrl}]]*/ '';
 	const putEventUrl = /*[[${putEventUrl}]]*/ '';
+	const putEventEditableUrl = /*[[${putEventEditableUrl}]]*/ '';
 	const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
 	const savedEvent = /*[[${event}]]*/ '';
 	/*]]>*/
@@ -304,7 +328,6 @@
 <script th:src="@{/assets/js/datetimepicker.js}"></script>
 <script th:src="@{/assets/js/eventSave.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
-<script th:src="@{/assets/js/event.js}"></script>
 <script th:src="@{/assets/js/eventEdit.js}"></script>
 </body>
 </html>

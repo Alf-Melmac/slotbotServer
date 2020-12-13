@@ -1,0 +1,51 @@
+/*Replace Glyphicons with Fontawesome 4*/
+.glyphicon-ok::before {
+  content: "\f00c";
+}
+
+.glyphicon-remove::before {
+  content: "\f00d";
+}
+
+.glyphicon {
+  font-family: 'FontAwesome', serif;
+  font-style: normal;
+}
+
+.editable-empty {
+  color: #495057; /*Bootstrap .form-control color*/
+}
+
+.editable-empty:hover {
+  color: #495057; /*Bootstrap .form-control color*/
+}
+
+.editable-error-block {
+  color: red;
+  margin-left: 1em;
+}
+
+.has-error input {
+  border-color: red !important;
+}
+
+/*Input sizes that fit with buttons to the right inside matching bootstrap col*/
+.w-12 {
+  width: 65em !important;
+  max-width: 70vw;
+}
+
+.w-11 {
+  width: 60em !important;
+  max-width: 70vw;
+}
+
+.w-8 {
+  width: 41em !important;
+  max-width: 70vw;
+}
+
+.w-4 {
+  width: 18em !important;
+  max-width: 70vw;
+}

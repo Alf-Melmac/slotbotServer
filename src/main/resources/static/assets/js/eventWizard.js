@@ -3,6 +3,10 @@ $(function () {
 
     $(':checkbox').prop('indeterminate', true);
 
+    $('#eventHidden').on('click', function () {
+        $(this).find('.fa').toggleClass('fa-eye fa-eye-slash');
+    });
+
     const $smartWizard = $('#smartwizard');
 
     // Toolbar extra buttons
@@ -12,9 +16,9 @@ $(function () {
         });
 
     const btnFinish = $('<button id="btnFinish" class="btn btn-primary" tabindex="0" data-toggle="popover"' +
-        ' data-trigger="focus" data-content="Alle Pflichfelder ausfüllen!">Speichern</button>')
+        ' data-trigger="focus" data-content="Alle Pflichtfelder ausfüllen!">Speichern</button>')
         .on('click', function () {
-            saveEvent($(this), postEventUrl, 'POST');
+            saveEvent($(this));
         });
 
     $smartWizard.smartWizard({

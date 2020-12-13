@@ -13,21 +13,27 @@ function areAllRequiredFieldsFilled(selector) {
     return valid;
 }
 
-function saveEvent($saveBtn, url, ajaxMethod, update) {
-    // Disable Finish button to prevent spamming
-    $saveBtn.prop('disabled', true);
-
+function validateRequiredAndUnique($saveBtn) {
     if (!areAllRequiredFieldsFilled('[required]')) {
         $saveBtn.popover('show');
         $saveBtn.prop('disabled', false);
-        return;
+        return true;
     } else {
         $saveBtn.popover('hide');
-    }
 
-    if (!checkUniqueSlotNumbers()) {
-        $('#uniqueSlotNumbersError').show().fadeOut(5000);
-        $saveBtn.prop('disabled', false);
+        if (!checkUniqueSlotNumbers()) {
+            $('#uniqueSlotNumbersError').show().fadeOut(5000);
+            $saveBtn.prop('disabled', false);
+            return true;
+        }
+    }
+}
+
+function saveEvent($saveBtn) {
+    // Disable Finish button to prevent spamming
+    $saveBtn.prop('disabled', true);
+
+    if (validateRequiredAndUnique($saveBtn)) {
         return;
     }
 
@@ -59,6 +65,22 @@ function saveEvent($saveBtn, url, ajaxMethod, update) {
             }
         });
 
+    event.squadList = getSquads(false);
+
+    event.hidden = $('#eventHidden').find('.fa').hasClass('fa-eye-slash');
+
+    $.ajax(postEventUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify(event)
+    })
+        .done(savedEvent => window.location.href = eventDetailsUrl.replace('{eventId}', savedEvent.id))
+        .fail(response => alert(JSON.stringify(response) + '\nAktion fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
+}
+
+function getSquads(update) {
     let squads = [];
     $('#squads .js-complete-squad').each(function (completeSquadIndex, completeSquadElement) {
         const $completeSquad = $(completeSquadElement);
@@ -84,17 +106,5 @@ function saveEvent($saveBtn, url, ajaxMethod, update) {
 
         squads.push(squad);
     });
-    event.squadList = squads;
-
-    event.hidden = $('#eventHidden').find('.fa').hasClass('fa-eye-slash');
-
-    $.ajax(url, {
-        method: ajaxMethod,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: JSON.stringify(event)
-    })
-        .done(savedEvent => window.location.href = eventDetailsUrl.replace('{eventId}', savedEvent.id))
-        .fail(response => alert(JSON.stringify(response) + '\nAktion fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
+    return squads;
 }
