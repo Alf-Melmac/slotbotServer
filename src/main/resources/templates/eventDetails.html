@@ -47,6 +47,10 @@
 
 <section class="content-section">
 	<div class="container">
+		<div th:if="${event.hidden}" class="alert alert-warning" role="alert">
+			Diese Event ist für Mitspieler noch nicht sichtbar. Wenn das Slotten beginnen kann, gebe das Event über den Editiermodus frei.
+		</div>
+
 		<div class="row mb-3">
 			<div class="col-md-4">
 				<div id="event-img">
