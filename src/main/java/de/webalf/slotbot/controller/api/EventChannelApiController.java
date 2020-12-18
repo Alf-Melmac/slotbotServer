@@ -63,6 +63,13 @@ public class EventChannelApiController {
 		return eventService.unslot(channel, slotNumber);
 	}
 
+	@PutMapping("/prepareSwap")
+	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
+	                                  @RequestBody List<UserDto> userDtos) {
+		log.trace("getSwapSlots: " + channel );
+		return SlotAssembler.toDtoList(eventService.findSwapSlots(channel, userDtos));
+	}
+
 	@PutMapping("/prepareSwap/{slotNumber}")
 	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
 	                                  @PathVariable(value = "slotNumber") int slotNumber,

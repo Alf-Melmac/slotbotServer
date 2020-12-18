@@ -21,8 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.util.ListUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -244,6 +246,18 @@ public class EventService {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		slotService.blockSlot(slot, replacementName);
 		return event;
+	}
+
+	public List<Slot> findSwapSlots(long channel, List<UserDto> userDtos) {
+		if (ListUtils.isEmpty(userDtos) || userDtos.size() != 2) {
+			throw BusinessRuntimeException.builder().title("Zum tauschen müssen zwei Nutzer angegeben werden.").build();
+		}
+
+		Event event = findByChannel(channel);
+
+		ArrayList<Slot> slots = new ArrayList<>();
+		userDtos.forEach(userDto -> slots.add(event.findSlotOfUser(userService.find(userDto)).orElseThrow(ResourceNotFoundException::new)));
+		return slots;
 	}
 
 	/**
