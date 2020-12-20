@@ -53,6 +53,7 @@ public class Event extends AbstractIdEntity {
 	private Long channel;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderColumn
 	@JsonManagedReference
 	private List<Squad> squadList;
 
@@ -310,7 +311,7 @@ public class Event extends AbstractIdEntity {
 	 * Informs the event about an slot update (slot, unslot, new slot(s) created, slot(s) removed).
 	 * Uses {@link Event#moveReservists()} to change reserve if needed
 	 */
-	public void slotUpdate() {
+	void slotUpdate() {
 		moveReservists();
 	}
 
