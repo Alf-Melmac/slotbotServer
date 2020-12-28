@@ -15,12 +15,12 @@ import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.thymeleaf.util.ListUtils;
 
 import java.time.LocalDateTime;
@@ -42,7 +42,7 @@ public class EventService {
 	private final UserService userService;
 
 	public Event createEvent(@NonNull EventDto eventDto) {
-		if (!StringUtils.isEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
+		if (StringUtils.isNotEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
 		Event event = EventAssembler.fromDto(eventDto);
@@ -95,7 +95,7 @@ public class EventService {
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 
-		if (!StringUtils.isEmpty(dto.getChannel())
+		if (StringUtils.isNotEmpty(dto.getChannel())
 				&& eventRepository.findByChannel(LongUtils.parseLong(dto.getChannel())).filter(event1 -> !event1.equals(event)).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}

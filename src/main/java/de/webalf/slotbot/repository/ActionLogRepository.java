@@ -1,7 +1,6 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.ActionLog;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @since 06.09.2020
  */
 @Repository
-public interface ActionLogRepository extends JpaRepository<ActionLog, Long> {
+public interface ActionLogRepository extends IdEntityJpaRepository<ActionLog> {
 }

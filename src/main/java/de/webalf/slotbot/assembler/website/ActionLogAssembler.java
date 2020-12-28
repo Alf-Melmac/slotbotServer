@@ -8,6 +8,7 @@ import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -19,11 +20,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class ActionLogAssembler {
+public class ActionLogAssembler implements RepresentationModelAssembler<ActionLog, ActionLogDto> {
 	private final EventService eventService;
 	private final UserService userService;
 
-	public ActionLogDto toDto(ActionLog log) {
+	@Override
+	public ActionLogDto toModel(ActionLog log) {
 		ActionLogDto logDto = ActionLogDto.builder()
 				.user(userService.getUserNameDto(log.getUser()))
 				.action(log.getAction())
@@ -34,14 +36,8 @@ public class ActionLogAssembler {
 	}
 
 	private void setObjectAttributes(ActionLogDto logDto, long objectId) {
-		switch (logDto.getAction()) {
-			case SLOT:
-			case UNSLOT:
-			case SWAP:
-				setEventAttributes(logDto, objectId);
-				break;
-			default:
-				break;
+		if (logDto.isEventAction()) {
+			setEventAttributes(logDto, objectId);
 		}
 	}
 

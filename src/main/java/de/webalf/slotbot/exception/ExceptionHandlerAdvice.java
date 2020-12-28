@@ -1,9 +1,9 @@
 package de.webalf.slotbot.exception;
 
+import de.webalf.slotbot.util.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -44,7 +44,7 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 		ResponseStatus responseStatusAnnotation = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
 		if (responseStatusAnnotation != null) {
 			String reason = responseStatusAnnotation.reason();
-			if (!StringUtils.isEmpty(reason)) {
+			if (StringUtils.isNotEmpty(reason)) {
 				return responseStatusAnnotation.reason();
 			}
 		}

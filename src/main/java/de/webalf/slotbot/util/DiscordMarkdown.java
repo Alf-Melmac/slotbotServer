@@ -1,12 +1,14 @@
 package de.webalf.slotbot.util;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.util.StringUtils;
 
 /**
  * @author Alf
  * @since 12.11.2020
  */
-public class DiscordMarkdown {
+@UtilityClass
+public final class DiscordMarkdown {
 	private static final String ONE_TIMES = "{1}";
 	private static final String TWO_TIMES = "{2}";
 	private static final String THREE_TIMES = "{3}";

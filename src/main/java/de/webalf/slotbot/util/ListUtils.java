@@ -1,5 +1,7 @@
 package de.webalf.slotbot.util;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +10,8 @@ import java.util.stream.Collectors;
  * @author Alf
  * @since 14.11.2020
  */
-public class ListUtils {
+@UtilityClass
+public final class ListUtils {
 	/**
 	 * Removes the given element from the String collection
 	 * 

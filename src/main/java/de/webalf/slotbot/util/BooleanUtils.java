@@ -1,10 +1,13 @@
 package de.webalf.slotbot.util;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * @author Alf
  * @since 24.11.2020
  */
-public class BooleanUtils {
+@UtilityClass
+public final class BooleanUtils {
 	/**
 	 * Returns false if the given Boolean is null
 	 *

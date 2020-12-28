@@ -23,6 +23,8 @@
 		<java.version>11</java.version>
 		<springframework.boot.version>2.3.3.RELEASE</springframework.boot.version>
 		<springframework.security.version>5.4.0</springframework.security.version>
+		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
+		<hibernate.version>5.4.18.Final</hibernate.version>
 		<postgresql.version>42.2.15</postgresql.version>
 		<mysql.version>8.0.21</mysql.version>
 		<lombok.version>1.18.12</lombok.version>
@@ -81,7 +83,7 @@
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
-			<version>3.0.4.RELEASE</version>
+			<version>${thymeleaf.extras.version}</version>
 		</dependency>
 
 		<dependency>
@@ -121,12 +123,18 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>${javax.validation.version}</version>
+			<version>${javax-validation.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>${hibernate.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -138,6 +146,26 @@
 				<version>${springframework.boot.version}</version>
 				<configuration>
 					<executable>true</executable>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.hibernate</groupId>
+							<artifactId>hibernate-jpamodelgen</artifactId>
+							<version>${hibernate.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>

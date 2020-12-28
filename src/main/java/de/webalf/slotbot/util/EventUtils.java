@@ -1,7 +1,7 @@
 package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.controller.website.DownloadController;
-import org.springframework.util.StringUtils;
+import lombok.experimental.UtilityClass;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -10,7 +10,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @author Alf
  * @since 10.11.2020
  */
-public class EventUtils {
+@UtilityClass
+public final class EventUtils {
 	/**
 	 * Combines the two given parameters to one string that can be shown
 	 *
@@ -19,7 +20,7 @@ public class EventUtils {
 	public static String getMissionTypeRespawnString(String missionType, Boolean respawn) {
 		String compound = "";
 		boolean respawnExists = respawn != null;
-		if (!StringUtils.isEmpty(missionType)) {
+		if (StringUtils.isNotEmpty(missionType)) {
 			compound += missionType;
 			if (respawnExists) {
 				compound += ", ";

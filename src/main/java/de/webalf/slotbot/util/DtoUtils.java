@@ -3,7 +3,7 @@ package de.webalf.slotbot.util;
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
-import org.springframework.util.StringUtils;
+import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,14 +13,15 @@ import java.util.function.Consumer;
  * @author Alf
  * @since 08.08.2020
  */
-public class DtoUtils {
+@UtilityClass
+public final class DtoUtils {
 
 	private static boolean isPresent(int value) {
 		return value != 0;
 	}
 
 	private static boolean isPresent(String value) {
-		return value != null && !StringUtils.isEmpty(value);
+		return value != null && StringUtils.isNotEmpty(value);
 	}
 
 	private static boolean isPresent(Object value) {

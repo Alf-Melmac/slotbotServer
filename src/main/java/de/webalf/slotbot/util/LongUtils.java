@@ -1,10 +1,13 @@
 package de.webalf.slotbot.util;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * @author Alf
  * @since 08.08.2020
  */
-public class LongUtils {
+@UtilityClass
+public final class LongUtils {
 	/**
 	 * Parse Long that can handle null strings
 	 *
