@@ -7,7 +7,7 @@ import de.webalf.slotbot.model.User_;
 import de.webalf.slotbot.util.CollectionUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.WildcardSpecificationUtils;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Alf
  * @since 22.12.2020
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ActionLogSpecification implements Specification<ActionLog> {
 	private final String filter;
 
@@ -28,10 +28,10 @@ public class ActionLogSpecification implements Specification<ActionLog> {
 	public Predicate toPredicate(Root<ActionLog> actionLog, CriteriaQuery<?> query, CriteriaBuilder cb) {
 		List<Predicate> filterPredicates = new ArrayList<>();
 
-		Join<ActionLog, User> logUser = actionLog.join(ActionLog_.user);
-
 		if (StringUtils.isNotEmpty(filter)) {
 			String wildcardTerm = WildcardSpecificationUtils.buildLowerCaseWildcardParam(filter);
+
+			Join<ActionLog, User> logUser = actionLog.join(ActionLog_.user);
 			filterPredicates.add(cb.like(cb.lower(logUser.get(User_.id).as(String.class)), wildcardTerm));
 			filterPredicates.add(cb.like(cb.lower(actionLog.get(ActionLog_.action).as(String.class)), wildcardTerm));
 		}
