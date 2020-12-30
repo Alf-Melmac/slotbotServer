@@ -41,14 +41,14 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 
 				.authorizeRequests()
 				// allow assets and startPage to be accessed by every user
-				.antMatchers("/").permitAll()
-				.antMatchers("/error/404").permitAll()
-				.antMatchers("/assets/**").permitAll()  //JS, CSS, img files
-				.antMatchers("/download/*").permitAll() //Downloadable files
+				.antMatchers("/",
+						"/error/404",
+						"/assets/**",   //JS, CSS, img files
+						"/download/*"   //Downloadable files
+				).permitAll()
 				.regexMatchers("^(/discord|/spenden){1}$").permitAll() //Redirects
-				.antMatchers("/events/new").hasAnyRole(PermissionService.getEventManageRoleNames())
-				.antMatchers("/events/edit/*").hasAnyRole(PermissionService.getEventManageRoleNames())
-				.antMatchers("/logs").hasAnyRole(PermissionService.getAdministrativeRoleNames())
+				.antMatchers("/events/new", "/events/edit/*").hasAnyRole(PermissionService.getEventManageRoleNames())
+				.antMatchers("/admin/**").hasAnyRole(PermissionService.getAdministrativeRoleNames())
 
 				// all other requests must be authenticated
 				.anyRequest().authenticated()

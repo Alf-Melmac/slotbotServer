@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import static de.webalf.slotbot.controller.Urls.ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -13,13 +14,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @since 20.11.2020
  */
 @Controller
-@RequestMapping("/logs")
+@RequestMapping(ADMIN + "/logs")
 public class LogWebController {
 	@GetMapping
 	public ModelAndView getLogsHtml() {
 		ModelAndView mav = new ModelAndView("logs");
 
 		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
+		mav.addObject("adminUrl", linkTo(methodOn(AdminWebController.class).getAdminHtml()).toUri().toString());
 
 		return mav;
 	}

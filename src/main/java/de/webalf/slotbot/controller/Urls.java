@@ -8,4 +8,6 @@ public final class Urls {
 	private static final String SLOTBOT = "/slotbot";
 
 	public static final String API = SLOTBOT + "/api";
+
+	public static final String ADMIN = "/admin";
 }

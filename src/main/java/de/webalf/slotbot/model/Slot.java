@@ -53,6 +53,14 @@ public class Slot extends AbstractIdEntity {
 
 	// Getter
 
+	public Event getEvent() {
+		return getSquad().getEvent();
+	}
+
+	public boolean isInReserve() {
+		return getSquad().isReserve();
+	}
+
 	boolean isSlotWithNumber(int slotNumber) {
 		return getNumber() == slotNumber;
 	}
@@ -67,10 +75,6 @@ public class Slot extends AbstractIdEntity {
 
 	boolean isNotEmpty() {
 		return !isEmpty();
-	}
-
-	public Event getEvent() {
-		return getSquad().getEvent();
 	}
 
 	// Setter

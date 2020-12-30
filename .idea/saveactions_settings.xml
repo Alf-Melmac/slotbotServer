@@ -10,7 +10,6 @@
         <option value="missingOverrideAnnotation" />
         <option value="unnecessaryThis" />
         <option value="finalPrivateMethod" />
-        <option value="unnecessaryFinalOnLocalVariableOrParameter" />
         <option value="explicitTypeCanBeDiamond" />
         <option value="unnecessarySemicolon" />
         <option value="accessCanBeTightened" />

@@ -191,6 +191,15 @@ public class Event extends AbstractIdEntity {
 		return Optional.empty();
 	}
 
+	/**
+	 * Checks if the event has already been printed
+	 *
+	 * @return true if event has already been printed
+	 */
+	public boolean isPrinted() {
+		return getInfoMsg() != null || getSlotListMsg() != null;
+	}
+
 	private Optional<Squad> findSquadByName(String name) {
 		for (Squad squad : getSquadList()) {
 			if (squad.getName().equalsIgnoreCase(name)) {

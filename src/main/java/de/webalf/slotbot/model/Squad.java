@@ -82,7 +82,7 @@ public class Squad extends AbstractIdEntity {
 	 *
 	 * @return true if the name matches
 	 */
-	boolean isReserve() {
+	public boolean isReserve() {
 		return getName().equals(RESERVE_NAME);
 	}
 

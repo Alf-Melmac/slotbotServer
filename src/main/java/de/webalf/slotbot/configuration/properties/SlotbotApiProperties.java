@@ -9,16 +9,19 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @author Alf
- * @since 29.10.2020
+ * @since 29.12.2020
  */
 @Configuration
-@ConfigurationProperties("discord")
+@ConfigurationProperties("slotbot.api")
 @Getter
 @Setter
-public class DiscordProperties {
+public class SlotbotApiProperties {
 	@NotBlank
-	private String token;
+	private final String name = "slotbot-authorization";
 
 	@NotBlank
-	private String guild;
+	private String url;
+
+	@NotBlank
+	private String token;
 }
