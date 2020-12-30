@@ -168,7 +168,7 @@
 													<p class="mb-1 font-weight-bold">Freier Slot</p>
 												</div>
 												<div th:unless="${#strings.isEmpty(slot.text)}">
-													<p class="mb-1" th:classappend="${slot.blocked} ? font-italic : ''"
+													<p class="mb-1" th:classappend="${slot.blocked} ? 'font-italic'"
 													   th:text="${slot.text}"></p>
 												</div>
 											</div>
