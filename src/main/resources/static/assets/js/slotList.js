@@ -6,6 +6,7 @@ $(function () {
     $sortable.sortable();
 
     const $squads = $('#squads');
+    const $addSquad = $('#addSquad');
 
     //Only allow positive whole numbers
     $squads.on('keypress', '.js-slot-number', event => (event.charCode === 8 || event.charCode === 0 || event.charCode === 13) ? null : event.charCode >= 48 && event.charCode <= 57);
@@ -39,10 +40,14 @@ $(function () {
         '   </div>' +
         '</div>';
 
-    $('#addSquad').on('click', function () {
+    $addSquad.on('click', function () {
         $squads.append(newSquad.replace('{defaultSlotValue}', findFirstUnusedSlotNumber()));
         $(this).appendTo($squads);
     });
+
+    if ($squads.hasClass('js-wizard')) { //Create initial squad in wizard
+        $addSquad.trigger('click');
+    }
 
     $squads.on('click', '.js-add-slot', function () {
         const $this = $(this);
