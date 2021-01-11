@@ -40,7 +40,7 @@ public class Unslot implements DiscordCommand {
 		if (zeroArguments(args)) { //Self unslot
 			selfUnslot(message);
 		} else { //Unslot others
-			final String secondArg = args.get(1);
+			final String secondArg = args.get(0);
 			final boolean isUserMention = isUserMention(secondArg);
 			final String userId = getUserId(secondArg);
 
@@ -52,10 +52,10 @@ public class Unslot implements DiscordCommand {
 			if (isAuthorized(EVENT_MANAGE, message)) {
 				if (isUserMention) { //Unslot via mention
 					unslot(message, userId);
-					return;
+				} else {
+					eventBotService.unslot(message.getChannel().getIdLong(), Integer.parseInt(secondArg)); //Unslot via slot number
 				}
-
-				eventBotService.unslot(message.getChannel().getIdLong(), secondArg); //Unslot via slot number
+				deleteMessagesInstant(message);
 			} else {
 				replyAndDelete(message, "Du darfst keine anderen Personen slotten.");
 			}
@@ -64,10 +64,10 @@ public class Unslot implements DiscordCommand {
 
 	private void unslot(@NonNull Message message, String userId) {
 		eventBotService.unslot(message.getChannel().getIdLong(), userId);
-		deleteMessagesInstant(message);
 	}
 
 	private void selfUnslot(@NonNull Message message) {
 		unslot(message, message.getAuthor().getId());
+		deleteMessagesInstant(message);
 	}
 }

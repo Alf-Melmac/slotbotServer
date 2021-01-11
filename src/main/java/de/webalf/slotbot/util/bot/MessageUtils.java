@@ -145,16 +145,16 @@ public class MessageUtils {
 	}
 
 	public static void sendDmAndDeleteMessage(Message message, String messageText) {
-		sendDm(message, messageText, message1 -> deleteMessagesInstant(message), true);
+		sendDm(message, messageText, unused -> deleteMessagesInstant(message), true);
 	}
 
-	private static void sendDmToRecipient(@NonNull MessageReceivedEvent messageEvent, long recipientId, @NotBlank String messageText) {
+	private static void sendDm(@NonNull MessageReceivedEvent messageEvent, long recipientId, @NotBlank String messageText) {
 		messageEvent.getJDA().retrieveUserById(recipientId).queue(
 				user -> sendDm(user, messageEvent.getMessage(), messageText, message -> {})
 		);
 	}
 
-	private static void sendDmToRecipientAndDeleteMessage(@NonNull MessageReceivedEvent messageEvent, long recipientId, @NotBlank String messageText) {
+	private static void sendDmAndDeleteMessage(@NonNull MessageReceivedEvent messageEvent, long recipientId, @NotBlank String messageText) {
 		Message receivedMessage = messageEvent.getMessage();
 		messageEvent.getJDA().retrieveUserById(recipientId).queue(
 				user -> sendDm(user, receivedMessage, messageText, message -> deleteMessagesInstant(receivedMessage), true)
@@ -163,16 +163,30 @@ public class MessageUtils {
 
 	private static void sendDm(@NonNull User user, @NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure) {
 		final Consumer<? super Throwable> failure = fail -> {
-			log.warn("Couldn't send DM to {}", message.getAuthor().getAsTag(), fail);
+			dmFailure(user, success, callSuccessOnFailure, fail);
 			replyAndDeleteOnlySend(message, "Erlaube mir doch bitte dir eine private Nachricht zu senden :(");
-			if (callSuccessOnFailure) {
-				success.accept(null);
-			}
 		};
 
+		sendDm(user, messageText, success, failure);
+	}
+
+	static void sendDmWithoutMessage(@NonNull User user, @NotBlank String messageText) {
+		final Consumer<? super Throwable> failure = fail -> dmFailure(user, unused -> {}, false, fail);
+
+		sendDm(user, messageText, unused -> {}, failure);
+	}
+
+	private static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<? super Message> success, Consumer<? super Throwable> failure) {
 		user.openPrivateChannel().queue(
 				privateChannel -> privateChannel.sendMessage(messageText).queue(success, failure),
 				failure);
+	}
+
+	private static void dmFailure(User user, Consumer<? super Message> success, boolean callSuccessOnFailure, Throwable fail) {
+		log.warn("Couldn't send DM to {}", user.getAsTag(), fail);
+		if (callSuccessOnFailure) {
+			success.accept(null);
+		}
 	}
 
 	/**

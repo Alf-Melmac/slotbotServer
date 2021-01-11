@@ -8,6 +8,7 @@
         <option value="activateOnBatch" />
         <option value="organizeImports" />
         <option value="missingOverrideAnnotation" />
+        <option value="generateSerialVersionUID" />
         <option value="unnecessaryThis" />
         <option value="finalPrivateMethod" />
         <option value="explicitTypeCanBeDiamond" />

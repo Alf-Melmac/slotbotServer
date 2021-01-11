@@ -18,11 +18,13 @@ import java.io.Serializable;
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class HibernateInterceptor extends EmptyInterceptor {
+	private static final long serialVersionUID = 7037471511333181486L;
+
 	private final UpdateInterceptorService updateInterceptorService;
 
 	@Override
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-		updateInterceptorService.update(entity);
+		updateInterceptorService.update(entity, currentState, previousState, propertyNames);
 		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 	}
 
