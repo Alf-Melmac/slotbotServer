@@ -12,27 +12,17 @@
 	  "description": "The token that should be used to validate requests."
 	},
 	{
-	  "name": "slotbot.api.url",
-	  "type": "java.lang.String",
-	  "description": "URL under which the API of the slotbot is accessible."
-	},{
-	  "name": "slotbot.api.name",
-	  "type": "java.lang.String",
-	  "description": "Name of the authentication token used to validate requests send to the slotbot.",
-	  "defaultValue": "slotbot-authorization"
-	},
-	{
-	  "name": "slotbot.api.token",
-	  "type": "java.lang.String",
-	  "description": "The token that should be used to validate requests send to the slotbot."
-	},
-	{
-	  "name": "slotbot.discord.token",
+	  "name": "discord.token",
 	  "type": "java.lang.String",
 	  "description": "The token of the discord bot. Found under https://discord.com/developers/applications."
 	},
 	{
-	  "name": "slotbot.discord.guild",
+	  "name": "discord.id",
+	  "type": "java.lang.String",
+	  "description": "The id of the discord bot."
+	},
+	{
+	  "name": "discord.guild",
 	  "type": "java.lang.String",
 	  "description": "The id of the discord guild the bot runs in."
 	}

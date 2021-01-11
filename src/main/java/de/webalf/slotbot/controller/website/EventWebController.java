@@ -3,8 +3,8 @@ package de.webalf.slotbot.controller.website;
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.service.PermissionService;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.PermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,7 +42,7 @@ public class EventWebController {
 				.split("\\?")[0]);
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml()).toUri().toString());
 		mav.addObject(START_URL_STRING, START_URL);
-		mav.addObject("eventManageRoles", PermissionService.getEventManageRoles());
+		mav.addObject("eventManageRoles", PermissionHelper.getEventManageApplicationRoles());
 
 		return mav;
 	}
@@ -69,7 +69,7 @@ public class EventWebController {
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("event", eventDetailsAssembler.toDto(eventService.findById(eventId)));
 		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
-		mav.addObject("hasEventManageRole", PermissionService.hasEventManageRole());
+		mav.addObject("hasEventManageRole", PermissionHelper.hasEventManageRole());
 		return mav;
 	}
 

@@ -1,8 +1,19 @@
 package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.controller.website.DownloadController;
+import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Random;
+
+import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -27,7 +38,7 @@ public final class EventUtils {
 			}
 		}
 		if (respawnExists) {
-			compound += respawn ? "Respawn" : "Kein Respawn";
+			compound += Boolean.TRUE.equals(respawn) ? "Respawn" : "Kein Respawn";
 		}
 		return compound;
 	}
@@ -48,5 +59,56 @@ public final class EventUtils {
 			default:
 				return null;
 		}
+	}
+
+	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
+		String thumbnail = event.getPictureUrl();
+		if (org.springframework.util.StringUtils.isEmpty(thumbnail)) {
+			thumbnail = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
+		}
+
+		EmbedBuilder embedBuilder = new EmbedBuilder()
+				.setColor(new Color(new Random().nextInt() * 0x1000000)) //May be removed in future. But signals an update during development
+				.setTitle(event.getName(), "https://armamachtbock.de" + event.getUrl())
+				.setDescription(event.getDescription())
+				.setThumbnail(thumbnail)
+				.setFooter("Mission von " + event.getCreator())
+				.setTimestamp(LocalDateTime.now());
+
+		if (Boolean.TRUE.equals(event.getHidden())) {
+			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");
+		}
+
+		addFields(embedBuilder, event);
+
+		return embedBuilder.build();
+	}
+
+	private static void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull EventApiDto event) {
+		addField("Zeitplan", buildScheduleField(LocalDateTime.of(event.getDate(), event.getStartTime()), event.getMissionLength()), embedBuilder);
+		addField("Missionstyp", event.getMissionTypeAndRespawn(), true, embedBuilder);
+		addField("Karte", event.getMap(), true, embedBuilder);
+		addField("Modpack", buildModpackField(event.getModPack(), event.getModPackUrl()), true, embedBuilder);
+		addField("Kann die Reserve mitspielen?", buildReserveParticipatingField(event.getReserveParticipating()), embedBuilder);
+		addField("Missionszeit", event.getMissionTime(), true, embedBuilder);
+		addField("Navigation", event.getNavigation(), true, embedBuilder);
+		addField("Medicsystem", event.getMedicalSystem(), true, embedBuilder);
+		addField("Technischer Teleport", event.getTechnicalTeleport(), true, embedBuilder);
+	}
+
+	private static String buildScheduleField(LocalDateTime eventDateTime, String missionLength) {
+		final String dateTimeText = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(eventDateTime) + " Uhr";
+		return StringUtils.isNotEmpty(missionLength) ? dateTimeText + " und dauert " + missionLength : dateTimeText;
+	}
+
+	private static String buildModpackField(String modPack, String modPackUrl) {
+		return StringUtils.isNotEmpty(modPackUrl) ? "[" + modPack + "](" + modPackUrl + ")" : modPack;
+	}
+
+	private static String buildReserveParticipatingField(Boolean reserveParticipating) {
+		if (reserveParticipating == null) {
+			return null;
+		}
+		return reserveParticipating ? "Ja" : "Nein";
 	}
 }

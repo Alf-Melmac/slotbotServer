@@ -3,6 +3,8 @@ package de.webalf.slotbot.util;
 import lombok.experimental.UtilityClass;
 
 /**
+ * Util class to work with {@link Boolean}s
+ *
  * @author Alf
  * @since 24.11.2020
  */

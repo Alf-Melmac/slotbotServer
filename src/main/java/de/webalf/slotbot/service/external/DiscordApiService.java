@@ -1,8 +1,8 @@
 package de.webalf.slotbot.service.external;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
-import de.webalf.slotbot.service.PermissionService;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.PermissionHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static de.webalf.slotbot.util.PermissionHelper.Role.getByDiscordRole;
+
 /**
  * @author Alf
  * @since 29.10.2020
@@ -28,20 +30,14 @@ import java.util.stream.Collectors;
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
-	private static final Set<String> KNOWN_ROLE_NAMES = new HashSet<>();
+	public static final String ROLE_ADMINISTRATOR = "Administrator";
+	public static final String ROLE_MODERATOR = "Moderator";
+	public static final String ROLE_CREATOR = "Creator";
+	public static final String ROLE_ARMA = "ArmA";
+	public static final String ROLE_EVERYONE = "@everyone";
+	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_ADMINISTRATOR, ROLE_MODERATOR, ROLE_CREATOR, ROLE_ARMA, ROLE_EVERYONE);
+
 	private List<Role> roles = new ArrayList<>();
-
-	private static final String ROLE_ADMINISTRATOR = "Administrator";
-	private static final String ROLE_MODERATOR = "Moderator";
-	private static final String ROLE_CREATOR = "Creator";
-	private static final String ROLE_ARMA = "ArmA";
-
-	static {
-		KNOWN_ROLE_NAMES.add(ROLE_ADMINISTRATOR);
-		KNOWN_ROLE_NAMES.add(ROLE_MODERATOR);
-		KNOWN_ROLE_NAMES.add(ROLE_CREATOR);
-		KNOWN_ROLE_NAMES.add(ROLE_ARMA);
-	}
 
 	/**
 	 * Returns the role name that should be used for the given discord User
@@ -162,18 +158,8 @@ public class DiscordApiService {
 	 * @return role name corresponding to the given role
 	 */
 	private static String getRoleName(@NonNull Role role) {
-		switch (role.getName()) {
-			case ROLE_ADMINISTRATOR:
-				return PermissionService.ADMIN;
-			case ROLE_MODERATOR:
-				return PermissionService.MOD;
-			case ROLE_CREATOR:
-				return PermissionService.CREATOR;
-			case ROLE_ARMA:
-				return PermissionService.ARMA;
-			default:
-				return "USER";
-		}
+		final PermissionHelper.Role roleEnum = getByDiscordRole(role.getName());
+		return roleEnum != null ? roleEnum.getApplicationRole() : PermissionHelper.Role.EVERYONE.getApplicationRole();
 	}
 
 	private WebClient buildWebClient() {

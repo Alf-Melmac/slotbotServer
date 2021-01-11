@@ -15,6 +15,7 @@ import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.PermissionHelper;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -59,6 +61,16 @@ public class EventService {
 	}
 
 	/**
+	 * Returns an optional for the event associated with the given channelId
+	 *
+	 * @param channel to find event for
+	 * @return Event found by channel or empty optional
+	 */
+	public Optional<Event> findOptionalByChannel(long channel) {
+		return eventRepository.findByChannel(channel);
+	}
+
+	/**
 	 * Returns the event associated with the given channelId
 	 *
 	 * @param channel to find event for
@@ -66,7 +78,17 @@ public class EventService {
 	 * @throws ResourceNotFoundException if no event with this channelId could be found
 	 */
 	public Event findByChannel(long channel) {
-		return eventRepository.findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
+		return findOptionalByChannel(channel).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	/**
+	 * Returns an optional for the event associated with the given eventId
+	 *
+	 * @param eventId to find event for
+	 * @return Event found by id or empty optional
+	 */
+	public Optional<Event> findOptionalById(long eventId) {
+		return eventRepository.findById(eventId);
 	}
 
 	/**
@@ -77,7 +99,7 @@ public class EventService {
 	 * @throws ResourceNotFoundException if no event with this eventId could be found
 	 */
 	public Event findById(long eventId) {
-		return eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
+		return findOptionalById(eventId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	/**
@@ -86,7 +108,7 @@ public class EventService {
 	 * @return all events in given period
 	 */
 	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
-		if (PermissionService.hasEventManageRole()) {
+		if (PermissionHelper.hasEventManageRole()) {
 			return eventRepository.findAllByDateTimeBetween(start, end);
 		}
 		return eventRepository.findAllByDateTimeBetweenAndHiddenFalse(start, end);

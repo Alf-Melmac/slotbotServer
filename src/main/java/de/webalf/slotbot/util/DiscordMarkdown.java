@@ -4,6 +4,9 @@ import lombok.experimental.UtilityClass;
 import org.springframework.util.StringUtils;
 
 /**
+ * Util class to work with discord formatting
+ * @see <a href="https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-" target"_top">https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-</a>
+ *
  * @author Alf
  * @since 12.11.2020
  */
@@ -24,7 +27,6 @@ public final class DiscordMarkdown {
 	 * Imitates the discord markup by replacing the style symbols with html tags
 	 *
 	 * @return marked down string
-	 * @see <a href="https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-" target"_top">https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-</a>
 	 */
 	public static String toHtml(String s) {
 		if (StringUtils.isEmpty(s)) {

@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model.dtos.api;
 
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.SquadDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -24,4 +25,17 @@ public class EventApiDto extends EventDto {
 	private final String missionTypeAndRespawn;
 
 	private String modPackUrl;
+
+	/**
+	 * Returns the slotlist as content of a Discord message
+	 *
+	 * @return slotlist
+	 */
+	public String getSlotList() {
+		StringBuilder slotListText = new StringBuilder("__**Teilnahmeplatzaufzählung**__");
+		for (SquadDto squad : getSquadList()) {
+			slotListText.append("\n\n").append(squad.toSlotList());
+		}
+		return slotListText.toString();
+	}
 }

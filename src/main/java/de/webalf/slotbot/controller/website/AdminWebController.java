@@ -1,6 +1,5 @@
 package de.webalf.slotbot.controller.website;
 
-import de.webalf.slotbot.service.external.SlotbotApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +22,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(ADMIN)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AdminWebController {
-	private final SlotbotApiService slotbotApiService;
-
 	@GetMapping
 	public ModelAndView getAdminHtml() {
 		ModelAndView mav = new ModelAndView("admin");
@@ -32,7 +29,8 @@ public class AdminWebController {
 		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 		mav.addObject("logsUrl", linkTo(methodOn(LogWebController.class).getLogsHtml()).toUri().toString());
 
-		final HttpStatus ping = slotbotApiService.ping();
+		//TODO Admin start page rework
+		final HttpStatus ping = HttpStatus.OK;
 		mav.addObject("status", ping != null ? ping.value() + " " + ping.getReasonPhrase() : "No status received. Rejected?");
 		mav.addObject("ping", ping != null && ping.is2xxSuccessful());
 		mav.addObject("pingTime", LocalDateTime.now());

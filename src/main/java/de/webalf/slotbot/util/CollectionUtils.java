@@ -5,6 +5,8 @@ import lombok.experimental.UtilityClass;
 import java.util.Collection;
 
 /**
+ * Util class to work with {@link Collection}s
+ *
  * @author Alf
  * @since 28.12.2020
  */

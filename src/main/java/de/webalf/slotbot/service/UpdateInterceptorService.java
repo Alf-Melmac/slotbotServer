@@ -1,15 +1,13 @@
-package de.webalf.slotbot.service.external;
+package de.webalf.slotbot.service;
 
-import de.webalf.slotbot.configuration.properties.SlotbotApiProperties;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.service.bot.EventUpdateService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * @author Alf
@@ -17,23 +15,9 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class SlotbotApiService {
-	private final SlotbotApiProperties slotbotApiProperties;
-
-	/**
-	 * Checks if the api of the slotbot is reachable
-	 *
-	 * @return status returned by the ping request or null if not reachable
-	 */
-	public HttpStatus ping() {
-		HttpStatus status = null;
-		try {
-			status = buildWebClient().get().uri("/status").exchange()
-					.map(ClientResponse::statusCode).block();
-		} catch (Exception ignored) {
-		}
-		return status;
-	}
+@Slf4j
+public class UpdateInterceptorService {
+	private final EventUpdateService eventUpdateService;
 
 	/**
 	 * Informs the slotbot about an update in one event
@@ -46,8 +30,7 @@ public class SlotbotApiService {
 			return;
 		}
 
-		//TODO
-//		buildWebClient().put().uri("/event/update");
+		eventUpdateService.update(event);
 	}
 
 	/**
@@ -71,12 +54,5 @@ public class SlotbotApiService {
 			}
 		}
 		return null;
-	}
-
-	private WebClient buildWebClient() {
-		return WebClient.builder()
-				.baseUrl(slotbotApiProperties.getUrl())
-				.defaultHeader(slotbotApiProperties.getName(), slotbotApiProperties.getToken())
-				.build();
 	}
 }

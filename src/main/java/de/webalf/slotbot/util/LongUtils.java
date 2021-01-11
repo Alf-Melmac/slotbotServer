@@ -3,6 +3,8 @@ package de.webalf.slotbot.util;
 import lombok.experimental.UtilityClass;
 
 /**
+ * Utility class to work with {@link Long}s
+ *
  * @author Alf
  * @since 08.08.2020
  */

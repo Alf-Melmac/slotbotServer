@@ -1,8 +1,8 @@
-package de.webalf.slotbot.interceptor;
+package de.webalf.slotbot.processor;
 
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.service.external.SlotbotApiService;
+import de.webalf.slotbot.service.UpdateInterceptorService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
@@ -17,12 +17,12 @@ import java.io.Serializable;
  */
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class Interceptor extends EmptyInterceptor {
-	private final SlotbotApiService slotbotApiService;
+public class HibernateInterceptor extends EmptyInterceptor {
+	private final UpdateInterceptorService updateInterceptorService;
 
 	@Override
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-		slotbotApiService.update(entity);
+		updateInterceptorService.update(entity);
 		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 	}
 
@@ -30,7 +30,7 @@ public class Interceptor extends EmptyInterceptor {
 	public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 		//The reserve is removed only in conjunction with another "slot-creating" action. Therefore, no update needs to be made in this case
 		if (!(entity instanceof Squad && ((Squad) entity).isReserve() || entity instanceof Slot && ((Slot) entity).isInReserve())) {
-			slotbotApiService.update(entity);
+			updateInterceptorService.update(entity);
 		}
 		super.onDelete(entity, id, state, propertyNames, types);
 	}

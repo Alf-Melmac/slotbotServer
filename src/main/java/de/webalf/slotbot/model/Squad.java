@@ -26,7 +26,7 @@ public class Squad extends AbstractIdEntity {
 	@Size(max = 80)
 	private String name;
 
-	@OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private List<Slot> slotList;
 

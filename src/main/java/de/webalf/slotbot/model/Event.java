@@ -52,7 +52,7 @@ public class Event extends AbstractIdEntity {
 	@Column(name = "event_channel")
 	private Long channel;
 
-	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
 	private List<Squad> squadList;
@@ -446,7 +446,7 @@ public class Event extends AbstractIdEntity {
 	private void removeReserve(Squad reserve) {
 		if (reserve.getSlotList().stream().anyMatch(Slot::isNotEmpty)) {
 			log.error("Tried to delete non empty reserve in event " + getName());
-			throw new RuntimeException("Reserve is not empty. Can't delete");
+			throw new IllegalArgumentException("Reserve is not empty. Can't delete");
 		}
 		removeSquad(reserve);
 	}
