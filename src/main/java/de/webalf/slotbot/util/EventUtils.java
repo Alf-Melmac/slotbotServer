@@ -11,7 +11,6 @@ import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Random;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -68,7 +67,7 @@ public final class EventUtils {
 		}
 
 		EmbedBuilder embedBuilder = new EmbedBuilder()
-				.setColor(new Color(new Random().nextInt() * 0x1000000)) //May be removed in future. But signals an update during development
+				.setColor(new Color((int) (Math.random() * 0x1000000))) //May be removed in future. But signals an update during development
 				.setTitle(event.getName(), "https://armamachtbock.de" + event.getUrl())
 				.setDescription(event.getDescription())
 				.setThumbnail(thumbnail)
