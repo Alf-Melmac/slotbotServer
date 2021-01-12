@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -72,7 +73,7 @@ public final class EventUtils {
 				.setDescription(event.getDescription())
 				.setThumbnail(thumbnail)
 				.setFooter("Mission von " + event.getCreator())
-				.setTimestamp(LocalDateTime.now());
+				.setTimestamp(Instant.now());
 
 		if (Boolean.TRUE.equals(event.getHidden())) {
 			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");

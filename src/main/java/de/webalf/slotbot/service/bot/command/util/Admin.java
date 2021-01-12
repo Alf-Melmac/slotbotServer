@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.List;
 
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.ADMINISTRATIVE;
+import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 
 /**
  * @author Alf
@@ -46,10 +47,11 @@ public class Admin implements DiscordCommand {
 			case "clearChannel":
 				if (message.getAuthor().getIdLong() == 185067296623034368.) {
 					TextChannel textChannel = (TextChannel) message.getChannel();
-					textChannel.deleteMessages(textChannel.getHistory().retrievePast(100).complete()).queue();
+					//Explicitly do NOT use the bulk delete method, because it cannot delete messages older than two weeks
+					deleteMessagesInstant(textChannel.getHistory().retrievePast(100).complete().toArray(new Message[0]));
 				}
 				return;
 		}
-		MessageUtils.deleteMessagesInstant(message);
+		deleteMessagesInstant(message);
 	}
 }
