@@ -1,6 +1,7 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.util;
 
 import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.util.bot.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
@@ -17,7 +18,7 @@ import static de.webalf.slotbot.util.PermissionHelper.Authorization.ADMINISTRATI
  * @since 02.01.2021
  */
 @Slf4j
-@Command(name = "admin",
+@Command(names = {"admin"},
 		description = "Admin Funktionalitäten!",
 		argCount = {1},
 		authorization = ADMINISTRATIVE,

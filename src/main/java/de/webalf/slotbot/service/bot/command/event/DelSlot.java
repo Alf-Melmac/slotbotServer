@@ -1,7 +1,8 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
@@ -19,7 +20,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
  */
 @RequiredArgsConstructor
 @Slf4j
-@Command(name = "delslot",
+@Command(names = {"delSlot", "eventDelSlot", "deleteSlot", "removeSlot", "slotSel", "slotRemove"},
 		description = "Entfernt einen leeren Slot aus einem Event.",
 		usage = "<Slotnummer>",
 		argCount = {1},

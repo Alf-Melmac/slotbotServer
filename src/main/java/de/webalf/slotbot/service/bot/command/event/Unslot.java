@@ -1,7 +1,8 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.*;
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(name = "unslot",
+@Command(names = {"unslot", "forceUnslot"},
 		description = "Slottet dich selbst oder jemand anderen aus.",
 		usage = "(<@AuzuslottendePerson>)",
 		argCount = {0, 1},
@@ -53,11 +54,7 @@ public class Unslot implements DiscordCommand {
 				if (isUserMention) { //Unslot via mention
 					unslot(message, userId);
 				} else {
-					if (onlyNumbers(secondArg)) {
-						eventBotService.unslot(message.getChannel().getIdLong(), Integer.parseInt(secondArg)); //Unslot via slot number
-					} else {
-						replyAndDeleteOnlySend(message, "Bitte übergebe an erster Stelle eine Slotnummer oder die auszuslottende Person.");
-					}
+					unslotViaSlotNumber(message, secondArg);
 				}
 				deleteMessagesInstant(message);
 			} else {
@@ -68,6 +65,14 @@ public class Unslot implements DiscordCommand {
 
 	private void unslot(@NonNull Message message, String userId) {
 		eventBotService.unslot(message.getChannel().getIdLong(), userId);
+	}
+
+	private void unslotViaSlotNumber(Message message, String secondArg) {
+		if (onlyNumbers(secondArg)) {
+			eventBotService.unslot(message.getChannel().getIdLong(), Integer.parseInt(secondArg));
+		} else {
+			replyAndDeleteOnlySend(message, "Bitte übergebe an erster Stelle eine Slotnummer oder die auszuslottende Person.");
+		}
 	}
 
 	private void selfUnslot(@NonNull Message message) {

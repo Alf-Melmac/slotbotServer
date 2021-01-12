@@ -1,9 +1,10 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.util;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.enums.Commands;
 import de.webalf.slotbot.model.enums.Commands.CommandEnum;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.*;
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(name = "help",
+@Command(names = {"help", "commands"},
 		description = "Gibt alle Befehle oder Informationen über einen Befehl aus.",
 		usage = "(<Befehlsname>)",
 		argCount = {0, 1},
@@ -45,7 +46,7 @@ public class Help implements DiscordCommand {
 			if (isDm(message)) {
 				sendDmAndDeleteMessage(message, "Um die richtigen Befehle anzeigen zu können, muss dieser Befehl auf dem Server ausgeführt werden.");
 			} else {
-				sendDmAndDeleteMessage(message, "Liste aller verfügbaren Befehle:\n" + getAllAllowedCommands(message) + "\nSchicke einfach `" + discordProperties.getPrefix() + THIS_COMMAND.name() + " " + THIS_COMMAND.usage().replaceAll("[()]", "") + "`, um Infos über einen bestimmten Befehl zu bekommen.");
+				sendDmAndDeleteMessage(message, "Liste aller verfügbaren Befehle:\n" + getAllAllowedCommands(message) + "\nSchicke einfach `" + discordProperties.getPrefix() + THIS_COMMAND.names()[0] + " " + THIS_COMMAND.usage().replaceAll("[()]", "") + "`, um Infos über einen bestimmten Befehl zu bekommen.");
 			}
 			return;
 		}
@@ -56,18 +57,18 @@ public class Help implements DiscordCommand {
 			replyAndDelete(message, "Diesen Befehl kenne ich nicht.");
 			return;
 		} else if (!commandEnum.isAllowed(message) && !isDm(message)) {
-			replyAndDelete(message, "Den Befehl " + commandEnum.getAnnotation().name() +  " darfst du hier nicht ausführen.");
+			replyAndDelete(message, "Den Befehl " + commandEnum.getDefaultName() +  " darfst du hier nicht ausführen.");
 			return;
 		}
 
 		final Command command = commandEnum.getAnnotation();
-		String help = "**Name:** " + command.name();
+		String help = "**Name:** " + command.names()[0];
 
 		if (StringUtils.isNotEmpty(command.description())) {
 			help += "\n**Beschreibung:** " + command.description();
 		}
 
-		help += "\n**Benutzung:** " + discordProperties.getPrefix() + command.name();
+		help += "\n**Benutzung:** " + discordProperties.getPrefix() + command.names()[0];
 		if (Arrays.stream(command.argCount()).anyMatch(number -> number != 0)) {
 			help += " " + command.usage();
 		}
@@ -78,8 +79,8 @@ public class Help implements DiscordCommand {
 	private String getAllAllowedCommands(Message message) {
 		final Iterable<Class<?>> commandList = ClassIndex.getAnnotated(Command.class);
 		return StreamSupport.stream(commandList.spliterator(), true)
-				.filter(command -> Commands.get(command.getAnnotation(Command.class).name()).isAllowed(message))
-				.map(command -> command.getAnnotation(Command.class).name())
+				.filter(command -> Commands.get(command.getAnnotation(Command.class).names()[0]).isAllowed(message))
+				.map(command -> command.getAnnotation(Command.class).names()[0])
 				.collect(Collectors.joining(", "));
 	}
 }

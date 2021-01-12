@@ -1,7 +1,8 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
@@ -20,7 +21,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
  */
 @RequiredArgsConstructor
 @Slf4j
-@Command(name = "blockslot",
+@Command(names = {"blockSlot", "slotBlock", "block"},
 		description = "Sperrt einen Slot und setzt, falls angegeben, den Text an dessen Stelle.",
 		usage = "<Slotnummer> (\"<Ersatzname>\")",
 		argCount = {1, 2},

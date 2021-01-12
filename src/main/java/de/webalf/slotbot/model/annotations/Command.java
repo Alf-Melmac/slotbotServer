@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @IndexAnnotated
 public @interface Command {
-	String name();
+	String[] names();
 
 	String description() default "";
 

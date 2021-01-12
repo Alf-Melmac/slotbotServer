@@ -106,7 +106,7 @@ public class MessageListener extends ListenerAdapter {
 	 */
 	private List<String> getArgList(@NonNull String args) {
 		List<String> argList;
-		if (EVENT_JSON.getCommands().stream().noneMatch(args.toLowerCase()::matches)) {
+		if (Arrays.stream(EVENT_JSON.getAnnotation().names()).noneMatch(args.toLowerCase()::matches)) {
 			argList = StringUtils.splitOnSpacesExceptQuotes(args);
 		} else {
 			//For these special commands everything after the command is handled as one argument. Validation and potential splitting must be done by the position called up
@@ -126,7 +126,7 @@ public class MessageListener extends ListenerAdapter {
 		log.debug("{} arguments received didn't meet the expectation: {}", argList.size(), command.argCount());
 		String reply = "Das ist die falsche Zahl Argumente!";
 		if (isNotEmpty(command.usage())) {
-			reply += "\nSo funktioniert der Befehl: `" + discordProperties.getPrefix() + command.name() + " " + command.usage() + "`";
+			reply += "\nSo funktioniert der Befehl: `" + discordProperties.getPrefix() + command.names()[0] + " " + command.usage() + "`";
 		}
 		sendDmAndDeleteMessage(message, reply);
 	}

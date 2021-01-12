@@ -1,9 +1,10 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.util.bot.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(name = "addEventToChannel",
+@Command(names = {"addEventToChannel", "addChannel", "addEvent"},
 		description = "Ordnet einem Event den aktuellen Kanal zu.",
 		usage = "<Event-ID>",
 		argCount = {1},

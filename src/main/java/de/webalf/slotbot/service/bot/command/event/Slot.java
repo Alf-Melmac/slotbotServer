@@ -1,7 +1,8 @@
-package de.webalf.slotbot.service.bot.command;
+package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
@@ -27,7 +28,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(name = "slot",
+@Command(names = {"slot", "forceSlot"},
 		description = "Slottet dich selbst oder jemand anderen.",
 		usage = "<Slotnummer> (<@ZuSlottendePerson>)",
 		argCount = {1, 2},

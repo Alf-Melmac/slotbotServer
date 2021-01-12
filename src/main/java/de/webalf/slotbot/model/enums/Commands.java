@@ -1,17 +1,19 @@
 package de.webalf.slotbot.model.enums;
 
 import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.service.bot.command.*;
+import de.webalf.slotbot.service.bot.command.event.*;
+import de.webalf.slotbot.service.bot.command.util.Admin;
+import de.webalf.slotbot.service.bot.command.util.Help;
 import de.webalf.slotbot.util.bot.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Message;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
@@ -22,9 +24,11 @@ import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
  */
 public class Commands {
 	public interface CommandEnum {
-		Set<String> getCommands();
-
 		Class<?> getCommand();
+
+		default String getDefaultName() {
+			return getAnnotation().names()[0];
+		}
 
 		/**
 		 * Checks if the author if the given message is allowed to execute this command
@@ -48,30 +52,28 @@ public class Commands {
 	@Getter
 	@AllArgsConstructor
 	public enum Util implements CommandEnum {
-		ADMIN(Set.of("admin"), Admin.class),
-		HELP(Set.of("help", "commands"), Help.class);
+		ADMIN(Admin.class),
+		HELP(Help.class);
 
-		private final Set<String> commands;
 		private final Class<?> command;
 	}
 
 	@Getter
 	@AllArgsConstructor
 	public enum Event implements CommandEnum {
-		ADD_EVENT_TO_CHANNEL(Set.of("addeventtochannel", "addchannel", "addevent"), AddEventToChannel.class),
-		ADD_SLOT(Set.of("addslot", "eventaddslot", "slotadd"), AddSlot.class),
-		BLOCK_SLOT(Set.of("blockslot", "slotblock"), BlockSlot.class),
+		ADD_EVENT_TO_CHANNEL(AddEventToChannel.class),
+		ADD_SLOT(AddSlot.class),
+		BLOCK_SLOT(BlockSlot.class),
 //		DEL_EVENT(Set.of("delevent", "eventdel", "deleteevent", "removeevent"), Admin.class),
-		DEL_SLOT(Set.of("delslot", "eventdelslot", "deleteslot", "removeslot", "slotdel", "slotremove"), DelSlot.class),
-		EVENT_JSON(Set.of("eventjson", "event", "newevent", "createevent"), Admin.class),
-		EVENT_PRINT(Set.of("eventprint", "showevent", "printevent"), EventPrint.class),
+		DEL_SLOT(DelSlot.class),
+		EVENT_JSON(Admin.class),
+		EVENT_PRINT(EventPrint.class),
 //		EVENT_UPDATE(Set.of("eventupdate", "eventrefresh", "updateevent"), Admin.class),
 //		RENAME_SLOT(Set.of("renameslot", "editslot", "eventrenameslot"), Admin.class),
-		SLOT(Set.of("slot", "forceslot"), Slot.class),
+		SLOT(Slot.class),
 //		SWAP(Set.of("swap"), Admin.class),
-		UNSLOT(Set.of("unslot", "forceunslot"), Unslot.class);
+		UNSLOT(Unslot.class);
 
-		private final Set<String> commands;
 		private final Class<?> command;
 	}
 
@@ -79,13 +81,13 @@ public class Commands {
 
 	static {
 		for (Util commandEnum : EnumSet.allOf(Util.class)) {
-			for (String command : commandEnum.getCommands()) {
-				commandToEnumMap.put(command, commandEnum);
+			for (String command : getCommandNames(commandEnum)) {
+				commandToEnumMap.put(command.toLowerCase(), commandEnum);
 			}
 		}
 		for (Event commandEnum : EnumSet.allOf(Event.class)) {
-			for (String command : commandEnum.getCommands()) {
-				commandToEnumMap.put(command, commandEnum);
+			for (String command : getCommandNames(commandEnum)) {
+				commandToEnumMap.put(command.toLowerCase(), commandEnum);
 			}
 		}
 	}
@@ -98,5 +100,9 @@ public class Commands {
 	 */
 	public static CommandEnum get(@NonNull String command) {
 		return commandToEnumMap.get(command.toLowerCase());
+	}
+
+	private static String[] getCommandNames(@NotNull CommandEnum commandEnum) {
+		return commandEnum.getCommand().getAnnotation(Command.class).names();
 	}
 }
