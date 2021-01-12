@@ -61,6 +61,16 @@ public final class ListUtils {
 	}
 
 	/**
+	 * Checks if the list has two element inside
+	 *
+	 * @param list to check
+	 * @return true if two arguments are inside the list
+	 */
+	public static boolean twoArguments(@NonNull Collection<?> list) {
+		return list.size() == 2;
+	}
+
+	/**
 	 * Boxes the elements of the primitive type array
 	 *
 	 * @param intArray array with elements to be boxed

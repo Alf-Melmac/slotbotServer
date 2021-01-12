@@ -60,7 +60,7 @@ public class Commands {
 	public enum Event implements CommandEnum {
 		ADD_EVENT_TO_CHANNEL(Set.of("addeventtochannel", "addchannel", "addevent"), AddEventToChannel.class),
 		ADD_SLOT(Set.of("addslot", "eventaddslot", "slotadd"), AddSlot.class),
-//		BLOCK_SLOT(Set.of("blockslot", "slotblock"), Admin.class),
+		BLOCK_SLOT(Set.of("blockslot", "slotblock"), BlockSlot.class),
 //		DEL_EVENT(Set.of("delevent", "eventdel", "deleteevent", "removeevent"), Admin.class),
 		DEL_SLOT(Set.of("delslot", "eventdelslot", "deleteslot", "removeslot", "slotdel", "slotremove"), DelSlot.class),
 		EVENT_JSON(Set.of("eventjson", "event", "newevent", "createevent"), Admin.class),
