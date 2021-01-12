@@ -69,4 +69,8 @@ public class EventBotService {
 	public void addSlot(long channel, int squadNumber, int slotNumber, String slotName) {
 		eventService.addSlot(channel, squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
 	}
+
+	public void delSlot(long channel, int slotNumber) {
+		eventService.deleteSlot(channel, slotNumber);
+	}
 }

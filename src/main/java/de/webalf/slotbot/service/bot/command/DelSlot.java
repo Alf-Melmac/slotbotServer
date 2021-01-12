@@ -15,30 +15,29 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 
 /**
  * @author Alf
- * @since 11.01.2021
+ * @since 12.01.2021
  */
 @RequiredArgsConstructor
 @Slf4j
-@Command(name = "addslot",
-		description = "Fügt einem Event einen Slot hinzu. Squads sind durchnummeriert, beginnend mit 0.",
-		usage = "<Squad Position> <Slotnummer> <Slotname>",
-		argCount = {3},
+@Command(name = "delslot",
+		description = "Entfernt einen leeren Slot aus einem Event.",
+		usage = "<Slotnummer>",
+		argCount = {1},
 		authorization = EVENT_MANAGE)
-public class AddSlot implements DiscordCommand {
+public class DelSlot implements DiscordCommand {
 	private final EventBotService eventBotService;
 
 	@Override
 	public void execute(Message message, List<String> args) {
-		log.trace("Command: addslot");
+		log.trace("Command: delslot");
 
-		final String squadPosition = args.get(0);
-		final String slotNumber = args.get(1);
-		if (!onlyNumbers(squadPosition) || !onlyNumbers(slotNumber)) {
-			replyAndDelete(message, "Die Squad Position und Slotnummer müssen Zahlen sein.");
+		final String slotNumber = args.get(0);
+		if (!onlyNumbers(slotNumber)) {
+			replyAndDelete(message, "Die Slotnummer muss eine Zahl sein.");
 			return;
 		}
 
-		eventBotService.addSlot(message.getChannel().getIdLong(), Integer.parseInt(squadPosition), Integer.parseInt(slotNumber), args.get(2));
+		eventBotService.delSlot(message.getChannel().getIdLong(), Integer.parseInt(slotNumber));
 		deleteMessagesInstant(message);
 	}
 }

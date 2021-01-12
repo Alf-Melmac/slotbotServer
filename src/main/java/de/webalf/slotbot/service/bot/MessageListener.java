@@ -2,6 +2,8 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.exception.ForbiddenException;
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.enums.Commands;
 import de.webalf.slotbot.model.enums.Commands.CommandEnum;
@@ -66,8 +68,12 @@ public class MessageListener extends ListenerAdapter {
 			enumCommand.getMethod("execute", Message.class, List.class).invoke(commandEnumHelper.getConstructor(enumCommand), message, argList);
 		} catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
-			if (cause instanceof BusinessRuntimeException) {
-				replyAndDelete(message, cause.getMessage());
+			if (cause instanceof BusinessRuntimeException || cause instanceof ForbiddenException || cause instanceof ResourceNotFoundException) {
+				if (StringUtils.isNotEmpty(cause.getMessage())) {
+					replyAndDelete(message, cause.getMessage());
+				} else {
+					replyAndDelete(message, "Das gesuchte Element kann nicht erreicht werden.");
+				}
 			} else {
 				unknownException(message, argList, commandEnum, e);
 			}
