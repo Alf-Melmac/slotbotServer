@@ -59,7 +59,7 @@ public class Commands {
 	@AllArgsConstructor
 	public enum Event implements CommandEnum {
 		ADD_EVENT_TO_CHANNEL(Set.of("addeventtochannel", "addchannel", "addevent"), AddEventToChannel.class),
-//		ADD_SLOT(Set.of("addslot", "eventaddslot"), Admin.class),
+		ADD_SLOT(Set.of("addslot", "eventaddslot"), AddSlot.class),
 //		BLOCK_SLOT(Set.of("blockslot", "slotblock"), Admin.class),
 //		DEL_EVENT(Set.of("delevent", "eventdel", "deleteevent", "removeevent"), Admin.class),
 //		DEL_SLOT(Set.of("delslot", "eventdelslot", "deleteslot"), Admin.class),

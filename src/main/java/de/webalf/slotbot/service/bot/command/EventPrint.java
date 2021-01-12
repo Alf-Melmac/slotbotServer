@@ -60,7 +60,7 @@ public class EventPrint implements DiscordCommand {
 			eventApiDto.setInfoMsg(infoMsg.getId());
 
 			//Send Spacer
-			channel.sendMessage("https://cdn.discordapp.com/attachments/759147249325572097/759147407040315413/AMB_Missionstrenner_Discord.png").queue();
+			channel.sendMessage("https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png").queue();
 
 			channel.sendMessage(eventApiDto.getSlotList()) //Send SlotList
 					.queue(slotListMsgConsumer(channel, eventApiDto));

@@ -53,10 +53,10 @@ public class Help implements DiscordCommand {
 		final CommandEnum commandEnum = Commands.get(args.get(0));
 
 		if (commandEnum == null) {
-			replyAndDelete(message, "Den Befehl kenne ich nicht.");
+			replyAndDelete(message, "Diesen Befehl kenne ich nicht.");
 			return;
-		} else if (!commandEnum.isAllowed(message)) {
-			replyAndDelete(message, "Den Befehl darfst du nicht ausführen.");
+		} else if (!commandEnum.isAllowed(message) && !isDm(message)) {
+			replyAndDelete(message, "Den Befehl " + commandEnum.getAnnotation().name() +  " darfst du hier nicht ausführen.");
 			return;
 		}
 

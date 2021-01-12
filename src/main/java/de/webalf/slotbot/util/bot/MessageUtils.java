@@ -113,7 +113,7 @@ public class MessageUtils {
 	 * @param message to reply to
 	 * @param reply   reply text
 	 */
-	private static void replyAndDeleteOnlySend(@NonNull Message message, @NotBlank String reply) {
+	public static void replyAndDeleteOnlySend(@NonNull Message message, @NotBlank String reply) {
 		reply(message, reply, MessageUtils::deleteMessages);
 	}
 

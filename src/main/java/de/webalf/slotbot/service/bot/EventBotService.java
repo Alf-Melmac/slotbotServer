@@ -2,6 +2,7 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.NonNull;
@@ -63,5 +64,9 @@ public class EventBotService {
 
 	private static UserDto userDtoWithId(String userId) {
 		return UserDto.builder().id(userId).build();
+	}
+
+	public void addSlot(long channel, int squadNumber, int slotNumber, String slotName) {
+		eventService.addSlot(channel, squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
 	}
 }

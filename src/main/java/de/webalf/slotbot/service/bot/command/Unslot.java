@@ -14,10 +14,10 @@ import static de.webalf.slotbot.util.ListUtils.zeroArguments;
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.SLOT;
 import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
+import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.MentionUtils.getUserId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
-import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
-import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
+import static de.webalf.slotbot.util.bot.MessageUtils.*;
 
 /**
  * @author Alf
@@ -53,7 +53,11 @@ public class Unslot implements DiscordCommand {
 				if (isUserMention) { //Unslot via mention
 					unslot(message, userId);
 				} else {
-					eventBotService.unslot(message.getChannel().getIdLong(), Integer.parseInt(secondArg)); //Unslot via slot number
+					if (onlyNumbers(secondArg)) {
+						eventBotService.unslot(message.getChannel().getIdLong(), Integer.parseInt(secondArg)); //Unslot via slot number
+					} else {
+						replyAndDeleteOnlySend(message, "Bitte übergebe an erster Stelle eine Slotnummer oder die auszuslottende Person.");
+					}
 				}
 				deleteMessagesInstant(message);
 			} else {
