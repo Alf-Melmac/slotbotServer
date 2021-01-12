@@ -64,12 +64,10 @@ public class Commands {
 		ADD_EVENT_TO_CHANNEL(AddEventToChannel.class),
 		ADD_SLOT(AddSlot.class),
 		BLOCK_SLOT(BlockSlot.class),
-//		DEL_EVENT(Set.of("delevent", "eventdel", "deleteevent", "removeevent"), Admin.class),
 		DEL_SLOT(DelSlot.class),
 		EVENT_JSON(Admin.class),
 		EVENT_PRINT(EventPrint.class),
-//		EVENT_UPDATE(Set.of("eventupdate", "eventrefresh", "updateevent"), Admin.class),
-//		RENAME_SLOT(Set.of("renameslot", "editslot", "eventrenameslot"), Admin.class),
+		RENAME_SLOT(RenameSlot.class),
 		SLOT(Slot.class),
 //		SWAP(Set.of("swap"), Admin.class),
 		UNSLOT(Unslot.class);

@@ -77,4 +77,8 @@ public class EventBotService {
 	public void blockSlot(long channel, int slotNumber, String replacementText) {
 		eventService.blockSlot(channel, slotNumber, replacementText);
 	}
+
+	public void renameSlot(long channel, int slotNumber, String slotName) {
+		eventService.renameSlot(channel, slotNumber, slotName);
+	}
 }
