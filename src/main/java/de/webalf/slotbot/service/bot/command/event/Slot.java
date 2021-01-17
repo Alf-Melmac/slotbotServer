@@ -3,13 +3,13 @@ package de.webalf.slotbot.service.bot.command.event;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static de.webalf.slotbot.util.ListUtils.oneArgument;
@@ -71,12 +71,12 @@ public class Slot implements DiscordCommand {
 		}
 	}
 
-	private void slot(@NotNull Message message, @NotBlank String slot, String userId) {
+	private void slot(@NonNull Message message, @NotBlank String slot, String userId) {
 		eventBotService.slot(message.getChannel().getIdLong(), Integer.parseInt(slot), userId);
 		deleteMessagesInstant(message);
 	}
 
-	private void selfSlot(@NotNull Message message, @NotBlank String slot) {
+	private void selfSlot(@NonNull Message message, @NotBlank String slot) {
 		slot(message, slot, message.getAuthor().getId());
 	}
 }

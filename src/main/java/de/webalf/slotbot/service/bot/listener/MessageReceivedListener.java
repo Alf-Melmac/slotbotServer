@@ -1,4 +1,4 @@
-package de.webalf.slotbot.service.bot;
+package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.thymeleaf.util.ArrayUtils;
 
@@ -36,12 +35,12 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDmAndDeleteMessage;
  */
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class MessageListener extends ListenerAdapter {
+public class MessageReceivedListener extends ListenerAdapter {
 	private final DiscordProperties discordProperties;
 	private final CommandEnumHelper commandEnumHelper;
 
 	@Override
-	public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+	public void onMessageReceived(@NonNull MessageReceivedEvent event) {
 		final Message message = event.getMessage();
 		final String messageText = message.getContentRaw().trim();
 

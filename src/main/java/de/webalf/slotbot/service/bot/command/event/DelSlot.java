@@ -6,6 +6,7 @@ import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
  * @author Alf
  * @since 12.01.2021
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 @Command(names = {"delSlot", "eventDelSlot", "deleteSlot", "removeSlot", "slotSel", "slotRemove"},
 		description = "Entfernt einen leeren Slot aus einem Event.",

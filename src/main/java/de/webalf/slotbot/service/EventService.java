@@ -293,9 +293,15 @@ public class EventService {
 	public List<Slot> findSwapSlots(long channel, int slotNumber, UserDto userDto) {
 		Event event = findByChannel(channel);
 		User user = userService.find(userDto);
+
+		Slot slotFoundByNumber = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		if (slotFoundByNumber.getUser() != null && slotFoundByNumber.getUser().isDefaultUser()) {
+			throw BusinessRuntimeException.builder().title("Mit einem gesperrten Slot kann nicht getauscht werden.").build();
+		}
+
 		return Arrays.asList(
 				event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new),
-				event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new)
+				slotFoundByNumber
 		);
 	}
 }

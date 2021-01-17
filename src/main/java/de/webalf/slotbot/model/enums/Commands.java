@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Message;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -69,7 +68,7 @@ public class Commands {
 		EVENT_PRINT(EventPrint.class),
 		RENAME_SLOT(RenameSlot.class),
 		SLOT(Slot.class),
-//		SWAP(Set.of("swap"), Admin.class),
+		SWAP(Swap.class),
 		UNSLOT(Unslot.class);
 
 		private final Class<?> command;
@@ -100,7 +99,7 @@ public class Commands {
 		return commandToEnumMap.get(command.toLowerCase());
 	}
 
-	private static String[] getCommandNames(@NotNull CommandEnum commandEnum) {
+	private static String[] getCommandNames(@NonNull CommandEnum commandEnum) {
 		return commandEnum.getCommand().getAnnotation(Command.class).names();
 	}
 }

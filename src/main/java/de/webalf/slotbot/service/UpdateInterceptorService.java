@@ -3,12 +3,12 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.service.bot.EventUpdateService;
 import de.webalf.slotbot.util.bot.MessageHelper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
@@ -90,8 +90,8 @@ public class UpdateInterceptorService {
 		return null;
 	}
 
-	private void informAboutSlotChange(Slot slot, User currentUser, User previousUser, @NotNull Event event) {
-		final String eventDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(event.getDateTime().toLocalDate());
+	private void informAboutSlotChange(Slot slot, User currentUser, User previousUser, @NonNull Event event) {
+		final String eventDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).format(event.getDateTime().toLocalDate());
 		if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 		} else if (previousUser != null && !previousUser.isDefaultUser()) {

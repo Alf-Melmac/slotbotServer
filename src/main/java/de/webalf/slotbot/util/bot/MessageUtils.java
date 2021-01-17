@@ -7,10 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.Event;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +26,7 @@ import static de.webalf.slotbot.service.external.DiscordApiService.KNOWN_ROLE_NA
  */
 @UtilityClass
 @Slf4j
-public class MessageUtils {
+public final class MessageUtils {
 	private static final int STANDARD_DELETION_TIME = 3; //In seconds
 
 	/**
@@ -46,7 +45,32 @@ public class MessageUtils {
 	 * @param messages to delete
 	 */
 	public static void deleteMessagesInstant(Message... messages) {
-		deleteMessagesWithDelay(0, messages);
+		deleteMessages(0, messages);
+	}
+
+	/**
+	 * Deletes the given messages after the {@link #STANDARD_DELETION_TIME}
+	 *
+	 * @param messages to delete
+	 */
+	private static void deleteMessages(Message... messages) {
+		deleteMessages(STANDARD_DELETION_TIME, messages);
+	}
+
+	/**
+	 * Deletes the given messages after the given delay.
+	 * <b>Doesn't delete messages that have not been sent on a server.</b>
+	 *
+	 * @param delay    in seconds
+	 * @param messages to delete
+	 */
+	private static void deleteMessages(int delay, Message... messages) {
+		Arrays.stream(messages).forEach(message -> {
+			if (isDm(message)) {
+				return;
+			}
+			message.delete().queueAfter(delay, TimeUnit.SECONDS);
+		});
 	}
 
 	/**
@@ -61,42 +85,17 @@ public class MessageUtils {
 	/**
 	 * Deletes the messages found by id in given channel
 	 *
-	 * @param channel which includes the messages
+	 * @param channel    which includes the messages
 	 * @param messageIds from the messages to delete
 	 */
-	private static void deleteMessagesInstant(@NonNull MessageChannel channel, long... messageIds) {
+	public static void deleteMessagesInstant(@NonNull MessageChannel channel, long... messageIds) {
 		for (long messageId : messageIds) {
 			channel.deleteMessageById(messageId).queue();
 		}
 	}
 
 	/**
-	 * Deletes the given messages after the {@link #STANDARD_DELETION_TIME}
-	 *
-	 * @param messages to delete
-	 */
-	private static void deleteMessages(Message... messages) {
-		deleteMessagesWithDelay(STANDARD_DELETION_TIME, messages);
-	}
-
-	/**
-	 * Deletes the given messages after the given delay.
-	 * Doesn't delete messages that were not sent on a server.
-	 *
-	 * @param delay    in seconds
-	 * @param messages to delete
-	 */
-	private static void deleteMessagesWithDelay(int delay, Message... messages) {
-		Arrays.stream(messages).forEach(message -> {
-			if (isDm(message)) {
-				return;
-			}
-			message.delete().queueAfter(delay, TimeUnit.SECONDS);
-		});
-	}
-
-	/**
-	 * Replies to the given message with the given reply
+	 * Replies to the given message with the given reply.
 	 * Deletes the user message and the reply with {@link #deleteMessages(Message...)}
 	 *
 	 * @param message to reply to
@@ -107,7 +106,7 @@ public class MessageUtils {
 	}
 
 	/**
-	 * Replies to the given message with the given reply
+	 * Replies to the given message with the given reply.
 	 * Deletes only the reply with {@link #deleteMessages(Message...)}
 	 *
 	 * @param message to reply to
@@ -117,48 +116,31 @@ public class MessageUtils {
 		reply(message, reply, MessageUtils::deleteMessages);
 	}
 
-	private static void reply(@NonNull Message message, @NotBlank String reply) {
-		reply(message, reply, null, null);
-	}
-
 	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<Message> success) {
-		reply(message, reply, success, null);
+		message.getChannel().sendMessage(message.getAuthor().getAsMention() + " " + reply).queue(success, fail -> log.warn("Failed to send reply", fail));
 	}
 
-	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<? super Message> success, Consumer<? super Throwable> failure) {
-		if (failure == null) {
-			failure = fail -> log.warn("Failed to send reply", fail);
-		}
-		message.getChannel().sendMessage(message.getAuthor().getAsMention() + " " + reply).queue(success, failure);
-	}
-
-	private static void sendDm(@NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success) {
-		sendDm(message.getAuthor(), message, messageText, success, false);
-	}
-
-	private static void sendDm(@NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure) {
-		sendDm(message.getAuthor(), message, messageText, success, callSuccessOnFailure);
-	}
-
-	private static void sendDm(@NonNull User user, @NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success) {
-		sendDm(user, message, messageText, success, false);
-	}
-
+	/**
+	 * Sends the message author a direct message with the given text.
+	 * Deletes the message afterwards with {@link #deleteMessagesInstant(Message...)}
+	 *
+	 * @param message     to reply in direct message to
+	 * @param messageText message text
+	 */
 	public static void sendDmAndDeleteMessage(Message message, String messageText) {
-		sendDm(message, messageText, unused -> deleteMessagesInstant(message), true);
+		sendDm(message.getAuthor(), message, messageText, unused -> deleteMessagesInstant(message), true);
 	}
 
-	private static void sendDm(@NonNull MessageReceivedEvent messageEvent, long recipientId, @NotBlank String messageText) {
-		messageEvent.getJDA().retrieveUserById(recipientId).queue(
-				user -> sendDm(user, messageEvent.getMessage(), messageText, message -> {})
-		);
-	}
-
-	private static void sendDmAndDeleteMessage(@NonNull MessageReceivedEvent messageEvent, long recipientId, @NotBlank String messageText) {
-		Message receivedMessage = messageEvent.getMessage();
-		messageEvent.getJDA().retrieveUserById(recipientId).queue(
-				user -> sendDm(user, receivedMessage, messageText, message -> deleteMessagesInstant(receivedMessage), true)
-		);
+	/**
+	 * Sends the given message to the given recipient via {@link #sendDm(User, String, Consumer, Consumer)}
+	 *
+	 * @param message     that triggered this message sending
+	 * @param recipientId the id of the user the message should be send to
+	 * @param messageText text to send
+	 * @param success     called after successful message send
+	 */
+	public static void sendDmToRecipient(@NonNull Message message, long recipientId, String messageText, Consumer<? super Message> success) {
+		sendDm(message.getJDA().retrieveUserById(recipientId).complete(), message, messageText, success, false);
 	}
 
 	private static void sendDm(@NonNull User user, @NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure) {
@@ -170,16 +152,37 @@ public class MessageUtils {
 		sendDm(user, messageText, success, failure);
 	}
 
-	static void sendDmWithoutMessage(@NonNull User user, @NotBlank String messageText) {
-		final Consumer<? super Throwable> failure = fail -> dmFailure(user, unused -> {}, false, fail);
+	/**
+	 * Sends the given message to the given recipient via {@link #sendDm(User, String)}
+	 *
+	 * @param event       that triggered this message sending
+	 * @param recipientId the id of the user the message should be send to
+	 * @param messageText text to send
+	 */
+	public static void sendDmToRecipient(@NonNull Event event, long recipientId, String messageText) {
+		sendDm(event.getJDA().retrieveUserById(recipientId).complete(), messageText);
+	}
 
-		sendDm(user, messageText, unused -> {}, failure);
+	/**
+	 * Sends the given message to the given user via {@link #sendDm(User, String, Consumer, Consumer)}
+	 *
+	 * @param user        to send private message to
+	 * @param messageText text to send
+	 */
+	static void sendDm(@NonNull User user, @NotBlank String messageText) {
+		final Consumer<? super Throwable> failure = fail -> dmFailure(user, doNothing(), false, fail);
+
+		sendDm(user, messageText, doNothing(), failure);
 	}
 
 	private static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<? super Message> success, Consumer<? super Throwable> failure) {
 		user.openPrivateChannel().queue(
 				privateChannel -> privateChannel.sendMessage(messageText).queue(success, failure),
 				failure);
+	}
+
+	private static Consumer<Message> doNothing() {
+		return unused -> {};
 	}
 
 	private static void dmFailure(User user, Consumer<? super Message> success, boolean callSuccessOnFailure, Throwable fail) {
@@ -195,7 +198,7 @@ public class MessageUtils {
 	 * @param message to analyze
 	 * @return set of role names
 	 */
-	public static Set<Role> getKnownRoles(@NotNull Message message) {
+	public static Set<Role> getKnownRoles(@NonNull Message message) {
 		return message.getGuild().retrieveMember(message.getAuthor()).complete()
 				.getRoles().stream()
 				.map(net.dv8tion.jda.api.entities.Role::getName)

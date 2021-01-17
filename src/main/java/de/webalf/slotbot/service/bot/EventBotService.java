@@ -1,6 +1,7 @@
 package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.entities.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
@@ -62,10 +64,6 @@ public class EventBotService {
 		eventService.unslot(channel, slotNumber);
 	}
 
-	private static UserDto userDtoWithId(String userId) {
-		return UserDto.builder().id(userId).build();
-	}
-
 	public void addSlot(long channel, int squadNumber, int slotNumber, String slotName) {
 		eventService.addSlot(channel, squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
 	}
@@ -80,5 +78,17 @@ public class EventBotService {
 
 	public void renameSlot(long channel, int slotNumber, String slotName) {
 		eventService.renameSlot(channel, slotNumber, slotName);
+	}
+
+	public List<Slot> findSwapSlots(long channel, String firstUserId, String secondUserId) {
+		return eventService.findSwapSlots(channel, List.of(userDtoWithId(firstUserId), userDtoWithId(secondUserId)));
+	}
+
+	public List<Slot> findSwapSlots(long channel, int slotNumber, String userId) {
+		return eventService.findSwapSlots(channel, slotNumber, userDtoWithId(userId));
+	}
+
+	private static UserDto userDtoWithId(String userId) {
+		return UserDto.builder().id(userId).build();
 	}
 }

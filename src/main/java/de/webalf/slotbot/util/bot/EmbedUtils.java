@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * @since 10.01.2021
  */
 @UtilityClass
-public class EmbedUtils {
+public final class EmbedUtils {
 	public static EmbedBuilder addField(String name, String value, @NonNull EmbedBuilder embedBuilder) {
 		return addField(name, value, false, embedBuilder);
 	}

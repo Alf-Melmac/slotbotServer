@@ -8,6 +8,7 @@ import javax.persistence.*;
  * @author Alf
  * @since 06.09.2020
  */
+@EqualsAndHashCode
 @Entity
 @Table(name = "discord_user", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})}, schema = "public")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

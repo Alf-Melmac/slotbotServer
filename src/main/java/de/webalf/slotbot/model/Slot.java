@@ -69,7 +69,7 @@ public class Slot extends AbstractIdEntity {
 		return isNotEmpty() && getUser().equals(user);
 	}
 
-	boolean isEmpty() {
+	public boolean isEmpty() {
 		return getUser() == null;
 	}
 

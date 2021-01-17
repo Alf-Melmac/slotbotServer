@@ -1,6 +1,8 @@
 package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
+import de.webalf.slotbot.service.bot.listener.MessageReceivedListener;
+import de.webalf.slotbot.service.bot.listener.ReactionAddListener;
 import de.webalf.slotbot.util.bot.CommandEnumHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import javax.security.auth.login.LoginException;
 public class BotService {
 	private final DiscordProperties discordProperties;
 	private final CommandEnumHelper commandEnumHelper;
+	private final ReactionAddService reactionAddService;
 
 	@Getter
 	private JDA jda;
@@ -40,7 +43,9 @@ public class BotService {
 					//TODO: maybe default (validate caching)
 					.createLight(token)
 					.enableIntents(GatewayIntent.GUILD_MEMBERS)
-					.addEventListeners(new MessageListener(discordProperties, commandEnumHelper))
+					.addEventListeners(
+							new MessageReceivedListener(discordProperties, commandEnumHelper),
+							new ReactionAddListener(reactionAddService))
 					.build();
 		} catch (LoginException e) {
 			log.error("Failed to start discord bot", e);
