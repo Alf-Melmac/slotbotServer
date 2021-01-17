@@ -34,7 +34,6 @@ public class UpdateInterceptorService {
 
 	public void update(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 		update(getEvent(entity, currentState, previousState, propertyNames));
-
 	}
 
 	private void update(Event event) {

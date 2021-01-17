@@ -112,7 +112,7 @@ public class Squad extends AbstractIdEntity {
 		if (isReserve()) {
 			throw new ForbiddenException("Ein Slot der Reserve kann nicht gelöscht werden.");
 		}
-		if (slot.isNotEmpty()) {
+		if (slot.isNotEmpty() && !slot.getUser().isDefaultUser()) {
 			throw new ForbiddenException("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.");
 		}
 
