@@ -27,7 +27,7 @@ import static de.webalf.slotbot.service.external.DiscordApiService.KNOWN_ROLE_NA
 @UtilityClass
 @Slf4j
 public final class MessageUtils {
-	private static final int STANDARD_DELETION_TIME = 3; //In seconds
+	private static final int STANDARD_DELETION_TIME = 5; //In seconds
 
 	/**
 	 * Checks if the given message is not {@link Message#isFromGuild()}
