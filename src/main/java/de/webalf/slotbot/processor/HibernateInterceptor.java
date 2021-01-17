@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class HibernateInterceptor extends EmptyInterceptor {
 	private static final long serialVersionUID = 7037471511333181486L;
 
-	private final UpdateInterceptorService updateInterceptorService;
+	private final transient UpdateInterceptorService updateInterceptorService;
 
 	@Override
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {

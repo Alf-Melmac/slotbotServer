@@ -97,7 +97,6 @@ public class Slot extends AbstractIdEntity {
 	 */
 	void slotWithoutUpdate(@NonNull User user) {
 		if (isSlotWithSlottedUser(user)) {
-			//TODO: Return a warning, not a exception
 			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
 		} else if (isEmpty()) {
 			//Remove the user from any other slot in the Event

@@ -203,7 +203,6 @@
 							<artifactId>hibernate-jpamodelgen</artifactId>
 							<version>${hibernate.version}</version>
 						</path>
-						<!--TODO Needed?-->
 						<path>
 							<groupId>org.atteo.classindex</groupId>
 							<artifactId>classindex</artifactId>

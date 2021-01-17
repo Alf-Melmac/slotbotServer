@@ -93,7 +93,6 @@ public class SlotService {
 	 */
 	void unslot(@NonNull Slot slot, User user) {
 		if (user == null) {
-			//TODO warning instead of exception
 			throw BusinessRuntimeException.builder().title("Einen leeren Slot brauchst du nicht ausslotten").build();
 		}
 		slot.unslot(user);
