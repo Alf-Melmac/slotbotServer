@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
-import de.webalf.slotbot.util.bot.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 
 /**
  * @author Alf
@@ -41,8 +41,13 @@ public class AddEventToChannel implements DiscordCommand {
 
 	private Consumer<Event> addEventConsumer(@NonNull Message message) {
 		return event -> {
+			if (event.getChannel() != null) {
+				replyAndDelete(message, "Das Event ist bereits <#" + event.getChannel() + "> zugeordnet.");
+				return;
+			}
+
 			eventBotService.updateEvent(EventDto.builder().id(event.getId()).channel(message.getChannel().getId()).build());
-			MessageUtils.replyAndDelete(message, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
+			replyAndDelete(message, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
 		};
 	}
 }
