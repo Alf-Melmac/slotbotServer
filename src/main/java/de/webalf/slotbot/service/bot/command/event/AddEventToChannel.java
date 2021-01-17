@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 
 /**
@@ -34,6 +35,12 @@ public class AddEventToChannel implements DiscordCommand {
 	@Override
 	public void execute(Message message, List<String> args) {
 		log.trace("Command: addEventToChannel");
+
+		final String eventId = args.get(0);
+		if (!onlyNumbers(eventId)) {
+			replyAndDelete(message, "Bitte übergebe an erster Stelle eine Event-ID.");
+			return;
+		}
 
 		eventBotService.findById(message, Long.parseLong(args.get(0)))
 				.ifPresent(addEventConsumer(message));

@@ -33,7 +33,7 @@ public class EventBotService {
 		if (optionalEvent.isPresent()) {
 			return optionalEvent;
 		} else {
-			replyAndDelete(message, "Das Event mit der ID " + eventId + "konnte nicht gefunden werden.");
+			replyAndDelete(message, "Das Event mit der ID " + eventId + " konnte nicht gefunden werden.");
 			return Optional.empty();
 		}
 	}
