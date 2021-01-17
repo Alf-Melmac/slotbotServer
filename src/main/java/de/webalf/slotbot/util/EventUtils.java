@@ -67,9 +67,16 @@ public final class EventUtils {
 			thumbnail = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
 		}
 
+		String url = event.getUrl();
+		//If the request was made from the discord the url is a relative URI, with absolute path
+		//If an update is triggered by the website the url is an absolut URI
+		//I wasn't able to find a fix for this other than this workaround :(
+		if (!url.startsWith("http")) {
+			url = "https://armamachtbock.de" + url;
+		}
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(new Color((int) (Math.random() * 0x1000000))) //May be removed in future. But signals an update during development
-				.setTitle(event.getName(), "https://armamachtbock.de" + event.getUrl())
+				.setTitle(event.getName(), url)
 				.setDescription(event.getDescription())
 				.setThumbnail(thumbnail)
 				.setFooter("Mission von " + event.getCreator())

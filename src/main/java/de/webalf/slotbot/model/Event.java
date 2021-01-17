@@ -254,7 +254,7 @@ public class Event extends AbstractIdEntity {
 		for (Squad squad : getSquadList()) {
 			for (Slot slot : squad.getSlotList()) {
 				if (!slotNumbers.add(slot.getNumber())) {
-					log.debug("Duplicated Slot number found: " + slot.getNumber() + slot.getName());
+					log.debug("Duplicated Slot number found: " + slot.getNumber() + ": " + slot.getName());
 					return true;
 				}
 			}
