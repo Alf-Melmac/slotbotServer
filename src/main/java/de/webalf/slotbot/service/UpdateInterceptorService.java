@@ -24,11 +24,11 @@ public class UpdateInterceptorService {
 	private final MessageHelper messageHelper;
 
 	/**
-	 * Informs the discord bot about an update in an event
+	 * Informs the discord bot about a deletion in an event
 	 *
 	 * @param entity that may be an event related object
 	 */
-	public void update(Object entity) {
+	public void onDelete(Object entity) {
 		update(getEvent(entity));
 	}
 
@@ -46,6 +46,7 @@ public class UpdateInterceptorService {
 
 	/**
 	 * Returns the associated event if the entity is a {@link Event}, {@link Squad} or {@link Slot}
+	 * The reserve is removed only in conjunction with another "slot-creating" action. Therefore, no onDelete needs to be made in this case
 	 *
 	 * @param entity to get the event for
 	 * @return associated event or null
@@ -96,6 +97,24 @@ public class UpdateInterceptorService {
 		} else if (previousUser != null && !previousUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
 		}
+	}
 
+	public void onSave(Object entity) {
+		if (entity instanceof Squad) {
+			final Squad squad = (Squad) entity;
+			if (!squad.isReserve()) {
+				update(squad.getEvent());
+			}
+		} else if (entity instanceof Slot) {
+			final Slot slot = (Slot) entity;
+			if (!slot.isInReserve()) {
+				update(slot.getEvent());
+			}
+		} else if (entity instanceof User) {
+			final User user = (User) entity;
+			if (!user.isDefaultUser()) {
+				messageHelper.sendDmToRecipient(user, "Willkommen bei AmB! Wie ich sehe slottest du dich gerade zum ersten Mal. Falls du vor dem Eventstart einen Technikcheck absolvieren möchtest, tippe einfach <@327385716977958913> kurz an. Er steht dir auch für sonstige Fragen rund um deinen Start zur Verfügung.");
+			}
+		}
 	}
 }

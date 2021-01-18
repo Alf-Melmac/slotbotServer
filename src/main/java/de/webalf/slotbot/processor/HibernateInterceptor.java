@@ -1,7 +1,5 @@
 package de.webalf.slotbot.processor;
 
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.service.UpdateInterceptorService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.EmptyInterceptor;
@@ -30,10 +28,13 @@ public class HibernateInterceptor extends EmptyInterceptor {
 
 	@Override
 	public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-		//The reserve is removed only in conjunction with another "slot-creating" action. Therefore, no update needs to be made in this case
-		if (!(entity instanceof Squad && ((Squad) entity).isReserve() || entity instanceof Slot && ((Slot) entity).isInReserve())) {
-			updateInterceptorService.update(entity);
-		}
+		updateInterceptorService.onDelete(entity);
 		super.onDelete(entity, id, state, propertyNames, types);
+	}
+
+	@Override
+	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+		updateInterceptorService.onSave(entity);
+		return super.onSave(entity, id, state, propertyNames, types);
 	}
 }
