@@ -9,3 +9,12 @@
 .btn-xl {
   font-size: 2em;
 }
+
+.btn-denied {
+  color: gray;
+  cursor: not-allowed;
+}
+
+.btn-denied:hover {
+  color: gray;
+}

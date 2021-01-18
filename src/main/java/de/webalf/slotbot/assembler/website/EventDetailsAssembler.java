@@ -10,6 +10,7 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.LongUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class EventDetailsAssembler {
 	private final DiscordProperties discordProperties;
 	private final DiscordApiService discordApiService;
 
-	public EventDetailsDto toDto(Event event) {
+	public EventDetailsDto toDto(@NonNull Event event) {
 		LocalDateTime dateTime = event.getDateTime();
 		String channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
 
@@ -59,27 +60,29 @@ public class EventDetailsAssembler {
 				.build();
 	}
 
-	private List<EventDetailsSquadDto> toEventDetailsDtoList(Iterable<? extends Squad> squadList) {
+	private List<EventDetailsSquadDto> toEventDetailsDtoList(@NonNull Iterable<? extends Squad> squadList) {
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(this::toEventDetailsDto)
 				.collect(Collectors.toList());
 	}
 
-	private EventDetailsSquadDto toEventDetailsDto(Squad squad) {
+	private EventDetailsSquadDto toEventDetailsDto(@NonNull Squad squad) {
+		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotList()).stream().sorted(Comparator.comparing(EventDetailsSlotDto::getNumber)).collect(Collectors.toList());
 		return EventDetailsSquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.slotList(toEventDetailsSlotDtoList(squad.getSlotList()).stream().sorted(Comparator.comparing(EventDetailsSlotDto::getNumber)).collect(Collectors.toList()))
+				.slotList(slotList)
+				.notEmpty(slotList.stream().anyMatch(EventDetailsSlotDto::isOccupied))
 				.build();
 	}
 
-	private List<EventDetailsSlotDto> toEventDetailsSlotDtoList(Iterable<? extends Slot> slotList) {
+	private List<EventDetailsSlotDto> toEventDetailsSlotDtoList(@NonNull Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(this::toEventDetailsSlotDto)
 				.collect(Collectors.toList());
 	}
 
-	private EventDetailsSlotDto toEventDetailsSlotDto(Slot slot) {
+	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot) {
 		String text = null;
 		boolean blocked = false;
 		if (slot.getUser() != null) {
@@ -96,6 +99,7 @@ public class EventDetailsAssembler {
 				.name(slot.getName())
 				.number(slot.getNumber())
 				.text(text)
+				.occupied(!(slot.getUser() == null || slot.getUser().isDefaultUser()))
 				.blocked(blocked)
 				.build();
 	}

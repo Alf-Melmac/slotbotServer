@@ -213,7 +213,10 @@
 							<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 							       required th:value="${squad.name}">
 						</div>
-						<div class="d-flex btn btn-xl btn-wht js-trash" type="button">
+						<div th:unless="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-wht js-trash" type="button">
+							<em class="fa fa-trash-o"></em>
+						</div>
+						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied" title="Squad enthält nicht leere Slots">
 							<em class="fa fa-trash-o"></em>
 						</div>
 					</div>
@@ -231,7 +234,10 @@
 								<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
 								       required th:value="${slot.name}">
 							</div>
-							<div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button">
+							<div th:unless="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button">
+								<em class="fa fa-trash-o"></em>
+							</div>
+							<div th:if="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-denied" title="Dieser Slot ist belegt">
 								<em class="fa fa-trash-o"></em>
 							</div>
 						</div>

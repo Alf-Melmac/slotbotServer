@@ -22,4 +22,6 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	String name;
 
 	List<EventDetailsSlotDto> slotList;
+
+	boolean notEmpty;
 }

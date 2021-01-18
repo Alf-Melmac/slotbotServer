@@ -28,5 +28,7 @@ public class EventDetailsSlotDto extends AbstractIdEntityDto {
 
 	String text;
 
+	boolean occupied;
+
 	boolean blocked;
 }
