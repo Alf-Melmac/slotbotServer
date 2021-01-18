@@ -3,6 +3,12 @@ package de.webalf.slotbot.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
 
 /**
  * @author Alf
@@ -23,6 +29,9 @@ public class User {
 	//Workaround to ignore generated values
 	private long id;
 
+	@OneToMany(mappedBy = "user")
+	private Set<Slot> slots = new HashSet<>();
+
 	public static final long DEFAULT_USER_ID = 11111;
 
 	@Builder
@@ -33,4 +42,14 @@ public class User {
 	public boolean isDefaultUser() {
 		return getId() == DEFAULT_USER_ID;
 	}
+
+	public Optional<LocalDateTime> getLastEventDateTime() {
+		return getSlots().stream()
+				.map(Slot::getSquad)
+				.map(Squad::getEvent)
+				.map(Event::getDateTime)
+				.filter(dateTime -> dateTime.isBefore(LocalDateTime.now())).min(getLocalDateTimeComparator());
+	}
+
+
 }

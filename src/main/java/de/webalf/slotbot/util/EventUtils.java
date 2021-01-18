@@ -104,7 +104,7 @@ public final class EventUtils {
 	}
 
 	private static String buildScheduleField(LocalDateTime eventDateTime, String missionLength) {
-		final String dateTimeText = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(eventDateTime) + " Uhr";
+		final String dateTimeText = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(eventDateTime) + " Uhr";
 		return StringUtils.isNotEmpty(missionLength) ? dateTimeText + " und dauert " + missionLength : dateTimeText;
 	}
 

@@ -3,14 +3,10 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.service.bot.EventUpdateService;
 import de.webalf.slotbot.util.bot.MessageHelper;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 
 /**
  * @author Alf
@@ -81,22 +77,13 @@ public class UpdateInterceptorService {
 			final Event event = slot.getSquad().getEvent();
 			for (int i = 0; i < propertyNames.length; i++) {
 				if (propertyNames[i].equals(Slot_.USER)) {
-					informAboutSlotChange(slot, (User) currentState[i], (User) previousState[i], event);
+					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
 					break;
 				}
 			}
 			return event;
 		}
 		return null;
-	}
-
-	private void informAboutSlotChange(Slot slot, User currentUser, User previousUser, @NonNull Event event) {
-		final String eventDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).format(event.getDateTime().toLocalDate());
-		if (currentUser != null && !currentUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
-		} else if (previousUser != null && !previousUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
-		}
 	}
 
 	public void onSave(Object entity) {
@@ -113,7 +100,7 @@ public class UpdateInterceptorService {
 		} else if (entity instanceof User) {
 			final User user = (User) entity;
 			if (!user.isDefaultUser()) {
-				messageHelper.sendDmToRecipient(user, "Willkommen bei AmB! Wie ich sehe slottest du dich gerade zum ersten Mal. Falls du vor dem Eventstart einen Technikcheck absolvieren möchtest, tippe einfach <@327385716977958913> kurz an. Er steht dir auch für sonstige Fragen rund um deinen Start zur Verfügung.");
+				messageHelper.sendDmToRecipient(user, "Schön dich bei AmB begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!");
 			}
 		}
 	}
