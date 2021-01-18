@@ -13,3 +13,6 @@
 #Sonarlint
 sonarlint-state.xml
 sonarlint/
+
+#Discord Integration
+discord.xml
