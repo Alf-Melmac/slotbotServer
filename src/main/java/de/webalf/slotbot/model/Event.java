@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
 import de.webalf.slotbot.util.BooleanUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -240,6 +241,37 @@ public class Event extends AbstractIdEntity {
 			slotCount += squad.getSlotList().size();
 		}
 		return slotCount < 4 ? 1 : (int) Math.ceil(slotCount / 4.);
+	}
+
+	/**
+	 * Returns the most important information inside a {@link ShortEventInformationDto}
+	 *
+	 * @return important information
+	 */
+	public ShortEventInformationDto getShortInformation() {
+		int emptySlots = 0;
+		int slotCount = 0;
+		int emptyReserveSlots = 0;
+
+		for (Squad squad : getSquadList()) {
+			for(Slot slot : squad.getSlotList()) {
+				if (!slot.isInReserve()) {
+					if (slot.isEmpty()) {
+						emptySlots++;
+					}
+					slotCount++;
+				} else if (slot.isEmpty()){
+					emptyReserveSlots++;
+				}
+			}
+		}
+
+		return ShortEventInformationDto.builder()
+				.emptySlotsCount(emptySlots)
+				.slotCount(slotCount)
+				.emptyReserveSlotsCount(emptyReserveSlots)
+				.missionLength(getMissionLength())
+				.build();
 	}
 
 	// Validator

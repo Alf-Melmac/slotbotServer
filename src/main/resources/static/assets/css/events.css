@@ -3,16 +3,6 @@
   padding-bottom: 20px;
 }
 
-.tooltip-inner {
-  max-width: 100%;
-}
-
-.tooltip {
-  pointer-events: none;
-  margin-left: 5%;
-  margin-right: 5%;
-}
-
 #spin {
   position: fixed;
   top: 0;

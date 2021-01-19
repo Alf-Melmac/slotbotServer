@@ -20,7 +20,6 @@ public class CalendarEventDto {
 
 	LocalDateTime start;
 
-	@Size(max = 3200)
 	String description;
 
 	String url;
