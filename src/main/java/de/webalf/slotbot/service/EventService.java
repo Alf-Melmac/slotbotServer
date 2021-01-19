@@ -207,22 +207,30 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and adds the given slot to the squad found by squadNumber.
+	 * Searches for the given channel the matching event and renames the squad by position.
+	 *
+	 * @param channel    event channel
+	 * @param squadPosition to edit name of
+	 * @param slotName   new name
+	 * @return event in which the slot has been renamed
+	 */
+	public Event renameSquad(long channel, int squadPosition, String slotName) {
+		final Event event = findByChannel(channel);
+		event.findSquadByPosition(squadPosition).setName(slotName);
+		return event;
+	}
+
+	/**
+	 * Searches for the given channel the matching event and adds the given slot to the squad found by squadPosition.
 	 *
 	 * @param channel     event channel
-	 * @param squadNumber Counted, starting by 0
+	 * @param squadPosition Counted, starting by 0
 	 * @param slotDto     slot to add
 	 * @return event in which the slot has been added
 	 */
-	public Event addSlot(long channel, int squadNumber, SlotDto slotDto) {
-		Event event = findByChannel(channel);
-		List<Squad> squad = event.getSquadList();
-		if (squad.size() <= squadNumber) {
-			throw BusinessRuntimeException.builder().title("Den Squad konnte ich nicht finden.").build();
-		}
-
-		squad.get(squadNumber).addSlot(slotService.newSlot(slotDto));
-
+	public Event addSlot(long channel, int squadPosition, SlotDto slotDto) {
+		final Event event = findByChannel(channel);
+		event.findSquadByPosition(squadPosition).addSlot(slotService.newSlot(slotDto));
 		return event;
 	}
 

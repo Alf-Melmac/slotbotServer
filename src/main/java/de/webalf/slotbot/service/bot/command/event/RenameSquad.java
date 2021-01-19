@@ -17,30 +17,29 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 
 /**
  * @author Alf
- * @since 11.01.2021
+ * @since 19.01.2021
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(names = {"addSlot", "eventAddSlot", "slotAdd", "newSlot"},
-		description = "Fügt einem Event einen Slot hinzu. Squads sind durchnummeriert, beginnend mit 0.",
-		usage = "<Squad Position> <Slotnummer> \"<Slotname>\"",
-		argCount = {3},
+@Command(names = {"renameSquad", "editSquad", "eventRenameSquad"},
+		description = "Ermöglicht es einen Squad umzubenennen. Squads sind durchnummeriert, beginnend mit 0.",
+		usage = "<Squad Position> \"<Slotname>\"",
+		argCount = {2},
 		authorization = EVENT_MANAGE)
-public class AddSlot implements DiscordCommand {
+public class RenameSquad implements DiscordCommand {
 	private final EventBotService eventBotService;
 
 	@Override
 	public void execute(Message message, List<String> args) {
-		log.trace("Command: addslot");
+		log.trace("Command: renameSquad");
 
 		final String squadPosition = args.get(0);
-		final String slotNumber = args.get(1);
-		if (!onlyNumbers(squadPosition) || !onlyNumbers(slotNumber)) {
-			replyAndDelete(message, "Die Squad Position und Slotnummer müssen Zahlen sein.");
+		if (!onlyNumbers(squadPosition)) {
+			replyAndDelete(message, "Die Squad Position muss eine Zahl sein.");
 			return;
 		}
 
-		eventBotService.addSlot(message.getChannel().getIdLong(), Integer.parseInt(squadPosition), Integer.parseInt(slotNumber), args.get(2));
+		eventBotService.renameSquad(message.getChannel().getIdLong(), Integer.parseInt(squadPosition), args.get(1));
 		deleteMessagesInstant(message);
 	}
 }

@@ -67,6 +67,7 @@ public class Commands {
 		EVENT_JSON(Admin.class),
 		EVENT_PRINT(EventPrint.class),
 		RENAME_SLOT(RenameSlot.class),
+		RENAME_SQUAD(RenameSquad.class),
 		SLOT(Slot.class),
 		SWAP(Swap.class),
 		UNSLOT(Unslot.class);

@@ -161,6 +161,21 @@ public class Event extends AbstractIdEntity {
 	// Getter
 
 	/**
+	 * Finds a slot by its position
+	 *
+	 * @param squadPosition position to get squad for
+	 * @return the squad
+	 * @throws BusinessRuntimeException if there is no squad at the given position
+	 */
+	public Squad findSquadByPosition(int squadPosition) {
+		final List<Squad> squad = getSquadList();
+		if (squad.size() <= squadPosition || squadPosition < 0) {
+			throw BusinessRuntimeException.builder().title("Den Squad konnte ich nicht finden.").build();
+		}
+		return squad.get(squadPosition);
+	}
+
+	/**
 	 * Finds a slot by its number
 	 *
 	 * @param slotNumber associated to the slot
