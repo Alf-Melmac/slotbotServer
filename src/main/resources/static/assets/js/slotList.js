@@ -19,23 +19,23 @@ $(function () {
         '   <div class="col-md-10">' +
         '      <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>' +
         '   </div>' +
-        '   <div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
+        '   <div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>' +
         '</div>';
 
     const newSquad =
         '<div class="form-group js-complete-squad">' +
         '   <div class="form-row align-items-center js-squad">' +
-        '       <div><em class="fa fa-arrows-v"></em></div>' +
+        '       <div><em class="fas fa-arrows-alt-v"></em></div>' +
         '       <div class="col-md-11">' +
         '           <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>' +
         '       </div>' +
-        '       <div class="d-flex btn btn-xl btn-wht js-trash" type="button"><em class="fa fa-trash-o"></em></div>' +
+        '       <div class="d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>' +
         '   </div>' +
         '' +
         '   <div class="ml-5 js-slots">' +
         newSlot +
         '       <div type="button" class="btn btn-success rounded-circle js-add-slot" title="Slot hinzufügen">' +
-        '           <em class="fa fa-plus"></em>' +
+        '           <em class="fas fa-plus"></em>' +
         '       </div>' +
         '   </div>' +
         '</div>';

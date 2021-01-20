@@ -4,7 +4,7 @@ $(function () {
     $(':checkbox').prop('indeterminate', true);
 
     $('#eventHidden').on('click', function () {
-        $(this).find('.fa').toggleClass('fa-eye fa-eye-slash');
+        $(this).find('.far').toggleClass('fa-eye fa-eye-slash');
     });
 
     const $smartWizard = $('#smartwizard');

@@ -13,8 +13,8 @@
 	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
 
 	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
-	      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css"
+	      integrity="sha256-0fuNgzfNIlaClbDtmYyFxY8LTNCDrwsNshywr4AALy0=" crossorigin="anonymous">
 	<link rel="stylesheet"
 	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css"
 	      integrity="sha256-VL9T9QfjO/EGCzuu5CtTWWzIksAkGDTs+fO51ALqMjg=" crossorigin="anonymous">
@@ -38,7 +38,7 @@
 		<button data-toggle="collapse" class="navbar-toggler navbar-toggler-right" data-target="#navbar"
 		        type="button" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"
 		        value="Menu">
-			<em class="fa fa-bars"></em>
+			<em class="fas fa-bars"></em>
 		</button>
 		<div class="collapse navbar-collapse" id="navbar">
 			<ul class="nav navbar-nav ml-auto">
@@ -54,7 +54,7 @@
 	<div class="container">
 		<div>
 			<a class="font-s" th:href="${eventDetailsUrl}">
-				<em class="fa fa-chevron-circle-left"> Zurück</em>
+				<em class="fas fa-chevron-circle-left"></em> Zurück
 			</a>
 		</div>
 
@@ -66,8 +66,8 @@
 					<a id="eventName" class="form-control" href="#"></a>
 				</div>
 				<div class="form-group col-md-1">
-					<div id="eventHidden" class="btn btn-xl btn-wht pull-right" title="Sichtbarkeit">
-						<em class="fa" th:classappend="${event.hidden} ? 'fa-eye-slash' : 'fa-eye'"></em>
+					<div id="eventHidden" class="btn btn-xl btn-wht fa-pull-right" title="Sichtbarkeit">
+						<em class="far" th:classappend="${event.hidden} ? 'fa-eye-slash' : 'fa-eye'"></em>
 					</div>
 				</div>
 			</div>
@@ -79,7 +79,7 @@
 						       data-dtokey="date" data-target="#datepicker" required th:value="${event.date}">
 						<div class="input-group-append" data-target="#datepicker"
 						     data-toggle="datetimepicker">
-							<div class="input-group-text"><em class="fa fa-calendar"></em></div>
+							<div class="input-group-text"><em class="far fa-calendar-alt"></em></div>
 						</div>
 					</div>
 				</div>
@@ -90,7 +90,7 @@
 						       data-dtokey="startTime" data-target="#datetime" required th:value="${event.startTime}">
 						<div class="input-group-append" data-target="#datetime"
 						     data-toggle="datetimepicker">
-							<div class="input-group-text"><em class="fa fa-clock-o"></em></div>
+							<div class="input-group-text"><em class="far fa-clock"></em></div>
 						</div>
 					</div>
 				</div>
@@ -214,17 +214,17 @@
 				<div class="form-group js-complete-squad" th:each="squad : ${event.squadList}"
 				     th:data-squadid="${squad.id}">
 					<div class="form-row align-items-center js-squad">
-						<div><em class="fa fa-arrows-v"></em></div>
+						<div><em class="fas fa-arrows-alt-v"></em></div>
 						<div class="col-md-11">
 							<!--suppress HtmlFormInputWithoutLabel -->
 							<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 							       required th:value="${squad.name}">
 						</div>
 						<div th:unless="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-wht js-trash" type="button">
-							<em class="fa fa-trash-o"></em>
+							<em class="far fa-trash-alt"></em>
 						</div>
 						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied" title="Squad enthält nicht leere Slots">
-							<em class="fa fa-trash-o"></em>
+							<em class="far fa-trash-alt"></em>
 						</div>
 					</div>
 
@@ -242,22 +242,22 @@
 								       required th:value="${slot.name}">
 							</div>
 							<div th:unless="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button">
-								<em class="fa fa-trash-o"></em>
+								<em class="far fa-trash-alt"></em>
 							</div>
 							<div th:if="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-denied" title="Dieser Slot ist belegt">
-								<em class="fa fa-trash-o"></em>
+								<em class="far fa-trash-alt"></em>
 							</div>
 						</div>
 						<div type="button" class="btn btn-success rounded-circle js-add-slot"
 						     title="Slot hinzufügen">
-							<em class="fa fa-plus"></em>
+							<em class="fas fa-plus"></em>
 						</div>
 					</div>
 				</div>
 
 				<div id="addSquad" type="button" class="btn btn-success rounded-circle"
 				     title="Squad hinzufügen">
-					<em class="fa fa-plus"></em>
+					<em class="fas fa-plus"></em>
 				</div>
 			</div>
 

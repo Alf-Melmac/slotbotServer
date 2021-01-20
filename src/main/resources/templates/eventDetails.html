@@ -13,8 +13,8 @@
 	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
 
 	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
-	      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css"
+	      integrity="sha256-0fuNgzfNIlaClbDtmYyFxY8LTNCDrwsNshywr4AALy0=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/copy.css}">
@@ -33,7 +33,7 @@
 		<button data-toggle="collapse" class="navbar-toggler navbar-toggler-right" data-target="#navbar"
 		        type="button" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"
 		        value="Menu">
-			<em class="fa fa-bars"></em>
+			<em class="fas fa-bars"></em>
 		</button>
 		<div class="collapse navbar-collapse" id="navbar">
 			<ul class="nav navbar-nav ml-auto">
@@ -66,7 +66,7 @@
 						<h1 th:text="${event.name}">Event Titel</h1>
 					</div>
 					<div class="col-md-1 float-right" th:if="${hasEventManageRole}">
-						<div id="eventEdit" class="btn btn-xl btn-wht" type="button"><em class="fa fa-edit"></em></div>
+						<div id="eventEdit" class="btn btn-xl btn-wht" type="button"><em class="far fa-edit"></em></div>
 					</div>
 				</div>
 				<div class="row">

@@ -67,7 +67,7 @@ function saveEvent($saveBtn) {
 
     event.squadList = getSquads(false);
 
-    event.hidden = $('#eventHidden').find('.fa').hasClass('fa-eye-slash');
+    event.hidden = $('#eventHidden').find('.far').hasClass('fa-eye-slash');
 
     $.ajax(postEventUrl, {
         method: 'POST',

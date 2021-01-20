@@ -43,7 +43,7 @@ let discordInvite = function () {
                             $('.discordLink').on('click', function () {
                                 $('#callToAction').html(
                                     '<div id="joinedDiscord">' +
-                                    '   Beigetreten<i id="joinedCheckmark" class="fa fa-check" aria-hidden="true"></i>' +
+                                    '   Beigetreten<i id="joinedCheckmark" class="fas fa-check" aria-hidden="true"></i>' +
                                     '</div>'
                                 ).attr('id', 'callToAction-clicked');
                                 window.open('https://discordapp.com/invite/' + i.inviteCode, '_blank');

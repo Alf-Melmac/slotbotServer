@@ -8,8 +8,9 @@
 }
 
 .glyphicon {
-  font-family: 'FontAwesome', serif;
+  font-family: 'Font Awesome\ 5 Free', serif;
   font-style: normal;
+  font-weight: 900;
 }
 
 .editable-empty {

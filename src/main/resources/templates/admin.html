@@ -13,8 +13,8 @@
 	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
 
 	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
-	      integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css"
+	      integrity="sha256-0fuNgzfNIlaClbDtmYyFxY8LTNCDrwsNshywr4AALy0=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/cards.css}">
@@ -47,8 +47,8 @@
 
 			<div class="status"
 			     th:with="online=${server.getStatus()} eq ${T(de.webalf.slotbot.model.external.ServerStatus).ONLINE}">
-				<em class="fa btn-xl"
-				    th:classappend="${online} ? 'fa-heart text-success' : 'fa-heart-o text-danger'"
+				<em class="btn-xl fas"
+				    th:classappend="${online} ? 'fa-heart text-success' : 'fa-heartbeat text-danger'"
 				    th:title="${server.getStatus()}"></em>
 			</div>
 

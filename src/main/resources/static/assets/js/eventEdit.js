@@ -93,7 +93,7 @@ $(function () {
 
     //Event hidden button
     $('#eventHidden').on('click', function () {
-        const $icon = $(this).find('.fa');
+        const $icon = $(this).find('.far');
         putUpdate({hidden: !$icon.hasClass('fa-eye-slash')}, () => {
             $icon.toggleClass('fa-eye fa-eye-slash');
             showSavedToast();
