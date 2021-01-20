@@ -1,8 +1,8 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.service.external.BattlemetricsApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +22,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(ADMIN)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AdminWebController {
+	private final BattlemetricsApiService battlemetricsApiService;
+
 	@GetMapping
 	public ModelAndView getAdminHtml() {
 		ModelAndView mav = new ModelAndView("admin");
@@ -29,10 +31,7 @@ public class AdminWebController {
 		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 		mav.addObject("logsUrl", linkTo(methodOn(LogWebController.class).getLogsHtml()).toUri().toString());
 
-		//TODO Admin start page rework
-		final HttpStatus ping = HttpStatus.OK;
-		mav.addObject("status", ping != null ? ping.value() + " " + ping.getReasonPhrase() : "No status received. Rejected?");
-		mav.addObject("ping", ping != null && ping.is2xxSuccessful());
+		mav.addObject("servers", battlemetricsApiService.getServers());
 		mav.addObject("pingTime", LocalDateTime.now());
 
 		return mav;
