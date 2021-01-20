@@ -201,7 +201,14 @@
 
 		<hr class="solid bg-light">
 
-		<h3>Teilnahmeplatzaufzählung</h3>
+		<div class="row">
+			<div class="col-md-9">
+				<h3>Teilnahmeplatzaufzählung</h3>
+			</div>
+			<div class="col-md-3">
+				<div id="renumber" class="btn btn-secondary float-right" type="button">Neu nummerieren</div>
+			</div>
+		</div>
 		<form>
 			<div id="squads" class="js-sortable">
 				<div class="form-group js-complete-squad" th:each="squad : ${event.squadList}"

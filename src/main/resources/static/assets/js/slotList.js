@@ -82,6 +82,12 @@ $(function () {
         }
         return slotNumber;
     }
+
+    $('#renumber').on('click', function () {
+        $squads.find('.js-slot-number').each(function (index) {
+            $(this).val(index + 1);
+        });
+    });
 });
 
 function getSlotNumbers() {
