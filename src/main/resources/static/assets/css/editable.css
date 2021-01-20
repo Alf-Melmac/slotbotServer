@@ -1,4 +1,4 @@
-/*Replace Glyphicons with Fontawesome 4*/
+/*Replace Glyphicons with Fontawesome 5*/
 .glyphicon-ok::before {
   content: "\f00c";
 }
