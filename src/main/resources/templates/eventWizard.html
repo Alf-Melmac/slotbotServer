@@ -133,12 +133,12 @@
 									<option>über 4 Stunden</option>
 								</datalist>
 							</div>
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-4" th:with="modPacks=${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getMOD_PACKS()}">
 								<label for="eventModPack">Modpack</label>
 								<input id="eventModPack" class="form-control custom-select" type="text"
-								       list="modPacks" data-dtokey="modPack" value="2012_ArmaMachtBock">
+								       list="modPacks" data-dtokey="modPack" th:value="${modPacks.get(0)}">
 								<datalist id="modPacks">
-									<option th:each="modPack : ${T(de.webalf.slotbot.model.dtos.website.EventDetailsDto).getMOD_PACKS()}"
+									<option th:each="modPack : ${modPacks}"
 									        th:text="${modPack}"></option>
 								</datalist>
 							</div>

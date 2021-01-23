@@ -75,7 +75,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@Getter
 	private static final List<String> MISSION_TYPES = List.of("COOP", "COOP+", "Zeus", "TvT", "Training", "Spezial", "Anderes");
 	@Getter
-	private static final List<String> MOD_PACKS = List.of("2012_ArmaMachtBock", "Joined_Operations_2020", "Alliance_2021v1");
+	private static final List<String> MOD_PACKS = List.of("2101_ArmaMachtBock", "Joined_Operations_2020", "Alliance_2021v1");
 	@Getter
 	private static final List<String> MAPS = List.of("Aliabad Region", "Altis", "Anizay", "Beketow", "Bukovina",
 			"Bystrica", "Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Chernarus 2020",
