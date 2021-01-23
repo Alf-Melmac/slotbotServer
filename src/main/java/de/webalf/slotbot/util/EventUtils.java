@@ -9,9 +9,9 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -92,7 +92,7 @@ public final class EventUtils {
 	}
 
 	private static void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull EventApiDto event) {
-		addField("Zeitplan", buildScheduleField(LocalDateTime.of(event.getDate(), event.getStartTime()), event.getMissionLength()), embedBuilder);
+		addField("Zeitplan", buildScheduleField(event.getDate(), event.getStartTime(), event.getMissionLength()), embedBuilder);
 		addField("Missionstyp", event.getMissionTypeAndRespawn(), true, embedBuilder);
 		addField("Karte", event.getMap(), true, embedBuilder);
 		addField("Modpack", buildModpackField(event.getModPack(), event.getModPackUrl()), true, embedBuilder);
@@ -103,8 +103,11 @@ public final class EventUtils {
 		addField("Technischer Teleport", event.getTechnicalTeleport(), true, embedBuilder);
 	}
 
-	private static String buildScheduleField(LocalDateTime eventDateTime, String missionLength) {
-		final String dateTimeText = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(eventDateTime) + " Uhr";
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.uuuu");
+	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
+	private static String buildScheduleField(LocalDate eventDate, LocalTime eventStartTime, String missionLength) {
+		final String dateTimeText = DATE_FORMATTER.format(eventDate) + ", " + TIME_FORMATTER.format(eventStartTime) + " Uhr";
 		return StringUtils.isNotEmpty(missionLength) ? dateTimeText + " und dauert " + missionLength : dateTimeText;
 	}
 
