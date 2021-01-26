@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
 import de.webalf.slotbot.util.BooleanUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.thymeleaf.util.ListUtils;
 
 import javax.persistence.*;
@@ -64,8 +65,8 @@ public class Event extends AbstractIdEntity {
 	@Column(name = "event_slotlist_msg")
 	private Long slotListMsg;
 
-	@Column(name = "event_description", length = 4000)
-	@Size(max = 3200)
+	@Column(name = "event_description", length = 2560)
+	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
 	private String description;
 
 	@Column(name = "event_picture_url", length = 2083)

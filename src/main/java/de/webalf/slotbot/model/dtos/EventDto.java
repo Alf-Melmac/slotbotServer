@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -47,7 +48,7 @@ public class EventDto extends AbstractIdEntityDto {
 
 	private String slotListMsg;
 
-	@Size(max = 3200)
+	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
 	private String description;
 	@Size(max = 1666)
 	private String pictureUrl;
