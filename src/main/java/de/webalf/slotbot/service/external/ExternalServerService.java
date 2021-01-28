@@ -59,15 +59,19 @@ public class ExternalServerService {
 
 		final InputStream inputStream = process.getInputStream();
 
-		Executors.newSingleThreadExecutor().submit(() ->
-				new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-						.lines()
-						.forEach(line -> {
-							log.trace(line);
-							if (line.contains("Autostart beendet!")) {
-								log.debug("Finished arma server startup");
-							}
-						}));
+		if (log.isDebugEnabled() || log.isTraceEnabled()) {
+			Executors.newSingleThreadExecutor().submit(() ->
+					new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+							.lines()
+							.forEach(line -> {
+								log.trace(line);
+								if (line.contains("Autostart beendet!")) {
+									log.debug("Finished arma server startup");
+								} else if (line.contains("Server beendet!")) {
+									log.debug("Finished arma stopping");
+								}
+							}));
+		}
 
 		try {
 			log.debug("Server start exitCode: " + process.waitFor());
