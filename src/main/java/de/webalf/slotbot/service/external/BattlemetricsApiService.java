@@ -7,9 +7,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class BattlemetricsApiService {
 		identifierCache = new HashMap<>();
 
 		for (int serverId : apiProperties.getServerIds()) {
-			final String url = "/servers/" + serverId + "?fields[server]=name,ip,port,players,status";
+			final String url = "/servers/" + serverId + "?fields[server]=name,ip,port,status,updatedAt,players";
 
 			final Response response = buildWebClient().get().uri(url).retrieve().bodyToMono(Response.class).block();
 			if (response == null) {
@@ -115,6 +117,8 @@ public class BattlemetricsApiService {
 		private int port;
 		private int players;
 		private ServerStatus status;
+		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+		private LocalDateTime updatedAt;
 
 		private boolean isArma = false;
 		private boolean knownExternal = false;

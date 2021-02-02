@@ -42,9 +42,10 @@
 	<div class="container">
 		<div class="card" th:each="server : ${servers}"
 		     th:with="online=${server.getStatus()} eq ${T(de.webalf.slotbot.model.external.ServerStatus).ONLINE}">
-			<h3 class="title" th:text="${server.getName()}">Server Name</h3>
+			<h3 class="title mb-2" th:text="${server.getName()}">Server Name</h3>
 
-			<p class="ip" th:text="${server.getFullIp()}">IP</p>
+			<p class="ip mb-1" th:text="${server.getFullIp()}">IP</p>
+			<p th:text="${'Updated at (UTC): ' + #temporals.format(server.getUpdatedAt(), 'dd.MM.yyyy HH:mm:ss')}">Last update</p>
 
 			<div class="status">
 				<em class="btn-xl fas"
