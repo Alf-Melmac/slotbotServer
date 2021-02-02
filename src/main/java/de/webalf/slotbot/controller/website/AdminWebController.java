@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
+
 import static de.webalf.slotbot.controller.Urls.ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -34,6 +36,11 @@ public class AdminWebController {
 		mav.addObject("serverToggleUrl", linkTo(methodOn(AdminWebController.class).postServerToggle(true, null)).toUri().toString().replace(Boolean.TRUE.toString(), "{online}"));
 
 		mav.addObject("servers", battlemetricsApiService.getServers());
+
+		final HttpStatus ping = externalServerService.ping();
+		mav.addObject("serverManagerStatus", ping != null ? ping.value() + " " + ping.getReasonPhrase() : "No status received. Rejected?");
+		mav.addObject("serverManagerPing", ping != null && ping.is2xxSuccessful());
+		mav.addObject("serverManagerPingTime", LocalDateTime.now());
 
 		return mav;
 	}

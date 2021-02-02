@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
@@ -25,6 +26,20 @@ public class ExternalServerService {
 	private final ServerManagerProperties serverManagerProperties;
 
 	private Map<String, String> ipServerMap = new HashMap<>();
+
+	/**
+	 * Checks if the api of the server manager is reachable
+	 *
+	 * @return status returned by the ping request or null if not reachable
+	 */
+	public HttpStatus ping() {
+		HttpStatus status = null;
+		try {
+			status = buildWebClient().get().uri("/status").exchange().map(ClientResponse::statusCode).block();
+		} catch (Exception ignored) {
+		}
+		return status;
+	}
 
 	/**
 	 * Fills the ipUrlMap "cache" with the mappings from the server manager

@@ -70,6 +70,15 @@
 				Start/Stop
 			</div>
 		</div>
+
+		<div class="row">
+			<p class="mr-1"
+			   th:text="${'Slotbot Ping: ' + #temporals.format(serverManagerPingTime, 'dd.MM.yyyy HH:mm')}"></p>
+
+			<em class="fas btn-xl"
+			    th:classappend="${serverManagerPing} ? 'fa-heart text-success' : 'fa-heartbeat text-danger'"
+			    th:title="${serverManagerStatus}"></em>
+		</div>
 	</div>
 </section>
 
