@@ -45,7 +45,9 @@
 			<h3 class="title mb-2" th:text="${server.getName()}">Server Name</h3>
 
 			<p class="ip mb-1" th:text="${server.getFullIp()}">IP</p>
-			<p th:text="${'Updated at (UTC): ' + #temporals.format(server.getUpdatedAt(), 'dd.MM.yyyy HH:mm:ss')}">Last update</p>
+			<p th:text="${'Updated at (UTC): ' + #temporals.format(server.getUpdatedAt(), 'dd.MM.yyyy HH:mm:ss')}">
+				Last update
+			</p>
 
 			<div class="status">
 				<em class="btn-xl fas"
@@ -57,7 +59,15 @@
 			     th:if="${server.isKnownExternal()}"
 			     th:data-serverip="${server.getFullIp()}" th:data-online="${online}"
 			     th:text="${online} ? 'Server stoppen' : 'Server starten'">
-				Online/Offline
+				Start/Stop
+			</div>
+
+			<div class="btn btn-secondary mt-3 js-server-toggle" type="button"
+			     th:if="${server.isKnownExternal()}"
+			     th:data-serverip="${server.getFullIp()}" th:data-online="${!online}"
+			     th:text="${!online} ? 'Server stoppen' : 'Server starten'"
+			     title="Ich weiß es besser als die API">
+				Start/Stop
 			</div>
 		</div>
 	</div>
