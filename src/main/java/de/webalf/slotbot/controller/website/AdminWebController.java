@@ -40,7 +40,7 @@ public class AdminWebController {
 
 	@PostMapping("/server/{online}")
 	public ResponseEntity<Void> postServerToggle(@PathVariable(value = "online") boolean online,
-	                                             @RequestBody String serverIp) {
+												 @RequestBody String serverIp) {
 		externalServerService.toggleServer(battlemetricsApiService.findIdentifierByFullIp(serverIp), !online);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

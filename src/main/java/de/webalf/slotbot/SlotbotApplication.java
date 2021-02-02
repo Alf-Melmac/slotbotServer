@@ -1,6 +1,7 @@
 package de.webalf.slotbot;
 
 import de.webalf.slotbot.service.bot.BotService;
+import de.webalf.slotbot.service.external.ExternalServerService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -22,5 +23,8 @@ public class SlotbotApplication {
 
 		//Start discord bot
 		applicationContext.getBean(BotService.class).startUp();
+
+		//Initialize external server
+		applicationContext.getBean(ExternalServerService.class).fillIpServerMap();
 	}
 }

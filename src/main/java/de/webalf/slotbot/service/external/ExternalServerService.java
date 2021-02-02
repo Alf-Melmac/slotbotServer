@@ -1,83 +1,67 @@
 package de.webalf.slotbot.service.external;
 
+import de.webalf.slotbot.configuration.properties.ServerManagerProperties;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Executors;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Alf
  * @since 24.01.2021
  */
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class ExternalServerService {
-	private static final ProcessBuilder PROCESS_BUILDER = new ProcessBuilder();
+	private final ServerManagerProperties serverManagerProperties;
 
-	static {
-		PROCESS_BUILDER.redirectErrorStream(true); //Redirects stderr to stdout
+	private Map<String, String> ipServerMap = new HashMap<>();
+
+	/**
+	 * Fills the ipUrlMap "cache" with the mappings from the server manager
+	 */
+	public void fillIpServerMap() {
+		log.info("Filling ipUrlMap from " + serverManagerProperties.getUrl());
+		ipServerMap = buildWebClient().get().uri("/status/mappings").retrieve().bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {}).block();
+		log.info("Filled ipUrlMap and retrieved {} items", ipServerMap.size());
 	}
 
 	public void toggleServer(@NonNull BattlemetricsApiService.Identifier identifier, boolean start) {
-		if (identifier.getRelationships().isArma() && identifier.isServerEmpty()) {
-			if (start) {
-				startArmaServer();
-			} else {
-				stopArmaServer();
-			}
-			execute();
+		final String fullIp = identifier.getAttributes().getFullIp();
+		if (identifier.isServerEmpty() && knownServer(fullIp)) {
+			buildWebClient().put().uri("/" + ipServerMap.get(fullIp) + "/" + start).retrieve()
+					.onStatus(HttpStatus::isError, clientResponse -> {
+						throw BusinessRuntimeException.builder().description(clientResponse.statusCode().getReasonPhrase()).build();
+					})
+					.bodyToMono(Boolean.class).block();
 		} else {
-			throw BusinessRuntimeException.builder().title("Server must be an Arma 3 server and empty.").build();
+			throw BusinessRuntimeException.builder().title("Server must be empty and known by the server manager.").build();
 		}
 	}
 
-	private static void startArmaServer() {
-		log.debug("Starting arma server...");
-		PROCESS_BUILDER.command("sh", "-c", "ssh armaserver '\".\\Desktop\\Server Autostart.lnk\"'");
+	/**
+	 * Checks if the given server matched by ip is a known external server
+	 *
+	 * @param fullIp to check
+	 * @return true if the external server has a mapping for the given ip with port
+	 */
+	boolean knownServer(String fullIp) {
+		return ipServerMap.containsKey(fullIp);
 	}
 
-	private static void stopArmaServer() {
-		log.debug("Stopping arma server...");
-		PROCESS_BUILDER.command("sh", "-c", "ssh armaserver '\".\\Desktop\\Server Autostop.lnk\"'");
-	}
-
-	private static void execute() {
-		Process process;
-		try {
-			process = PROCESS_BUILDER.start();
-		} catch (IOException e) {
-			log.error("Error starting shell command for starting arma server", e);
-			return;
-		}
-
-		final InputStream inputStream = process.getInputStream();
-
-		if (log.isDebugEnabled() || log.isTraceEnabled()) {
-			Executors.newSingleThreadExecutor().submit(() ->
-					new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-							.lines()
-							.forEach(line -> {
-								log.trace(line);
-								if (line.contains("Autostart beendet!")) {
-									log.debug("Finished arma server startup");
-								} else if (line.contains("Server beendet!")) {
-									log.debug("Finished arma stopping");
-								}
-							}));
-		}
-
-		try {
-			log.debug("Server start exitCode: " + process.waitFor());
-		} catch (InterruptedException e) {
-			log.error("Server start wait for Interrupted", e);
-			Thread.currentThread().interrupt();
-		}
+	private WebClient buildWebClient() {
+		return WebClient.builder()
+				.baseUrl(serverManagerProperties.getUrl())
+				.defaultHeader(serverManagerProperties.getTokenName(), serverManagerProperties.getToken())
+				.build();
 	}
 }

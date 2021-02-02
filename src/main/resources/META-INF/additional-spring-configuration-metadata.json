@@ -35,5 +35,21 @@
 	  "name": "battlemetrics.serverIds",
 	  "type": "java.util.List<java.lang.Integer>",
 	  "description": "Server ids to check status for."
+	},
+	{
+	  "name": "servermanager.url",
+	  "type": "java.lang.String",
+	  "description": "URL via which the API of the server manager can be reached. Example: http://localhost/server-manager/api/v1."
+	},
+	{
+	  "name": "servermanager.tokenName",
+	  "type": "java.lang.String",
+	  "description": "Authentication token name of the server manager.",
+	  "defaultValue": "server-manager-auth-token"
+	},
+	{
+	  "name": "servermanager.token",
+	  "type": "java.lang.String",
+	  "description": "Authentication token of the server manager."
 	}
   ] }

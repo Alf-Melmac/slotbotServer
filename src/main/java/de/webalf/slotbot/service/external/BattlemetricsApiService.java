@@ -3,6 +3,7 @@ package de.webalf.slotbot.service.external;
 import de.webalf.slotbot.configuration.properties.BattlemetricsProperties;
 import de.webalf.slotbot.model.external.ServerStatus;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Slf4j
 public class BattlemetricsApiService {
 	private final BattlemetricsProperties apiProperties;
+	private final ExternalServerService externalServerService;
 
 	private Map<String, Identifier> identifierCache = new HashMap<>();
 
@@ -43,12 +45,23 @@ public class BattlemetricsApiService {
 				log.warn("Server with id " + serverId + " couldn't be reached via battlemetrics api.");
 				continue;
 			}
-			final Server server = response.getServer();
-			servers.add(server);
-			identifierCache.put(server.getFullIp(), response.getData());
+			servers.add(processReceived(response));
 		}
 
 		return servers;
+	}
+
+	/**
+	 * Processes the received response and returns {@link Server}
+	 *
+	 * @param response to process
+	 * @return server of the response
+	 */
+	private Server processReceived(@NonNull Response response) {
+		Server server = response.getServer();
+		server.setKnownExternal(externalServerService.knownServer(server.getFullIp()));
+		identifierCache.put(server.getFullIp(), response.getData());
+		return server;
 	}
 
 	/**
@@ -104,6 +117,7 @@ public class BattlemetricsApiService {
 		private ServerStatus status;
 
 		private boolean isArma = false;
+		private boolean knownExternal = false;
 
 		/**
 		 * @return ip and port concatenated with :
