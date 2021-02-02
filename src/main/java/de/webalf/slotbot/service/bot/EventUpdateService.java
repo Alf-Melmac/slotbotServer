@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+
+import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 
 /**
  * @author Alf
@@ -43,7 +43,7 @@ public class EventUpdateService {
 	}
 
 	public void informAboutSlotChange(@NonNull Event event, @NonNull Slot slot, User currentUser, User previousUser) {
-		final String eventDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).format(event.getDateTime().toLocalDate());
+		final String eventDate = DATE_FORMATTER.format(event.getDateTime().toLocalDate());
 		if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 			longTimeNoSee(currentUser);

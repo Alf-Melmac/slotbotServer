@@ -11,8 +11,9 @@ import java.awt.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
+import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
+import static de.webalf.slotbot.util.DateUtils.TIME_FORMATTER;
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -106,9 +107,6 @@ public final class EventUtils {
 		addField("Medicsystem", event.getMedicalSystem(), true, embedBuilder);
 		addField("Technischer Teleport", event.getTechnicalTeleport(), true, embedBuilder);
 	}
-
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
 	private static String buildScheduleField(LocalDate eventDate, LocalTime eventStartTime, String missionLength) {
 		final String dateTimeText = DATE_FORMATTER.format(eventDate) + ", " + TIME_FORMATTER.format(eventStartTime) + " Uhr";
