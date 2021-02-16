@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.service.external.DiscordApiService.KNOWN_ROLE_NAMES;
+import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 
 /**
  * Util class to work with {@link Message}s
@@ -186,7 +188,12 @@ public final class MessageUtils {
 	}
 
 	private static void dmFailure(User user, Consumer<? super Message> success, boolean callSuccessOnFailure, Throwable fail) {
-		log.warn("Couldn't send DM to {}", user.getAsTag(), fail);
+		if (fail instanceof ErrorResponseException && ((ErrorResponseException) fail).getErrorResponse() == CANNOT_SEND_TO_USER) {
+			log.warn("Couldn't send DM to {}. Probably the user prevents receiving messages from the bot.", user.getAsTag());
+		} else {
+			log.warn("Couldn't send DM to {}", user.getAsTag(), fail);
+		}
+
 		if (callSuccessOnFailure) {
 			success.accept(null);
 		}
