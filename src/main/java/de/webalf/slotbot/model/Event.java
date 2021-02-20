@@ -394,8 +394,8 @@ public class Event extends AbstractIdEntity {
 						}));
 			}
 
-			List<Slot> reserveSlots = reserve.getSlotList();
-			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toList());
+			List<Slot> reserveSlots = reserve.getSlotListOrdered();
+			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toUnmodifiableList());
 
 			//Empty reserve
 			reserveSlots.forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));

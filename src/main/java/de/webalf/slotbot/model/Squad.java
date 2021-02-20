@@ -8,8 +8,10 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Alf
@@ -84,6 +86,10 @@ public class Squad extends AbstractIdEntity {
 	 */
 	public boolean isReserve() {
 		return getName().equals(RESERVE_NAME);
+	}
+
+	public List<Slot> getSlotListOrdered() {
+		return getSlotList().stream().sorted(Comparator.comparing(Slot::getNumber)).collect(Collectors.toUnmodifiableList());
 	}
 
 	// Setter
