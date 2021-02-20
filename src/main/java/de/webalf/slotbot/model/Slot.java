@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Size;
 @Table(name = "slot", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Slot extends AbstractIdEntity {
 	@Column(name = "slot_name", length = 100)
@@ -59,6 +61,17 @@ public class Slot extends AbstractIdEntity {
 
 	public boolean isInReserve() {
 		return getSquad().isReserve();
+	}
+
+	/**
+	 * @return false if the squad of this slot is not known
+	 */
+	public boolean squadNullCheck() {
+		if (getSquad() == null) {
+			log.warn("Slot without squad: {}. Expected when adding a slot", getId());
+			return false;
+		}
+		return true;
 	}
 
 	boolean isSlotWithNumber(int slotNumber) {

@@ -100,7 +100,7 @@ public class Squad extends AbstractIdEntity {
 	 * @param newSlot to add
 	 */
 	public void addSlot(Slot newSlot) {
-		if (isReserve()) {
+		if (newSlot.squadNullCheck() && isReserve()) {
 			throw new ForbiddenException("Zur Reserve dürfen keine Slots hinzugefügt werden.");
 		}
 

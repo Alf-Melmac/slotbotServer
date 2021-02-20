@@ -94,7 +94,7 @@ public class UpdateInterceptorService {
 			}
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
-			if (!slot.isInReserve()) {
+			if (slot.squadNullCheck() && !slot.isInReserve()) {
 				update(slot.getEvent());
 			}
 		} else if (entity instanceof User) {

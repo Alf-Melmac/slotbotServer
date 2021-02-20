@@ -462,7 +462,8 @@ public class Event extends AbstractIdEntity {
 	 * @param reserve reserve Squad
 	 */
 	private void adjustReserveSize(@NonNull Squad reserve) {
-		List<User> reserveUsers = reserve.getSlotList().stream().map(Slot::getUser).collect(Collectors.toList());
+		List<Slot> oldSlotList = reserve.getSlotList();
+		List<User> reserveUsers = oldSlotList.stream().map(Slot::getUser).filter(Objects::nonNull).collect(Collectors.toList());
 
 		//Reduce the reserve size so that all persons already slotted remain so
 		int newReserveSize = Math.max(getDesiredReserveSize(), reserveUsers.size());
@@ -477,12 +478,13 @@ public class Event extends AbstractIdEntity {
 					.name("Reserve " + (i + 1))
 					.squad(reserve)
 					.build();
-			if (i <= reserveUsers.size()) {
+			if (i <= reserveUsers.size() && !reserveUsers.isEmpty()) {
 				slot.setUser(reserveUsers.get(i));
 			}
 			newReserveSlots.add(slot);
 		}
-		reserve.setSlotList(newReserveSlots);
+		oldSlotList.clear();
+		oldSlotList.addAll(newReserveSlots); //Here, slotList must not be reset (reserve.setSlotList(newReserveSlots);). Since the original list must be preserved (https://stackoverflow.com/questions/5587482/hibernate-a-collection-with-cascade-all-delete-orphan-was-no-longer-referenc).
 	}
 
 	/**
