@@ -30,7 +30,7 @@ public class SwapRequest {
 	}
 
 	public static boolean containsRequester(User requester) {
-		return requests.stream().anyMatch(request -> request.getRequester().equals(requester));
+		return requests.stream().anyMatch(request -> request.getRequester().getId() == requester.getId());
 	}
 
 	public static boolean containsMessageId(long messageId) {
@@ -39,8 +39,8 @@ public class SwapRequest {
 
 	public static Optional<SwapRequest> findByRequesterAndRequested(User requester, User requestedSlotUser) {
 		return requests.stream()
-				.filter(swapRequest -> swapRequest.getRequester().equals(requester)
-						&& swapRequest.getRequestedSlotUser().equals(requestedSlotUser))
+				.filter(swapRequest -> swapRequest.getRequester().getId() == requester.getId()
+						&& swapRequest.getRequestedSlotUser().getId() == requestedSlotUser.getId())
 				.findAny();
 	}
 
