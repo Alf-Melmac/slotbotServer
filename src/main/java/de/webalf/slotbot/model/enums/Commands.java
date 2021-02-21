@@ -54,7 +54,8 @@ public class Commands {
 		HELP(Help.class),
 		VOTE(Vote.class),
 		POST_MESSAGE(PostMessage.class),
-		EDIT_MESSAGE(EditMessage.class);
+		EDIT_MESSAGE(EditMessage.class),
+		COPY_EMBED(CopyEmbed.class);
 
 		private final Class<?> command;
 	}

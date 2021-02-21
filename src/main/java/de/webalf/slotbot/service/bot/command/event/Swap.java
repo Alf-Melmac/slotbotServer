@@ -25,7 +25,7 @@ import static de.webalf.slotbot.constant.Emojis.THUMBS_UP;
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.SLOT;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.DiscordUserUtils.getPrivateChannel;
-import static de.webalf.slotbot.util.bot.MentionUtils.getUserId;
+import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
 
@@ -59,7 +59,7 @@ public class Swap implements DiscordCommand {
 
 		List<Slot> swapSlots;
 		if (isUserMention(arg)) {
-			swapSlots = eventBotService.findSwapSlots(channel, requesterId, getUserId(arg));
+			swapSlots = eventBotService.findSwapSlots(channel, requesterId, getId(arg));
 		} else if (onlyNumbers(arg)) {
 			swapSlots = eventBotService.findSwapSlots(channel, Integer.parseInt(arg), requesterId);
 		} else {

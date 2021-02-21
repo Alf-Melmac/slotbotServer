@@ -38,7 +38,7 @@ public class CommandEnumHelper {
 			Class<?>[] parameterTypes = declaredConstructor.getParameterTypes();
 
 			if (parameterTypes.length == 0) {
-				//Admin
+				//Admin, CopyEmbed, EditMessage, PostMessage, Vote
 				try {
 					constructor = declaredConstructor.newInstance();
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

@@ -16,7 +16,7 @@ import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.SLOT;
 import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
-import static de.webalf.slotbot.util.bot.MentionUtils.getUserId;
+import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
 
@@ -43,7 +43,7 @@ public class Unslot implements DiscordCommand {
 		} else { //Unslot others
 			final String secondArg = args.get(0);
 			final boolean isUserMention = isUserMention(secondArg);
-			final String userId = getUserId(secondArg);
+			final String userId = getId(secondArg);
 
 			if (isUserMention && message.getAuthor().getId().equals(userId)) { //Message author mentioned himself
 				selfUnslot(message);
