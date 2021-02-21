@@ -46,7 +46,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 						"/assets/**",   //JS, CSS, img files
 						"/download/*"   //Downloadable files
 				).permitAll()
-				.regexMatchers("^(/discord|/spenden){1}$").permitAll() //Redirects
+				.regexMatchers("^(/discord|/spenden|/wiki){1}$").permitAll() //Redirects
 				.antMatchers("/events/new", "/events/edit/*").hasAnyRole(PermissionHelper.getEventManageApplicationRolesNames())
 				.antMatchers("/admin/**").hasAnyRole(PermissionHelper.getAdministrativeRolesNames())
 
