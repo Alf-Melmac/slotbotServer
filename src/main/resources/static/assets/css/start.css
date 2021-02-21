@@ -28,3 +28,7 @@ section.bg-section {
 #loading-error-text {
   display: none;
 }
+
+.item .image {
+  min-height: 100%;
+}
