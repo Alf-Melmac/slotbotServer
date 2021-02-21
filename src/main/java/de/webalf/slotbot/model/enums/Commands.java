@@ -4,6 +4,7 @@ import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.command.event.*;
 import de.webalf.slotbot.service.bot.command.util.Admin;
 import de.webalf.slotbot.service.bot.command.util.Help;
+import de.webalf.slotbot.service.bot.command.util.Vote;
 import de.webalf.slotbot.util.bot.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,7 +53,8 @@ public class Commands {
 	@AllArgsConstructor
 	public enum Util implements CommandEnum {
 		ADMIN(Admin.class),
-		HELP(Help.class);
+		HELP(Help.class),
+		VOTE(Vote.class);
 
 		private final Class<?> command;
 	}
