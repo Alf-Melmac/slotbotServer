@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
 
+import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+
 /**
  * @author Alf
  * @since 01.01.2021
@@ -46,6 +48,7 @@ public class BotService {
 					.addEventListeners(
 							new MessageReceivedListener(discordProperties, commandEnumHelper),
 							new ReactionAddListener(reactionAddService))
+					.disableIntents(GUILD_BANS, GUILD_EMOJIS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING)
 					.build();
 		} catch (LoginException e) {
 			log.error("Failed to start discord bot", e);
