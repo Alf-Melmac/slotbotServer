@@ -12,7 +12,7 @@ import static de.webalf.slotbot.constant.Emojis.THUMBS_DOWN;
 import static de.webalf.slotbot.constant.Emojis.THUMBS_UP;
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
-import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDeleteOnlySend;
+import static de.webalf.slotbot.util.bot.MessageUtils.replyErrorMessage;
 
 /**
  * @author Alf
@@ -33,7 +33,7 @@ public class Vote implements DiscordCommand {
 		final MessageChannel channel = message.getChannel();
 		channel.addReactionById(messageId, THUMBS_UP).queue(unused ->
 						channel.addReactionById(messageId, THUMBS_DOWN).queue(),
-				failure -> replyAndDeleteOnlySend(message, failure.getMessage()));
+				replyErrorMessage(message));
 
 		deleteMessagesInstant(message);
 	}

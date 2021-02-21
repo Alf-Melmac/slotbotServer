@@ -213,4 +213,8 @@ public final class MessageUtils {
 				.map(Role::getByDiscordRole)
 				.collect(Collectors.toUnmodifiableSet());
 	}
+
+	public static Consumer<Throwable> replyErrorMessage(Message message) {
+		return failure -> replyAndDeleteOnlySend(message, failure.getMessage());
+	}
 }
