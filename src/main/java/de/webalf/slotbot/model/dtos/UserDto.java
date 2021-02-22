@@ -11,8 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class UserDto {
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.
-	@SuppressWarnings("FieldMayBeFinal") //Must be able to be set in order to use ReflectionUtils.shallowCopyFieldState
 	private String id;
 
-//	private final String steam64Id; //TODO add steamId
+	private String steamId64;
 }

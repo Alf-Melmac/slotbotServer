@@ -16,7 +16,7 @@ import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
  */
 @EqualsAndHashCode
 @Entity
-@Table(name = "discord_user", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})}, schema = "public")
+@Table(name = "discord_user", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "user_steam_id"})}, schema = "public")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
@@ -29,14 +29,18 @@ public class User {
 	//Workaround to ignore generated values
 	private long id;
 
+	@Column(name = "user_steam_id")
+	private Long steamId64;
+
 	@OneToMany(mappedBy = "user")
 	private Set<Slot> slots = new HashSet<>();
 
 	public static final long DEFAULT_USER_ID = 11111;
 
 	@Builder
-	public User(long id) {
+	public User(long id, Long steamId64) {
 		this.id = id;
+		this.steamId64 = steamId64;
 	}
 
 	public boolean isDefaultUser() {
