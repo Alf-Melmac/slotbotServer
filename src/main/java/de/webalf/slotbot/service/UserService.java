@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.UserNameDto;
 import de.webalf.slotbot.repository.UserRepository;
 import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,14 @@ public class UserService {
 	private User createUser(@NonNull UserDto userDto) {
 		User user = UserAssembler.fromDto(userDto);
 		return userRepository.save(user);
+	}
+
+	public User update(UserDto userDto) {
+		User user = find(LongUtils.parseLong(userDto.getId()));
+
+		DtoUtils.ifPresentParse(userDto.getSteamId64(), user::setSteamId64);
+
+		return user;
 	}
 
 	User find(UserDto userDto) {

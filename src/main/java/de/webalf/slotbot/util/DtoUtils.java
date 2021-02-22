@@ -40,6 +40,12 @@ public final class DtoUtils {
 		}
 	}
 
+	public static void ifPresentParse(String value, Consumer<Long> consumer) {
+		if (isPresent((Object) value)) {
+			consumer.accept(LongUtils.parseLong(value));
+		}
+	}
+
 	public static void ifPresent(int value, Consumer<Integer> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);

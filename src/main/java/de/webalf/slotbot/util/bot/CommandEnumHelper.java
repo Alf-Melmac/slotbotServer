@@ -3,6 +3,7 @@ package de.webalf.slotbot.util.bot;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
+import de.webalf.slotbot.service.bot.UserBotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 public class CommandEnumHelper {
 	private final EventBotService eventBotService;
 	private final SlotBotService slotBotService;
+	private final UserBotService userBotService;
 	private final DiscordProperties discordProperties;
 
 	/**
@@ -50,21 +52,28 @@ public class CommandEnumHelper {
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventService parameter for type {}", enumCommand.getName(), e);
+					log.error("Failed to create new constructor instance with EventBotService parameter for type {}", enumCommand.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{DiscordProperties.class})) {
 				//Help
 				try {
 					constructor = declaredConstructor.newInstance(discordProperties);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventService parameter for type {}", enumCommand.getName(), e);
+					log.error("Failed to create new constructor instance with DiscordProperties parameter for type {}", enumCommand.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, SlotBotService.class})) {
 				//Swap
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService, slotBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventService and SlotBotService parameter for type {}", enumCommand.getName(), e);
+					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for type {}", enumCommand.getName(), e);
+				}
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{UserBotService.class})) {
+				//SetSteamId
+				try {
+					constructor = declaredConstructor.newInstance(userBotService);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					log.error("Failed to create new constructor instance with UserBotService parameter for type {}", enumCommand.getName(), e);
 				}
 			}
 		}

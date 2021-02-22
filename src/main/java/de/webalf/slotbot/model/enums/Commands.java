@@ -53,6 +53,7 @@ public class Commands {
 		ADMIN(Admin.class),
 		HELP(Help.class),
 		VOTE(Vote.class),
+		SET_STEAM_ID(SetSteamId.class),
 		POST_MESSAGE(PostMessage.class),
 		EDIT_MESSAGE(EditMessage.class),
 		COPY_EMBED(CopyEmbed.class);
