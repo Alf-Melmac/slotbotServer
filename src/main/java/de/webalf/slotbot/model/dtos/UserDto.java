@@ -1,20 +1,18 @@
 package de.webalf.slotbot.model.dtos;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 /**
  * @author Alf
  * @since 07.09.2020
  */
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Data
 @SuperBuilder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDto {
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.
+	@SuppressWarnings("FieldMayBeFinal") //Must be able to be set in order to use ReflectionUtils.shallowCopyFieldState
 	private String id;
+
+//	private final String steam64Id; //TODO add steamId
 }

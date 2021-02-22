@@ -6,9 +6,13 @@ import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.model.dtos.api.EventApiViewDto;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.LongUtils;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
@@ -22,12 +26,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @since 04.11.2020
  */
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public final class EventApiAssembler {
-	public static EventApiDto toDto(Event event) {
+	private final SquadApiAssembler squadApiAssembler;
+
+	public static EventApiDto toDto(@NonNull Event event) {
 		LocalDateTime dateTime = event.getDateTime();
 
 		return EventApiDto.builder()
-				.url(linkTo(methodOn(EventWebController.class).getEventDetailsHtml(event.getId())).toUri().toString())
+				.url(getUrl(event.getId()))
 				.id(event.getId())
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
@@ -60,5 +67,19 @@ public final class EventApiAssembler {
 		EventRecipientApiDto eventRecipientApiDto = EventRecipientApiDto.builder().recipient(UserAssembler.toDto(recipient)).build();
 		ReflectionUtils.shallowCopyFieldState(toDto(event), eventRecipientApiDto);
 		return eventRecipientApiDto;
+	}
+
+	public EventApiViewDto toViewDto(Event event) {
+		return EventApiViewDto.builder()
+				.id(event.getId())
+				.name(event.getName())
+				.dateTime(event.getDateTime())
+				.squadList(squadApiAssembler.toViewDtoList(event.getSquadList()))
+				.url(getUrl(event.getId()))
+				.build();
+	}
+
+	private static String getUrl(long eventId) {
+		return linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString();
 	}
 }

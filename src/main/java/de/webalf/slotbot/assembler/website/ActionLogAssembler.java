@@ -27,7 +27,7 @@ public class ActionLogAssembler implements RepresentationModelAssembler<ActionLo
 	@Override
 	public ActionLogDto toModel(ActionLog log) {
 		ActionLogDto logDto = ActionLogDto.builder()
-				.user(userService.getUserNameDto(log.getUser()))
+				.user(userService.toUserNameDto(log.getUser()))
 				.action(log.getAction())
 				.timeLeft(log.getTimeGapString())
 				.build();
@@ -42,7 +42,7 @@ public class ActionLogAssembler implements RepresentationModelAssembler<ActionLo
 	}
 
 	private void setEventAttributes(ActionLogDto logDto, long eventId) {
-		Event event = eventService.findById(eventId);
+		final Event event = eventService.findById(eventId);
 		logDto.setObjectName(event.getName());
 		logDto.setObjectUrl(linkTo(methodOn(EventWebController.class).getEventDetailsHtml(event.getId())).toUri().toString());
 	}

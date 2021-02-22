@@ -12,8 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * @author Alf
@@ -32,16 +31,24 @@ public class UserService {
 	}
 
 	User find(UserDto userDto) {
-		Optional<User> userOptional = userRepository.findById(LongUtils.parseLong(userDto.getId()));
-		return userOptional.orElseGet(() -> createUser(userDto));
+		return userRepository.findById(LongUtils.parseLong(userDto.getId()))
+				.orElseGet(() -> createUser(userDto));
 	}
 
 	User find(long id) {
-		return userRepository.findById(id).orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
+		return userRepository.findById(id)
+				.orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
 	}
 
-	public UserNameDto getUserNameDto(User user) {
-		String userIdString = LongUtils.toString(user.getId());
-		return UserNameDto.builder().id(userIdString).name(discordApiService.getName(userIdString)).build();
+	public UserNameDto toUserNameDto(User user) {
+		if (user == null || user.isDefaultUser()) {
+			return null;
+		}
+
+		final String userId = LongUtils.toString(user.getId());
+		final UserNameDto userNameDto = UserNameDto.builder().name(discordApiService.getName(userId)).build();
+
+		ReflectionUtils.shallowCopyFieldState(UserAssembler.toDto(user), userNameDto);
+		return userNameDto;
 	}
 }
