@@ -43,6 +43,7 @@
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<classindex.version>3.10</classindex.version>
 		<jda.version>4.2.0_168</jda.version>
+		<google-auth-library-oauth2-http.version>0.24.1</google-auth-library-oauth2-http.version>
 	</properties>
 
 	<dependencies>
@@ -173,6 +174,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.auth</groupId>
+			<artifactId>google-auth-library-oauth2-http</artifactId>
+			<version>${google-auth-library-oauth2-http.version}</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

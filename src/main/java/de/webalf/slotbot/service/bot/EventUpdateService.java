@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.service.external.OptUpdateService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.NonNull;
@@ -28,6 +29,7 @@ import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 public class EventUpdateService {
 	private final BotService botService;
 	private final MessageHelper messageHelper;
+	private final OptUpdateService optUpdateService;
 
 	public void update(@NonNull Event event) throws IllegalStateException {
 		log.trace("Update");
@@ -50,6 +52,10 @@ public class EventUpdateService {
 		} else if (previousUser != null && !previousUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
 		}
+
+//		if (event.getCreator().equals("OPT")) {
+			optUpdateService.sendUpdate(event);
+//		}
 	}
 
 	/**

@@ -2,6 +2,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 application.properties
+serviceAccountKey.json
 logs/
 
 ### STS ###
