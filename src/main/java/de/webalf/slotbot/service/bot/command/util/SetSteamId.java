@@ -24,7 +24,8 @@ import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 		description = "Setzt die eigene Steam-ID. Diese wird für Anbindungen an andere Systeme verwendet.",
 		usage = "<steamId64>",
 		argCount = {1},
-		authorization = NONE)
+		authorization = NONE,
+		dmAllowed = true)
 public class SetSteamId implements DiscordCommand {
 	private final UserBotService userBotService;
 
