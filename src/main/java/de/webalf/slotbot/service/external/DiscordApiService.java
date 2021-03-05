@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.external;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.PermissionHelper;
@@ -39,19 +40,14 @@ public class DiscordApiService {
 
 	private List<Role> roles = new ArrayList<>();
 
-	/**
-	 * Returns the role name that should be used for the given discord User
-	 *
-	 * @param userId user to get role for
-	 * @return authorization role name
-	 */
-	@Cacheable("highestDiscordRole")
-	public String getRole(String userId) {
-		GuildMember member = getGuildMemberWithUser(userId);
-		log.info("Login of: [" + userId + "] " + member.getUser().getUsername());
+	@Cacheable("discordRoles")
+	public Set<String> getRoles(User user) {
+		final GuildMember member = getGuildMemberWithUser(Long.toString(user.getId()));
+		log.info("Login of: [" + user.getId() + "] " + member.getUser().getUsername());
 
-		Role highestRole = getHighestRole(member.getRoles());
-		return "ROLE_" + getRoleName(highestRole);
+		return getRoles(member.getRoles()).stream()
+				.map(role -> "ROLE_" + getApplicationRoleName(role))
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**
@@ -125,13 +121,31 @@ public class DiscordApiService {
 	}
 
 	/**
-	 * Returns the role with the highest position
+	 * Returns the matching {@link Role}s for the given role ids
 	 *
-	 * @param roleIds set of roles to check
-	 * @return {@link Role} with highest position or role with name USER
+	 * @param roleIds to get role objects for
+	 * @return set of matching roles
+	 */
+	private Set<Role> getRoles(Set<Long> roleIds) {
+		if (!SetUtils.isEmpty(roleIds)) {
+			fillRoles();
+
+			final Set<Role> roleSet = roles.stream()
+					.filter(role -> roleIds.contains(role.getId()))
+					.collect(Collectors.toUnmodifiableSet());
+
+			if (!SetUtils.isEmpty(roleSet)) {
+				return roleSet;
+			}
+		}
+
+		return Collections.singleton(Role.builder().name("USER").build());
+	}
+
+	/**
 	 * @see <a href="https://discord.com/developers/docs/resources/guild#get-guild-roles" target="_top">https://discord.com/developers/docs/resources/guild#get-guild-roles</a>
 	 */
-	private Role getHighestRole(Set<Long> roleIds) {
+	private void fillRoles() {
 		if (ListUtils.isEmpty(roles)) {
 			String url = "/guilds/" + discordProperties.getGuild() + "/roles";
 
@@ -143,22 +157,16 @@ public class DiscordApiService {
 					.filter(role -> KNOWN_ROLE_NAMES.contains(role.getName()))
 					.collect(Collectors.toList());
 		}
-
-		Role userRole = Role.builder().name("USER").build();
-		if (SetUtils.isEmpty(roleIds)) {
-			return userRole;
-		}
-		return roles.stream().filter(role -> roleIds.contains(role.getId())).findFirst().orElse(userRole);
 	}
 
 	/**
 	 * Return a string that fits to the given role. This string may be used for authorization
 	 *
-	 * @param role to map the name for
+	 * @param discordRole to map the name for
 	 * @return role name corresponding to the given role
 	 */
-	private static String getRoleName(@NonNull Role role) {
-		final PermissionHelper.Role roleEnum = getByDiscordRole(role.getName());
+	private static String getApplicationRoleName(@NonNull Role discordRole) {
+		final PermissionHelper.Role roleEnum = getByDiscordRole(discordRole.getName());
 		return roleEnum != null ? roleEnum.getApplicationRole() : PermissionHelper.Role.EVERYONE.getApplicationRole();
 	}
 
@@ -171,10 +179,12 @@ public class DiscordApiService {
 
 	@Getter
 	@Setter
-	private static class User {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class User {
 		private long id;
 		private String username;
 		private String avatar;
+		private String locale;
 	}
 
 	@Getter
