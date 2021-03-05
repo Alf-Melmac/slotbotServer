@@ -119,7 +119,7 @@ public final class MessageUtils {
 	}
 
 	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<Message> success) {
-		message.getChannel().sendMessage(message.getAuthor().getAsMention() + " " + reply).queue(success, fail -> log.warn("Failed to send reply", fail));
+		message.reply(reply).queue(success, fail -> log.warn("Failed to send reply", fail));
 	}
 
 	/**
