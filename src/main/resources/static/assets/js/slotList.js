@@ -69,8 +69,7 @@ $(function () {
         const slotNumbers = getSlotNumbers().sort((a, b) => a - b);
         let slotNumber = 1;
 
-        for (let i = 0; i < slotNumbers.length; i++) {
-            const currentNumber = slotNumbers[i];
+        for (const currentNumber of slotNumbers) {
             while (slotNumber < currentNumber) {
                 if (slotNumber !== currentNumber) {
                     return slotNumber;
