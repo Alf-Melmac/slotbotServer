@@ -171,7 +171,7 @@ public final class MessageUtils {
 	 * @param user        to send private message to
 	 * @param messageText text to send
 	 */
-	static void sendDm(@NonNull User user, @NotBlank String messageText) {
+	public static void sendDm(@NonNull User user, @NotBlank String messageText) {
 		final Consumer<? super Throwable> failure = fail -> dmFailure(user, doNothing(), false, fail);
 
 		sendDm(user, messageText, doNothing(), failure);

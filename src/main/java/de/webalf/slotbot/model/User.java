@@ -54,6 +54,4 @@ public class User {
 				.map(Event::getDateTime)
 				.filter(dateTime -> dateTime.isBefore(LocalDateTime.now())).min(getLocalDateTimeComparator());
 	}
-
-
 }

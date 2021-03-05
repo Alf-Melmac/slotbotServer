@@ -44,7 +44,7 @@ public class UserService {
 				.orElseGet(() -> createUser(userDto));
 	}
 
-	User find(long id) {
+	public User find(long id) {
 		return userRepository.findById(id)
 				.orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
 	}

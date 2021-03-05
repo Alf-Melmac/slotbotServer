@@ -69,7 +69,7 @@ public class CommandEnumHelper {
 					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for type {}", enumCommand.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{UserBotService.class})) {
-				//SetSteamId
+				//SteamId
 				try {
 					constructor = declaredConstructor.newInstance(userBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
