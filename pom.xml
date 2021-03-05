@@ -33,16 +33,16 @@
 
 		<!--Versions-->
 		<java.version>11</java.version>
-		<springframework.boot.version>2.3.3.RELEASE</springframework.boot.version>
-		<springframework.security.version>5.4.0</springframework.security.version>
+		<springframework.boot.version>2.4.3</springframework.boot.version>
+		<springframework.security.version>5.4.5</springframework.security.version>
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
-		<hibernate.version>5.4.18.Final</hibernate.version>
-		<postgresql.version>42.2.15</postgresql.version>
-		<mysql.version>8.0.21</mysql.version>
-		<lombok.version>1.18.12</lombok.version>
+		<hibernate.version>5.4.29.Final</hibernate.version>
+		<postgresql.version>42.2.19</postgresql.version>
+		<mysql.version>8.0.23</mysql.version>
+		<lombok.version>1.18.16</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<classindex.version>3.10</classindex.version>
-		<jda.version>4.2.0_168</jda.version>
+		<jda.version>4.2.0_232</jda.version>
 	</properties>
 
 	<dependencies>
@@ -145,7 +145,7 @@
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
-			<version>${javax-validation.version}</version>
+			<version>${javax.validation.version}</version>
 		</dependency>
 
 		<!--Compilation-->
