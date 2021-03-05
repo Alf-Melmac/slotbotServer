@@ -10,11 +10,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_CREATOR;
 
 /**
  * @author Alf
@@ -34,17 +37,20 @@ public class EventController {
 	}
 
 	@PostMapping
+	@PreAuthorize(HAS_ROLE_CREATOR)
 	public EventDto postEvent(@Valid @RequestBody EventDto event) {
 		return EventAssembler.toDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
+	@PreAuthorize(HAS_ROLE_CREATOR)
 	public EventDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		event.setId(eventId);
 		return EventAssembler.toDto(eventService.updateEvent(event));
 	}
 
 	@PostMapping("/editable")
+	@PreAuthorize(HAS_ROLE_CREATOR)
 	public EventDto updateEventEditable(long pk, String name, String value) {
 		EventDto dto = EventDto.builder().id(pk).build();
 		try {

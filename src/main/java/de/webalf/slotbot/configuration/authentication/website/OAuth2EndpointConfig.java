@@ -1,13 +1,13 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.util.PermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,6 +29,7 @@ import java.util.Objects;
  */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 	private final DiscordApiService discordApiService;
@@ -39,23 +40,8 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				//FIXME: This needs to be changed in future. Currently this allows the frontend to use backend endpoints
 				.csrf().disable()
 
-				.authorizeRequests()
-				// allow assets and startPage to be accessed by every user
-				.antMatchers("/",
-						"/error/404",
-						"/assets/**",   //JS, CSS, img files
-						"/download/*"   //Downloadable files
-				).permitAll()
-				.regexMatchers("^(/discord|/spenden|/wiki){1}$").permitAll() //Redirects
-				.antMatchers("/events/new", "/events/edit/*").hasAnyRole(PermissionHelper.getEventManageApplicationRolesNames())
-				.antMatchers("/admin/**").hasAnyRole(PermissionHelper.getAdministrativeRolesNames())
-
-				// all other requests must be authenticated
-				.anyRequest().authenticated()
-				.and()
-
 				.oauth2Login()
-				.loginPage("/login").permitAll()
+				.loginPage("/login")
 				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
 				.and()
 				.userInfoEndpoint().userService(oAuthUserService());

@@ -7,12 +7,15 @@ import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.PermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_CREATOR;
+import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_EVERYONE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -48,6 +51,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/new")
+	@PreAuthorize(HAS_ROLE_CREATOR)
 	public ModelAndView getWizardHtml() {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
@@ -62,6 +66,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
@@ -74,6 +79,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/edit/{id}")
+	@PreAuthorize(HAS_ROLE_CREATOR)
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventEdit");
 

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDateTime;
 
 import static de.webalf.slotbot.controller.Urls.ADMIN;
+import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -28,6 +30,7 @@ public class AdminWebController {
 	private final ExternalServerService externalServerService;
 
 	@GetMapping
+	@PreAuthorize(HAS_ROLE_ADMIN)
 	public ModelAndView getAdminHtml() {
 		ModelAndView mav = new ModelAndView("admin");
 
@@ -46,6 +49,7 @@ public class AdminWebController {
 	}
 
 	@PostMapping("/server/{online}")
+	@PreAuthorize(HAS_ROLE_ADMIN)
 	public ResponseEntity<Void> postServerToggle(@PathVariable(value = "online") boolean online,
 												 @RequestBody String serverIp) {
 		externalServerService.toggleServer(battlemetricsApiService.findIdentifierByFullIp(serverIp), !online);

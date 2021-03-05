@@ -31,12 +31,13 @@ import static de.webalf.slotbot.util.PermissionHelper.Role.getByDiscordRole;
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
+	public static final String ROLE_SERVER_ADMIN = "Server Admin";
 	public static final String ROLE_ADMINISTRATOR = "Administrator";
 	public static final String ROLE_MODERATOR = "Moderator";
 	public static final String ROLE_CREATOR = "Creator";
 	public static final String ROLE_ARMA = "ArmA";
 	public static final String ROLE_EVERYONE = "@everyone";
-	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_ADMINISTRATOR, ROLE_MODERATOR, ROLE_CREATOR, ROLE_ARMA, ROLE_EVERYONE);
+	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_SERVER_ADMIN, ROLE_ADMINISTRATOR, ROLE_MODERATOR, ROLE_CREATOR, ROLE_ARMA, ROLE_EVERYONE);
 
 	private List<Role> roles = new ArrayList<>();
 

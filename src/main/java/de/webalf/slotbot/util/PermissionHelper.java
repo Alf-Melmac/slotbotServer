@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.webalf.slotbot.service.external.DiscordApiService.*;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.ADMINISTRATIVE;
 import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
 import static de.webalf.slotbot.util.PermissionHelper.Role.*;
 import static de.webalf.slotbot.util.bot.MessageUtils.getKnownRoles;
@@ -26,19 +25,40 @@ import static de.webalf.slotbot.util.bot.MessageUtils.getKnownRoles;
 public final class PermissionHelper {
 	private static final String ROLE_PREFIX = "ROLE_";
 
+	private static final String HAS_ROLE = "hasRole('";
+	private static final String HAS_ANY_ROLE = "hasAnyRole('";
+	private static final String HAS_ANY_ROLE_NEXT = "', '";
+	private static final String HAS_ROLE_CLOSE = "')";
+
+	public static final String ADMINISTRATIVE_ROLES = ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + PermissionHelper.Role.ApplicationRoles.ADMIN + HAS_ANY_ROLE_NEXT + PermissionHelper.Role.ApplicationRoles.MOD;
+	public static final String HAS_ROLE_ADMIN = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ROLE_CLOSE;
+	public static final String HAS_ROLE_CREATOR = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + PermissionHelper.Role.ApplicationRoles.CREATOR + HAS_ROLE_CLOSE;
+	public static final String HAS_ROLE_ARMA = HAS_ROLE + ROLE_PREFIX + ApplicationRoles.ARMA + HAS_ROLE_CLOSE;
+	public static final String HAS_ROLE_EVERYONE = "isAuthenticated()"; //Isn't anonymous (logged in)
+
 	@Getter
 	@AllArgsConstructor
 	public enum Role {
-		ADMINISTRATOR(ROLE_ADMINISTRATOR, "ADMIN"),
-		MODERATOR(ROLE_MODERATOR, "MOD"),
-		CREATOR(ROLE_CREATOR, "CREATOR"),
-		ARMA(ROLE_ARMA, "ARMA"),
-		EVERYONE(ROLE_EVERYONE, "USER");
+		SERVER_ADMIN(ROLE_SERVER_ADMIN, ApplicationRoles.SYS_ADMIN),
+		ADMINISTRATOR(ROLE_ADMINISTRATOR, ApplicationRoles.ADMIN),
+		MODERATOR(ROLE_MODERATOR, ApplicationRoles.MOD),
+		CREATOR(ROLE_CREATOR, ApplicationRoles.CREATOR),
+		ARMA(ROLE_ARMA, ApplicationRoles.ARMA),
+		EVERYONE(ROLE_EVERYONE, ApplicationRoles.USER);
 
 		@NotBlank
 		private final String discordRole;
 		@NotBlank
 		private final String applicationRole;
+
+		public static final class ApplicationRoles {
+			public static final String SYS_ADMIN = "SYS_ADMIN";
+			public static final String ADMIN = "ADMIN";
+			public static final String MOD = "MOD";
+			public static final String CREATOR = "CREATOR";
+			public static final String ARMA = "ARMA";
+			public static final String USER = "USER";
+		}
 
 		private static final Map<String, Role> DISCORD_ROLE_VALUES;
 		private static final Map<String, Role> APPLICATION_ROLE_VALUES;
@@ -68,35 +88,13 @@ public final class PermissionHelper {
 	@Getter
 	@AllArgsConstructor
 	public enum Authorization {
-		ADMINISTRATIVE(new Role[]{ADMINISTRATOR, MODERATOR}),
+		ADMINISTRATIVE(new Role[]{SERVER_ADMIN, ADMINISTRATOR, MODERATOR}),
 		EVENT_MANAGE(Stream.concat(Arrays.stream(ADMINISTRATIVE.getRoles()), Stream.of(Role.CREATOR)).toArray(Role[]::new)),
 		SLOT(new Role[]{Role.ARMA}),
 		NONE(new Role[]{EVERYONE});
 
 		@NonNull
 		private final Role[] roles;
-	}
-
-	/**
-	 * Application role names that are allowed to perform administrative functions
-	 *
-	 * @return array of allowed role names
-	 */
-	public static String[] getAdministrativeRolesNames() {
-		return getApplicationRolesNames(ADMINISTRATIVE.getRoles());
-	}
-
-	/**
-	 * Application role names that are allowed to manage events
-	 *
-	 * @return array of allowed role names
-	 */
-	public static String[] getEventManageApplicationRolesNames() {
-		return getApplicationRolesNames(EVENT_MANAGE.getRoles());
-	}
-
-	private static String[] getApplicationRolesNames(Role[] roles) {
-		return Arrays.stream(roles).map(Role::getApplicationRole).toArray(String[]::new);
 	}
 
 	/**
@@ -122,7 +120,7 @@ public final class PermissionHelper {
 	 * Checks if the message author has any of the authorized roles
 	 *
 	 * @param authorization Needed authorization
-	 * @param message of the person that needs to be checked
+	 * @param message       of the person that needs to be checked
 	 * @return true if authorized
 	 */
 	public static boolean isAuthorized(@NonNull Authorization authorization, Message message) {
