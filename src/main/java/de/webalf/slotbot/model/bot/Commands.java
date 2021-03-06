@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.enums;
+package de.webalf.slotbot.model.bot;
 
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.service.bot.command.event.*;

@@ -2,8 +2,8 @@ package de.webalf.slotbot.service.bot.command.util;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.model.enums.Commands;
-import de.webalf.slotbot.model.enums.Commands.CommandEnum;
+import de.webalf.slotbot.model.bot.Commands;
+import de.webalf.slotbot.model.bot.Commands.CommandEnum;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.RequiredArgsConstructor;
