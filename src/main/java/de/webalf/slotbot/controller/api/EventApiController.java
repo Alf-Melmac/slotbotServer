@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static de.webalf.slotbot.controller.Urls.API;
+import static de.webalf.slotbot.constant.Urls.API;
 
 /**
  * @author Alf

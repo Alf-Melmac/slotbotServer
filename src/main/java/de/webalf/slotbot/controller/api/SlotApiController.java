@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static de.webalf.slotbot.controller.Urls.API;
+import static de.webalf.slotbot.constant.Urls.API;
 
 /**
  * @author Alf

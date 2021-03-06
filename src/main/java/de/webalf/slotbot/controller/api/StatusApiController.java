@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static de.webalf.slotbot.controller.Urls.API;
+import static de.webalf.slotbot.constant.Urls.API;
 
 /**
  * @author Alf

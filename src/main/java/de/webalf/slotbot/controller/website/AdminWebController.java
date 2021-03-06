@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
 
-import static de.webalf.slotbot.controller.Urls.ADMIN;
+import static de.webalf.slotbot.constant.Urls.ADMIN;
 import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

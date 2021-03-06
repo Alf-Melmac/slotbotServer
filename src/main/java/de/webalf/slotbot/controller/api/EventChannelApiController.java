@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static de.webalf.slotbot.controller.Urls.API;
+import static de.webalf.slotbot.constant.Urls.API;
 
 /**
  * Every action that can be performed in an event in a channel

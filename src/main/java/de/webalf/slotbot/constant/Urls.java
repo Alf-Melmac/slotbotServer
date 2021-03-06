@@ -1,4 +1,4 @@
-package de.webalf.slotbot.controller;
+package de.webalf.slotbot.constant;
 
 import lombok.Value;
 
