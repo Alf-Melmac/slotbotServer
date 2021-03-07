@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.util.ListUtils.zeroArguments;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
 /**
  * @author Alf

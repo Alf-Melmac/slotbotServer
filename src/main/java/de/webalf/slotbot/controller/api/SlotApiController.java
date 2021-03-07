@@ -7,6 +7,7 @@ import de.webalf.slotbot.service.SlotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static de.webalf.slotbot.constant.Urls.API;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_WRITE_PERMISSION;
 
 /**
  * @author Alf
@@ -28,6 +30,7 @@ public class SlotApiController {
 	private final SlotService slotService;
 
 	@PutMapping("/swap")
+	@PreAuthorize(HAS_WRITE_PERMISSION)
 	public EventDto putSwap(@RequestBody List<SlotDto> slots) {
 		return EventAssembler.toDto(slotService.swap(slots));
 	}

@@ -15,8 +15,8 @@ import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
-import de.webalf.slotbot.util.PermissionHelper;
 import de.webalf.slotbot.util.StringUtils;
+import de.webalf.slotbot.util.permissions.BotPermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ public class EventService {
 	 * @return all events in given period
 	 */
 	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
-		if (PermissionHelper.hasEventManageRole()) {
+		if (BotPermissionHelper.hasEventManageRole()) {
 			return eventRepository.findAllByDateTimeBetween(start, end);
 		}
 		return eventRepository.findAllByDateTimeBetweenAndHiddenFalse(start, end);
@@ -209,9 +209,9 @@ public class EventService {
 	/**
 	 * Searches for the given channel the matching event and renames the squad by position.
 	 *
-	 * @param channel    event channel
+	 * @param channel       event channel
 	 * @param squadPosition to edit name of
-	 * @param slotName   new name
+	 * @param slotName      new name
 	 * @return event in which the slot has been renamed
 	 */
 	public Event renameSquad(long channel, int squadPosition, String slotName) {
@@ -223,9 +223,9 @@ public class EventService {
 	/**
 	 * Searches for the given channel the matching event and adds the given slot to the squad found by squadPosition.
 	 *
-	 * @param channel     event channel
+	 * @param channel       event channel
 	 * @param squadPosition Counted, starting by 0
-	 * @param slotDto     slot to add
+	 * @param slotDto       slot to add
 	 * @return event in which the slot has been added
 	 */
 	public Event addSlot(long channel, int squadPosition, SlotDto slotDto) {

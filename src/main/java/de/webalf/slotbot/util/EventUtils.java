@@ -1,7 +1,11 @@
 package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.controller.website.DownloadController;
+import de.webalf.slotbot.exception.ForbiddenException;
+import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.util.permissions.ApiPermissionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,6 +28,30 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @UtilityClass
 public final class EventUtils {
+	/**
+	 * Checks if the event, if hidden, is allowed to be read. Permission check is made by {@link ApiPermissionHelper#hasReadPermission()}.
+	 *
+	 * @param eventDto event to check
+	 * @throws ForbiddenException if the event is hidden and read permission is not given
+	 */
+	public static void assertApiAccessAllowed(@NonNull EventDto eventDto) throws ForbiddenException {
+		final Boolean hidden = eventDto.getHidden();
+		if (hidden != null && hidden && !ApiPermissionHelper.hasReadPermission()) {
+			throw new ForbiddenException("Access Denied");
+		}
+	}
+
+	/**
+	 * Works just like {@link #assertApiAccessAllowed(EventDto)} but expects a {@link Event} object
+	 *
+	 * @see #assertApiAccessAllowed(EventDto)
+	 */
+	public static void assertApiAccessAllowed(@NonNull Event event) throws ForbiddenException {
+		if (event.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
+			throw new ForbiddenException("Access Denied");
+		}
+	}
+
 	/**
 	 * Combines the two given parameters to one string that can be shown
 	 *

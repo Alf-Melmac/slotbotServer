@@ -36,14 +36,6 @@ public class ApiEndpointConfig extends WebSecurityConfigurerAdapter {
 				.requestMatchers().antMatchers(API + "/**")
 				.and()
 
-				// status endpoint can be accessed without authentication
-				.authorizeRequests()
-				.antMatchers(API + "/status").permitAll()
-
-				// all other requests must be authenticated
-				.anyRequest().fullyAuthenticated()
-				.and()
-
 				// disable Cross Site Request Forgery token
 				// we do not rely on cookie based auth and are completely stateless so we are safe
 				.csrf().disable()

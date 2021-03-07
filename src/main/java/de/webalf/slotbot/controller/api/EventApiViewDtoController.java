@@ -8,12 +8,15 @@ import de.webalf.slotbot.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static de.webalf.slotbot.constant.Urls.API;
+import static de.webalf.slotbot.util.EventUtils.assertApiAccessAllowed;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_READ_PUBLIC_PERMISSION;
 
 /**
  * @author Alf
@@ -28,9 +31,13 @@ public class EventApiViewDtoController {
 	private final EventApiAssembler eventApiAssembler;
 
 	@GetMapping("/{id}")
+	@PreAuthorize(HAS_READ_PUBLIC_PERMISSION)
 	public EventApiViewDto getEventById(@PathVariable(value = "id") long eventId) {
 		log.trace("getEventById: " + eventId);
 		final Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
+
+		assertApiAccessAllowed(event);
+
 		return eventApiAssembler.toViewDto(event);
 	}
 }

@@ -22,12 +22,12 @@ import java.util.Set;
 
 import static de.webalf.slotbot.constant.Emojis.THUMBS_DOWN;
 import static de.webalf.slotbot.constant.Emojis.THUMBS_UP;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.SLOT;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.DiscordUserUtils.getPrivateChannel;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SLOT;
 
 /**
  * @author Alf

@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_CREATOR;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
 
 /**
  * @author Alf

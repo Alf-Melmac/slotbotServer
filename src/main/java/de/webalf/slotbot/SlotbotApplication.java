@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 /**
  * @author Alf
@@ -15,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication
 @EnableCaching
 @ConfigurationPropertiesScan("de.webalf.slotbot.configuration.properties")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SlotbotApplication {
 
 	public static void main(String[] args) {

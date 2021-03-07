@@ -38,7 +38,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			return oAuth2User;
 		}
 
-		final Set<GrantedAuthority> mappedAuthorities = mapAuthorities(attributes, discordUser, oAuth2User.getAuthorities());
+		final Collection<? extends GrantedAuthority> mappedAuthorities = mapAuthorities(attributes, discordUser, oAuth2User.getAuthorities());
 		oAuth2User = new DefaultOAuth2User(mappedAuthorities, attributes, "username");
 
 		return oAuth2User;

@@ -13,14 +13,14 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static de.webalf.slotbot.util.ListUtils.oneArgument;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.SLOT;
-import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SLOT;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
 
 /**
  * @author Alf

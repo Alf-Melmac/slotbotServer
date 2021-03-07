@@ -1,5 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.api;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,9 @@ import java.util.Collection;
  */
 @Component
 @NoArgsConstructor
+@AllArgsConstructor
 public class SlotbotAuthentication implements Authentication {
+	private static final long serialVersionUID = 7753355760596674581L;
 	@Getter
 	private String credentials;
 	@Getter

@@ -1,6 +1,6 @@
 package de.webalf.slotbot.model.annotations;
 
-import de.webalf.slotbot.util.PermissionHelper.Authorization;
+import de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization;
 import org.atteo.classindex.IndexAnnotated;
 
 import java.lang.annotation.ElementType;

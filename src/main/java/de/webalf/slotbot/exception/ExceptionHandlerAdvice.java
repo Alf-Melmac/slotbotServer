@@ -4,6 +4,7 @@ import de.webalf.slotbot.util.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,10 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(value = {ResourceNotFoundException.class, BusinessRuntimeException.class, ForbiddenException.class})
+	@ExceptionHandler(value = {ResourceNotFoundException.class, BusinessRuntimeException.class, ForbiddenException.class,
+			BadCredentialsException.class})
 	protected ResponseEntity<?> handleConflict(RuntimeException ex, HttpServletRequest request) {
-//		logger.warn("Exception:", ex);
-
 		return new ResponseEntity<>(
 				ExceptionResponse.builder()
 						.errorMessage(determineErrorMessage(ex))
@@ -58,6 +58,10 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 	 * @return annotated Status or HttpStatus.INTERNAL_SERVER_ERROR
 	 */
 	private HttpStatus determineHttpStatus(Exception e) {
+		if (e instanceof BadCredentialsException) {
+			return HttpStatus.UNAUTHORIZED;
+		}
+
 		ResponseStatus responseStatusAnnotation = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
 		if (responseStatusAnnotation != null) {
 			return responseStatusAnnotation.value();

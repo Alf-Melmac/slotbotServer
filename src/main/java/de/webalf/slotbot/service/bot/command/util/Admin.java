@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.ADMINISTRATIVE;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.ADMINISTRATIVE;
 
 /**
  * @author Alf

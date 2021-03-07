@@ -3,7 +3,7 @@ package de.webalf.slotbot.service.external;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.util.LongUtils;
-import de.webalf.slotbot.util.PermissionHelper;
+import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.util.PermissionHelper.Role.getByDiscordRole;
+import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.getByDiscordRole;
 
 /**
  * @author Alf
@@ -47,7 +48,7 @@ public class DiscordApiService {
 		log.info("Login of: [" + user.getId() + "] " + member.getUser().getUsername());
 
 		return getRoles(member.getRoles()).stream()
-				.map(role -> "ROLE_" + getApplicationRoleName(role))
+				.map(role -> ROLE_PREFIX + getApplicationRoleName(role))
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
@@ -167,8 +168,8 @@ public class DiscordApiService {
 	 * @return role name corresponding to the given role
 	 */
 	private static String getApplicationRoleName(@NonNull Role discordRole) {
-		final PermissionHelper.Role roleEnum = getByDiscordRole(discordRole.getName());
-		return roleEnum != null ? roleEnum.getApplicationRole() : PermissionHelper.Role.EVERYONE.getApplicationRole();
+		final ApplicationPermissionHelper.Role roleEnum = getByDiscordRole(discordRole.getName());
+		return roleEnum != null ? roleEnum.getApplicationRole() : ApplicationPermissionHelper.Role.EVERYONE.getApplicationRole();
 	}
 
 	private WebClient buildWebClient() {

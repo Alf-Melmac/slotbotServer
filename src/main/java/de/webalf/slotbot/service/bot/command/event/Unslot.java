@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static de.webalf.slotbot.util.ListUtils.zeroArguments;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.SLOT;
-import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SLOT;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
 
 /**
  * @author Alf

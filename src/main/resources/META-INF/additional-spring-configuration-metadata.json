@@ -7,11 +7,6 @@
 	  "defaultValue": "slotbot-auth-token"
 	},
 	{
-	  "name": "slotbot.auth.token",
-	  "type": "java.lang.String",
-	  "description": "The token that should be used to validate requests."
-	},
-	{
 	  "name": "discord.token",
 	  "type": "java.lang.String",
 	  "description": "The token of the discord bot. Found under https://discord.com/developers/applications."

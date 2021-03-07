@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_ADMIN;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_ADMIN;
 
 /**
  * @author Alf

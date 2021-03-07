@@ -13,8 +13,8 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.NONE;
-import static de.webalf.slotbot.util.PermissionHelper.isAuthorized;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
 
 /**
  * @author Alf

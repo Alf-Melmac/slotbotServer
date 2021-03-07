@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.util.PermissionHelper.Role;
+import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

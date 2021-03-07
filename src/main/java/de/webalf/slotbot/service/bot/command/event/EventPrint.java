@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static de.webalf.slotbot.util.PermissionHelper.Authorization.EVENT_MANAGE;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 
 /**
  * @author Alf

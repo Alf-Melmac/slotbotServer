@@ -4,7 +4,7 @@ import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.util.LongUtils;
-import de.webalf.slotbot.util.PermissionHelper;
+import de.webalf.slotbot.util.permissions.BotPermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_CREATOR;
-import static de.webalf.slotbot.util.PermissionHelper.HAS_ROLE_EVERYONE;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -45,7 +45,7 @@ public class EventWebController {
 				.split("\\?")[0]);
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml()).toUri().toString());
 		mav.addObject(START_URL_STRING, START_URL);
-		mav.addObject("eventManageRoles", PermissionHelper.getEventManageApplicationRoles());
+		mav.addObject("eventManageRoles", BotPermissionHelper.getEventManageApplicationRoles());
 
 		return mav;
 	}
@@ -74,7 +74,7 @@ public class EventWebController {
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("event", eventDetailsAssembler.toDto(eventService.findById(eventId)));
 		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
-		mav.addObject("hasEventManageRole", PermissionHelper.hasEventManageRole());
+		mav.addObject("hasEventManageRole", BotPermissionHelper.hasEventManageRole());
 		return mav;
 	}
 
