@@ -83,6 +83,8 @@ public final class EventUtils {
 				return linkTo(methodOn(DownloadController.class).getFile("Arma_3_Preset_2012_ArmaMachtBock_Full.html")).toUri().toString();
 			case "2101_ArmaMachtBock":
 				return linkTo(methodOn(DownloadController.class).getFile("Arma_3_Preset_2101_ArmaMachtBock_Full_v2.html")).toUri().toString();
+			case "2103_ArmaMachtBock":
+				return linkTo(methodOn(DownloadController.class).getFile("Arma_3_Preset_2103_ArmaMachtBock_Full.html")).toUri().toString();
 			case "2102_Event":
 				return linkTo(methodOn(DownloadController.class).getFile("Arma_3_Preset_2102_Event.html")).toUri().toString();
 			case "Joined_Operations_2020":
