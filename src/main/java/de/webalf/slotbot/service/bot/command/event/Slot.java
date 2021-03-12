@@ -19,7 +19,7 @@ import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SLOT;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
 
 /**
@@ -32,7 +32,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		description = "Slottet dich selbst oder jemand anderen.",
 		usage = "<Slotnummer> (<@ZuSlottendePerson>)",
 		argCount = {1, 2},
-		authorization = SLOT)
+		authorization = NONE)
 public class Slot implements DiscordCommand {
 	private final EventBotService eventBotService;
 

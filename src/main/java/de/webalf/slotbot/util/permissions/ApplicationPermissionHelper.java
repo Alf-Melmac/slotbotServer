@@ -25,7 +25,6 @@ public final class ApplicationPermissionHelper {
 	public static final String ADMINISTRATIVE_ROLES = ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.ADMIN + HAS_ANY_ROLE_NEXT + ApplicationPermissionHelper.Role.ApplicationRoles.MOD;
 	public static final String HAS_ROLE_ADMIN = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_CREATOR = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.CREATOR + HAS_ROLE_CLOSE;
-	public static final String HAS_ROLE_ARMA = HAS_ROLE + ROLE_PREFIX + ApplicationRoles.ARMA + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_EVERYONE = IS_AUTHENTICATED;
 
 	@Getter
@@ -35,7 +34,6 @@ public final class ApplicationPermissionHelper {
 		ADMINISTRATOR(ROLE_ADMINISTRATOR, ApplicationRoles.ADMIN),
 		MODERATOR(ROLE_MODERATOR, ApplicationRoles.MOD),
 		CREATOR(ROLE_CREATOR, ApplicationRoles.CREATOR),
-		ARMA(ROLE_ARMA, ApplicationRoles.ARMA),
 		EVERYONE(ROLE_EVERYONE, ApplicationRoles.USER);
 
 		@NotBlank
@@ -49,7 +47,6 @@ public final class ApplicationPermissionHelper {
 			private static final String ADMIN = "ADMIN";
 			private static final String MOD = "MOD";
 			private static final String CREATOR = "CREATOR";
-			private static final String ARMA = "ARMA";
 			private static final String USER = "USER";
 		}
 

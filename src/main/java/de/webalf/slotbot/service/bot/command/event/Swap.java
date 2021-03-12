@@ -27,7 +27,7 @@ import static de.webalf.slotbot.util.bot.DiscordUserUtils.getPrivateChannel;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SLOT;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
 /**
  * @author Alf
@@ -40,7 +40,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 		description = "Sendet eine Anfrage, um einen Slot mit einer Person zu tauschen.",
 		usage = "<Slotnummer>",
 		argCount = {1},
-		authorization = SLOT)
+		authorization = NONE)
 public class Swap implements DiscordCommand {
 	private final EventBotService eventBotService;
 	private final SlotBotService slotBotService;

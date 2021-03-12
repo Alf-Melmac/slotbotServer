@@ -17,7 +17,7 @@ import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SLOT;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
 
 /**
@@ -30,7 +30,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		description = "Slottet dich selbst oder jemand anderen aus.",
 		usage = "(<@AuzuslottendePerson>)",
 		argCount = {0, 1},
-		authorization = SLOT)
+		authorization = NONE)
 public class Unslot implements DiscordCommand {
 	private final EventBotService eventBotService;
 
