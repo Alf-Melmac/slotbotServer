@@ -18,7 +18,7 @@ public final class UserAssembler {
 
 		return User.builder()
 				.id(LongUtils.parseLong(userDto.getId()))
-				.steamId64(LongUtils.parseLong(userDto.getSteamId64()))
+				.steamId64(LongUtils.parseLongWrapper(userDto.getSteamId64()))
 				.build();
 	}
 
