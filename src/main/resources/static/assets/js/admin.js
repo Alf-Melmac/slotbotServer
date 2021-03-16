@@ -4,7 +4,7 @@ $(function () {
     $('.js-server-toggle').on('click', function () {
         const $this = $(this);
         $.ajax(
-            serverToggleUrl.replace('{online}', $this.data('online')), {
+            serverToggleUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -57,27 +57,9 @@
 
 			<div class="btn btn-primary mt-3 js-server-toggle" type="button"
 			     th:if="${server.isKnownExternal()}"
-			     th:data-serverip="${server.getFullIp()}" th:data-online="${online}"
-			     th:text="${online} ? 'Server stoppen' : 'Server starten'">
-				Start/Stop
+			     th:data-serverip="${server.getFullIp()}">
+				Server neustarten
 			</div>
-
-			<div class="btn btn-secondary mt-3 js-server-toggle" type="button"
-			     th:if="${server.isKnownExternal()}"
-			     th:data-serverip="${server.getFullIp()}" th:data-online="${!online}"
-			     th:text="${!online} ? 'Server stoppen' : 'Server starten'"
-			     title="Ich weiß es besser als die API">
-				Start/Stop
-			</div>
-		</div>
-
-		<div class="row">
-			<p class="mr-1"
-			   th:text="${'Server Manager Ping: ' + #temporals.format(serverManagerPingTime, 'dd.MM.yyyy HH:mm')}"></p>
-
-			<em class="fas btn-xl"
-			    th:classappend="${serverManagerPing} ? 'fa-heart text-success' : 'fa-heartbeat text-danger'"
-			    th:title="${serverManagerStatus}"></em>
 		</div>
 	</div>
 </section>

@@ -47,13 +47,13 @@ public class ExternalServerService {
 	public void fillIpServerMap() {
 		log.info("Filling ipUrlMap from " + serverManagerProperties.getUrl());
 		ipServerMap = buildWebClient().get().uri("/status/mappings").retrieve().bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {}).block();
-		log.info("Filled ipUrlMap and retrieved {} items", ipServerMap.size());
+		log.info("Filled ipUrlMap and retrieved {} items", ipServerMap != null ? ipServerMap.size() : "null");
 	}
 
-	public void toggleServer(@NonNull BattlemetricsApiService.Identifier identifier, boolean start) {
+	public void restartServer(@NonNull BattlemetricsApiService.Identifier identifier) {
 		final String fullIp = identifier.getAttributes().getFullIp();
 		if (identifier.isServerEmpty() && knownServer(fullIp)) {
-			buildWebClient().put().uri("/" + ipServerMap.get(fullIp) + "/" + start).retrieve()
+			buildWebClient().put().uri("/" + ipServerMap.get(fullIp)).retrieve()
 					.onStatus(HttpStatus::isError, clientResponse -> {
 						throw BusinessRuntimeException.builder().description(clientResponse.statusCode().getReasonPhrase()).build();
 					})

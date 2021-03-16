@@ -2,9 +2,7 @@ package de.webalf.slotbot.service.external;
 
 import de.webalf.slotbot.configuration.properties.BattlemetricsProperties;
 import de.webalf.slotbot.model.external.ServerStatus;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -111,6 +109,9 @@ public class BattlemetricsApiService {
 	}
 
 	@Data
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
 	public static class Server {
 		private String name;
 		private String ip;
