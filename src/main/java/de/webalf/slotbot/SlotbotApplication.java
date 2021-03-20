@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.config.BootstrapMode;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 /**
@@ -17,6 +19,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableCaching
 @ConfigurationPropertiesScan("de.webalf.slotbot.configuration.properties")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableJpaRepositories(bootstrapMode = BootstrapMode.DEFERRED)
+/*This annotation (with bootstrapMode) had to be introduced with spring-boot-starter-parent version 2.3.7.RELEASE. Without it, the application cannot start.
+"Error creating bean with name 'entityManagerFactory': Requested bean is currently in creation: Is there an unresolvable circular reference?"
+The breaking change was made here: https://github.com/spring-projects/spring-boot/issues/24249
+This fix is described in https://github.com/spring-projects/spring-framework/issues/25111#issuecomment-696062762. If this issue gets resolved the annotation should be removed again to follow the default.*/
 public class SlotbotApplication {
 
 	public static void main(String[] args) {
