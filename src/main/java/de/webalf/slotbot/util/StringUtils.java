@@ -13,8 +13,12 @@ import java.util.regex.Pattern;
  */
 @UtilityClass
 public final class StringUtils {
+	public static boolean isEmpty(String term) {
+		return !isNotEmpty(term);
+	}
+
 	public static boolean isNotEmpty(String term) {
-		return !org.springframework.util.StringUtils.isEmpty(term);
+		return org.springframework.util.StringUtils.hasText(term);
 	}
 
 	private static final String REGEX = "(\"[^\"]*\"|'[^']*'|[^\"' ]+)";

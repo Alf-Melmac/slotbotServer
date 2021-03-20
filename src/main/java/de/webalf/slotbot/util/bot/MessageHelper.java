@@ -25,7 +25,7 @@ public class MessageHelper {
 		sendDmToRecipient(recipient.getId(), messageText);
 	}
 
-	private void sendDmToRecipient(@NonNull long recipientId, String messageText) {
+	private void sendDmToRecipient(long recipientId, String messageText) {
 		botService.getJda().retrieveUserById(recipientId).queue(
 				user -> sendDm(user, messageText)
 		);

@@ -29,7 +29,7 @@ public final class DiscordMarkdown {
 	 * @return marked down string
 	 */
 	public static String toHtml(String s) {
-		if (StringUtils.isEmpty(s)) {
+		if (de.webalf.slotbot.util.StringUtils.isEmpty(s)) {
 			return null;
 		}
 

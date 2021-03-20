@@ -1,8 +1,8 @@
 package de.webalf.slotbot.converter;
 
+import de.webalf.slotbot.util.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

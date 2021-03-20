@@ -98,7 +98,7 @@ public final class EventUtils {
 
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
 		String thumbnail = event.getPictureUrl();
-		if (org.springframework.util.StringUtils.isEmpty(thumbnail)) {
+		if (StringUtils.isEmpty(thumbnail)) {
 			thumbnail = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
 		}
 

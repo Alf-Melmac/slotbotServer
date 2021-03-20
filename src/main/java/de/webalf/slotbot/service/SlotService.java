@@ -11,12 +11,12 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.SlotRepository;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
