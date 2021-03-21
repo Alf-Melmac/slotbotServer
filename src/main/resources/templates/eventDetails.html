@@ -89,7 +89,7 @@
 					<a class="btn btn-sm btn-default viewMore" data-toggle="collapse" aria-expanded="false"
 					   aria-controls="collapse-1" role="button" href="#collapse-1"></a>
 					<div id="collapse-1" class="collapse">
-						<p th:text="${eventDescriptionHtml}"> <!--TODO: This disables html parsing-->
+						<p th:utext="${eventDescriptionHtml}">
 							Beschreibung
 						</p>
 					</div>

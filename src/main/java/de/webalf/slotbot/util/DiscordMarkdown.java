@@ -1,6 +1,8 @@
 package de.webalf.slotbot.util;
 
 import lombok.experimental.UtilityClass;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.util.StringUtils;
 
 /**
@@ -23,6 +25,18 @@ public final class DiscordMarkdown {
 	private static final String UNDERLINE = "_" + TWO_TIMES;
 	private static final String STRIKETHROUGH = "~" + TWO_TIMES;
 
+	private static final String HTML_BREAK = "<br>";
+	private static final String HTML_STRIKETHROUGH = "s";
+	private static final String HTML_UNDERLINE = "u"; //replace with css text-decoration underline
+	private static final String HTML_STRONG = "strong"; //replace with css font-weight
+	private static final String HTML_ITALIC = "em"; //replace with css font-style
+
+	private static final Whitelist WHITELIST = Whitelist.none();
+
+	static {
+		WHITELIST.addTags("br", HTML_STRIKETHROUGH, HTML_UNDERLINE, HTML_STRONG, HTML_ITALIC);
+	}
+
 	/**
 	 * Imitates the discord markup by replacing the style symbols with html tags
 	 *
@@ -34,15 +48,15 @@ public final class DiscordMarkdown {
 		}
 
 		String markdown;
-		markdown = s.replaceAll("\n", "<br>");
-		markdown = replace(markdown, "~~", STRIKETHROUGH, "s");
-		markdown = replace(markdown, "__", UNDERLINE, "u");
-		markdown = replaceMix(markdown, "***", BOLD_ITALICS, "strong", "em");
-		markdown = replace(markdown, "**", BOLD, "strong");
-		markdown = replace(markdown, "*", STAR_ITALICS, "em");
-		markdown = replace(markdown, "_", UNDERSCORE_ITALICS, "em");
+		markdown = s.replaceAll("\n", HTML_BREAK);
+		markdown = replace(markdown, "~~", STRIKETHROUGH, HTML_STRIKETHROUGH);
+		markdown = replace(markdown, "__", UNDERLINE, HTML_UNDERLINE);
+		markdown = replaceMix(markdown, "***", BOLD_ITALICS, HTML_STRONG, HTML_ITALIC);
+		markdown = replace(markdown, "**", BOLD, HTML_STRONG);
+		markdown = replace(markdown, "*", STAR_ITALICS, HTML_ITALIC);
+		markdown = replace(markdown, "_", UNDERSCORE_ITALICS, HTML_ITALIC);
 
-		return markdown;
+		return Jsoup.clean(markdown, WHITELIST);
 	}
 
 	private static String replace(String s, String symbol, String matcher, String tag) {

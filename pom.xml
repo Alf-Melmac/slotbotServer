@@ -43,6 +43,7 @@
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<classindex.version>3.10</classindex.version>
 		<jda.version>4.2.0_243</jda.version>
+		<jsoup.version>1.13.1</jsoup.version>
 	</properties>
 
 	<dependencies>
@@ -146,6 +147,12 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>${javax.validation.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
 		</dependency>
 
 		<!--Compilation-->
