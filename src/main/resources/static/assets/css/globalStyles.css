@@ -26,3 +26,49 @@ textarea::selection {
   color: lightgray;
   background: cornflowerblue;
 }
+
+.link-btn {
+  cursor: pointer;
+  width: 2vw;
+}
+
+.link-btn .fab
+{
+  font-size: 1em;
+}
+
+.link-btn.twitter-btn {
+  color: #00acff;
+  text-shadow: 0 0 30px #00acff;
+}
+.link-btn.twitter-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 30px 45px -15px rgb(51, 189, 255);
+}
+
+.link-btn.yt-btn {
+  color: #FF0000;
+  text-shadow: 0 0 30px #FF0000;
+}
+.link-btn.yt-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 30px 45px -15px rgb(255, 51, 51);
+}
+
+.link-btn.twitch-btn {
+  color: #9147ff;
+  text-shadow: 0 0 30px #9147ff;
+}
+.link-btn.twitch-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 30px 45px -15px rgb(115, 20, 255);
+}
+
+.link-btn.wiki-btn {
+  color: #e6e6e6;
+  text-shadow: 0 0 30px #e6e6e6;
+}
+.link-btn.wiki-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 30px 45px -15px rgb(205, 205, 205);
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (title)">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title th:text="${#strings.equals(title, 'Arma macht Bock')} ? ${title} : ${'AMB - ' + title}"></title>
+
+	<meta property="og:image" content="/assets/img/amb_logo.jpg">
+	<meta property="og:type" content="website">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
+	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
+	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
+
+	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
+
+	<!--Needed for footer-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css"
+	      integrity="sha256-0fuNgzfNIlaClbDtmYyFxY8LTNCDrwsNshywr4AALy0=" crossorigin="anonymous">
+</head>
+
+<body>
+
+<div th:fragment="footer" id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<h5 class="mb-0 pt-1">Arma macht Bock</h5>
+			</div>
+			<div class="col-md-3">
+				<div class="float-right">
+					<a class="btn link-btn twitter-btn"
+					   href="https://twitter.com/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
+						<!-- twitter -->
+						<em class="fab fa-twitter"></em>
+					</a>
+					<a class="btn link-btn yt-btn"
+						href="https://armamachtbock.de/youtube" target="_blank" rel="noopener noreferrer">
+						<!-- youtube -->
+						<em class="fab fa-youtube"></em>
+					</a>
+					<a class="btn link-btn twitch-btn"
+						href="https://www.twitch.tv/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
+						<!-- twitch -->
+						<em class="fab fa-twitch"></em>
+					</a>
+					<a class="btn link-btn wiki-btn"
+						href="https://wiki.armamachtbock.de" target="_blank" rel="noopener noreferrer">
+						<!-- wiki -->
+						<em class="fab fa-wikipedia-w"></em>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-8">
+				<p>&copy; 2021 <a href="mailto:awebsite-footer@webalf.de">Alf</a>. All rights reserved.</p>
+			</div>
+
+			<div class="col-md-4">
+				<span class="float-right"><a href="https://wiki.armamachtbock.de/de/Impressum">Impressum & Datenschutzerklärung</a></span>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
