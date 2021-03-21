@@ -1,20 +1,26 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Alf
  * @since 24.11.2020
  */
 @Service
-@Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FileService {
+	private final StorageProperties storageProperties;
+
 	/**
 	 * Returns the given file by name as a {@link Resource}
 	 *
@@ -22,15 +28,18 @@ public class FileService {
 	 * @return file as {@link Resource}
 	 * @throws ResourceNotFoundException if file doesn't exists or the path is a malformedURL
 	 */
-	public Resource loadDownload(String filename) {
-		URL url = FileService.class.getClassLoader().getResource("static/download/" + filename);
-		if (url != null) {
-			Resource resource = new UrlResource(url);
+	public Resource loadAsResource(String filename) {
+		final Path file = Paths.get(storageProperties.getLocation()).resolve(filename);
+
+		try {
+			final Resource resource = new UrlResource(file.toUri());
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
+			} else {
+				throw new ResourceNotFoundException(filename);
 			}
+		} catch (MalformedURLException e) {
+			throw new ResourceNotFoundException(filename);
 		}
-
-		throw new ResourceNotFoundException(filename);
 	}
 }

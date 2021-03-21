@@ -23,7 +23,7 @@ public class DownloadController {
 
 	@GetMapping("/{filename:.+}")
 	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-		Resource file = fileService.loadDownload(filename);
+		final Resource file = fileService.loadAsResource(filename);
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
 				.body(file);

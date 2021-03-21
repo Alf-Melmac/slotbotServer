@@ -46,5 +46,10 @@
 	  "name": "servermanager.token",
 	  "type": "java.lang.String",
 	  "description": "Authentication token of the server manager."
+	},
+	{
+	  "name": "storage.location",
+	  "type": "java.lang.String",
+	  "description": "Path from which the /download endpoint obtains files."
 	}
   ] }
