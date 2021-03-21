@@ -27,9 +27,9 @@ public final class DiscordMarkdown {
 
 	private static final String HTML_BREAK = "<br>";
 	private static final String HTML_STRIKETHROUGH = "s";
-	private static final String HTML_UNDERLINE = "u"; //replace with css text-decoration underline
-	private static final String HTML_STRONG = "strong"; //replace with css font-weight
-	private static final String HTML_ITALIC = "em"; //replace with css font-style
+	private static final String HTML_UNDERLINE = "u";
+	private static final String HTML_STRONG = "strong";
+	private static final String HTML_ITALIC = "em";
 
 	private static final Whitelist WHITELIST = Whitelist.none();
 
