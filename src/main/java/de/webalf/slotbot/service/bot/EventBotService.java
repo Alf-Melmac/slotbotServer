@@ -2,6 +2,7 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
@@ -90,6 +91,10 @@ public class EventBotService {
 
 	public List<Slot> findSwapSlots(long channel, int slotNumber, String userId) {
 		return eventService.findSwapSlots(channel, slotNumber, userDtoWithId(userId));
+	}
+
+	public List<User> findAllParticipants(long channel) {
+		return eventService.findAllParticipants(channel);
 	}
 
 	private static UserDto userDtoWithId(String userId) {

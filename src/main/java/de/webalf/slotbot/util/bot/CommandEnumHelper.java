@@ -48,7 +48,7 @@ public class CommandEnumHelper {
 				}
 				break;
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class})) {
-				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPrint, RenameSlot, Slot, Unslot
+				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPrint, RenameSlot, Slot, Unslot, EventPing
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

@@ -114,6 +114,17 @@ public class EventService {
 		return eventRepository.findAllByDateTimeBetweenAndHiddenFalse(start, end);
 	}
 
+	/**
+	 * Returns all {@link User}s slotted in the event associated with the given channelId.
+	 * {@link User#DEFAULT_USER_ID} is filtered out.
+	 *
+	 * @param channel to find event for
+	 * @return participant list
+	 */
+	public List<User> findAllParticipants(long channel) {
+		return eventRepository.findAllParticipants(channel);
+	}
+
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 

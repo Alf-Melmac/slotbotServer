@@ -74,7 +74,8 @@ public class Commands {
 		RENAME_SQUAD(RenameSquad.class),
 		SLOT(Slot.class),
 		SWAP(Swap.class),
-		UNSLOT(Unslot.class);
+		UNSLOT(Unslot.class),
+		EVENT_PING(EventPing.class);
 
 		private final Class<?> command;
 	}
