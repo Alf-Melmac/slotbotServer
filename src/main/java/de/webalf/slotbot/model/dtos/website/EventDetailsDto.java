@@ -3,6 +3,7 @@ package de.webalf.slotbot.model.dtos.website;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.ListUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
@@ -114,5 +115,11 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@SuppressWarnings("unused") //eventEdit.html
 	public List<String> getMapsFiltered() {
 		return ListUtils.getListFiltered(MAPS, getMap());
+	}
+
+	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
+
+	public String getPictureUrl() {
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : AMB_LOGO;
 	}
 }

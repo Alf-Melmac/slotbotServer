@@ -2,6 +2,8 @@
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta th:replace="fragments/general.html :: head('Event')"/>
+	<meta property="og:title" th:content="${event.name}">
+	<meta property="og:image" th:content="${event.getPictureUrl()}">
 
 	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/copy.css}">
@@ -14,16 +16,14 @@
 <section class="content-section">
 	<div class="container">
 		<div th:if="${event.hidden}" class="alert alert-warning" role="alert">
-			Diese Event ist für Mitspieler noch nicht sichtbar. Wenn das Slotten beginnen kann, gebe das Event über den Editiermodus frei.
+			Diese Event ist für Mitspieler noch nicht sichtbar. Wenn das Slotten beginnen kann, gebe das Event über den
+			Editiermodus frei.
 		</div>
 
 		<div class="row mb-3">
 			<div class="col-md-4">
 				<div id="event-img">
-					<img th:unless="${#strings.isEmpty(event.pictureUrl)}" class="img-fluid" alt="Custom Event Bild"
-					     th:src="${event.pictureUrl}"/>
-					<img th:if="${#strings.isEmpty(event.pictureUrl)}" class="img-fluid" alt="Event Bild"
-					     src="https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg"/>
+					<img class="img-fluid" alt="Event Bild" th:src="${event.getPictureUrl()}"/>
 				</div>
 			</div>
 			<div class="col-md-6">
@@ -172,7 +172,8 @@
 									<p class="mb-0" th:unless="${#strings.isEmpty(event.modPackUrl)}">
 										<a th:href="${event.modPackUrl}" th:text="${event.modPack}"></a>
 									</p>
-									<p class="mb-0" th:if="${#strings.isEmpty(event.modPackUrl)}" th:text="${event.modPack}"></p>
+									<p class="mb-0" th:if="${#strings.isEmpty(event.modPackUrl)}"
+									   th:text="${event.modPack}"></p>
 								</div>
 							</div>
 						</div>

@@ -6,8 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 	<title th:text="${#strings.equals(title, 'Arma macht Bock')} ? ${title} : ${'AMB - ' + title}"></title>
 
-	<meta property="og:image" content="/assets/img/amb_logo.jpg">
-	<meta property="og:type" content="website">
+	<meta property="og:locale" content="de_DE"/>
+	<meta property="og:locale:alternate" content="en_GB"/>
+	<meta property="og:locale:alternate" content="en_US"/>
 	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
 	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
 	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
@@ -37,17 +38,17 @@
 						<em class="fab fa-twitter"></em>
 					</a>
 					<a class="btn link-btn yt-btn"
-						href="https://armamachtbock.de/youtube" target="_blank" rel="noopener noreferrer">
+					   href="https://armamachtbock.de/youtube" target="_blank" rel="noopener noreferrer">
 						<!-- youtube -->
 						<em class="fab fa-youtube"></em>
 					</a>
 					<a class="btn link-btn twitch-btn"
-						href="https://www.twitch.tv/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
+					   href="https://www.twitch.tv/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
 						<!-- twitch -->
 						<em class="fab fa-twitch"></em>
 					</a>
 					<a class="btn link-btn wiki-btn"
-						href="https://wiki.armamachtbock.de" target="_blank" rel="noopener noreferrer">
+					   href="https://wiki.armamachtbock.de" target="_blank" rel="noopener noreferrer">
 						<!-- wiki -->
 						<em class="fab fa-wikipedia-w"></em>
 					</a>
