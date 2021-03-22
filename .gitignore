@@ -3,6 +3,8 @@ target/
 !**/src/test/**
 application.properties
 logs/
+/download/
+/img/
 
 ### STS ###
 .apt_generated
@@ -33,4 +35,3 @@ build/
 .mvn
 mvnw
 mvnw.cmd
-/download/

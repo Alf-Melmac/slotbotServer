@@ -48,8 +48,13 @@
 	  "description": "Authentication token of the server manager."
 	},
 	{
-	  "name": "storage.location",
+	  "name": "storage.download",
 	  "type": "java.lang.String",
 	  "description": "Path from which the /download endpoint obtains files."
+	},
+	{
+	  "name": "storage.images",
+	  "type": "java.lang.String",
+	  "description": "Path from which the /assets/img endpoint obtains images."
 	}
   ] }

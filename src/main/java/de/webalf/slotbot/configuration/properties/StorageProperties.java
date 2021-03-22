@@ -13,5 +13,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class StorageProperties {
 	@NotBlank
-	private String location = "./download";
+	private String download = "./download";
+
+	@NotBlank
+	private String images = "./img";
 }

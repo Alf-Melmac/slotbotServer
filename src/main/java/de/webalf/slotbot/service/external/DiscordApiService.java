@@ -41,7 +41,7 @@ public class DiscordApiService {
 
 	private List<Role> roles = new ArrayList<>();
 
-	@Cacheable("discordRoles")
+	@Cacheable(cacheNames = "discordRoles", key = "user.id")
 	public Set<String> getRoles(User user) {
 		final GuildMember member = getGuildMemberWithUser(Long.toString(user.getId()));
 		log.info("Login of: [" + user.getId() + "] " + member.getUser().getUsername());
