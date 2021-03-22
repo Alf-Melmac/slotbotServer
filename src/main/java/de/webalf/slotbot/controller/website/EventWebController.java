@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -36,6 +35,8 @@ public class EventWebController {
 	private static final String START_URL = linkTo(methodOn(StartWebController.class).getStart()).toUri().toString();
 	private static final String EVENTS_URL_STRING = "eventsUrl";
 	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString();
+	private static final String LOGIN_URL_STRING = "loginUrl";
+	private static final String LOGIN_URL = linkTo(methodOn(LoginWebController.class).getLogin()).toUri().toString();
 
 	@GetMapping
 	public ModelAndView getEventHtml() {
@@ -68,11 +69,11 @@ public class EventWebController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
 		mav.addObject(START_URL_STRING, START_URL);
+		mav.addObject(LOGIN_URL_STRING, LOGIN_URL);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		final EventDetailsDto detailsDto = eventDetailsAssembler.toDto(eventService.findById(eventId));
 		mav.addObject("event", detailsDto);
