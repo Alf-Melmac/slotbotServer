@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
 /**
  * @author Alf
@@ -27,7 +27,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 		description = "Sendet die übergebene Nachricht und pingt dabei alle aktuell geslotteten Personen des Events.",
 		usage = "\"<Nachricht>\"",
 		argCount = {1},
-		authorization = EVENT_MANAGE)
+		authorization = NONE)
 public class EventPing implements DiscordCommand {
 	private final EventBotService eventBotService;
 
