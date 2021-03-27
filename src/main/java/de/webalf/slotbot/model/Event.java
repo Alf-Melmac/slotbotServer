@@ -464,7 +464,9 @@ public class Event extends AbstractIdEntity {
 	 */
 	private void adjustReserveSize(@NonNull Squad reserve) {
 		List<Slot> oldSlotList = reserve.getSlotList();
-		List<User> reserveUsers = oldSlotList.stream().map(Slot::getUser).filter(Objects::nonNull).collect(Collectors.toList());
+		List<User> reserveUsers = oldSlotList.stream().sorted(Comparator.comparing(Slot::getNumber))
+				.map(Slot::getUser).filter(Objects::nonNull)
+				.collect(Collectors.toList());
 
 		//Reduce the reserve size so that all persons already slotted remain so
 		int newReserveSize = Math.max(getDesiredReserveSize(), reserveUsers.size());
