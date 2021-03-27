@@ -5,7 +5,6 @@
 	<meta property="og:image" content="/assets/img/amb_logo.jpg">
 	<meta name="description" content="Dein nächster Schritt in Richtung Zeitvertreib und Gemeinschaft">
 
-	<link rel="stylesheet" th:href="@{/assets/css/portfolio.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/discordInvite.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/start.css}">
 </head>
@@ -62,85 +61,46 @@
 		<div class="col-lg-8 mx-auto">
 			<h1>Wann gehts los?</h1>
 
-			<p>Üblicherweise planen wir unsere abendlichen Zusammentreffen im Voraus. Schaue doch einfach mal in unseren Eventkalender und sei beim Nächsten dabei.</p>
+			<p>Üblicherweise planen wir unsere abendlichen Zusammentreffen im Voraus. Schaue doch einfach mal in unseren
+				Eventkalender und sei beim Nächsten dabei.</p>
 			<a class="btn btn-primary btn-lg btn-default" href="/events">Eventkalender öffnen</a>
 		</div>
 	</div>
 </section>
-<section id="games">
-	<div class="container photo-gallery">
+<section id="eventChecklist" class="content-section">
+	<div class="container">
 		<div class="intro">
-			<h2 class="text-center">Aktuelle Spiele</h2>
+			<h2 class="text-center">Checkliste für das nächste (Arma) Event</h2>
 			<p class="text-center">
-				Jeden Monat wählen wir 5 Spiele aus, denen wir in diesem Monat mit Events und regelmäßigen Treffen
-				besondere Beachtung schenken.
+			<ol>
+				<li>
+					<b><a href="https://wiki.armamachtbock.de/de/Spieler/Mitmachen/Modset">Modset</a> herunterladen</b>.
+					Die richtige Version findest du in der Event-Beschreibung (siehe weiter unten).
+				</li>
+				<li>
+					Unserem <b><a href="https://armamachtbock.de/discord">Discord</a> beitreten</b>
+				</li>
+				<li>
+					Arma (bzw. passendes Spiel)-<b>Rolle</b> im <a
+						href="discord://discord.com/channels/706254758721224707/739903690583834665">#roles-rollen</a>
+					Kanal <b>auswählen</b>. <em>Über diese Rollen könnt ihr auch Mitspieler suchen.</em>
+				</li>
+				<li>
+					Für das Event <b>anmelden</b>: Dazu im entsprechenden Discord Kanal "!slot {Slotnummer}"
+					schreiben.<br>
+					<em>Hier findest du auch die wichtigsten Informationen was gespielt wird, unter anderem auch das
+						Modpack.</em><br>
+					Kurze Übersicht über die wichtigsten Befehle im <a
+						href="https://wiki.armamachtbock.de/de/Spieler/Discord/Bot">Discord Bot Cheatsheet</a>
+				</li>
+				<li>
+					Zum Eventzeitpunkt da sein und Spaß haben.<br>
+					Gerne machen wir vorher gemeinsam einen Techcheck oder klären noch offene Fragen. <b>Sprich uns
+					einfach an!</b>
+				</li>
+			</ol>
 			</p>
 		</div>
-		<section class="portfolio-block projects compact-grid">
-			<div class="row no-gutters">
-				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/107410/Arma_3/" target="_blank"
-					   rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Arma3" th:attr="src=@{/assets/img/games/arma3.png}">
-						<span class="description">
-							<span class="description-heading">Arma 3<br></span>
-							<span class="description-body">Ein bisschen Konsistenz brauchen wir ja auch. Deswegen gibt es immer Arma!<br><br></span>
-						</span>
-					</a>
-				</div>
-				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/945360/Among_Us/" target="_blank"
-					   rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Game2" th:attr="src=@{/assets/img/games/among-us.jpg}">
-						<span class="description">
-							<span class="description-heading"><br>Among Us<br></span>
-							<span class="description-body">Ein Spiel das besser darin ist seine Freunde zu Feinden zu machen als Monopoly? Wir haben es gefunden und spielen es.<br><br></span>
-						</span>
-					</a>
-				</div>
-				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/218620/PAYDAY_2/" target="_blank"
-					   rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Game3" th:attr="src=@{/assets/img/games/payday-2.jpg}">
-						<span class="description">
-							<span class="description-heading">Payday 2<br></span>
-							<span class="description-body">Zur viert Banken und Juweliere ausräumen? Da gibts es ein großes JA! Aber leise sein..<br><br></span>
-						</span>
-					</a>
-				</div>
-				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/223750/DCS_World_Steam_Edition/" target="_blank"
-					   rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Game4" th:attr="src=@{/assets/img/games/dcs.jpg}">
-						<span class="description">
-							<span class="description-heading">DCS<br></span>
-							<span class="description-body">Völlig losgelöst von der Erde.<br>Völlig schwerelos<br><br></span>
-						</span>
-					</a>
-				</div>
-				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/48240/Anno_2070/" target="_blank"
-					   rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Game5" th:attr="src=@{/assets/img/games/anno2070.jpg}">
-						<span class="description">
-							<span class="description-heading">Anno 2070<br></span>
-							<span class="description-body">Eine bessere Zukunft als es uns erwartet? Einfach mal selber besiedeln!<br><br></span>
-						</span>
-					</a>
-				</div>
-				<div class="col-md-6 col-lg-4 item zoom-on-hover">
-					<a href="https://store.steampowered.com/app/394360/Hearts_of_Iron_IV/" target="_blank"
-					   rel="noopener noreferrer">
-						<img class="img-fluid image" alt="Game6"
-						     th:attr="src=@{/assets/img/games/hoi4.png}">
-						<span class="description">
-							<span class="description-heading">Hearts of Iron 4<br></span>
-							<span class="description-body">Der Sieg liegt in deinen Händen! Deine mächtigste Waffe liegt darin, deine Nation in den Kampf zu führen.<br><br></span>
-						</span>
-					</a>
-				</div>
-			</div>
-		</section>
 	</div>
 </section>
 <section id="discord" class="content-section text-center bg-section">
