@@ -3,6 +3,7 @@ package de.webalf.slotbot.util;
 import de.webalf.slotbot.controller.website.FileController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.util.permissions.ApiPermissionHelper;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 import static de.webalf.slotbot.util.DateUtils.TIME_FORMATTER;
@@ -161,5 +163,16 @@ public final class EventUtils {
 			return null;
 		}
 		return reserveParticipating ? "Ja" : "Nein";
+	}
+
+	/**
+	 * Checks if the given slot number is already used in the given list of slots
+	 *
+	 * @param slots existing slots
+	 * @param slotNumber slot number to check
+	 * @return true if the slot number is already used
+	 */
+	public boolean slotNumberPresent(List<Slot> slots, int slotNumber) {
+		return slots.stream().anyMatch(slot -> slot.getNumber() == slotNumber);
 	}
 }

@@ -5,6 +5,7 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
 import de.webalf.slotbot.util.BooleanUtils;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -470,7 +471,8 @@ public class Event extends AbstractIdEntity {
 		List<Slot> newReserveSlots = new ArrayList<>();
 		for (int i = 0; i < newReserveSize; i++) {
 			int slotNumber = 100 + i;
-			while (findSlot(slotNumber).isPresent()) {
+			while ((findSlot(slotNumber).isPresent() && !findSlot(slotNumber).get().isInReserve())
+					|| EventUtils.slotNumberPresent(newReserveSlots, slotNumber)) {
 				slotNumber++;
 			}
 			Slot slot = Slot.builder()
@@ -478,7 +480,7 @@ public class Event extends AbstractIdEntity {
 					.name("Reserve " + (i + 1))
 					.squad(reserve)
 					.build();
-			if (i <= reserveUsers.size() && !reserveUsers.isEmpty()) {
+			if (i < reserveUsers.size()) {
 				slot.setUser(reserveUsers.get(i));
 			}
 			newReserveSlots.add(slot);
