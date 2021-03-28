@@ -30,6 +30,6 @@ public class TokenAuthProvider implements AuthenticationProvider {
 
 	ApiToken getApiToken(String token) {
 		return apiTokenRepository.findById(token)
-				.orElseThrow(() -> new BadCredentialsException("Invalid token " + token));
+				.orElseThrow(() -> new BadCredentialsException("Invalid token '" + token + "'"));
 	}
 }
