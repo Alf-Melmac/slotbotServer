@@ -15,9 +15,9 @@
 			<url>https://repo1.maven.org/maven2/</url>
 		</repository>
 		<repository>
-			<id>jcenter</id>
-			<name>jcenter-bintray</name>
-			<url>https://jcenter.bintray.com</url>
+			<id>dv8tion</id>
+			<name>m2-dv8tion</name>
+			<url>https://m2.dv8tion.net/releases</url>
 		</repository>
 	</repositories>
 
@@ -42,7 +42,7 @@
 		<lombok.version>1.18.18</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<classindex.version>3.10</classindex.version>
-		<jda.version>4.2.0_243</jda.version>
+		<jda.version>4.2.0_251</jda.version>
 		<jsoup.version>1.13.1</jsoup.version>
 	</properties>
 
