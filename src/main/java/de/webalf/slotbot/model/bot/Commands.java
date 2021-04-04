@@ -75,6 +75,7 @@ public class Commands {
 		SLOT(Slot.class),
 		SWAP(Swap.class),
 		UNSLOT(Unslot.class),
+		RANDOM_SLOT(RandomSlot.class),
 		EVENT_PING(EventPing.class);
 
 		private final Class<?> command;

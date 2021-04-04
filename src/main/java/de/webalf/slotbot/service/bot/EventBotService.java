@@ -65,6 +65,10 @@ public class EventBotService {
 		eventService.unslot(channel, slotNumber);
 	}
 
+	public void randomSlot(long channel, String userId) {
+		eventService.randomSlot(channel, userDtoWithId(userId));
+	}
+
 	public void addSlot(long channel, int squadNumber, int slotNumber, String slotName) {
 		eventService.addSlot(channel, squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
 	}

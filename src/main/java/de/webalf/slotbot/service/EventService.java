@@ -218,6 +218,22 @@ public class EventService {
 	}
 
 	/**
+	 * Searches for the given channel the matching event and enters the given user for a random empty slot, if available.
+	 *
+	 * @param channel event channel
+	 * @param userDto person that should be slotted
+	 * @return Event in which the person has been slotted
+	 * @throws BusinessRuntimeException if no slot is available
+	 */
+	public Event randomSlot(long channel, UserDto userDto) {
+		Event event = findByChannel(channel);
+		Slot slot = event.randomSlot();
+		User user = userService.find(userDto);
+		slotService.slot(slot, user);
+		return event;
+	}
+
+	/**
 	 * Searches for the given channel the matching event and renames the squad by position.
 	 *
 	 * @param channel       event channel

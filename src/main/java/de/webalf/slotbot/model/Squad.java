@@ -92,6 +92,10 @@ public class Squad extends AbstractIdEntity {
 		return getSlotList().stream().sorted(Comparator.comparing(Slot::getNumber)).collect(Collectors.toUnmodifiableList());
 	}
 
+	public boolean hasEmptySlot() {
+		return getSlotList().stream().anyMatch(Slot::isEmpty);
+	}
+
 	// Setter
 
 	/**

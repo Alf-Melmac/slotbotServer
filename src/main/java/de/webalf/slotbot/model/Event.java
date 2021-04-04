@@ -9,6 +9,7 @@ import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.springframework.util.CollectionUtils;
 import org.thymeleaf.util.ListUtils;
 
 import javax.persistence.*;
@@ -229,10 +230,8 @@ public class Event extends AbstractIdEntity {
 
 	private boolean isFull() {
 		for (Squad squad : getSquadsExceptReserve()) {
-			for (Slot slot : squad.getSlotList()) {
-				if (slot.isEmpty()) {
-					return false;
-				}
+			if (squad.getSlotList().stream().anyMatch(Slot::isEmpty)) {
+				return false;
 			}
 		}
 		return true;
@@ -503,5 +502,21 @@ public class Event extends AbstractIdEntity {
 			throw new IllegalArgumentException("Reserve is not empty. Can't delete");
 		}
 		removeSquad(reserve);
+	}
+
+	/**
+	 * Returns a random empty slot from the event.
+	 *
+	 * @return random empty slot
+	 */
+	public Slot randomSlot() {
+		final List<Slot> emptySlots = getSquadList().stream()
+				.filter(Squad::hasEmptySlot)
+				.flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty))
+				.collect(Collectors.toUnmodifiableList());
+		if (CollectionUtils.isEmpty(emptySlots)) {
+			throw BusinessRuntimeException.builder().title("Kein freier Slot vorhanden.").build();
+		}
+		return emptySlots.get(new Random().nextInt(emptySlots.size()));
 	}
 }
