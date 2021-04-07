@@ -42,7 +42,7 @@
 		<lombok.version>1.18.20</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<classindex.version>3.10</classindex.version>
-		<jda.version>4.2.1_253</jda.version>
+		<jda.version>4.2.1_255</jda.version>
 		<jsoup.version>1.13.1</jsoup.version>
 	</properties>
 
