@@ -45,7 +45,7 @@ public class Event extends AbstractIdEntity {
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 
-	@Column(name = "event_creator")
+	@Column(name = "event_creator", length = 100)
 	@NotBlank
 	@Size(max = 80)
 	private String creator;
@@ -53,7 +53,7 @@ public class Event extends AbstractIdEntity {
 	@Column(name = "event_hidden")
 	private boolean hidden;
 
-	@Column(name = "event_channel")
+	@Column(name = "event_channel", unique = true)
 	private Long channel;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -67,7 +67,7 @@ public class Event extends AbstractIdEntity {
 	@Column(name = "event_slotlist_msg")
 	private Long slotListMsg;
 
-	@Column(name = "event_description", length = 2560)
+	@Column(name = "event_description", length = (int) (MessageEmbed.TEXT_MAX_LENGTH * 1.25))
 	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
 	private String description;
 
@@ -270,13 +270,13 @@ public class Event extends AbstractIdEntity {
 		int emptyReserveSlots = 0;
 
 		for (Squad squad : getSquadList()) {
-			for(Slot slot : squad.getSlotList()) {
+			for (Slot slot : squad.getSlotList()) {
 				if (!slot.isInReserve()) {
 					if (slot.isEmpty()) {
 						emptySlots++;
 					}
 					slotCount++;
-				} else if (slot.isEmpty()){
+				} else if (slot.isEmpty()) {
 					emptyReserveSlots++;
 				}
 			}

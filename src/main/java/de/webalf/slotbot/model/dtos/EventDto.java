@@ -50,13 +50,16 @@ public class EventDto extends AbstractIdEntityDto {
 
 	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
 	private String description;
+
 	@Size(max = 1666)
 	private String pictureUrl;
+
 	@Size(max = 80)
 	private String missionType;
 	private Boolean respawn;
 	@Size(max = 80)
 	private String missionLength;
+
 	private Boolean reserveParticipating;
 	@Size(max = 80)
 	private String modPack;
