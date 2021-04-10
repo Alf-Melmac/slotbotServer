@@ -55,7 +55,7 @@ public class SlotService {
 
 	/**
 	 * Updates a slot with the given values identified by its id
-	 * (!) Squad can not be changes
+	 * (!) Squad can not be changed
 	 *
 	 * @param dto   with new values
 	 * @param squad is required when a new slot must be created

@@ -45,7 +45,7 @@ public class SquadService {
 
 	/**
 	 * Updates a squad with the given values identified by its id
-	 * (!) Event can not be changes
+	 * (!) Event can not be changed
 	 *
 	 * @param dto   with new values
 	 * @param event is required when a new squad must be created
