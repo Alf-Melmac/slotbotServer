@@ -21,7 +21,7 @@ public final class DtoUtils {
 	}
 
 	private static boolean isPresent(String value) {
-		return value != null && StringUtils.isNotEmpty(value);
+		return StringUtils.isNotEmpty(value);
 	}
 
 	private static boolean isPresent(Object value) {
