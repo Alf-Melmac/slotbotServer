@@ -32,8 +32,8 @@ public class EventApiViewDtoController {
 
 	@GetMapping("/{id}")
 	@PreAuthorize(HAS_READ_PUBLIC_PERMISSION)
-	public EventApiViewDto getEventById(@PathVariable(value = "id") long eventId) {
-		log.trace("getEventById: " + eventId);
+	public EventApiViewDto getEventView(@PathVariable(value = "id") long eventId) {
+		log.trace("getEventView: " + eventId);
 		final Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 
 		assertApiAccessAllowed(event);
