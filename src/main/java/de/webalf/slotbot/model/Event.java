@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
-import de.webalf.slotbot.util.BooleanUtils;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.springframework.util.CollectionUtils;
@@ -33,8 +33,13 @@ import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
 @Slf4j
-public class Event extends AbstractIdEntity {
+public class Event extends AbstractSuperIdEntity {
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "event_type")
+	private EventType eventType;
+
 	@Column(name = "event_name", length = 100)
 	@NotBlank
 	@Size(max = 80)
@@ -51,7 +56,8 @@ public class Event extends AbstractIdEntity {
 	private String creator;
 
 	@Column(name = "event_hidden")
-	private boolean hidden;
+	@Builder.Default
+	private boolean hidden = false;
 
 	@Column(name = "event_channel", unique = true)
 	private Long channel;
@@ -79,9 +85,6 @@ public class Event extends AbstractIdEntity {
 	@Size(max = 80)
 	private String missionType;
 
-	@Column(name = "event_respawn")
-	private Boolean respawn;
-
 	@Column(name = "event_mission_length", length = 100)
 	@Size(max = 80)
 	private String missionLength;
@@ -89,77 +92,11 @@ public class Event extends AbstractIdEntity {
 	@Column(name = "event_reserve_participating")
 	private Boolean reserveParticipating;
 
-	@Column(name = "event_mod_pack", length = 100)
-	@Size(max = 80)
-	private String modPack;
-
-	@Column(name = "event_map", length = 100)
-	@Size(max = 80)
-	private String map;
-
-	@Column(name = "event_mission_time", length = 100)
-	@Size(max = 80)
-	private String missionTime;
-
-	@Column(name = "event_navigation", length = 100)
-	@Size(max = 80)
-	private String navigation;
-
-	@Column(name = "event_technical_teleport", length = 100)
-	@Size(max = 80)
-	private String technicalTeleport;
-
-	@Column(name = "event_medical_system", length = 100)
-	@Size(max = 80)
-	private String medicalSystem;
-
-	@Builder
-	public Event(long id,
-	             String name,
-	             LocalDateTime dateTime,
-	             String creator,
-	             Boolean hidden,
-	             Long channel,
-	             List<Squad> squadList,
-	             Long infoMsg,
-	             Long slotListMsg,
-	             String description,
-	             String pictureUrl,
-	             String missionType,
-	             Boolean respawn,
-	             String missionLength,
-	             Boolean reserveParticipating,
-	             String modPack,
-	             String map,
-	             String missionTime,
-	             String navigation,
-	             String technicalTeleport,
-	             String medicalSystem) {
-		this.id = id;
-		this.name = name;
-		this.dateTime = dateTime;
-		this.creator = creator;
-		this.hidden = BooleanUtils.falseIfNull(hidden);
-		this.channel = channel;
-		this.squadList = squadList;
-		this.infoMsg = infoMsg;
-		this.slotListMsg = slotListMsg;
-
-		this.description = description;
-		this.pictureUrl = pictureUrl;
-		this.missionType = missionType;
-		this.respawn = respawn;
-		this.missionLength = missionLength;
-		this.reserveParticipating = reserveParticipating;
-		this.modPack = modPack;
-		this.map = map;
-		this.missionTime = missionTime;
-		this.navigation = navigation;
-		this.technicalTeleport = technicalTeleport;
-		this.medicalSystem = medicalSystem;
-
-		validation();
-	}
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true/*, fetch = FetchType.EAGER*/)
+	@OrderColumn
+	@JsonManagedReference
+	//TODO Max 25 items
+	private List<EventField> details;
 
 	// Getter
 
@@ -311,21 +248,20 @@ public class Event extends AbstractIdEntity {
 	}
 
 	/**
-	 * Checks whether the event has a slot with a non-unique slot number
-	 *
-	 * @throws BusinessRuntimeException if a duplicated slot number has been found
+	 * Validates the event. If the validation fails, an exception is thrown
 	 */
-	private void assertUniqueSlotNumbers() {
+	public void validate() {
 		if (hasDuplicatedSlotNumber()) {
 			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
 		}
-	}
 
-	/**
-	 * Validates the event. If the validation fails, an exception is thrown
-	 */
-	private void validation() {
-		assertUniqueSlotNumbers();
+		if (getDetails().size() > 25) { //Discord only allows 25 fields. Time plan, mission type and reserveParticipating each block one field
+			throw BusinessRuntimeException.builder().title("Es dürfen nur 23 Detailfelder angegeben werden.").build();
+		}
+
+		if (eventType == null) {
+			throw BusinessRuntimeException.builder().title("eventType ist ein Pflichtfeld.").build();
+		}
 	}
 
 	// Setter
@@ -360,6 +296,22 @@ public class Event extends AbstractIdEntity {
 		setSlotListMsg(Long.parseLong(slotListMsgString));
 	}
 
+	/**
+	 * Set parents in child objects
+	 */
+	public void setChilds() {
+		for (Squad squad : getSquadList()) {
+			squad.setEvent(this);
+			for (Slot slot : squad.getSlotList()) {
+				slot.setSquad(squad);
+			}
+		}
+
+		for (EventField field : getDetails()) {
+			field.setEvent(this);
+		}
+	}
+
 	void removeSquad(Squad squad) {
 		getSquadList().remove(squad);
 	}
@@ -373,7 +325,7 @@ public class Event extends AbstractIdEntity {
 	}
 
 	public void slotUpdateWithValidation() {
-		validation();
+		validate();
 		slotUpdate();
 	}
 

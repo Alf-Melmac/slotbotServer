@@ -1,23 +1,20 @@
 package de.webalf.slotbot.model.dtos;
 
+import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 /**
  * @author Alf
- * @since 23.06.2020
+ * @since 08.04.2021
  */
 @EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 @SuperBuilder
-public class EventDto extends AbstractEventDto {
-	private List<SquadDto> squadList;
-
-	private List<EventFieldDto> details;
+public class EventFieldDto extends EventFieldReferencelessDto {
+	private EventDto event;
 }

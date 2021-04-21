@@ -1,6 +1,6 @@
 package de.webalf.slotbot.assembler.api;
 
-import de.webalf.slotbot.assembler.SquadAssembler;
+import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
@@ -8,7 +8,6 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.model.dtos.api.EventApiViewDto;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
-import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -36,27 +35,21 @@ public final class EventApiAssembler {
 		return EventApiDto.builder()
 				.url(getUrl(event.getId()))
 				.id(event.getId())
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
 				.channel(LongUtils.toString(event.getChannel()))
-				.squadList(SquadAssembler.toEventDtoList(event.getSquadList()))
+				.squadList(SquadApiAssembler.toDtoList(event.getSquadList()))
 				.infoMsg(LongUtils.toString(event.getInfoMsg()))
 				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
-				.missionTypeAndRespawn(EventUtils.getMissionTypeRespawnString(event.getMissionType(), event.getRespawn()))
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
-				.modPack(event.getModPack())
-				.modPackUrl(EventUtils.getModPackUrl(event.getModPack()))
-				.map(event.getMap())
-				.missionTime(event.getMissionTime())
-				.navigation(event.getNavigation())
-				.technicalTeleport(event.getTechnicalTeleport())
-				.medicalSystem(event.getMedicalSystem())
+				.details(EventFieldApiAssembler.toDtoList(event.getDetails()))
 				.build();
 	}
 

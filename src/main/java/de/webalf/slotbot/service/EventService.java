@@ -6,7 +6,6 @@ import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
@@ -30,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static de.webalf.slotbot.util.EventUtils.assertApiAccessAllowed;
+
 /**
  * @author Alf
  * @since 27.07.2020
@@ -42,20 +43,19 @@ public class EventService {
 	private final SquadService squadService;
 	private final SlotService slotService;
 	private final UserService userService;
+	private final EventTypeService eventTypeService;
+	private final EventFieldService eventFieldService;
 
 	public Event createEvent(@NonNull EventDto eventDto) {
 		if (StringUtils.isNotEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
 		Event event = EventAssembler.fromDto(eventDto);
+		event.setEventType(eventTypeService.find(eventDto.getEventType()));
 
-		//Ich habe doch auch keine Ahnung was ich tue
-		for (Squad squad : event.getSquadList()) {
-			squad.setEvent(event);
-			for (Slot slot : squad.getSlotList()) {
-				slot.setSquad(squad);
-			}
-		}
+		event.validate();
+
+		event.setChilds();
 
 		return eventRepository.save(event);
 	}
@@ -103,6 +103,15 @@ public class EventService {
 	}
 
 	/**
+	 * In addition to {@link #findById(long)}, the API access rights for the event are checked
+	 */
+	public Event findByIdForApi(long eventId) {
+		final Event event = findById(eventId);
+		assertApiAccessAllowed(event);
+		return event;
+	}
+
+	/**
 	 * Returns all events that take place in the specified period
 	 *
 	 * @return all events in given period
@@ -133,29 +142,28 @@ public class EventService {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
 
+		if (dto.getEventType() != null) {
+			event.setEventType(eventTypeService.find(dto.getEventType()));
+		}
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
-		DtoUtils.ifPresent(dto.getHidden(), event::setHidden);
+		DtoUtils.ifPresent(dto.isHidden(), event::setHidden);
 		DtoUtils.ifPresentOrEmpty(dto.getChannel(), event::setChannelString);
+		if (dto.getSquadList() != null) {
+			squadService.updateSquadList(dto.getSquadList(), event);
+		}
 		DtoUtils.ifPresentOrEmpty(dto.getInfoMsg(), event::setInfoMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getSlotListMsg(), event::setSlotListMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), event::setPictureUrl);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
-		DtoUtils.ifPresent(dto.getRespawn(), event::setRespawn);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
-		DtoUtils.ifPresentOrEmpty(dto.getModPack(), event::setModPack);
-		DtoUtils.ifPresentOrEmpty(dto.getMap(), event::setMap);
-		DtoUtils.ifPresentOrEmpty(dto.getMissionTime(), event::setMissionTime);
-		DtoUtils.ifPresentOrEmpty(dto.getNavigation(), event::setNavigation);
-		DtoUtils.ifPresentOrEmpty(dto.getTechnicalTeleport(), event::setTechnicalTeleport);
-		DtoUtils.ifPresentOrEmpty(dto.getMedicalSystem(), event::setMedicalSystem);
-
-		if (dto.getSquadList() != null) {
-			squadService.updateSquadList(dto.getSquadList(), event);
+		if (dto.getDetails() != null) {
+			eventFieldService.updateEventDetails(dto.getDetails(), event);
+			event.validate();
 		}
 
 		return event;

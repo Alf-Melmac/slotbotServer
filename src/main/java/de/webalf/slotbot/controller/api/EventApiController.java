@@ -1,7 +1,8 @@
 package de.webalf.slotbot.controller.api;
 
-import de.webalf.slotbot.assembler.EventAssembler;
+import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static de.webalf.slotbot.constant.Urls.API;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_READ_PUBLIC_PERMISSION;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_WRITE_PERMISSION;
 
 /**
@@ -25,18 +27,25 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_WRITE_P
 public class EventApiController {
 	private final EventService eventService;
 
+	@GetMapping("/{id}")
+	@PreAuthorize(HAS_READ_PUBLIC_PERMISSION)
+	public EventApiDto getEvent(@PathVariable(value = "id") long eventId) {
+		log.trace("getEvent: " + eventId);
+		return EventApiAssembler.toDto(eventService.findByIdForApi(eventId));
+	}
+
 	@PostMapping
 	@PreAuthorize(HAS_WRITE_PERMISSION)
-	public EventDto postEvent(@Valid @RequestBody EventDto event) {
+	public EventApiDto postEvent(@Valid @RequestBody EventDto event) {
 		log.trace("postEvent: " + event.getName());
-		return EventAssembler.toDto(eventService.createEvent(event));
+		return EventApiAssembler.toDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize(HAS_WRITE_PERMISSION)
-	public EventDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		log.trace("updateEvent: " + event.getName());
 		event.setId(eventId);
-		return EventAssembler.toDto(eventService.updateEvent(event));
+		return EventApiAssembler.toDto(eventService.updateEvent(event));
 	}
 }

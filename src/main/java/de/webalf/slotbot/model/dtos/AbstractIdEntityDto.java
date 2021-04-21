@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @RequiredArgsConstructor
 @SuperBuilder
-public class AbstractIdEntityDto {
+public abstract class AbstractIdEntityDto {
 	@Id
 	@NotNull
 	protected long id;

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 /**
@@ -27,7 +26,6 @@ public class Slot extends AbstractIdEntity {
 	private String name;
 
 	@Column(name = "slot_number")
-	@NotEmpty
 	private int number;
 
 	@ManyToOne(fetch = FetchType.LAZY)

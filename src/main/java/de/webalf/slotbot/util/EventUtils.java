@@ -4,7 +4,7 @@ import de.webalf.slotbot.controller.website.FileController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.util.permissions.ApiPermissionHelper;
 import lombok.NonNull;
@@ -36,17 +36,16 @@ public final class EventUtils {
 	 * @param eventDto event to check
 	 * @throws ForbiddenException if the event is hidden and read permission is not given
 	 */
-	public static void assertApiAccessAllowed(@NonNull EventDto eventDto) throws ForbiddenException {
-		final Boolean hidden = eventDto.getHidden();
-		if (hidden != null && hidden && !ApiPermissionHelper.hasReadPermission()) {
+	public static void assertApiAccessAllowed(@NonNull AbstractEventDto eventDto) throws ForbiddenException {
+		if (eventDto.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
 			throw new ForbiddenException("Access Denied");
 		}
 	}
 
 	/**
-	 * Works just like {@link #assertApiAccessAllowed(EventDto)} but expects a {@link Event} object
+	 * Works just like {@link #assertApiAccessAllowed(AbstractEventDto)} but expects a {@link Event} object
 	 *
-	 * @see #assertApiAccessAllowed(EventDto)
+	 * @see #assertApiAccessAllowed(AbstractEventDto)
 	 */
 	public static void assertApiAccessAllowed(@NonNull Event event) throws ForbiddenException {
 		if (event.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
@@ -105,14 +104,14 @@ public final class EventUtils {
 		}
 
 		EmbedBuilder embedBuilder = new EmbedBuilder()
-				.setColor(new Color((int) (Math.random() * 0x1000000))) //May be removed in future. But signals an update during development
+				.setColor(Color.decode(event.getEventType().getColor()))
 				.setTitle(event.getName(), fixUrl(event.getUrl()))
 				.setDescription(event.getDescription())
 				.setThumbnail(thumbnail)
 				.setFooter("Mission von " + event.getCreator())
 				.setTimestamp(Instant.now());
 
-		if (Boolean.TRUE.equals(event.getHidden())) {
+		if (event.isHidden()) {
 			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");
 		}
 
@@ -139,14 +138,9 @@ public final class EventUtils {
 
 	private static void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull EventApiDto event) {
 		addField("Zeitplan", buildScheduleField(event.getDate(), event.getStartTime(), event.getMissionLength()), embedBuilder);
-		addField("Missionstyp", event.getMissionTypeAndRespawn(), true, embedBuilder);
-		addField("Karte", event.getMap(), true, embedBuilder);
-		addField("Modpack", buildModpackField(event.getModPack(), event.getModPackUrl()), true, embedBuilder);
-		addField("Kann die Reserve mitspielen?", buildReserveParticipatingField(event.getReserveParticipating()), embedBuilder);
-		addField("Missionszeit", event.getMissionTime(), true, embedBuilder);
-		addField("Navigation", event.getNavigation(), true, embedBuilder);
-		addField("Medicsystem", event.getMedicalSystem(), true, embedBuilder);
-		addField("Technischer Teleport", event.getTechnicalTeleport(), true, embedBuilder);
+		addField("Missionstyp", event.getMissionType(), true, embedBuilder);
+		addField("Reserve nimmt teil", buildReserveParticipatingField(event.getReserveParticipating()), true, embedBuilder);
+		event.getDetails().forEach(field -> addField(field.getTitle(), field.getText(), true, embedBuilder));
 	}
 
 	private static String buildScheduleField(LocalDate eventDate, LocalTime eventStartTime, String missionLength) {

@@ -1,10 +1,8 @@
 package de.webalf.slotbot.controller.api;
 
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
-import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.api.EventApiViewDto;
-import de.webalf.slotbot.repository.EventRepository;
+import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static de.webalf.slotbot.constant.Urls.API;
-import static de.webalf.slotbot.util.EventUtils.assertApiAccessAllowed;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_READ_PUBLIC_PERMISSION;
 
 /**
@@ -27,17 +24,13 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_READ_PU
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventApiViewDtoController {
-	private final EventRepository eventRepository;
+	private final EventService eventService;
 	private final EventApiAssembler eventApiAssembler;
 
 	@GetMapping("/{id}")
 	@PreAuthorize(HAS_READ_PUBLIC_PERMISSION)
 	public EventApiViewDto getEventView(@PathVariable(value = "id") long eventId) {
 		log.trace("getEventView: " + eventId);
-		final Event event = eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
-
-		assertApiAccessAllowed(event);
-
-		return eventApiAssembler.toViewDto(event);
+		return eventApiAssembler.toViewDto(eventService.findByIdForApi(eventId));
 	}
 }

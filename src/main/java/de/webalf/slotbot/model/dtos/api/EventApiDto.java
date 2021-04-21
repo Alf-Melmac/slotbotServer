@@ -1,7 +1,6 @@
 package de.webalf.slotbot.model.dtos.api;
 
-import de.webalf.slotbot.model.dtos.EventDto;
-import de.webalf.slotbot.model.dtos.SquadDto;
+import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +15,7 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
-public class EventApiDto extends EventDto {
+public class EventApiDto extends EventReferencelessDto {
 	@NotBlank
 	private final String url;
 
