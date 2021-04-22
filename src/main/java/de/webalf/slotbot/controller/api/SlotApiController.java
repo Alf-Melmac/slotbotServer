@@ -1,8 +1,8 @@
 package de.webalf.slotbot.controller.api;
 
-import de.webalf.slotbot.assembler.EventAssembler;
-import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.SlotDto;
+import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.SlotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class SlotApiController {
 
 	@PutMapping("/swap")
 	@PreAuthorize(HAS_WRITE_PERMISSION)
-	public EventDto putSwap(@RequestBody List<SlotDto> slots) {
-		return EventAssembler.toDto(slotService.swap(slots));
+	public EventApiDto putSwap(@RequestBody List<SlotDto> slots) {
+		return EventApiAssembler.toDto(slotService.swap(slots));
 	}
 }
