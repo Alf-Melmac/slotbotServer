@@ -183,6 +183,11 @@
 					<groupId>club.minnced</groupId>
 					<artifactId>opus-java</artifactId>
 				</exclusion>
+				<!--This version of databind seems to be modified. Dependency from spring-boot-starter-json (web) will be used.-->
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>
