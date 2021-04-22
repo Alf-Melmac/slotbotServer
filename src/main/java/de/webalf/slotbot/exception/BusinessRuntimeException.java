@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -13,7 +15,9 @@ import javax.validation.constraints.NotEmpty;
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class BusinessRuntimeException extends RuntimeException {
+	private static final long serialVersionUID = -3121618107868290626L;
 	private String description;
 
 	@Builder
