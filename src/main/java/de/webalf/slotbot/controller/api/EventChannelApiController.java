@@ -123,9 +123,9 @@ public class EventChannelApiController {
 
 	@DeleteMapping("/delSlot/{slotNumber}")
 	@PreAuthorize(HAS_WRITE_PERMISSION)
-	public EventApiDto postDelSlot(@PathVariable(value = "channelId") long channel,
-								   @PathVariable(value = "slotNumber") int slotNumber) {
-		log.trace("postDelSlot: " + channel + " " + slotNumber);
+	public EventApiDto deleteSlot(@PathVariable(value = "channelId") long channel,
+								  @PathVariable(value = "slotNumber") int slotNumber) {
+		log.trace("deleteSlot: " + channel + " " + slotNumber);
 		return EventApiAssembler.toDto(eventService.deleteSlot(channel, slotNumber));
 	}
 

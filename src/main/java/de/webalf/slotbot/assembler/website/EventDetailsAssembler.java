@@ -37,6 +37,7 @@ public class EventDetailsAssembler {
 
 		return EventDetailsDto.builder()
 				.id(event.getId())
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())

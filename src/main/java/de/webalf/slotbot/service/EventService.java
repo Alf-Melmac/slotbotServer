@@ -246,12 +246,12 @@ public class EventService {
 	 *
 	 * @param channel       event channel
 	 * @param squadPosition to edit name of
-	 * @param slotName      new name
+	 * @param squadName      new name
 	 * @return event in which the slot has been renamed
 	 */
-	public Event renameSquad(long channel, int squadPosition, String slotName) {
+	public Event renameSquad(long channel, int squadPosition, String squadName) {
 		final Event event = findByChannel(channel);
-		event.findSquadByPosition(squadPosition).setName(slotName);
+		event.findSquadByPosition(squadPosition).setName(squadName);
 		return event;
 	}
 

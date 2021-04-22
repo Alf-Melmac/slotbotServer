@@ -29,6 +29,7 @@ public class Squad extends AbstractIdEntity {
 	private String name;
 
 	@OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OrderBy("number")
 	@JsonManagedReference
 	private List<Slot> slotList;
 
@@ -88,6 +89,7 @@ public class Squad extends AbstractIdEntity {
 		return getName().equals(RESERVE_NAME);
 	}
 
+	@Deprecated //@OrderBy is now used. Check if ordered
 	public List<Slot> getSlotListOrdered() {
 		return getSlotList().stream().sorted(Comparator.comparing(Slot::getNumber)).collect(Collectors.toUnmodifiableList());
 	}

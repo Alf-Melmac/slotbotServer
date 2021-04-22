@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @SuperBuilder
 public class EventApiDto extends EventReferencelessDto {
 	@NotBlank
-	private final String url;
+	private String url;
 
 	//Replacement for missionType and respawn
 	@Size(max = 94)

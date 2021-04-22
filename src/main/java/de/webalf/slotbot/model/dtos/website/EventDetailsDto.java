@@ -1,7 +1,8 @@
 package de.webalf.slotbot.model.dtos.website;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
-import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.model.dtos.EventFieldDto;
+import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,9 @@ import java.util.List;
 @Value
 @SuperBuilder
 public class EventDetailsDto extends AbstractIdEntityDto {
+	@NotNull
+	EventTypeDto eventType;
+
 	@NotBlank
 	@Size(max = 80)
 	String name;
@@ -46,13 +50,16 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 
 	@Size(max = 3200)
 	String description;
+
 	@Size(max = 1666)
 	String pictureUrl;
+
 	@Size(max = 80)
 	String missionType;
 	Boolean respawn;
 	@Size(max = 80)
 	String missionLength;
+
 	Boolean reserveParticipating;
 	@Size(max = 80)
 	String modPack;
