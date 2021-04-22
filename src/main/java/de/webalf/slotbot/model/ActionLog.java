@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.enums.LogAction;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 
 /**
@@ -19,7 +18,7 @@ import java.time.Duration;
 public class ActionLog extends AbstractIdEntity {
 	@Column(name = "action")
 	@Enumerated(EnumType.STRING)
-	@NotBlank
+	@NonNull
 	private LogAction action;
 
 	@Column(name = "time_gap")
