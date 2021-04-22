@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
@@ -80,8 +81,14 @@ public final class MessageUtils {
 	 *
 	 * @param channel in which the latest message should be deleted
 	 */
-	public static void deleteLatestMessage(@NonNull MessageChannel channel) {
-		deleteMessagesInstant(channel, channel.getLatestMessageIdLong());
+	public static void deleteLatestMessageIfTypePinAdd(@NonNull MessageChannel channel) {
+		final long latestMessageId = channel.getLatestMessageIdLong();
+		channel.retrieveMessageById(latestMessageId).queue(message -> {
+			if (MessageType.CHANNEL_PINNED_ADD == message.getType()) {
+				deleteMessagesInstant(channel, latestMessageId);
+			}
+		});
+
 	}
 
 	/**

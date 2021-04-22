@@ -75,7 +75,7 @@ public class EventPrint implements DiscordCommand {
 		return slotListMsg -> {
 			eventApiDto.setSlotListMsg(slotListMsg.getId());
 
-			slotListMsg.pin().queue(unused -> deleteLatestMessage(channel));
+			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
 
 			eventBotService.updateEvent(eventApiDto);
 		};
