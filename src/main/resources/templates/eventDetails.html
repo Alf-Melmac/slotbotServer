@@ -5,6 +5,7 @@
 	<meta property="og:title" th:content="${event.name}">
 	<meta property="og:image" th:content="${event.getPictureUrl()}">
 
+	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/copy.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
@@ -15,12 +16,25 @@
 
 <section class="content-section">
 	<div class="container">
+		<div class="row font-d">
+			<div class="col-md-12">
+				<p class="mb-2">
+					<a th:href="${eventsUrl}">
+						<em class="fas fa-chevron-circle-left"></em> Zum Event-Kalender
+					</a>
+					<span> | </span>
+					<span class="d-inline-block align-middle rounded square-em-1" th:style="'background-color:' + ${event.eventType.color} + ';'"></span>
+					<span th:text="${event.missionType}"></span> <span th:text="${event.eventType.name}"></span>
+				</p>
+			</div>
+		</div>
+
 		<div th:if="${event.hidden}" class="alert alert-warning" role="alert">
-			Diese Event ist für Mitspieler noch nicht sichtbar. Wenn das Slotten beginnen kann, gebe das Event über den
+			Dieses Event ist für Mitspieler noch nicht sichtbar. Wenn das Slotten beginnen kann, gebe das Event über den
 			Editiermodus frei.
 		</div>
 
-		<div class="row mb-3">
+		<div class="row">
 			<div class="col-md-4">
 				<div id="event-img">
 					<img class="img-fluid" alt="Event Bild" th:src="${event.getPictureUrl()}"/>
@@ -88,14 +102,25 @@
 					<p th:text="${event.description}" class="mb-0 text-truncate"></p>
 					<a class="btn btn-sm btn-default viewMore" data-toggle="collapse" aria-expanded="false"
 					   aria-controls="collapse-1" role="button" href="#collapse-1"></a>
-					<div id="collapse-1" class="collapse">
-						<p th:utext="${eventDescriptionHtml}">
-							Beschreibung
-						</p>
-					</div>
 				</div>
 			</div>
 		</div>
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<small>Mission von <em th:text="${event.creator}"></em></small>
+			</div>
+		</div>
+
+		<div class="row" th:unless="${#strings.isEmpty(event.description)}">
+			<div class="col-md-12">
+				<div id="collapse-1" class="collapse">
+					<p th:utext="${eventDescriptionHtml}">
+						Beschreibung
+					</p>
+				</div>
+			</div>
+		</div>
+
 		<ul class="nav nav-tabs mb-2" role="tablist">
 			<li class="nav-item">
 				<a id="slotlist-tab" class="nav-link active" data-toggle="tab" href="#slotlist" role="tab"
@@ -146,15 +171,6 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
-						<div class="row"
-						     th:unless="${#strings.isEmpty(event.missionType) && #strings.isEmpty(event.respawn)}">
-							<div class="col-md-4">
-								<label>Missionstyp</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.getMissionTypeRespawnString()}"></p>
-							</div>
-						</div>
 						<div class="row" th:if="${event.reserveParticipating != null}">
 							<div class="col-md-4">
 								<label>Kann die Reserve mitspielen?</label>
@@ -163,60 +179,15 @@
 								<p class="mb-0" th:text="${event.reserveParticipating ? 'Ja' : 'Nein'}">Ja</p>
 							</div>
 						</div>
-						<div class="row" th:unless="${#strings.isEmpty(event.modPack)}">
+						<div class="row" th:each="field : ${event.details}">
 							<div class="col-md-4">
-								<label>Modpack</label>
+								<label th:text="${field.title}">Field Name</label>
 							</div>
 							<div class="col-md-8">
-								<div th:switch="${event.modPack}">
-									<p class="mb-0" th:unless="${#strings.isEmpty(event.modPackUrl)}">
-										<a th:href="${event.modPackUrl}" th:text="${event.modPack}"></a>
-									</p>
-									<p class="mb-0" th:if="${#strings.isEmpty(event.modPackUrl)}"
-									   th:text="${event.modPack}"></p>
-								</div>
+								<p class="mb-0" th:text="${field.text}">Field description</p>
 							</div>
 						</div>
-						<div class="row" th:unless="${#strings.isEmpty(event.technicalTeleport)}">
-							<div class="col-md-4">
-								<label>Technischer Teleport</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.technicalTeleport}"></p>
-							</div>
-						</div>
-						<div class="row" th:unless="${#strings.isEmpty(event.medicalSystem)}">
-							<div class="col-md-4">
-								<label>Medic-System</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.medicalSystem}"></p>
-							</div>
-						</div>
-						<div class="row" th:unless="${#strings.isEmpty(event.map)}">
-							<div class="col-md-4">
-								<label>Karte</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.map}"></p>
-							</div>
-						</div>
-						<div class="row" th:unless="${#strings.isEmpty(event.missionTime)}">
-							<div class="col-md-4">
-								<label>Missionszeit</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.missionTime}"></p>
-							</div>
-						</div>
-						<div class="row" th:unless="${#strings.isEmpty(event.navigation)}">
-							<div class="col-md-4">
-								<label>Navigationssysteme</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.navigation}"></p>
-							</div>
-						</div>
+
 					</div>
 				</div>
 			</div>
