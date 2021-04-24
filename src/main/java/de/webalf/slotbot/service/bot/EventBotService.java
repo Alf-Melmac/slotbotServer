@@ -3,7 +3,7 @@ package de.webalf.slotbot.service.bot;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
@@ -49,7 +49,7 @@ public class EventBotService {
 		}
 	}
 
-	public void updateEvent(EventDto dto) {
+	public void updateEvent(AbstractEventDto dto) {
 		eventService.updateEvent(dto);
 	}
 

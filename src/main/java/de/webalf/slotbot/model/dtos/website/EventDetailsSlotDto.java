@@ -2,7 +2,6 @@ package de.webalf.slotbot.model.dtos.website;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -21,7 +20,6 @@ public class EventDetailsSlotDto extends AbstractIdEntityDto {
 	@Size(max = 80)
 	String name;
 
-	@Getter //Used for ordering
 	int number;
 
 	String text;

@@ -33,9 +33,13 @@ public class EventDetailsAssembler {
 
 	public EventDetailsDto toDto(@NonNull Event event) {
 		LocalDateTime dateTime = event.getDateTime();
-		String channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
+		String channelUrl = null;
+		if (event.getChannel() != null) {
+			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
+		}
 
 		return EventDetailsDto.builder()
+				.channelUrl(channelUrl)
 				.id(event.getId())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.name(event.getName())
@@ -43,21 +47,16 @@ public class EventDetailsAssembler {
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
-				.channelUrl(event.getChannel() != null ? channelUrl : null)
+				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.infoMsg(LongUtils.toString(event.getInfoMsg()))
+				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
-				.respawn(event.getRespawn())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
-				.modPack(event.getModPack())
-				.modPackUrl(EventUtils.getModPackUrl(event.getModPack()))
-				.map(event.getMap())
-				.missionTime(event.getMissionTime())
-				.navigation(event.getNavigation())
-				.technicalTeleport(event.getTechnicalTeleport())
-				.medicalSystem(event.getMedicalSystem())
+				.details(EventFieldAssembler.toReferencelessDtoList(event.getDetails()))
 				.build();
 	}
 
@@ -68,7 +67,7 @@ public class EventDetailsAssembler {
 	}
 
 	private EventDetailsSquadDto toEventDetailsDto(@NonNull Squad squad) {
-		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotList()).stream().sorted(Comparator.comparing(EventDetailsSlotDto::getNumber)).collect(Collectors.toList());
+		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotListOrdered());
 		return EventDetailsSquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())

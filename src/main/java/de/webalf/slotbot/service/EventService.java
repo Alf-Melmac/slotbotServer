@@ -7,6 +7,7 @@ import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
@@ -134,7 +135,7 @@ public class EventService {
 		return eventRepository.findAllParticipants(channel);
 	}
 
-	public Event updateEvent(@NonNull EventDto dto) {
+	public Event updateEvent(@NonNull AbstractEventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 
 		if (StringUtils.isNotEmpty(dto.getChannel())
@@ -151,9 +152,6 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresent(dto.isHidden(), event::setHidden);
 		DtoUtils.ifPresentOrEmpty(dto.getChannel(), event::setChannelString);
-		if (dto.getSquadList() != null) {
-			squadService.updateSquadList(dto.getSquadList(), event);
-		}
 		DtoUtils.ifPresentOrEmpty(dto.getInfoMsg(), event::setInfoMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getSlotListMsg(), event::setSlotListMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
@@ -161,6 +159,17 @@ public class EventService {
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
+
+		return event;
+	}
+
+	//TODO check if correct
+	public Event updateEvent(@NonNull EventDto dto) {
+		Event event = updateEvent(dto);
+
+		if (dto.getSquadList() != null) {
+			squadService.updateSquadList(dto.getSquadList(), event);
+		}
 		if (dto.getDetails() != null) {
 			eventFieldService.updateEventDetails(dto.getDetails(), event);
 			event.validate();

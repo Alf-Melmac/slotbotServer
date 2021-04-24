@@ -92,7 +92,7 @@ public class Event extends AbstractSuperIdEntity {
 	@Column(name = "event_reserve_participating")
 	private Boolean reserveParticipating;
 
-	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true/*, fetch = FetchType.EAGER*/)
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
 	//TODO Max 25 items
@@ -414,8 +414,8 @@ public class Event extends AbstractSuperIdEntity {
 	 * @param reserve reserve Squad
 	 */
 	private void adjustReserveSize(@NonNull Squad reserve) {
-		List<Slot> oldSlotList = reserve.getSlotList();
-		List<User> reserveUsers = oldSlotList.stream().sorted(Comparator.comparing(Slot::getNumber))
+		List<Slot> oldSlotList = reserve.getSlotListOrdered();
+		List<User> reserveUsers = oldSlotList.stream()
 				.map(Slot::getUser).filter(Objects::nonNull)
 				.collect(Collectors.toList());
 

@@ -24,17 +24,4 @@ public class SquadDto extends AbstractIdEntityDto {
 	List<SlotDto> slotList;
 
 	EventDto event;
-
-	/**
-	 * Prepares the squad to be used in the slotlist
-	 *
-	 * @return squad in discord message format
-	 */
-	public StringBuilder toSlotList() {
-		StringBuilder squadText = new StringBuilder("**").append(getName()).append("**");
-		for (SlotDto slot : getSlotList()) {
-			squadText.append("\n").append(slot.toSlotList());
-		}
-		return squadText;
-	}
 }

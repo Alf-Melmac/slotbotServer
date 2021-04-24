@@ -47,6 +47,7 @@ public final class EventApiAssembler {
 				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
+				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.details(EventFieldApiAssembler.toDtoList(event.getDetails()))
