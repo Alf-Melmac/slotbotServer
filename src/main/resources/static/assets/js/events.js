@@ -1,7 +1,6 @@
 $(function () {
     "use strict";
     const $spinner = $('#spinner');
-    $spinner.hide();
 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
