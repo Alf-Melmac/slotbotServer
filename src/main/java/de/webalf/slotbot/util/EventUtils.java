@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util;
 
-import de.webalf.slotbot.controller.website.FileController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
@@ -21,8 +20,6 @@ import java.util.List;
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 import static de.webalf.slotbot.util.DateUtils.TIME_FORMATTER;
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -50,50 +47,6 @@ public final class EventUtils {
 	public static void assertApiAccessAllowed(@NonNull Event event) throws ForbiddenException {
 		if (event.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
 			throw new ForbiddenException("Access Denied");
-		}
-	}
-
-	/**
-	 * Combines the two given parameters to one string that can be shown
-	 *
-	 * @return compound of the two event params if present
-	 */
-	public static String getMissionTypeRespawnString(String missionType, Boolean respawn) {
-		String compound = "";
-		boolean respawnExists = respawn != null;
-		if (StringUtils.isNotEmpty(missionType)) {
-			compound += missionType;
-			if (respawnExists) {
-				compound += ", ";
-			}
-		}
-		if (respawnExists) {
-			compound += Boolean.TRUE.equals(respawn) ? "Respawn" : "Kein Respawn";
-		}
-		return compound;
-	}
-
-	public static String getModPackUrl(String modPack) {
-		if (modPack == null) {
-			return null;
-		}
-		switch (modPack) {
-			case "2008_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2008_ArmaMachtBock.html")).toUri().toString();
-			case "2012_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2012_ArmaMachtBock_Full.html")).toUri().toString();
-			case "2101_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2101_ArmaMachtBock_Full_v2.html")).toUri().toString();
-			case "2103_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2103_ArmaMachtBock_Full.html")).toUri().toString();
-			case "2102_Event":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2102_Event.html")).toUri().toString();
-			case "Joined_Operations_2020":
-				return linkTo(methodOn(FileController.class).getFile("Joined_Operations_2020v2.html")).toUri().toString();
-			case "Alliance_2021v1":
-				return linkTo(methodOn(FileController.class).getFile("Alliance_2021v1.html")).toUri().toString();
-			default:
-				return null;
 		}
 	}
 
@@ -146,10 +99,6 @@ public final class EventUtils {
 	private static String buildScheduleField(LocalDate eventDate, LocalTime eventStartTime, String missionLength) {
 		final String dateTimeText = DATE_FORMATTER.format(eventDate) + ", " + TIME_FORMATTER.format(eventStartTime) + " Uhr";
 		return StringUtils.isNotEmpty(missionLength) ? dateTimeText + " und dauert " + missionLength : dateTimeText;
-	}
-
-	private static String buildModpackField(String modPack, String modPackUrl) {
-		return StringUtils.isNotEmpty(modPackUrl) ? "[" + modPack + "](" + fixUrl(modPackUrl) + ")" : modPack;
 	}
 
 	private static String buildReserveParticipatingField(Boolean reserveParticipating) {

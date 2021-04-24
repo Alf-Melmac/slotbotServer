@@ -1,5 +1,7 @@
 package de.webalf.slotbot.assembler.website;
 
+import de.webalf.slotbot.assembler.EventFieldAssembler;
+import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
@@ -8,7 +10,6 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;

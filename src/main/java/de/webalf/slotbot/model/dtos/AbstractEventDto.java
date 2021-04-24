@@ -1,5 +1,7 @@
 package de.webalf.slotbot.model.dtos;
 
+import de.webalf.slotbot.util.ListUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * @author Alf
@@ -59,4 +62,23 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	private String missionLength;
 
 	private Boolean reserveParticipating;
+
+	//TODO Here?
+	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
+	public String getPictureUrl() {
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : AMB_LOGO;
+	}
+
+	@Getter
+	private static final List<String> MISSION_TYPES = List.of("COOP", "COOP+", "Zeus", "TvT", "Training", "Spezial", "Anderes");
+
+	/**
+	 * Returns known mission types, except the one saved in the event
+	 *
+	 * @return known mission types except the saved one
+	 */
+	@SuppressWarnings("unused") //eventEdit.html
+	public List<String> getMissionTypesFiltered() {
+		return ListUtils.getListFiltered(MISSION_TYPES, getMissionType());
+	}
 }
