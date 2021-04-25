@@ -39,7 +39,9 @@ function saveEvent($saveBtn) {
 
     let event = {};
     $('input,textarea,select')
-        .filter((index, element) => !$(element).attr('class').includes('squad') && !$(element).attr('class').includes('slot'))
+        .filter((index, element) => !$(element).attr('class').includes('squad')
+            && !$(element).attr('class').includes('slot')
+            && !$(element).attr('class').includes('field'))
         .each(function (index, element) {
             const $el = $(element);
             const key = $el.data('dtokey');
@@ -65,6 +67,7 @@ function saveEvent($saveBtn) {
             }
         });
 
+    event.details = getDetails();
     event.squadList = getSquads(false);
 
     event.hidden = $('#eventHidden').find('.far').hasClass('fa-eye-slash');
@@ -78,6 +81,19 @@ function saveEvent($saveBtn) {
     })
         .done(savedEvent => window.location.href = eventDetailsUrl.replace('{eventId}', savedEvent.id))
         .fail(response => alert(JSON.stringify(response) + '\nAktion fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
+}
+
+function getDetails() {
+    let details = [];
+    $('#eventDetails .js.field').each(function (fieldIndex, fieldElement) {
+        const $field = $(fieldElement);
+        const field = {
+            title: $field.find('.js-field-title').val(),
+            text: $field.find('.js-field-text').val()
+        }
+        details.push(field);
+    });
+    return details;
 }
 
 function getSquads(update) {

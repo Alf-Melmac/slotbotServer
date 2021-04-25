@@ -95,7 +95,7 @@ public class Event extends AbstractSuperIdEntity {
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
-	//TODO Max 25 items
+	//TODO Max 25 items (Minus zeitplan und reserve = 23)
 	private List<EventField> details;
 
 	// Getter

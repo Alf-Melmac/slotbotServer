@@ -10,3 +10,7 @@
 .font-d { /*Body default*/
   font-size: 1rem;
 }
+
+textarea.one-row { /*Default font size plus border*/
+  height: 2.5em;
+}
