@@ -33,6 +33,9 @@ $(function () {
             toolbarPosition: 'bottom',
             toolbarExtraButtons: [btnCancel, btnFinish]
         },
+        keyboardSettings: {
+            keyNavigation: false,
+        },
         lang: {
             next: 'Weiter',
             previous: 'Vorherige'
