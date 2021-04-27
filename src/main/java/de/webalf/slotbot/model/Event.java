@@ -95,7 +95,6 @@ public class Event extends AbstractSuperIdEntity {
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
-	//TODO Max 25 items (Minus zeitplan und reserve = 23)
 	private List<EventField> details;
 
 	// Getter
@@ -255,7 +254,7 @@ public class Event extends AbstractSuperIdEntity {
 			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
 		}
 
-		if (getDetails().size() > 25) { //Discord only allows 25 fields. Time plan, mission type and reserveParticipating each block one field
+		if (getDetails().size() > 23) { //Discord only allows 25 fields. Time plan, mission type and reserveParticipating each block one field
 			throw BusinessRuntimeException.builder().title("Es dürfen nur 23 Detailfelder angegeben werden.").build();
 		}
 
