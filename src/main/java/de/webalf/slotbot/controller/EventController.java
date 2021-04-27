@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -32,26 +33,26 @@ public class EventController {
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
-	                                         @RequestParam LocalDateTime end) {
+											 @RequestParam LocalDateTime end) {
 		return CalendarEventAssembler.toDtoList(eventService.findAllBetween(start, end));
 	}
 
 	@PostMapping
 	@PreAuthorize(HAS_ROLE_CREATOR)
-	public EventDto postEvent(@Valid @RequestBody EventDto event) {
-		return EventAssembler.toDto(eventService.createEvent(event));
+	public EventReferencelessDto postEvent(@Valid @RequestBody EventDto event) {
+		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize(HAS_ROLE_CREATOR)
-	public EventDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+	public EventReferencelessDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		event.setId(eventId);
-		return EventAssembler.toDto(eventService.updateEvent(event));
+		return EventAssembler.toReferencelessDto(eventService.updateEvent(event));
 	}
 
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_ROLE_CREATOR)
-	public EventDto updateEventEditable(long pk, String name, String value) {
+	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {
 		EventDto dto = EventDto.builder().id(pk).build();
 		try {
 			ReflectionUtils.setField(dto.getClass().getDeclaredField(name), dto, value);
@@ -59,6 +60,6 @@ public class EventController {
 			log.error("Can't find field " + name + " while trying to edit it.", e);
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
 		}
-		return EventAssembler.toDto(eventService.updateEvent(dto));
+		return EventAssembler.toReferencelessDto(eventService.updateEvent(dto));
 	}
 }

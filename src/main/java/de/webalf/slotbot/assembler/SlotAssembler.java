@@ -2,10 +2,10 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.SlotDto;
-import org.springframework.stereotype.Component;
+import de.webalf.slotbot.model.dtos.referenceless.SlotReferencelessDto;
+import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -14,7 +14,7 @@ import java.util.stream.StreamSupport;
  * @author Alf
  * @since 23.06.2020
  */
-@Component
+@UtilityClass
 public final class SlotAssembler {
 	/**
 	 * To be used if the focus relies on the slot
@@ -51,9 +51,8 @@ public final class SlotAssembler {
 	/**
 	 * To be used if the focus relies on the event
 	 */
-	private static SlotDto toEventDto(Slot slot) {
-		//Don't add Squad here to prevent endless loops
-		return SlotDto.builder()
+	private static SlotReferencelessDto toReferencelessDto(Slot slot) {
+		return SlotReferencelessDto.builder()
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
@@ -72,10 +71,9 @@ public final class SlotAssembler {
 	/**
 	 * To be used if the focus relies on the event
 	 */
-	static List<SlotDto> toEventDtoList(Iterable<? extends Slot> slotList) {
+	static List<SlotReferencelessDto> toReferencelessDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
-				.map(SlotAssembler::toEventDto)
-				.sorted(Comparator.comparing(SlotDto::getNumber))
+				.map(SlotAssembler::toReferencelessDto)
 				.collect(Collectors.toList());
 	}
 

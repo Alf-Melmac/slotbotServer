@@ -2,7 +2,8 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.SquadDto;
-import org.springframework.stereotype.Component;
+import de.webalf.slotbot.model.dtos.referenceless.SquadReferencelessDto;
+import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.stream.StreamSupport;
  * @author Alf
  * @since 23.06.2020
  */
-@Component
+@UtilityClass
 public final class SquadAssembler {
 	static Squad fromDto(SquadDto squadDto) {
 		if (squadDto == null) {
@@ -31,12 +32,11 @@ public final class SquadAssembler {
 	/**
 	 * To be used if the focus relies on the event
 	 */
-	private static SquadDto toEventDto(Squad squad) {
-		//Don't add Event here to prevent endless loops
-		return SquadDto.builder()
+	private static SquadReferencelessDto toReferencelessDto(Squad squad) {
+		return SquadReferencelessDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.slotList(SlotAssembler.toEventDtoList(squad.getSlotList()))
+				.slotList(SlotAssembler.toReferencelessDtoList(squad.getSlotList()))
 				.build();
 	}
 
@@ -47,13 +47,13 @@ public final class SquadAssembler {
 		return SquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.event(EventAssembler.toSlotDto(squad.getEvent()))
+				.event(EventAssembler.toAbstractDto(squad.getEvent()))
 				.build();
 	}
 
-	public static List<SquadDto> toEventDtoList(Iterable<? extends Squad> squadList) {
+	static List<SquadReferencelessDto> toReferencelessDtoList(Iterable<? extends Squad> squadList) {
 		return StreamSupport.stream(squadList.spliterator(), false)
-				.map(SquadAssembler::toEventDto)
+				.map(SquadAssembler::toReferencelessDto)
 				.collect(Collectors.toList());
 	}
 
