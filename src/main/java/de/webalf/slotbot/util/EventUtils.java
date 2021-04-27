@@ -61,7 +61,7 @@ public final class EventUtils {
 				.setTitle(event.getName(), fixUrl(event.getUrl()))
 				.setDescription(event.getDescription())
 				.setThumbnail(thumbnail)
-				.setFooter("Mission von " + event.getCreator())
+				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
 				.setTimestamp(Instant.now());
 
 		if (event.isHidden()) {
