@@ -63,7 +63,7 @@ function saveEvent($saveBtn) {
                 return;
             }
             if (value !== '') {
-                event[key] = value;
+                indexObjWithDotNotationKey(event, key, value);
             }
         });
 
@@ -83,9 +83,25 @@ function saveEvent($saveBtn) {
         .fail(response => alert(JSON.stringify(response) + '\nAktion fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
 }
 
+//Gets or sets value in given obj with given (dot notated) key
+function indexObjWithDotNotationKey(obj, key, value) {
+    if (typeof key == 'string') {
+        return indexObjWithDotNotationKey(obj, key.split('.'), value);
+    } else if (key.length === 1 && value !== undefined) {
+        return obj[key[0]] = value;
+    } else if (key.length === 0) {
+        return obj;
+    } else {
+        if (!obj[key[0]]) {
+            obj[key[0]] = {};
+        }
+        return indexObjWithDotNotationKey(obj[key[0]], key.slice(1), value);
+    }
+}
+
 function getDetails() {
     let details = [];
-    $('#eventDetails .js.field').each(function (fieldIndex, fieldElement) {
+    $('#eventDetails .js-field').each(function (fieldIndex, fieldElement) {
         const $field = $(fieldElement);
         const field = {
             title: $field.find('.js-field-title').val(),

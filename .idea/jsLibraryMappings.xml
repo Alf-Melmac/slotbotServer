@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$" libraries="{@fortawesome/fontawesome-free, bootstrap, datatables, fullcalendar, jquery, jquery.easing, moment, popper.js, smartwizard, tempusdominus-bootstrap-4, x-editable}" />
+    <file url="file://$PROJECT_DIR$" libraries="{@fortawesome/fontawesome-free, bootstrap, bootstrap-colorpicker, datatables, fullcalendar, jquery, jquery.easing, moment, popper.js, smartwizard, tempusdominus-bootstrap-4, x-editable}" />
   </component>
 </project>
