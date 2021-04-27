@@ -83,7 +83,7 @@ public class EventWebController {
 		return mav;
 	}
 
-	@GetMapping("/edit/{id}")
+	@GetMapping("/{id}/edit")
 	@PreAuthorize(HAS_ROLE_CREATOR)
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventEdit");
