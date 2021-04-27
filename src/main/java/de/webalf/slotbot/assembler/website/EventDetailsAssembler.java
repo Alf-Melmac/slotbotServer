@@ -67,7 +67,7 @@ public class EventDetailsAssembler {
 	}
 
 	private EventDetailsSquadDto toEventDetailsDto(@NonNull Squad squad) {
-		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotListOrdered());
+		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotList());
 		return EventDetailsSquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())

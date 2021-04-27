@@ -346,7 +346,7 @@ public class Event extends AbstractSuperIdEntity {
 						}));
 			}
 
-			List<Slot> reserveSlots = reserve.getSlotListOrdered();
+			List<Slot> reserveSlots = reserve.getSlotList();
 			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toUnmodifiableList());
 
 			//Empty reserve
@@ -414,7 +414,7 @@ public class Event extends AbstractSuperIdEntity {
 	 * @param reserve reserve Squad
 	 */
 	private void adjustReserveSize(@NonNull Squad reserve) {
-		List<Slot> oldSlotList = reserve.getSlotListOrdered();
+		List<Slot> oldSlotList = reserve.getSlotList();
 		List<User> reserveUsers = oldSlotList.stream()
 				.map(Slot::getUser).filter(Objects::nonNull)
 				.collect(Collectors.toList());

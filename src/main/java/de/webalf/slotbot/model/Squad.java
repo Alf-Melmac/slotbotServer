@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.exception.ForbiddenException;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Alf
@@ -29,6 +29,8 @@ public class Squad extends AbstractIdEntity {
 	private String name;
 
 	@OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SELECT) //FetchMode adds n+1 but prevents duplicates in list
+	@OrderBy("number")
 	@JsonManagedReference
 	private List<Slot> slotList;
 
@@ -86,10 +88,6 @@ public class Squad extends AbstractIdEntity {
 	 */
 	public boolean isReserve() {
 		return getName().equals(RESERVE_NAME);
-	}
-
-	public List<Slot> getSlotListOrdered() {
-		return getSlotList().stream().sorted(Comparator.comparing(Slot::getNumber)).collect(Collectors.toUnmodifiableList());
 	}
 
 	public boolean hasEmptySlot() {
