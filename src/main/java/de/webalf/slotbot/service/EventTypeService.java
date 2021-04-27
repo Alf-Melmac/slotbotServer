@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author Alf
  * @since 09.04.2021
@@ -23,5 +25,9 @@ public class EventTypeService {
 	public EventType find(@NonNull EventTypeDto eventTypeDto) {
 		return eventTypeRepository.findEventTypeByNameAndColor(eventTypeDto.getName(), eventTypeDto.getColor())
 				.orElseGet(() -> eventTypeRepository.save(EventTypeAssembler.fromDto(eventTypeDto)));
+	}
+
+	public List<EventType> findAll() {
+		return eventTypeRepository.findAll();
 	}
 }

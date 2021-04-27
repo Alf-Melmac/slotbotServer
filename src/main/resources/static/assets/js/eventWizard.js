@@ -7,6 +7,19 @@ $(function () {
         $(this).find('.far').toggleClass('fa-eye fa-eye-slash');
     });
 
+    $('#eventTypeTitle').on('input', function () {
+        const $input = $(this);
+        //Check if option is in datalist
+        const match = $('#' + $input.attr('list') + ' option').filter(function () {
+            return ($(this).val() === $input.val());
+        });
+
+        if (match.length > 0) {
+            const $match = $(match[0]);
+            setColor($match.data('color'));
+        }
+    });
+
     const $smartWizard = $('#smartwizard');
 
     // Toolbar extra buttons
@@ -54,7 +67,7 @@ $(function () {
     });
 
     // Step leave event
-    $smartWizard.on('leaveStep', function(e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
+    $smartWizard.on('leaveStep', function (e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
         if (stepDirection === 'forward') {
             return areAllRequiredFieldsFilled('[required]:visible');
         }

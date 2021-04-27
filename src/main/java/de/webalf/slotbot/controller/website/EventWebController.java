@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.service.EventService;
+import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.permissions.BotPermissionHelper;
@@ -30,6 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EventWebController {
 	private final EventService eventService;
 	private final EventDetailsAssembler eventDetailsAssembler;
+	private final EventTypeService eventTypeService;
 
 	private static final String START_URL_STRING = "startUrl";
 	private static final String START_URL = linkTo(methodOn(StartWebController.class).getStart()).toUri().toString();
@@ -60,6 +62,7 @@ public class EventWebController {
 
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
+		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
 				.getEventDetailsHtml(Long.MIN_VALUE))

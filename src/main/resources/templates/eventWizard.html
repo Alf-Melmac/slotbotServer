@@ -7,7 +7,8 @@
 	<link rel="stylesheet"
 	      href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css"
 	      integrity="sha256-VL9T9QfjO/EGCzuu5CtTWWzIksAkGDTs+fO51ALqMjg=" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-colorpicker@3.3.0/dist/css/bootstrap-colorpicker.min.css"
+	<link rel="stylesheet"
+	      href="https://cdn.jsdelivr.net/npm/bootstrap-colorpicker@3.3.0/dist/css/bootstrap-colorpicker.min.css"
 	      integrity="sha256-17wSnqdRI9sWIxEZ1cMPunDErwMYQ4ZPzCkSaxjSSoE=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
@@ -85,8 +86,12 @@
 						<div class="form-row">
 							<div class="form-group col-md-8">
 								<label for="eventTypeTitle">Event-Typ-Name</label>
-								<input id="eventTypeTitle" class="form-control" type="text" data-dtokey="eventType.name"
-								       placeholder="Name" required>
+								<input id="eventTypeTitle" class="form-control custom-select" type="text"
+								       list="eventTypes" data-dtokey="eventType.name" placeholder="Name" required>
+								<datalist id="eventTypes">
+									<option th:each="eventType : ${eventTypes}"
+									        th:text="${eventType.name}" th:data-color="${eventType.color}"></option>
+								</datalist>
 							</div>
 							<div class="form-group input-group col-md-4">
 								<label for="eventTypeColor">Event-Typ-Farbe</label>
@@ -143,7 +148,9 @@
 								<em class="fas fa-plus"></em>
 							</button>
 							<span> Feld hinzufügen</span>
-							<small id="fieldCounter" class="bg-success p-1"><span id="fieldCounterCount">0</span>/23</small>
+							<small id="fieldCounter" class="bg-success p-1">
+								<span id="fieldCounterCount">0</span>/23
+							</small>
 						</div>
 					</form>
 				</div>
