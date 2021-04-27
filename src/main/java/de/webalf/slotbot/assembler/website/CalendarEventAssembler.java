@@ -24,7 +24,8 @@ public final class CalendarEventAssembler {
 		return CalendarEventDto.builder()
 				.title(event.getName())
 				.start(event.getDateTime())
-				.description(convertShortInformation(event.getShortInformation()))
+				.color(event.getEventType().getColor())
+				.description(convertShortInformation(event.getShortInformation(), event.getName()))
 				.url(linkTo(methodOn(EventWebController.class).getEventDetailsHtml(event.getId())).toUri().toString())
 				.build();
 	}
@@ -45,10 +46,10 @@ public final class CalendarEventAssembler {
 	 * @param shortInformation to display
 	 * @return html formatted text to display
 	 */
-	private static String convertShortInformation(ShortEventInformationDto shortInformation) {
+	private static String convertShortInformation(ShortEventInformationDto shortInformation, String eventName) {
 		final int emptySlotsCount = shortInformation.getEmptySlotsCount();
 
-		StringBuilder s = new StringBuilder();
+		StringBuilder s = new StringBuilder(BOLD).append(eventName).append(BOLD_CLOSE).append(BREAK);
 
 		if (emptySlotsCount > 0) {
 			s.append(BOLD);
