@@ -85,8 +85,8 @@
 						</div>
 						<div class="form-row">
 							<div class="form-group col-md-8">
-								<label for="eventTypeTitle">Event-Typ-Name</label>
-								<input id="eventTypeTitle" class="form-control custom-select" type="text"
+								<label for="eventTypeName">Event-Typ-Name</label>
+								<input id="eventTypeName" class="form-control custom-select" type="text"
 								       list="eventTypes" data-dtokey="eventType.name" placeholder="Name" required>
 								<datalist id="eventTypes">
 									<option th:each="eventType : ${eventTypes}"
@@ -140,7 +140,16 @@
 				</div>
 
 				<div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
-					<h3>Details</h3>
+					<div class="row">
+						<div class="col-md-9">
+							<h3>Details</h3>
+						</div>
+						<div class="col-md-3">
+							<div id="addDefaultFields" class="btn btn-secondary float-right collapse" type="button"
+							     data-toggle="modal" data-target="#addDefaultFieldsWarning"></div>
+						</div>
+					</div>
+
 					<form>
 						<div id="eventDetails" class="js-sortable"></div>
 						<div id="addFieldWrapper">
@@ -192,6 +201,28 @@
 	</div>
 </section>
 
+<!--Add default fields warning-->
+<div id="addDefaultFieldsWarning" class="modal fade" tabindex="-1"
+     aria-labelledby="addDefaultFieldsWarningLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header border border-warning">
+				<h5 id="addDefaultFieldsWarningLabel" class="modal-title">Warnung</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Die Default Felder überschreiben alle bereits vorhanden Felder und Werte. Fortfahren?
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" data-dismiss="modal">Schließen</button>
+				<button id="addDefaultFieldsConfirmed" class="btn btn-warning" type="button">Felder setzen</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <footer th:insert="fragments/general.html :: footer"></footer>
 
 <script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
@@ -200,6 +231,7 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const eventsUrl = /*[[${eventsUrl}]]*/ '';
+	const eventFieldDefaultsUrl = /*[[${eventFieldDefaultsUrl}]]*/ '';
 	const postEventUrl = /*[[${postEventUrl}]]*/ '';
 	const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
 	/*]]>*/

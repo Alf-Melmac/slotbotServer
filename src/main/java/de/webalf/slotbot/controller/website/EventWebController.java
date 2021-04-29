@@ -63,6 +63,7 @@ public class EventWebController {
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("eventTypes", eventTypeService.findAll());
+		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
 				.getEventDetailsHtml(Long.MIN_VALUE))

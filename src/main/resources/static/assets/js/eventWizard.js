@@ -7,7 +7,7 @@ $(function () {
         $(this).find('.far').toggleClass('fa-eye fa-eye-slash');
     });
 
-    $('#eventTypeTitle').on('input', function () {
+    $('#eventTypeName').on('input', function () {
         const $input = $(this);
         //Check if option is in datalist
         const match = $('#' + $input.attr('list') + ' option').filter(function () {
@@ -17,6 +17,38 @@ $(function () {
         if (match.length > 0) {
             const $match = $(match[0]);
             setColor($match.data('color'));
+            setFieldDefaults($match.val(), defaultFields);
+        }
+    });
+
+    let defaultFields;
+    const $addDefaultFields = $('#addDefaultFields');
+
+    function setFieldDefaults(eventType) {
+        $.ajax(eventFieldDefaultsUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: eventType
+        })
+            .done(defaults => {
+                $addDefaultFields.text(eventType + ' default einfügen');
+                $addDefaultFields.show();
+                defaultFields = defaults;
+            })
+    }
+
+    const $addField = $('#addField');
+    $('#addDefaultFieldsConfirmed').on('click', function () {
+        $('#addDefaultFieldsWarning').modal('hide');
+        if (!defaultFields) {
+            return;
+        }
+        $('.js-field').remove();
+        for (const defaultField of defaultFields) {
+            $addField.trigger('click');
+            fillField($('.js-field').last(), defaultField);
         }
     });
 
@@ -56,13 +88,14 @@ $(function () {
     });
 
     // Step show event
+    const $btnFinish = $('#btnFinish');
+    const $prevBtn = $('#prev-btn');
+    const $nextBtn = $('#next-btn');
     $smartWizard.on('showStep', function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
-        const $btnFinish = $('#btnFinish');
-
-        $('#prev-btn').prop('disabled', stepPosition === 'first');
+        $prevBtn.prop('disabled', stepPosition === 'first');
 
         let last = stepPosition === 'last';
-        $('#next-btn').prop('disabled', last);
+        $nextBtn.prop('disabled', last);
         $btnFinish.toggle(last);
     });
 
@@ -73,3 +106,68 @@ $(function () {
         }
     });
 });
+
+function fillField($field, field) {
+    $field.find('.js-field-title').val(field.title);
+    switch (field.type) {
+        case 'TEXT_WITH_SELECTION':
+            setInput($field, textWithSelection(field));
+            break;
+        case 'BOOLEAN':
+            setInput($field, boolean(field));
+            break;
+        case 'SELECTION':
+            setInput($field, selection(field));
+            break;
+        case 'TEXT':
+        default:
+            break;
+    }
+}
+
+function setSelectionId(html, title) {
+    return html.replaceAll('{selectionId}', title);
+}
+
+function selectionInput(input, field) {
+    const s = setSelectionId(input, field.title);
+    let options = '';
+    for (const selection of field.selection) {
+        options += `<option>${selection}</option>`;
+    }
+    return s.replace('{options}', options);
+}
+
+const text_with_selection = 
+    '<input id="{selectionId}" class="form-control custom-select" type="text" list="{selectionId}List" required>' +
+    '<datalist id="{selectionId}List">' +
+    '   {options}' +
+    '</datalist>';
+
+function textWithSelection(field) {
+    return selectionInput(text_with_selection, field);
+}
+
+const boolean_ =
+    '<div class="custom-control custom-checkbox">' +
+    '   <input id="{selectionId}" class="custom-control-input" type="checkbox" required>' +
+    '   <label for="{selectionId}" class="custom-control-label"></label>' +
+    '</div>';
+
+function boolean(field) {
+    return setSelectionId(boolean_, field.title);
+}
+
+const selection_ =
+    '<select id="{selectionId}" class="form-control custom-select" required>' +
+    '   <option selected disabled>Auswählen...</option>' +
+    '   {options}' +
+    '</select>';
+
+function selection(field) {
+    return selectionInput(selection_, field);
+}
+
+function setInput($field, html) {
+    $field.find('.js-field-text').replaceWith(html);
+}

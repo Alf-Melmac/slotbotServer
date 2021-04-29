@@ -4,8 +4,10 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.EventDto;
+import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
+import de.webalf.slotbot.service.EventFieldService;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
 @Slf4j
 public class EventController {
 	private final EventService eventService;
+	private final EventFieldService eventFieldService;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
@@ -61,5 +64,11 @@ public class EventController {
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
 		}
 		return EventAssembler.toReferencelessDto(eventService.updateEvent(dto));
+	}
+
+	@PutMapping("/fields")
+	@PreAuthorize(HAS_ROLE_CREATOR)
+	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestBody String eventTypeName) {
+		return eventFieldService.getDefault(eventTypeName);
 	}
 }

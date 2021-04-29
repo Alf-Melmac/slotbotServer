@@ -2,9 +2,12 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventField;
+import de.webalf.slotbot.model.EventType;
+import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.EventFieldDto;
 import de.webalf.slotbot.repository.EventFieldRepository;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,5 +57,20 @@ public class EventFieldService {
 		DtoUtils.ifPresent(dto.getText(), eventField::setText);
 
 		return eventField;
+	}
+
+	/**
+	 * Returns the default {@link EventField}s for the given {@link EventType#name}
+	 *
+	 * @param eventTypeName name of event type
+	 * @return matching default fields (including only field titles)
+	 */
+	public List<EventFieldDefaultDto> getDefault(String eventTypeName) {
+		switch (eventTypeName) {
+			case Arma3FieldUtils.EVENT_TYPE_NAME:
+				return Arma3FieldUtils.FIELDS;
+			default:
+				return Collections.emptyList();
+		}
 	}
 }
