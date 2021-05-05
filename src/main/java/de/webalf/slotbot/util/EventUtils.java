@@ -2,9 +2,11 @@ package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
 import de.webalf.slotbot.util.permissions.ApiPermissionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -50,6 +52,22 @@ public final class EventUtils {
 		}
 	}
 
+	/**
+	 * Returns a link if the given {@link EventField} references something.
+	 *
+	 * @param eventField to build link for
+	 * @return link if known or null
+	 */
+	public static String buildOptionalLink(EventField eventField) {
+		final String title = eventField.getTitle();
+
+		if ("Modpack".equalsIgnoreCase(title)) {
+			return Arma3FieldUtils.getModPackUrl(eventField.getText());
+		}
+
+		return null;
+	}
+
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
 		String thumbnail = event.getPictureUrl();
 		if (StringUtils.isEmpty(thumbnail)) {
@@ -93,7 +111,13 @@ public final class EventUtils {
 		addField("Zeitplan", buildScheduleField(event.getDate(), event.getStartTime(), event.getMissionLength()), embedBuilder);
 		addField("Missionstyp", event.getMissionType(), true, embedBuilder);
 		addField("Reserve nimmt teil", buildReserveParticipatingField(event.getReserveParticipating()), true, embedBuilder);
-		event.getDetails().forEach(field -> addField(field.getTitle(), field.getText(), true, embedBuilder));
+		event.getDetails().forEach(field -> {
+			String text = field.getText();
+			if (StringUtils.isNotEmpty(field.getLink())) {
+				text = "[" + text + "](" + fixUrl(field.getLink()) + ")";
+			}
+			addField(field.getTitle(), text, true, embedBuilder);
+		});
 	}
 
 	private static String buildScheduleField(LocalDate eventDate, LocalTime eventStartTime, String missionLength) {
@@ -111,7 +135,7 @@ public final class EventUtils {
 	/**
 	 * Checks if the given slot number is already used in the given list of slots
 	 *
-	 * @param slots existing slots
+	 * @param slots      existing slots
 	 * @param slotNumber slot number to check
 	 * @return true if the slot number is already used
 	 */

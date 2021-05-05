@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static de.webalf.slotbot.util.EventUtils.buildOptionalLink;
+
 /**
  * @author Alf
  * @since 14.04.2021
@@ -19,6 +21,7 @@ public final class EventFieldApiAssembler {
 				.id(eventField.getId())
 				.title(eventField.getTitle())
 				.text(eventField.getText())
+				.link(buildOptionalLink(eventField))
 				.build();
 	}
 

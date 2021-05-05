@@ -26,4 +26,6 @@ public class EventFieldReferencelessDto extends AbstractIdEntityDto {
 	@NotBlank
 	@Size(max = MessageEmbed.VALUE_MAX_LENGTH)
 	private String text;
+
+	private String link;
 }

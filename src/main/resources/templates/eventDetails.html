@@ -23,7 +23,8 @@
 						<em class="fas fa-chevron-circle-left"></em> Zum Event-Kalender
 					</a>
 					<span> | </span>
-					<span class="d-inline-block align-middle rounded square-em-1" th:style="'background-color:' + ${event.eventType.color} + ';'"></span>
+					<span class="d-inline-block align-middle rounded square-em-1"
+					      th:style="'background-color:' + ${event.eventType.color} + ';'"></span>
 					<span th:text="${event.missionType}"></span> <span th:text="${event.eventType.name}"></span>
 				</p>
 			</div>
@@ -184,10 +185,13 @@
 								<label th:text="${field.title}">Field Name</label>
 							</div>
 							<div class="col-md-8">
-								<p class="mb-0" th:text="${field.text}">Field description</p>
+								<p class="mb-0" th:if="${#strings.isEmpty(field.link)}"
+								   th:text="${field.text}">Field description</p>
+								<p class="mb-0" th:unless="${#strings.isEmpty(field.link)}">
+									<a th:href="${field.link}" th:text="${field.text}">Field description with link</a>
+								</p>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
