@@ -69,6 +69,10 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : AMB_LOGO;
 	}
 
+	public String getRawPictureUrl() {
+		return pictureUrl;
+	}
+
 	@Getter
 	private static final List<String> MISSION_TYPES = List.of("COOP", "COOP+", "Zeus", "TvT", "Training", "Spezial", "Anderes");
 

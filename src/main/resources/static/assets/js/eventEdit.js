@@ -1,8 +1,8 @@
 $(function () {
     "use strict";
 
-    setIndeterminateIfRequired('respawn');
     setIndeterminateIfRequired('reserveParticipating');
+    $('#eventTypeName').trigger('input');
 
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.url = putEventEditableUrl;
@@ -43,53 +43,17 @@ $(function () {
         emptytext: 'Nicht angegeben'
     });
 
-    $('#eventModPack').editable({
-        inputclass: 'w-4',
-        value: savedEvent.modPack,
-        type: 'text',
-        name: 'modPack',
-        tpl: '<input class="form-control custom-select" type="text" list="modPacks">',
-        emptytext: 'Kein Modpack ausgewählt'
-    });
-
-    $('#eventTechnicalTeleport').editable({
-        inputclass: 'w-4',
-        value: savedEvent.technicalTeleport,
-        type: 'text',
-        name: 'technicalTeleport',
-        emptytext: 'Objekt, Position etc.'
-    });
-
-    $('#eventMedicalSystem').editable({
-        inputclass: 'w-4',
-        value: savedEvent.medicalSystem,
-        type: 'text',
-        name: 'medicalSystem'
-    });
-
-    $('#eventMissionTime').editable({
-        inputclass: 'w-4',
-        value: savedEvent.missionTime,
-        type: 'text',
-        name: 'missionTime',
-        emptytext: 'Dämmerung, Tag, Nacht, ...'
-    });
-
-    $('#eventNavigation').editable({
-        inputclass: 'w-4',
-        value: savedEvent.navigation,
-        type: 'text',
-        name: 'navigation',
-        emptytext: 'GPS, Karte, Kompass, Nichts, ...'
-    });
-
     $('#eventPicture').editable({
-        inputclass: 'w-8',
+        inputclass: 'w-4',
         value: savedEvent.pictureUrl,
         type: 'text',
         name: 'pictureUrl',
         emptytext: 'Kein Bild'
     });
+
+    addFields($('#addField'), savedEvent.details, true);
+
+    //TODO manually save event type
 
     //Event hidden button
     $('#eventHidden').on('click', function () {
@@ -101,7 +65,7 @@ $(function () {
     });
 
     //Selects
-    $('select').on('change', function () {
+    $('#eventMissionType').on('change', function () {
         const $this = $(this);
         putUpdate({[$this.data('dtokey')]: $this.val()}, showSavedToast);
     });
@@ -118,6 +82,16 @@ $(function () {
         putUpdate({[$this.data('dtokey')]: $this.is(':checked')}, showSavedToast);
     });
 
+    //Event field
+    $('#btnSaveFields').on('click', function () {
+        if (validateRequiredAndUnique($(this))) {
+            return;
+        }
+
+        putUpdate({details: getDetails(true)}, showSavedToast);
+    });
+
+    //Slotlist
     $('#btnSaveSlotlist').on('click', function () {
         if (validateRequiredAndUnique($(this))) {
             return;

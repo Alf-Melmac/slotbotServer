@@ -1,8 +1,11 @@
 package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.EventField;
+import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.EventFieldDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
+import de.webalf.slotbot.model.enums.EventFieldType;
+import de.webalf.slotbot.util.eventfield.EventFieldUtils;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
@@ -10,7 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static de.webalf.slotbot.util.EventUtils.buildOptionalLink;
+import static de.webalf.slotbot.util.eventfield.EventFieldUtils.buildOptionalLink;
+import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefaultSelection;
 
 /**
  * @author Alf
@@ -18,7 +22,7 @@ import static de.webalf.slotbot.util.EventUtils.buildOptionalLink;
  */
 @UtilityClass
 public final class EventFieldAssembler {
-	public static EventField fromDto(EventFieldDto dto) {
+	private static EventField fromDto(EventFieldDto dto) {
 		if (dto == null) {
 			return null;
 		}
@@ -31,12 +35,23 @@ public final class EventFieldAssembler {
 				.build();
 	}
 
-	static EventFieldReferencelessDto toReferencelessDto(EventField eventField) {
+	private static EventFieldReferencelessDto toReferencelessDto(EventField eventField) {
 		return EventFieldReferencelessDto.builder()
 				.id(eventField.getId())
 				.title(eventField.getTitle())
 				.text(eventField.getText())
 				.link(buildOptionalLink(eventField))
+				.build();
+	}
+
+	private static EventFieldDefaultDto toDefaultDto(EventField eventField) {
+		final EventFieldType fieldType = EventFieldUtils.getDefaultFieldType(eventField);
+		return EventFieldDefaultDto.builder()
+				.id(eventField.getId())
+				.title(eventField.getTitle())
+				.type(fieldType)
+				.selection(getDefaultSelection(fieldType, eventField))
+				.text(eventField.getText())
 				.build();
 	}
 
@@ -53,6 +68,12 @@ public final class EventFieldAssembler {
 	public static List<EventFieldReferencelessDto> toReferencelessDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(EventFieldAssembler::toReferencelessDto)
+				.collect(Collectors.toList());
+	}
+
+	public static List<EventFieldDefaultDto> toDefaultDtoList(Iterable<? extends EventField> eventFields) {
+		return StreamSupport.stream(eventFields.spliterator(), false)
+				.map(EventFieldAssembler::toDefaultDto)
 				.collect(Collectors.toList());
 	}
 }

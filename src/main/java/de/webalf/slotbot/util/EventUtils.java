@@ -2,11 +2,9 @@ package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
-import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
 import de.webalf.slotbot.util.permissions.ApiPermissionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -50,22 +48,6 @@ public final class EventUtils {
 		if (event.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
 			throw new ForbiddenException("Access Denied");
 		}
-	}
-
-	/**
-	 * Returns a link if the given {@link EventField} references something.
-	 *
-	 * @param eventField to build link for
-	 * @return link if known or null
-	 */
-	public static String buildOptionalLink(EventField eventField) {
-		final String title = eventField.getTitle();
-
-		if ("Modpack".equalsIgnoreCase(title)) {
-			return Arma3FieldUtils.getModPackUrl(eventField.getText());
-		}
-
-		return null;
 	}
 
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {

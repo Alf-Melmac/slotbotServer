@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.repository.EventTypeRepository;
+import de.webalf.slotbot.util.ListUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,9 @@ public class EventTypeService {
 
 	public List<EventType> findAll() {
 		return eventTypeRepository.findAll();
+	}
+
+	public List<EventType> findAllFiltered(EventType existing) {
+		return ListUtils.getListFiltered(findAll(), existing);
 	}
 }

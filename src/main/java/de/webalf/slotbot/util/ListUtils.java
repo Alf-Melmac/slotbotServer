@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 @UtilityClass
 public final class ListUtils {
 	/**
-	 * Removes the given element from the String collection
-	 * 
-	 * @param list to filter
+	 * Removes the given element from the collection
+	 *
+	 * @param list   to filter
 	 * @param filter element to remove
 	 * @return filtered list
 	 */
-	public static List<String> getListFiltered(@NonNull Collection<String> list, String filter) {
+	public static <T> List<T> getListFiltered(@NonNull Collection<T> list, T filter) {
 		return list.stream().filter(element -> !element.equals(filter)).collect(Collectors.toList());
 	}
 

@@ -68,7 +68,7 @@ function saveEvent($saveBtn) {
         });
 
     event.details = getDetails();
-    event.squadList = getSquads(false);
+    event.squadList = getSquads();
 
     event.hidden = $('#eventHidden').find('.far').hasClass('fa-eye-slash');
 
@@ -99,7 +99,7 @@ function indexObjWithDotNotationKey(obj, key, value) {
     }
 }
 
-function getDetails() {
+function getDetails(update = false) {
     let details = [];
     $('#eventDetails .js-field').each(function (fieldIndex, fieldElement) {
         const $field = $(fieldElement);
@@ -107,12 +107,15 @@ function getDetails() {
             title: $field.find('.js-field-title').val(),
             text: $field.find('.js-field-text').val()
         }
+        if (update) {
+            field.id = $field.data('fieldid');
+        }
         details.push(field);
     });
     return details;
 }
 
-function getSquads(update) {
+function getSquads(update = false) {
     let squads = [];
     $('#squads .js-complete-squad').each(function (completeSquadIndex, completeSquadElement) {
         const $completeSquad = $(completeSquadElement);

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static de.webalf.slotbot.util.EventUtils.buildOptionalLink;
+import static de.webalf.slotbot.util.eventfield.EventFieldUtils.buildOptionalLink;
 
 /**
  * @author Alf

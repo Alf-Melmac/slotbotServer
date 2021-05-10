@@ -31,7 +31,8 @@ public class Arma3FieldUtils {
 
 	public static final List<EventFieldDefaultDto> FIELDS = List.of(
 			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).build(),
-			EventFieldDefaultDto.builder().title("Modpack").type(TEXT_WITH_SELECTION).selection(MOD_PACKS).build(),
+			EventFieldDefaultDto.builder().title("Modpack").type(TEXT_WITH_SELECTION).selection(MOD_PACKS)
+					.text(MOD_PACKS.get(0)).build(),
 			EventFieldDefaultDto.builder().title("Karte").type(SELECTION).selection(MAPS).build(),
 			EventFieldDefaultDto.builder().title("Technischer Teleport").type(TEXT).build(),
 			EventFieldDefaultDto.builder().title("Medic-System").type(TEXT).build(),

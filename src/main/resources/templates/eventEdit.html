@@ -65,30 +65,45 @@
 					<a id="eventCreator" class="form-control" href="#"></a>
 				</div>
 			</div>
+			<div class="form-row">
+				<div class="form-group col-md-8">
+					<label for="eventTypeName">Event-Typ-Name</label>
+					<input id="eventTypeName" class="form-control custom-select" type="text"
+					       list="eventTypes" data-dtokey="eventType.name" placeholder="Name" required
+					       th:value="${event.eventType.name}" disabled>
+					<datalist id="eventTypes">
+						<option th:each="eventType : ${eventTypesFiltered}"
+						        th:text="${eventType.name}" th:data-color="${eventType.color}"></option>
+					</datalist>
+				</div>
+				<div class="form-group input-group col-md-4">
+					<label for="eventTypeColor">Event-Typ-Farbe</label>
+					<div id="colorPicker" class="input-group" data-target-input="nearest">
+						<input id="eventTypeColor" class="form-control js-color-picker" type="text"
+						       data-dtokey="eventType.color" data-target="#colorPicker" required
+						       th:value="${event.eventType.color}" disabled>
+						<div class="input-group-append" data-target="#colorPicker">
+							<div class="input-group-text colorpicker-input-addon"><i></i></div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="form-group">
 				<label for="eventDescription">Beschreibung</label>
 				<textarea id="eventDescription" class="form-control"></textarea>
 			</div>
 			<div class="form-row align-items-center">
-				<div class="form-group col-md-2">
+				<div class="form-group col-md-4">
 					<label for="eventMissionType">Missionstyp</label>
 					<select id="eventMissionType" class="form-control custom-select" data-dtokey="missionType"
 					        th:with="missionTypeEmpty=${#strings.isEmpty(event.missionType)}">
-						<option th:text="${missionTypeEmpty} ? 'Auswählen...' : ${event.missionType}"
-						        selected
+						<option th:text="${missionTypeEmpty} ? 'Auswählen...' : ${event.missionType}" selected
 						        th:disabled="${missionTypeEmpty}">
 							Auswählen...
 						</option>
 						<option th:each="missionType : ${event.getMissionTypesFiltered()}"
 						        th:text="${missionType}"></option>
 					</select>
-				</div>
-				<div class="col-md-2">
-					<div class="custom-control custom-checkbox mr-sm-2">
-						<input id="eventRespawn" class="custom-control-input" type="checkbox"
-						       data-dtokey="respawn" th:checked="${event.respawn}">
-						<label class="custom-control-label" for="eventRespawn">Respawn</label>
-					</div>
 				</div>
 				<div class="form-group col-md-4">
 					<label for="eventMissionLength">Missionslänge</label>
@@ -100,68 +115,38 @@
 					</datalist>
 				</div>
 				<div class="form-group col-md-4">
-					<label for="eventModPack">Modpack</label>
-					<a id="eventModPack" class="form-control custom-select" href="#"></a>
-					<datalist id="modPacks">
-						<option th:each="modPack : ${event.getModPacksFiltered()}"
-						        th:text="${modPack}"></option>
-					</datalist>
+					<label for="eventPicture">Bild-URL</label>
+					<a id="eventPicture" class="form-control overflow-hidden" href="#"></a>
 				</div>
 			</div>
 		</form>
 
 		<hr class="solid bg-light">
 
-		<h3>Details</h3>
+		<div class="row">
+			<div class="col-md-6">
+				<h3>Details</h3>
+			</div>
+			<div class="col-md-3">
+				<div id="addDefaultFields" class="btn btn-secondary float-right" type="button"
+				     data-toggle="modal" data-target="#addDefaultFieldsWarning"></div>
+			</div>
+			<div class="col-md-3">
+				<button id="btnSaveFields" class="btn btn-primary float-right">
+					Felder speichern
+				</button>
+			</div>
+		</div>
 		<form>
-			<div class="form-row mb-4">
-				<div class="form-group col-md-4">
-					<label for="eventMap">Karte</label>
-					<select id="eventMap" class="form-control custom-select" data-dtokey="map">
-						<option th:with="mapEmpty=${#strings.isEmpty(event.map)}"
-						        th:text="${mapEmpty} ? 'Auswählen...' : ${event.map}" selected
-						        th:disabled="${mapEmpty}">
-							Auswählen...
-						</option>
-						<option th:each="map : ${event.getMapsFiltered()}" th:text="${map}"></option>
-					</select>
-				</div>
-				<div class="form-group col-md-4">
-					<label for="eventTechnicalTeleport">Technischer Teleport</label>
-					<a id="eventTechnicalTeleport" class="form-control" href="#"></a>
-				</div>
-				<div class="form-group col-md-4">
-					<label for="eventMedicalSystem">Medic-System</label>
-					<a id="eventMedicalSystem" class="form-control" href="#"></a>
-				</div>
-			</div>
-			<div class="form-row align-items-center mb-4">
-				<div class="form-group col-md-4">
-					<div class="custom-control custom-checkbox">
-						<input id="eventReserveParticipating" class="custom-control-input" type="checkbox"
-						       data-dtokey="reserveParticipating" th:checked="${event.reserveParticipating}">
-						<label for="eventReserveParticipating" class="custom-control-label">
-							Darf die Reserve mitspielen?
-						</label>
-					</div>
-				</div>
-				<div class="form-group col-md-4">
-					<label for="eventMissionTime">Missionszeit</label>
-					<a id="eventMissionTime" class="form-control" href="#"></a>
-				</div>
-				<div class="form-group col-md-4">
-					<label for="eventNavigation">Navigation</label>
-					<a id="eventNavigation" class="form-control" href="#"></a>
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="col-md-4"></div>
-				<div class="form-group col-md-8">
-					<label for="eventPicture">
-						Bild-URL
-					</label>
-					<a id="eventPicture" class="form-control" href="#"></a>
-				</div>
+			<div id="eventDetails" class="js-sortable"></div>
+			<div id="addFieldWrapper">
+				<button id="addField" type="button" class="btn btn-success rounded-circle">
+					<em class="fas fa-plus"></em>
+				</button>
+				<span> Feld hinzufügen</span>
+				<small id="fieldCounter" class="bg-success p-1">
+					<span id="fieldCounterCount">0</span>/23
+				</small>
 			</div>
 		</form>
 
@@ -189,7 +174,8 @@
 						<div th:unless="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-wht js-trash" type="button">
 							<em class="far fa-trash-alt"></em>
 						</div>
-						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied" title="Squad enthält nicht leere Slots">
+						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied"
+						     title="Squad enthält nicht leere Slots">
 							<em class="far fa-trash-alt"></em>
 						</div>
 					</div>
@@ -207,10 +193,12 @@
 								<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
 								       required th:value="${slot.name}">
 							</div>
-							<div th:unless="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button">
+							<div th:unless="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-wht js-trash"
+							     type="button">
 								<em class="far fa-trash-alt"></em>
 							</div>
-							<div th:if="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-denied" title="Dieser Slot ist belegt">
+							<div th:if="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-denied"
+							     title="Dieser Slot ist belegt">
 								<em class="far fa-trash-alt"></em>
 							</div>
 						</div>
@@ -230,13 +218,26 @@
 			<div id="uniqueSlotNumbersError" class="alert alert-danger" role="alert" style="display: none">
 				Slotnummern müssen eindeutig sein. Bitte korrigieren.
 			</div>
+
+			<div class="row float-right">
+				<button id="btnSaveSlotlist" class="btn btn-primary" tabindex="0" data-toggle="popover"
+				        data-trigger="focus" data-content="Alle Pflichfelder ausfüllen!">
+					Slotliste speichern
+				</button>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-12 mt-2">
+					<div class="custom-control custom-checkbox">
+						<input id="eventReserveParticipating" class="custom-control-input" type="checkbox"
+						       data-dtokey="reserveParticipating" th:checked="${event.reserveParticipating}">
+						<label for="eventReserveParticipating" class="custom-control-label">
+							Darf die Reserve mitspielen?
+						</label>
+					</div>
+				</div>
+			</div>
 		</form>
-		<div class="row float-right">
-			<button id="btnSaveSlotlist" class="btn btn-primary" tabindex="0" data-toggle="popover"
-			        data-trigger="focus" data-content="Alle Pflichfelder ausfüllen!">
-				Slotliste speichern
-			</button>
-		</div>
 	</div>
 </section>
 
@@ -279,6 +280,7 @@
 	/*]]>*/
 </script>
 <script th:src="@{/assets/js/eventSave.js}"></script>
+<script th:src="@{/assets/js/eventFields.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
 <script th:src="@{/assets/js/eventEdit.js}"></script>
 </body>

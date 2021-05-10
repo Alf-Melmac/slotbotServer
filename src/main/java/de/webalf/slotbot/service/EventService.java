@@ -155,7 +155,7 @@ public class EventService {
 		DtoUtils.ifPresentOrEmpty(dto.getInfoMsg(), event::setInfoMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getSlotListMsg(), event::setSlotListMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
-		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), event::setPictureUrl);
+		DtoUtils.ifPresentOrEmpty(dto.getRawPictureUrl(), event::setPictureUrl);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
@@ -165,7 +165,7 @@ public class EventService {
 
 	//TODO check if correct
 	public Event updateEvent(@NonNull EventDto dto) {
-		Event event = updateEvent(dto);
+		Event event = updateEvent((AbstractEventDto) dto);
 
 		if (dto.getSquadList() != null) {
 			squadService.updateSquadList(dto.getSquadList(), event);

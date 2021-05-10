@@ -1,9 +1,10 @@
 package de.webalf.slotbot.model.dtos;
 
 import de.webalf.slotbot.model.enums.EventFieldType;
-import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -12,9 +13,10 @@ import java.util.List;
  * @author Alf
  * @since 27.04.2021
  */
+@EqualsAndHashCode(callSuper = true)
 @Value
-@Builder
-public class EventFieldDefaultDto {
+@SuperBuilder
+public class EventFieldDefaultDto extends AbstractIdEntityDto {
 	@NotBlank
 	String title;
 
@@ -22,4 +24,6 @@ public class EventFieldDefaultDto {
 	EventFieldType type;
 
 	List<String> selection;
+
+	String text;
 }

@@ -9,6 +9,7 @@ import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
+import de.webalf.slotbot.model.dtos.website.EventEditDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
@@ -32,14 +33,10 @@ public class EventDetailsAssembler {
 	private final DiscordApiService discordApiService;
 
 	public EventDetailsDto toDto(@NonNull Event event) {
-		LocalDateTime dateTime = event.getDateTime();
-		String channelUrl = null;
-		if (event.getChannel() != null) {
-			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
-		}
+		final LocalDateTime dateTime = event.getDateTime();
 
 		return EventDetailsDto.builder()
-				.channelUrl(channelUrl)
+				.channelUrl(getChannelUrl(event))
 				.id(event.getId())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.name(event.getName())
@@ -58,6 +55,39 @@ public class EventDetailsAssembler {
 				.reserveParticipating(event.getReserveParticipating())
 				.details(EventFieldAssembler.toReferencelessDtoList(event.getDetails()))
 				.build();
+	}
+
+	public EventEditDto toEditDto(@NonNull Event event) {
+		final LocalDateTime dateTime = event.getDateTime();
+
+		return EventEditDto.builder()
+				.channelUrl(getChannelUrl(event))
+				.id(event.getId())
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
+				.name(event.getName())
+				.date(dateTime.toLocalDate())
+				.startTime(dateTime.toLocalTime())
+				.creator(event.getCreator())
+				.hidden(event.isHidden())
+				.channel(LongUtils.toString(event.getChannel()))
+				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.infoMsg(LongUtils.toString(event.getInfoMsg()))
+				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
+				.description(event.getDescription())
+				.pictureUrl(event.getPictureUrl())
+				.missionType(event.getMissionType())
+				.missionLength(event.getMissionLength())
+				.reserveParticipating(event.getReserveParticipating())
+				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
+				.build();
+	}
+
+	private String getChannelUrl(@NonNull Event event) {
+		String channelUrl = null;
+		if (event.getChannel() != null) {
+			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
+		}
+		return channelUrl;
 	}
 
 	private List<EventDetailsSquadDto> toEventDetailsDtoList(@NonNull Iterable<? extends Squad> squadList) {

@@ -2,6 +2,7 @@ package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
+import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.EventTypeService;
@@ -94,10 +95,13 @@ public class EventWebController {
 
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
-		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
+		final Event event = eventService.findById(eventId);
+		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
+		mav.addObject("eventTypesFiltered", eventTypeService.findAllFiltered(event.getEventType()));
+		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("putEventEditableUrl", linkTo(methodOn(EventController.class).updateEventEditable(eventId, null, null)).toUri().toString());
+		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
-		mav.addObject("event", eventDetailsAssembler.toDto(eventService.findById(eventId)));
 		return mav;
 	}
 }

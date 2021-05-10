@@ -7,7 +7,6 @@ import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
-import de.webalf.slotbot.service.EventFieldService;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
 
 /**
@@ -32,7 +32,6 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
 @Slf4j
 public class EventController {
 	private final EventService eventService;
-	private final EventFieldService eventFieldService;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
@@ -58,7 +57,7 @@ public class EventController {
 	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {
 		EventDto dto = EventDto.builder().id(pk).build();
 		try {
-			ReflectionUtils.setField(dto.getClass().getDeclaredField(name), dto, value);
+			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, value);
 		} catch (NoSuchFieldException e) {
 			log.error("Can't find field " + name + " while trying to edit it.", e);
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
@@ -69,6 +68,6 @@ public class EventController {
 	@PutMapping("/fields")
 	@PreAuthorize(HAS_ROLE_CREATOR)
 	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestBody String eventTypeName) {
-		return eventFieldService.getDefault(eventTypeName);
+		return getDefault(eventTypeName);
 	}
 }
