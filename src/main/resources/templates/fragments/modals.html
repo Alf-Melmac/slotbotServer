@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="addDefaultFieldsWarning" id="addDefaultFieldsWarning" class="modal fade" tabindex="-1"
+     aria-labelledby="addDefaultFieldsWarningLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header border border-warning">
+				<h5 id="addDefaultFieldsWarningLabel" class="modal-title">Warnung</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Die Default Felder überschreiben alle bereits vorhanden Felder und Werte. Fortfahren?
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" data-dismiss="modal">Schließen</button>
+				<button id="addDefaultFieldsConfirmed" class="btn btn-warning" type="button">Felder setzen</button>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

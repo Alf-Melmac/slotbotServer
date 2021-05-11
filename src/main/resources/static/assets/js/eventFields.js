@@ -81,9 +81,6 @@ function addFields($addField, fields, update = false) {
     for (const field of fields) {
         $addField.trigger('click');
         fillField($('.js-field').last(), field, update);
-        /*if (update) {
-            $('.js-field').last().data('fieldid', field.id);
-        }*/
     }
 }
 
@@ -128,14 +125,14 @@ function selectionInput(input, field) {
 }
 
 const text_ =
-    '<textarea id="{selectionId}" class="form-control one-row" type="text" placeholder="Information" required>{text}</textarea>';
+    '<textarea id="{selectionId}" class="form-control one-row js-field-text" type="text" placeholder="Information" required>{text}</textarea>';
 
 function text(field) {
     return setText(setSelectionId(text_, field.title, field.text), field.text);
 }
 
 const text_with_selection =
-    '<input id="{selectionId}" class="form-control custom-select" type="text" list="{selectionId}List" required value="{text}">' +
+    '<input id="{selectionId}" class="form-control custom-select js-field-text" type="text" list="{selectionId}List" required value="{text}">' +
     '<datalist id="{selectionId}List">' +
     '   {options}' +
     '</datalist>';
@@ -146,22 +143,22 @@ function textWithSelection(field) {
 
 const boolean_ =
     '<div class="custom-control custom-checkbox">' +
-    '   <input id="{selectionId}" class="custom-control-input" type="checkbox" required>' +
+    '   <input id="{selectionId}" class="custom-control-input js-field-text" type="checkbox" required {checked}>' +
     '   <label for="{selectionId}" class="custom-control-label"></label>' +
     '</div>';
 
 function boolean(field) {
-    return setSelectionId(boolean_, field.title);
+    return setSelectionId(boolean_.replaceAll('{checked}', field.text === true ? 'checked' : ''), field.title);
 }
 
 const selection_ =
-    '<select id="{selectionId}" class="form-control custom-select" required>' +
+    '<select id="{selectionId}" class="form-control custom-select js-field-text" required>' +
     '   <option selected disabled>Auswählen...</option>' +
     '   {options}' +
     '</select>';
 
 const selection_with_text =
-    '<select id="{selectionId}" class="form-control custom-select" required>' +
+    '<select id="{selectionId}" class="form-control custom-select  js-field-text" required>' +
     '   <option selected>{text}</option>' +
     '   {options}' +
     '</select>';

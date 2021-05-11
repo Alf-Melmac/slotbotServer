@@ -63,7 +63,7 @@ function saveEvent($saveBtn) {
                 return;
             }
             if (value !== '') {
-                indexObjWithDotNotationKey(event, key, value);
+                indexObjWithDotNotationKey(event, key, value.trim());
             }
         });
 
@@ -103,9 +103,10 @@ function getDetails(update = false) {
     let details = [];
     $('#eventDetails .js-field').each(function (fieldIndex, fieldElement) {
         const $field = $(fieldElement);
+        const $fieldText = $field.find('.js-field-text');
         const field = {
             title: $field.find('.js-field-title').val(),
-            text: $field.find('.js-field-text').val()
+            text: $fieldText.is(':checkbox') ? $fieldText.is(':checked') : $fieldText.val()
         }
         if (update) {
             field.id = $field.data('fieldid');

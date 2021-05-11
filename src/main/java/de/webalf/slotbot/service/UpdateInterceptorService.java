@@ -19,6 +19,8 @@ public class UpdateInterceptorService {
 	private final EventUpdateService eventUpdateService;
 	private final MessageHelper messageHelper;
 
+	//TODO EVENT FIELD
+
 	/**
 	 * Informs the discord bot about a deletion in an event
 	 *

@@ -2,7 +2,7 @@ $(function () {
     "use strict";
 
     setIndeterminateIfRequired('reserveParticipating');
-    $('#eventTypeName').trigger('input');
+    $('#eventTypeName').trigger('input'); //Show default button if available
 
     $.fn.editable.defaults.mode = 'inline';
     $.fn.editable.defaults.url = putEventEditableUrl;
@@ -53,8 +53,6 @@ $(function () {
 
     addFields($('#addField'), savedEvent.details, true);
 
-    //TODO manually save event type
-
     //Event hidden button
     $('#eventHidden').on('click', function () {
         const $icon = $(this).find('.far');
@@ -77,9 +75,23 @@ $(function () {
     });
 
     //Checkboxes
-    $(':checkbox').on('change', function () {
+    $('#eventReserveParticipating').on('change', function () {
         const $this = $(this);
         putUpdate({[$this.data('dtokey')]: $this.is(':checked')}, showSavedToast);
+    });
+
+    //Event type
+    $('#btnSaveType').on('click', function () {
+        if (validateRequiredAndUnique($(this))) {
+            return;
+        }
+
+        putUpdate({
+            eventType: {
+                name: $('#eventTypeName').val(),
+                color: $('#eventTypeColor').val()
+            }
+        }, showSavedToast);
     });
 
     //Event field

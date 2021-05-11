@@ -97,7 +97,7 @@ public class EventWebController {
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		final Event event = eventService.findById(eventId);
 		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
-		mav.addObject("eventTypesFiltered", eventTypeService.findAllFiltered(event.getEventType()));
+		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("putEventEditableUrl", linkTo(methodOn(EventController.class).updateEventEditable(eventId, null, null)).toUri().toString());
 		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
