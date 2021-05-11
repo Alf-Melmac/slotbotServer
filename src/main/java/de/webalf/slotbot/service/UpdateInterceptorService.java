@@ -5,6 +5,7 @@ import de.webalf.slotbot.service.bot.EventUpdateService;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.collection.internal.PersistentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,6 @@ import org.springframework.stereotype.Service;
 public class UpdateInterceptorService {
 	private final EventUpdateService eventUpdateService;
 	private final MessageHelper messageHelper;
-
-	//TODO EVENT FIELD
 
 	/**
 	 * Informs the discord bot about a deletion in an event
@@ -103,6 +102,17 @@ public class UpdateInterceptorService {
 			final User user = (User) entity;
 			if (!user.isDefaultUser()) {
 				messageHelper.sendDmToRecipient(user, "Schön dich bei AmB begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!");
+			}
+		}
+	}
+
+	public void onCollectionUpdate(Object collection) {
+		if (collection instanceof PersistentList) {
+			final PersistentList list = (PersistentList) collection;
+			final Object el = list.get(0);
+
+			if (el instanceof EventField) {
+				update(((EventField) el).getEvent());
 			}
 		}
 	}

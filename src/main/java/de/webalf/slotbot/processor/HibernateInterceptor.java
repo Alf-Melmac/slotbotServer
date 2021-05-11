@@ -2,6 +2,7 @@ package de.webalf.slotbot.processor;
 
 import de.webalf.slotbot.service.UpdateInterceptorService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,11 @@ public class HibernateInterceptor extends EmptyInterceptor {
 	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 		updateInterceptorService.onSave(entity);
 		return super.onSave(entity, id, state, propertyNames, types);
+	}
+
+	@Override
+	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
+		updateInterceptorService.onCollectionUpdate(collection);
+		super.onCollectionUpdate(collection, key);
 	}
 }
