@@ -105,8 +105,8 @@ function getDetails(update = false) {
         const $field = $(fieldElement);
         const $fieldText = $field.find('.js-field-text');
         const field = {
-            title: $field.find('.js-field-title').val(),
-            text: $fieldText.is(':checkbox') ? $fieldText.is(':checked') : $fieldText.val()
+            title: $field.find('.js-field-title').val().trim(),
+            text: $fieldText.is(':checkbox') ? $fieldText.is(':checked') : $fieldText.val().trim()
         }
         if (update) {
             field.id = $field.data('fieldid');
@@ -121,7 +121,7 @@ function getSquads(update = false) {
     $('#squads .js-complete-squad').each(function (completeSquadIndex, completeSquadElement) {
         const $completeSquad = $(completeSquadElement);
         let squad = {
-            name: $completeSquad.find('.js-squad-name').val(),
+            name: $completeSquad.find('.js-squad-name').val().trim(),
             slotList: []
         };
         if (update) {
@@ -131,7 +131,7 @@ function getSquads(update = false) {
         $completeSquad.find('.js-slot').each(function (slotIndex, slotElement) {
             const $slot = $(slotElement);
             let slot = {
-                name: $slot.find('.js-slot-name').val(),
+                name: $slot.find('.js-slot-name').val().trim(),
                 number: $slot.find('.js-slot-number').val()
             };
             if (update) {
