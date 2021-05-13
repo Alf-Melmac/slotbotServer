@@ -63,7 +63,10 @@ function saveEvent($saveBtn) {
                 return;
             }
             if (value !== '') {
-                indexObjWithDotNotationKey(event, key, value.trim());
+                if (typeof value == 'string') {
+                    value = value.trim();
+                }
+                indexObjWithDotNotationKey(event, key, value);
             }
         });
 
