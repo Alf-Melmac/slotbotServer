@@ -42,7 +42,7 @@ $(function () {
         if (match.length > 0) {
             const $match = $(match[0]);
             setColor($match.data('color'));
-            setFieldDefaults($match.val(), defaultFields);
+            setFieldDefaults($match.val());
         } else {
             $addDefaultFields.fadeOut();
         }
@@ -128,7 +128,7 @@ const text_ =
     '<textarea id="{selectionId}" class="form-control one-row js-field-text" type="text" placeholder="Information" required>{text}</textarea>';
 
 function text(field) {
-    return setText(setSelectionId(text_, field.title, field.text), field.text);
+    return setText(setSelectionId(text_, field.title), field.text);
 }
 
 const text_with_selection =
