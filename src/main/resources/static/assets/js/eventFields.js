@@ -148,7 +148,7 @@ const boolean_ =
     '</div>';
 
 function boolean(field) {
-    return setSelectionId(boolean_.replaceAll('{checked}', field.text === true ? 'checked' : ''), field.title);
+    return setSelectionId(boolean_.replaceAll('{checked}', field.text === 'true' ? 'checked' : ''), field.title);
 }
 
 const selection_ =

@@ -4,8 +4,10 @@ import de.webalf.slotbot.assembler.EventFieldAssembler;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
@@ -53,7 +55,7 @@ public class EventDetailsAssembler {
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
-				.details(EventFieldAssembler.toReferencelessDtoList(event.getDetails()))
+				.details(getDetails(event.getDetails()))
 				.build();
 	}
 
@@ -88,6 +90,19 @@ public class EventDetailsAssembler {
 			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
 		}
 		return channelUrl;
+	}
+
+	private List<EventFieldReferencelessDto> getDetails(List<EventField> details) {
+		final List<EventFieldReferencelessDto> detailDtos = EventFieldAssembler.toReferencelessDtoList(details);
+		detailDtos.forEach(detailDto -> {
+			final String detailText = detailDto.getText();
+			if (detailText.equals("true")) {
+				detailDto.setText("Ja");
+			} else if (detailText.equals("false")) {
+				detailDto.setText("Nein");
+			}
+		});
+		return detailDtos;
 	}
 
 	private List<EventDetailsSquadDto> toEventDetailsDtoList(@NonNull Iterable<? extends Squad> squadList) {
