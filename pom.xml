@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
+		<version>2.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -33,16 +33,16 @@
 
 		<!--Versions-->
 		<java.version>11</java.version>
-		<springframework.boot.version>2.4.4</springframework.boot.version>
-		<springframework.security.version>5.4.5</springframework.security.version>
+		<springframework.boot.version>2.4.5</springframework.boot.version>
+		<springframework.security.version>5.4.6</springframework.security.version>
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
-		<hibernate.version>5.4.30.Final</hibernate.version>
-		<postgresql.version>42.2.19</postgresql.version>
+		<hibernate.version>5.4.31.Final</hibernate.version>
+		<postgresql.version>42.2.20</postgresql.version>
 		<mysql.version>8.0.23</mysql.version>
 		<lombok.version>1.18.20</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
-		<classindex.version>3.10</classindex.version>
-		<jda.version>4.2.1_255</jda.version>
+		<classindex.version>3.11</classindex.version>
+		<jda.version>4.2.1_262</jda.version>
 		<jsoup.version>1.13.1</jsoup.version>
 	</properties>
 
