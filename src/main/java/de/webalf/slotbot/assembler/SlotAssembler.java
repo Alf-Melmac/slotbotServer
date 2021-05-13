@@ -16,9 +16,6 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class SlotAssembler {
-	/**
-	 * To be used if the focus relies on the slot
-	 */
 	public static Slot fromDto(SlotDto slotDto) {
 		if (slotDto == null) {
 			return null;
@@ -32,6 +29,16 @@ public final class SlotAssembler {
 				.user(UserAssembler.fromDto(slotDto.getUser()))
 				.replacementText(slotDto.getReplacementText())
 				.build();
+	}
+
+	static List<Slot> fromDtoList(Iterable<? extends SlotDto> slotList) {
+		if (slotList == null) {
+			return Collections.emptyList();
+		}
+
+		return StreamSupport.stream(slotList.spliterator(), false)
+				.map(SlotAssembler::fromDto)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -49,6 +56,13 @@ public final class SlotAssembler {
 	}
 
 	/**
+	 * To be used if the focus relies on the slot
+	 */
+	public static List<SlotDto> toDtoList(List<Slot> slotList) {
+		return slotList.stream().map(SlotAssembler::toDto).collect(Collectors.toList());
+	}
+
+	/**
 	 * To be used if the focus relies on the event
 	 */
 	private static SlotReferencelessDto toReferencelessDto(Slot slot) {
@@ -62,28 +76,11 @@ public final class SlotAssembler {
 	}
 
 	/**
-	 * To be used if the focus relies on the slot
-	 */
-	public static List<SlotDto> toDtoList(List<Slot> slotList) {
-		return slotList.stream().map(SlotAssembler::toDto).collect(Collectors.toList());
-	}
-
-	/**
 	 * To be used if the focus relies on the event
 	 */
 	static List<SlotReferencelessDto> toReferencelessDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(SlotAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
-	}
-
-	static List<Slot> fromDtoList(Iterable<? extends SlotDto> slotList) {
-		if (slotList == null) {
-			return Collections.emptyList();
-		}
-
-		return StreamSupport.stream(slotList.spliterator(), false)
-				.map(SlotAssembler::fromDto)
 				.collect(Collectors.toList());
 	}
 }

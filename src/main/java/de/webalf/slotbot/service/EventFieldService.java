@@ -24,6 +24,12 @@ import java.util.List;
 public class EventFieldService {
 	private final EventFieldRepository eventFieldRepository;
 
+	/**
+	 * Updates the details of the given event to the given detail list
+	 *
+	 * @param detailsDtos new details
+	 * @param event to update
+	 */
 	void updateEventDetails(@NonNull List<EventFieldDto> detailsDtos, @NonNull Event event) {
 		List<EventField> existingDetails = event.getDetails();
 		if (existingDetails != null) {
@@ -36,6 +42,8 @@ public class EventFieldService {
 		List<EventField> eventDetails = new ArrayList<>();
 		detailsDtos.forEach(eventFieldDto -> eventDetails.add(updateEventField(eventFieldDto, event)));
 		existingDetails.addAll(eventDetails);
+
+		event.validate();
 	}
 
 	/**

@@ -35,6 +35,16 @@ public final class EventFieldAssembler {
 				.build();
 	}
 
+	static List<EventField> fromDtoIterable(Iterable<? extends EventFieldDto> dtos) {
+		if (dtos == null) {
+			return Collections.emptyList();
+		}
+
+		return StreamSupport.stream(dtos.spliterator(), false)
+				.map(EventFieldAssembler::fromDto)
+				.collect(Collectors.toList());
+	}
+
 	private static EventFieldReferencelessDto toReferencelessDto(EventField eventField) {
 		return EventFieldReferencelessDto.builder()
 				.id(eventField.getId())
@@ -42,6 +52,12 @@ public final class EventFieldAssembler {
 				.text(eventField.getText())
 				.link(buildOptionalLink(eventField))
 				.build();
+	}
+
+	public static List<EventFieldReferencelessDto> toReferencelessDtoList(Iterable<? extends EventField> eventFields) {
+		return StreamSupport.stream(eventFields.spliterator(), false)
+				.map(EventFieldAssembler::toReferencelessDto)
+				.collect(Collectors.toList());
 	}
 
 	private static EventFieldDefaultDto toDefaultDto(EventField eventField) {
@@ -53,22 +69,6 @@ public final class EventFieldAssembler {
 				.selection(getDefaultSelection(fieldType, eventField))
 				.text(eventField.getText())
 				.build();
-	}
-
-	static List<EventField> fromDtoIterable(Iterable<? extends EventFieldDto> dtos) {
-		if (dtos == null) {
-			return Collections.emptyList();
-		}
-
-		return StreamSupport.stream(dtos.spliterator(), false)
-				.map(EventFieldAssembler::fromDto)
-				.collect(Collectors.toList());
-	}
-
-	public static List<EventFieldReferencelessDto> toReferencelessDtoList(Iterable<? extends EventField> eventFields) {
-		return StreamSupport.stream(eventFields.spliterator(), false)
-				.map(EventFieldAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
 	}
 
 	public static List<EventFieldDefaultDto> toDefaultDtoList(Iterable<? extends EventField> eventFields) {

@@ -47,6 +47,12 @@ public class EventService {
 	private final EventTypeService eventTypeService;
 	private final EventFieldService eventFieldService;
 
+	/**
+	 * Creates a new event with values from the {@link EventDto}
+	 *
+	 * @param eventDto new event
+	 * @return saved new event
+	 */
 	public Event createEvent(@NonNull EventDto eventDto) {
 		if (StringUtils.isNotEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
@@ -135,6 +141,12 @@ public class EventService {
 		return eventRepository.findAllParticipants(channel);
 	}
 
+	/**
+	 * Updates the event found by id with values from the {@link AbstractEventDto}
+	 *
+	 * @param dto with event id and values to update
+	 * @return updated event
+	 */
 	public Event updateEvent(@NonNull AbstractEventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 
@@ -163,7 +175,13 @@ public class EventService {
 		return event;
 	}
 
-	//TODO check if correct
+	/**
+	 * Updates the event found by id with values from the {@link EventDto}
+	 *
+	 * @param dto with event id and values to update
+	 * @return updated event
+	 * @see #updateEvent(AbstractEventDto)
+	 */
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = updateEvent((AbstractEventDto) dto);
 
@@ -172,7 +190,6 @@ public class EventService {
 		}
 		if (dto.getDetails() != null) {
 			eventFieldService.updateEventDetails(dto.getDetails(), event);
-			event.validate();
 		}
 
 		return event;
@@ -255,7 +272,7 @@ public class EventService {
 	 *
 	 * @param channel       event channel
 	 * @param squadPosition to edit name of
-	 * @param squadName      new name
+	 * @param squadName     new name
 	 * @return event in which the slot has been renamed
 	 */
 	public Event renameSquad(long channel, int squadPosition, String squadName) {
@@ -322,6 +339,13 @@ public class EventService {
 		return event;
 	}
 
+	/**
+	 * Searches for the given channel the matching event and returns the slots matching the two given users.
+	 *
+	 * @param channel  event channel
+	 * @param userDtos slotted users
+	 * @return two slots
+	 */
 	public List<Slot> findSwapSlots(long channel, List<UserDto> userDtos) {
 		if (ListUtils.isEmpty(userDtos) || userDtos.size() != 2) {
 			throw BusinessRuntimeException.builder().title("Zum tauschen müssen zwei Nutzer angegeben werden.").build();

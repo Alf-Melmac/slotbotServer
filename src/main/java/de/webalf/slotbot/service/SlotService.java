@@ -34,11 +34,23 @@ public class SlotService {
 	private final UserService userService;
 	private final ActionLogService actionLogService;
 
+	/**
+	 * Creates a new {@link Slot} with the values from the given {@link SlotDto}
+	 *
+	 * @param dto values
+	 * @return saved new slot
+	 */
 	Slot newSlot(SlotDto dto) {
 		Slot slot = SlotAssembler.fromDto(dto);
 		return slotRepository.save(slot);
 	}
 
+	/**
+	 * Updates the slotlist of the given squad to the given slotlist
+	 *
+	 * @param slotList new slotlist
+	 * @param squad    to update
+	 */
 	void updateSlotList(@NonNull List<SlotDto> slotList, @NonNull Squad squad) {
 		List<Slot> squadSlots = squad.getSlotList();
 		if (squadSlots != null) {

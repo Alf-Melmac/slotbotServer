@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class EventType extends AbstractSuperIdEntity {
-	//TODO If no longer used (edit of event) doesn't get deleted
-
 	@Column(name = "event_type_name", length = 100)
 	@NotBlank
 	@Size(max = 80)

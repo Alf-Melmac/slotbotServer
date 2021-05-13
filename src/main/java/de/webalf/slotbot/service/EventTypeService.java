@@ -22,6 +22,12 @@ import java.util.List;
 public class EventTypeService {
 	private final EventTypeRepository eventTypeRepository;
 
+	/**
+	 * Finds a {@link EventType} by id of given dto or creates a new one with values from given dto
+	 *
+	 * @param eventTypeDto to find identified by id
+	 * @return found eventType or new eventType
+	 */
 	public EventType find(@NonNull EventTypeDto eventTypeDto) {
 		return eventTypeRepository.findEventTypeByNameAndColor(eventTypeDto.getName(), eventTypeDto.getColor())
 				.orElseGet(() -> eventTypeRepository.save(EventTypeAssembler.fromDto(eventTypeDto)));

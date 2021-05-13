@@ -34,8 +34,8 @@ public final class ListUtils {
 	 * @param list to shift
 	 * @return first now removed element
 	 */
-	public static String shift(@NonNull List<String> list) {
-		final String firstEl = list.get(0);
+	public static <T> T shift(@NonNull List<T> list) {
+		final T firstEl = list.get(0);
 		list.remove(0);
 		return firstEl;
 	}

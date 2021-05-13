@@ -63,7 +63,6 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 
 	private Boolean reserveParticipating;
 
-	//TODO Here?
 	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
 	public String getPictureUrl() {
 		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : AMB_LOGO;

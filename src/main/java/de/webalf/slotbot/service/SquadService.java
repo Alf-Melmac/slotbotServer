@@ -26,6 +26,12 @@ public class SquadService {
 	private final SquadRepository squadRepository;
 	private final SlotService slotService;
 
+	/**
+	 * Updates the squadList of the given event to the given squadList
+	 *
+	 * @param squadList new squadList
+	 * @param event to update
+	 */
 	void updateSquadList(@NonNull List<SquadDto> squadList, @NonNull Event event) {
 		List<Squad> eventSquads = event.getSquadList();
 		if (eventSquads != null) {

@@ -29,6 +29,16 @@ public final class SquadAssembler {
 				.build();
 	}
 
+	static List<Squad> fromDtoList(Iterable<? extends SquadDto> squadList) {
+		if (squadList == null) {
+			return Collections.emptyList();
+		}
+
+		return StreamSupport.stream(squadList.spliterator(), false)
+				.map(SquadAssembler::fromDto)
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * To be used if the focus relies on the event
 	 */
@@ -40,6 +50,12 @@ public final class SquadAssembler {
 				.build();
 	}
 
+	static List<SquadReferencelessDto> toReferencelessDtoList(Iterable<? extends Squad> squadList) {
+		return StreamSupport.stream(squadList.spliterator(), false)
+				.map(SquadAssembler::toReferencelessDto)
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * To be used if the focus relies on a slot
 	 */
@@ -49,21 +65,5 @@ public final class SquadAssembler {
 				.name(squad.getName())
 				.event(EventAssembler.toAbstractDto(squad.getEvent()))
 				.build();
-	}
-
-	static List<SquadReferencelessDto> toReferencelessDtoList(Iterable<? extends Squad> squadList) {
-		return StreamSupport.stream(squadList.spliterator(), false)
-				.map(SquadAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
-	}
-
-	static List<Squad> fromDtoList(Iterable<? extends SquadDto> squadList) {
-		if (squadList == null) {
-			return Collections.emptyList();
-		}
-
-		return StreamSupport.stream(squadList.spliterator(), false)
-				.map(SquadAssembler::fromDto)
-				.collect(Collectors.toList());
 	}
 }

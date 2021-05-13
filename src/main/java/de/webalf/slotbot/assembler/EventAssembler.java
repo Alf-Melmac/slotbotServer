@@ -40,7 +40,7 @@ public final class EventAssembler {
 	}
 
 	/**
-	 * To be used if the focus relies on the event
+	 * To be used if the focus relies on the event. Does include squadList and details
 	 */
 	public static EventReferencelessDto toReferencelessDto(Event event) {
 		final LocalDateTime dateTime = event.getDateTime();
@@ -66,7 +66,7 @@ public final class EventAssembler {
 	}
 
 	/**
-	 * To be used if the focus relies not on the event. It doesn't include the squadlist or details
+	 * To be used if the focus relies not on the event. Doesn't include the squadlist or details
 	 */
 	static EventDto toAbstractDto(Event event) {
 		final LocalDateTime dateTime = event.getDateTime();
