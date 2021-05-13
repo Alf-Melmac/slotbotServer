@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,10 @@ public class ExternalServerService {
 	 */
 	public void fillIpServerMap() {
 		log.info("Filling ipUrlMap from " + serverManagerProperties.getUrl());
-		ipServerMap = buildWebClient().get().uri("/status/mappings").retrieve().bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {}).block();
+		ipServerMap = buildWebClient().get().uri("/status/mappings").retrieve()
+				.bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {})
+				.onErrorReturn(Collections.emptyMap())
+				.block();
 		log.info("Filled ipUrlMap and retrieved {} items", ipServerMap != null ? ipServerMap.size() : "null");
 	}
 
