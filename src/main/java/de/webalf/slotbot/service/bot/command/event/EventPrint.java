@@ -44,7 +44,7 @@ public class EventPrint implements DiscordCommand {
 	private Consumer<Event> eventPrintConsumer(Message message, @NonNull MessageChannel channel) {
 		return event -> {
 			if (event.isPrinted()) {
-				sendDmAndDeleteMessage(message, "Schau erstmal hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getChannel() + "/" + event.getInfoMsg() + "> oder hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getChannel() + "/" + event.getSlotListMsg() + ">. Mach meinetwegen ein !updateEvent aber doch nicht nochmal posten, dass will doch keiner.");
+				sendDmAndDeleteMessage(message, "Schau erstmal hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getChannel() + "/" + event.getInfoMsg() + "> oder hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getChannel() + "/" + event.getSlotListMsg() + ">.");
 				return;
 			}
 

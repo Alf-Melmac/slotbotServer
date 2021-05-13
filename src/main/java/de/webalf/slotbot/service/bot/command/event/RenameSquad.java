@@ -23,7 +23,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @Slf4j
 @Command(names = {"renameSquad", "editSquad", "eventRenameSquad"},
 		description = "Ermöglicht es einen Squad umzubenennen. Squads sind durchnummeriert, beginnend mit 0.",
-		usage = "<Squad Position> \"<Slotname>\"",
+		usage = "<Squad Position> \"<Squadname>\"",
 		argCount = {2},
 		authorization = EVENT_MANAGE)
 public class RenameSquad implements DiscordCommand {

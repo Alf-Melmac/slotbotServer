@@ -21,7 +21,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(names = {"delSlot", "eventDelSlot", "deleteSlot", "removeSlot", "slotSel", "slotRemove"},
+@Command(names = {"delSlot", "eventDelSlot", "deleteSlot", "removeSlot", "slotDel", "slotRemove"},
 		description = "Entfernt einen leeren Slot aus einem Event.",
 		usage = "<Slotnummer>",
 		argCount = {1},

@@ -83,7 +83,7 @@ public class Swap implements DiscordCommand {
 			} else if (requester.equals(foreignSlotUser)) {
 				replyAndDeleteOnlySend(message, "Du bist schon auf dem Slot.");
 			} else if (SwapRequest.containsRequester(requester)) {
-				replyAndDeleteOnlySend(message, "Es besteht bereits eine Tausch-Anfrage");
+				replyAndDeleteOnlySend(message, "Es besteht bereits eine Tausch-Anfrage.");
 			} else if (!reversedRequestExists(message, requesterSlot, foreignSlot, requester, foreignSlotUser)) {
 				sendDmToRecipient(
 						message,

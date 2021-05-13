@@ -58,7 +58,7 @@ public class Unslot implements DiscordCommand {
 				}
 				deleteMessagesInstant(message);
 			} else {
-				replyAndDelete(message, "Du darfst keine anderen Personen slotten.");
+				replyAndDelete(message, "Du darfst keine anderen Personen ausslotten.");
 			}
 		}
 	}
