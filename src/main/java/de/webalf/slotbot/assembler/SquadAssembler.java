@@ -63,7 +63,7 @@ public final class SquadAssembler {
 		return SquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.event(EventAssembler.toAbstractDto(squad.getEvent()))
+//				.event(EventAssembler.toAbstractDto(squad.getEvent()))
 				.build();
 	}
 }

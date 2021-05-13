@@ -38,7 +38,7 @@ public class UpdateInterceptorService {
 			return;
 		}
 
-		eventUpdateService.update(event);
+//		eventUpdateService.update(event);
 	}
 
 	/**
@@ -54,12 +54,12 @@ public class UpdateInterceptorService {
 		} else if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;
 			if (!squad.isReserve()) {
-				return squad.getEvent();
+//				return squad.getEvent();
 			}
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
 			if (!slot.isInReserve()) {
-				return slot.getSquad().getEvent();
+//				return slot.getSquad().getEvent();
 			}
 		}
 		return null;
@@ -71,18 +71,18 @@ public class UpdateInterceptorService {
 		} else if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;
 			if (!squad.isReserve()) {
-				return squad.getEvent();
+//				return squad.getEvent();
 			}
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
-			final Event event = slot.getSquad().getEvent();
+//			final Event event = slot.getSquad().getEvent();
 			for (int i = 0; i < propertyNames.length; i++) {
 				if (propertyNames[i].equals(Slot_.USER)) {
-					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
+//					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
 					break;
 				}
 			}
-			return event;
+//			return event;
 		}
 		return null;
 	}
@@ -91,7 +91,7 @@ public class UpdateInterceptorService {
 		if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;
 			if (!squad.isReserve()) {
-				update(squad.getEvent());
+//				update(squad.getEvent());
 			}
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;

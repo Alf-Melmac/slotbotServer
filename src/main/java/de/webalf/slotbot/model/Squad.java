@@ -37,14 +37,14 @@ public class Squad extends AbstractIdEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")
 	@JsonBackReference
-	private Event event;
+	private OldEvent event;
 
 	@Builder
 	public Squad(long id, String name, List<Slot> slotList, Event event) {
 		this.id = id;
 		this.name = name;
 		this.slotList = slotList;
-		this.event = event;
+//		this.event = event;
 	}
 
 	static final String RESERVE_NAME = "Reserve";
@@ -108,7 +108,7 @@ public class Squad extends AbstractIdEntity {
 
 		newSlot.setSquad(this);
 		slotList.add(newSlot);
-		getEvent().slotUpdateWithValidation();
+//		getEvent().slotUpdateWithValidation();
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class Squad extends AbstractIdEntity {
 		getSlotList().remove(slot);
 		deleteSquadIfEmpty();
 
-		getEvent().slotUpdate();
+//		getEvent().slotUpdate();
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class Squad extends AbstractIdEntity {
 	 */
 	public boolean deleteSquadIfEmpty() {
 		if (getSlotList().isEmpty()) {
-			getEvent().removeSquad(this);
+//			getEvent().removeSquad(this);
 			return true;
 		}
 		return false;

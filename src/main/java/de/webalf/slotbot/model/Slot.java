@@ -54,7 +54,8 @@ public class Slot extends AbstractIdEntity {
 	// Getter
 
 	public Event getEvent() {
-		return getSquad().getEvent();
+//		return getSquad().getEvent();
+		return null;
 	}
 
 	public boolean isInReserve() {

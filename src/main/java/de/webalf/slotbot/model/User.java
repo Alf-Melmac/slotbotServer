@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
-
 /**
  * @author Alf
  * @since 06.09.2020
@@ -48,10 +46,11 @@ public class User {
 	}
 
 	public Optional<LocalDateTime> getLastEventDateTime() {
-		return getSlots().stream()
-				.map(Slot::getSquad)
-				.map(Squad::getEvent)
-				.map(Event::getDateTime)
-				.filter(dateTime -> dateTime.isBefore(LocalDateTime.now())).min(getLocalDateTimeComparator());
+//		return getSlots().stream()
+//				.map(Slot::getSquad)
+//				.map(Squad::getEvent)
+//				.map(Event::getDateTime)
+//				.filter(dateTime -> dateTime.isBefore(LocalDateTime.now())).min(getLocalDateTimeComparator());
+		return Optional.empty();
 	}
 }

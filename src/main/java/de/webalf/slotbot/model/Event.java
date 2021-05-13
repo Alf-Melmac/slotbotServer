@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.model.annotations.AbstractSuperIdEntityNotIncrementing;
 import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
@@ -35,7 +36,7 @@ import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 @Slf4j
-public class Event extends AbstractSuperIdEntity {
+public class Event extends AbstractSuperIdEntityNotIncrementing {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "event_type")
 	private EventType eventType;
@@ -62,7 +63,7 @@ public class Event extends AbstractSuperIdEntity {
 	@Column(name = "event_channel", unique = true)
 	private Long channel;
 
-	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany
 	@OrderColumn
 	@JsonManagedReference
 	private List<Squad> squadList;
@@ -300,7 +301,7 @@ public class Event extends AbstractSuperIdEntity {
 	 */
 	public void setChilds() {
 		for (Squad squad : getSquadList()) {
-			squad.setEvent(this);
+//			squad.setEvent(this);
 			for (Slot slot : squad.getSlotList()) {
 				slot.setSquad(squad);
 			}

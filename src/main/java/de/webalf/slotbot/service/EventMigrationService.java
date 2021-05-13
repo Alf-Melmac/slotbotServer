@@ -36,7 +36,7 @@ public class EventMigrationService {
 
 		oldEvents.forEach(oldEvent -> {
 			log.info("Migrating {} ({})", oldEvent.getName(), oldEvent.getId());
-			eventRepository.save(Event.builder()
+			final Event newEvent = Event.builder()
 					.id(oldEvent.getId())
 					.eventType(eventType)
 					.name(oldEvent.getName())
@@ -52,8 +52,9 @@ public class EventMigrationService {
 					.missionType(oldEvent.getMissionType())
 					.missionLength(oldEvent.getMissionLength())
 					.reserveParticipating(oldEvent.getReserveParticipating())
-					.details(buildDetails(oldEvent))
-					.build());
+					.build();
+			newEvent.setDetails(buildDetails(oldEvent, newEvent));
+			eventRepository.save(newEvent);
 		});
 	}
 
@@ -65,36 +66,36 @@ public class EventMigrationService {
 	private static final String MEDICAL = "Medic-System";
 	private static final String TELEPORT = "Technischer Teleport";
 
-	private List<EventField> buildDetails(OldEvent oldEvent) {
+	private List<EventField> buildDetails(OldEvent oldEvent, Event newEvent) {
 		List<EventField> eventFields = new ArrayList<>();
 
 		//Karte
 		DtoUtils.ifPresent(oldEvent.getMap(),
-				map -> eventFields.add(EventField.builder().title(MAP).text(map).build()));
+				map -> eventFields.add(EventField.builder().title(MAP).text(map).event(newEvent).build()));
 
 		//Modpack
 		DtoUtils.ifPresent(oldEvent.getModPack(),
-				modpack -> eventFields.add(EventField.builder().title(MODPACK).text(modpack).build()));
+				modpack -> eventFields.add(EventField.builder().title(MODPACK).text(modpack).event(newEvent).build()));
 
 		//Respawn
 		DtoUtils.ifPresent(oldEvent.getRespawn(),
-				respawn -> eventFields.add(EventField.builder().title(RESPAWN).text(Boolean.toString(respawn)).build()));
+				respawn -> eventFields.add(EventField.builder().title(RESPAWN).text(Boolean.toString(respawn)).event(newEvent).build()));
 
 		//Missionszeit
 		DtoUtils.ifPresent(oldEvent.getMissionTime(),
-				missionTime -> eventFields.add(EventField.builder().title(MISSION_TIME).text(missionTime).build()));
+				missionTime -> eventFields.add(EventField.builder().title(MISSION_TIME).text(missionTime).event(newEvent).build()));
 
 		//Navigation
 		DtoUtils.ifPresent(oldEvent.getNavigation(),
-				navigation -> eventFields.add(EventField.builder().title(NAVIGATION).text(navigation).build()));
+				navigation -> eventFields.add(EventField.builder().title(NAVIGATION).text(navigation).event(newEvent).build()));
 
 		//Medic-System
 		DtoUtils.ifPresent(oldEvent.getMedicalSystem(),
-				medical -> eventFields.add(EventField.builder().title(MEDICAL).text(medical).build()));
+				medical -> eventFields.add(EventField.builder().title(MEDICAL).text(medical).event(newEvent).build()));
 
 		//Technischer Teleport
 		DtoUtils.ifPresent(oldEvent.getTechnicalTeleport(),
-				teleport -> eventFields.add(EventField.builder().title(TELEPORT).text(teleport).build()));
+				teleport -> eventFields.add(EventField.builder().title(TELEPORT).text(teleport).event(newEvent).build()));
 
 		return eventFields;
 	}
