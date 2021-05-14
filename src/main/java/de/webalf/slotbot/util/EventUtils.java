@@ -95,6 +95,11 @@ public final class EventUtils {
 		addField("Reserve nimmt teil", buildReserveParticipatingField(event.getReserveParticipating()), true, embedBuilder);
 		event.getDetails().forEach(field -> {
 			String text = field.getText();
+			if ("true".equals(text)) {
+				text = "Ja";
+			} else if ("false".equals(text)) {
+				text = "Nein";
+			}
 			if (StringUtils.isNotEmpty(field.getLink())) {
 				text = "[" + text + "](" + fixUrl(field.getLink()) + ")";
 			}
