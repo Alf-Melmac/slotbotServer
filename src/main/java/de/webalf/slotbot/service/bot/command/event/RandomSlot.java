@@ -19,7 +19,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(names = {"randomSlot", "slotRandom"},
+@Command(names = {"randomSlot", "slotRandom", "random"},
 		description = "Trägt dich auf einem zufälligen Slot im Event ein.",
 		authorization = NONE)
 public class RandomSlot implements DiscordCommand {
