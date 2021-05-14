@@ -18,16 +18,21 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class Arma3FieldUtils {
 	public static final String EVENT_TYPE_NAME = "Arma 3";
 
-	private static final List<String> MOD_PACKS = List.of("2103_ArmaMachtBock", "Joined_Operations_2020", "Alliance_2021v1");
+	private static final List<String> MOD_PACKS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN",
+			"Joined_Operations_2020", "Alliance_2021v1");
 
-	private static final List<String> MAPS = List.of("Aliabad Region", "Altis", "Anizay", "Beketow", "Bukovina",
-			"Bystrica", "Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Chernarus 2020",
-			"Chongo, Angola v1.30", "CLA Clafghan", "Desert Island", "Die Wüste", "Everon", "Hebontes", "Hellanmaa",
-			"Hellanmaa winter", "Khoramshahr", "Kolgujev", "Livonia", "Malden", "Malden 2035", "Nogova", "Porto",
-			"Prei Khmaoch Luong", "Proving Grounds", "Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani",
-			"SE Angola 1974 v1.30", "Shapur", "Southern Sahrani", "Stratis", "Summa", "Summa winter", "Takistan",
-			"Takistan Mountains", "Tanoa", "United Sahrani", "Utes", "Vinjesvingen", "Virolahti", "Virtuelle Realität",
-			"Zargabad");
+	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
+			"Ba Long, Quang Tri province, Vietnam", "Beketow", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
+			"Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Chernarus 2020", "Chongo, Angola v1.30",
+			"CLA Clafghan", "Da Krong, Quang Trie Vietnam", "Dak Pek, Kon Tum province, Vietnam", "Desert Island", "Ðông Hà",
+			"Doung Island, Rung Sat Vietnam", "Quang Tri, Vietnam", "Die Wüste", "Everon", "Hebontes", "Hellanmaa",
+			"Hellanmaa winter", "Ia Drâng, Gia Lai, Vietnam", "Khe Sanh, Quang Tri, Vietnam (WIP)", "Khoramshahr",
+			"Kolgujev", "Livonia", "Lowlands, Quang Ngai, Vietnam", "Malden", "Malden 2035", "Nogova", "Phu Bai, Hue, Vietnam",
+			"Phuoc Tuy Province, Vietnam", "Plei Trap, Kon Tum, Vietnam", "Porto", "Prei Khmaoch Luong", "Proving Grounds",
+			"Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani", "SE Angola 1974 v1.30", "SEA, Lam Dong, Vietnam",
+			"Shapur", "Song Bin Tanh, Mekong Delta, Vietnam", "Song Cu, Dong Nai Vietnam", "Southern Sahrani", "Stratis",
+			"Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa", "United Sahrani", "Utes", "Vinjesvingen",
+			"Virolahti", "Virtuelle Realität", "Werferlingen", "Zargabad");
 
 	public static final List<EventFieldDefaultDto> FIELDS = List.of(
 			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).build(),
@@ -61,6 +66,10 @@ public class Arma3FieldUtils {
 				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2103_ArmaMachtBock_Full.html")).toUri().toString();
 			case "2102_Event":
 				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2102_Event.html")).toUri().toString();
+			case "2104_ArmaMachtBock_GM":
+				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2104_ArmaMachtBock_GM.html")).toUri().toString();
+			case "2105_ArmaMachtBock_VN":
+				return linkTo(methodOn(FileController.class).getFile("2105_ArmaMachtBock_VN.html")).toUri().toString();
 			case "Joined_Operations_2020":
 				return linkTo(methodOn(FileController.class).getFile("Joined_Operations_2020v2.html")).toUri().toString();
 			case "Alliance_2021v1":
