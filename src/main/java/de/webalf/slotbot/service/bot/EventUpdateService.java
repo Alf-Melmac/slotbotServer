@@ -34,7 +34,7 @@ public class EventUpdateService {
 
 		final TextChannel eventChannel = botService.getJda().getTextChannelById(event.getChannel());
 		if (eventChannel == null) {
-			throw new IllegalStateException("Channel " + event.getChannel() + "couldn't be found.");
+			throw new IllegalStateException("Channel " + event.getChannel() + " couldn't be found.");
 		}
 
 		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
