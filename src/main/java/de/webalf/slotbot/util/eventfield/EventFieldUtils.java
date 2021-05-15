@@ -2,14 +2,15 @@ package de.webalf.slotbot.util.eventfield;
 
 import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.EventType;
+import de.webalf.slotbot.model.annotations.EventFieldDefault;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.enums.EventFieldType;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.atteo.classindex.ClassIndex;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static de.webalf.slotbot.model.enums.EventFieldType.SELECTION;
 import static de.webalf.slotbot.model.enums.EventFieldType.TEXT_WITH_SELECTION;
@@ -19,6 +20,7 @@ import static de.webalf.slotbot.model.enums.EventFieldType.TEXT_WITH_SELECTION;
  * @since 10.05.2021
  */
 @UtilityClass
+@Slf4j
 public final class EventFieldUtils {
 	/**
 	 * Returns a link if the given {@link EventField} references something.
@@ -36,19 +38,30 @@ public final class EventFieldUtils {
 		return null;
 	}
 
+	private static final Map<String, List<EventFieldDefaultDto>> eventTypeNameToFieldDefaults = new HashMap<>();
+	static {
+		ClassIndex.getAnnotated(EventFieldDefault.class)
+				.forEach(aClass -> {
+					try {
+						//noinspection unchecked
+						eventTypeNameToFieldDefaults.put(
+								aClass.getAnnotation(EventFieldDefault.class).eventTypeName(),
+								(List<EventFieldDefaultDto>) aClass.getDeclaredField("FIELDS").get(null)
+						);
+					} catch (NoSuchFieldException | IllegalAccessException e) {
+						log.error("Wrong implementation of EventFieldDefault: " + aClass.getName(), e);
+					}
+				});
+	}
+
 	/**
-	 * Returns the default {@link EventField}s for the given {@link EventType#name}
+	 * Returns the default {@link EventFieldDefaultDto}s for the given {@link EventType#name}
 	 *
 	 * @param eventTypeName name of event type
-	 * @return matching default fields (including only field titles)
+	 * @return matching default fields
 	 */
 	public static List<EventFieldDefaultDto> getDefault(String eventTypeName) {
-		switch (eventTypeName) {
-			case Arma3FieldUtils.EVENT_TYPE_NAME:
-				return Arma3FieldUtils.FIELDS;
-			default:
-				return Collections.emptyList();
-		}
+		return eventTypeNameToFieldDefaults.get(eventTypeName);
 	}
 
 	/**

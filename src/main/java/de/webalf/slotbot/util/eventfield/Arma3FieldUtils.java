@@ -1,6 +1,7 @@
 package de.webalf.slotbot.util.eventfield;
 
 import de.webalf.slotbot.controller.website.FileController;
+import de.webalf.slotbot.model.annotations.EventFieldDefault;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import lombok.experimental.UtilityClass;
 
@@ -15,9 +16,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * @since 27.04.2021
  */
 @UtilityClass
-public class Arma3FieldUtils {
-	public static final String EVENT_TYPE_NAME = "Arma 3";
-
+@EventFieldDefault(eventTypeName = "Arma 3")
+public final class Arma3FieldUtils {
 	private static final List<String> MOD_PACKS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN",
 			"Joined_Operations_2020", "Alliance_2021v1");
 
@@ -34,7 +34,8 @@ public class Arma3FieldUtils {
 			"Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa", "United Sahrani", "Utes", "Vinjesvingen",
 			"Virolahti", "Virtuelle Realität", "Werferlingen", "Zargabad");
 
-	public static final List<EventFieldDefaultDto> FIELDS = List.of(
+	@SuppressWarnings("unused") //EventFieldUtils#eventTypeNameToFieldDefaults
+	static final List<EventFieldDefaultDto> FIELDS = List.of(
 			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).build(),
 			EventFieldDefaultDto.builder().title("Modpack").type(TEXT_WITH_SELECTION).selection(MOD_PACKS)
 					.text(MOD_PACKS.get(0)).build(),
