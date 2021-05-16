@@ -49,14 +49,7 @@ public class UpdateInterceptorService {
 	 * @return associated event or null
 	 */
 	private Event getEvent(Object entity) {
-		if (entity instanceof Event) {
-			return (Event) entity;
-		} else if (entity instanceof Squad) {
-			final Squad squad = (Squad) entity;
-			if (!squad.isReserve()) {
-				return squad.getEvent();
-			}
-		} else if (entity instanceof Slot) {
+		if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
 			if (!slot.isInReserve()) {
 				return slot.getSquad().getEvent();
@@ -88,30 +81,24 @@ public class UpdateInterceptorService {
 	}
 
 	public void onSave(Object entity) {
-		if (entity instanceof Squad) {
-			final Squad squad = (Squad) entity;
-			if (!squad.isReserve()) {
-				update(squad.getEvent());
-			}
-		} else if (entity instanceof Slot) {
-			final Slot slot = (Slot) entity;
-			if (slot.squadNullCheck() && !slot.isInReserve()) {
-				update(slot.getEvent());
-			}
-		} else if (entity instanceof User) {
+		if (entity instanceof User) {
 			final User user = (User) entity;
 			if (!user.isDefaultUser()) {
-				messageHelper.sendDmToRecipient(user, "Schön dich bei AmB begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!");
+				messageHelper.sendDmToRecipient(user, "Schön dich bei Arma macht Bock begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!");
 			}
 		}
 	}
 
 	public void onCollectionUpdate(Object collection) {
 		if (collection instanceof PersistentList) {
-			final PersistentList list = (PersistentList) collection;
-			final Object el = list.get(0);
+			final Object el = ((PersistentList) collection).get(0);
 
-			if (el instanceof EventField) {
+			if (el instanceof Squad) {
+				final Squad squad = (Squad) el;
+				if (!squad.isReserve()) {
+					update(squad.getEvent());
+				}
+			} else if (el instanceof EventField) {
 				update(((EventField) el).getEvent());
 			}
 		}
