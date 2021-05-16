@@ -6,6 +6,7 @@ import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
+import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.EventDto;
@@ -291,7 +292,11 @@ public class EventService {
 	 */
 	public Event addSlot(long channel, int squadPosition, SlotDto slotDto) {
 		final Event event = findByChannel(channel);
-		event.findSquadByPosition(squadPosition).addSlot(slotService.newSlot(slotDto));
+		final Squad squad = event.findSquadByPosition(squadPosition);
+		if (squad.isReserve()) {
+			throw BusinessRuntimeException.builder().title("Der Reserve kann manuell kein Slot hinzugefügt werden.").build();
+		}
+		squad.addSlot(slotService.newSlot(slotDto));
 		return event;
 	}
 
