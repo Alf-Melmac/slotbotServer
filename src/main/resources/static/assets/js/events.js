@@ -6,11 +6,6 @@ $(function () {
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'de',
-        /*headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },*/
         eventSources: [
             {
                 url: getEventsUrl,
@@ -31,7 +26,7 @@ $(function () {
     // Allow event manage roles to click on the calendar to create event
     if (eventManageRoles.includes(authentication.authorities.filter(authority => authority.authority.startsWith('ROLE_'))[0].authority)) {
         calendar.on('dateClick', function (info) {
-            window.location.href = createEventUrl;
+            window.location.href = `${createEventUrl}?date=${info.dateStr}`;
         });
     }
     calendar.render();

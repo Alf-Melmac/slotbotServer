@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
@@ -49,7 +50,7 @@ public class EventWebController {
 				.toUri().toString()
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
-		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml()).toUri().toString());
+		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null)).toUri().toString());
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventManageRoles", BotPermissionHelper.getEventManageApplicationRoles());
 
@@ -58,11 +59,12 @@ public class EventWebController {
 
 	@GetMapping("/new")
 	@PreAuthorize(HAS_ROLE_CREATOR)
-	public ModelAndView getWizardHtml() {
+	public ModelAndView getWizardHtml(@RequestParam(required = false) String date) {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
+		mav.addObject("date", date);
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
