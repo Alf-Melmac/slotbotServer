@@ -133,7 +133,7 @@ function getSquads(update = false) {
 
         $completeSquad.find('.js-slot').each(function (slotIndex, slotElement) {
             const $slot = $(slotElement);
-            let slot = {
+            const slot = {
                 name: $slot.find('.js-slot-name').val().trim(),
                 number: $slot.find('.js-slot-number').val()
             };

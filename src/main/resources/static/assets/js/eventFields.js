@@ -131,14 +131,14 @@ function _text(field) {
     return setText(setSelectionId(textarea, field.title), field.text);
 }
 
-const text_with_selection =
+const textWithSelection =
     '<input id="{selectionId}" class="form-control custom-select js-field-text" type="text" list="{selectionId}List" required value="{text}">' +
     '<datalist id="{selectionId}List">' +
     '   {options}' +
     '</datalist>';
 
 function _textWithSelection(field) {
-    return setText(selectionInput(text_with_selection, field), field.text);
+    return setText(selectionInput(textWithSelection, field), field.text);
 }
 
 const checkbox =
@@ -157,7 +157,7 @@ const select =
     '   {options}' +
     '</select>';
 
-const selection_with_text =
+const selectionWithText =
     '<select id="{selectionId}" class="form-control custom-select  js-field-text" required>' +
     '   <option selected>{text}</option>' +
     '   {options}' +
@@ -165,7 +165,7 @@ const selection_with_text =
 
 function _selection(field) {
     if (field.text) {
-        return setText(selectionInput(selection_with_text, field), field.text);
+        return setText(selectionInput(selectionWithText, field), field.text);
     }
     return selectionInput(select, field);
 }
