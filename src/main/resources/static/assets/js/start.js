@@ -11,7 +11,7 @@ $(function ($) {
     $('a.js-scroll-trigger[href*="#"]:not([href="#"])').on('click', function () {
         if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '') && location.hostname === this.hostname) {
             let target = $(this.hash);
-            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            target = target.length ? target : $(`'[name=${this.hash.slice(1)}]`);
             if (target.length) {
                 $('html, body').animate({
                     scrollTop: target.offset().top - 48
@@ -33,7 +33,7 @@ $(function ($) {
     });
 
     // Collapse Navbar
-    let navbarCollapse = function () {
+    const navbarCollapse = function () {
         const $mainNav = $('#mainNav');
         if ($mainNav.offset().top > 100) {
             $mainNav.addClass('navbar-shrink');

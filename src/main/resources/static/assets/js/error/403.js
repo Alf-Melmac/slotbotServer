@@ -7,8 +7,8 @@ $(function () {
     let cy = $eyef.attr('cy');
 
     $root.on('mousemove', function (evt) {
-        let x = evt.clientX / innerWidth;
-        let y = evt.clientY / innerHeight;
+        const x = evt.clientX / innerWidth;
+        const y = evt.clientY / innerHeight;
 
         $root.prop('--mouse-x', x);
         $root.prop('--mouse-y', y);
@@ -20,8 +20,8 @@ $(function () {
     });
 
     $root.on('touchmove', function (e) {
-        let x = e.originalEvent.touches[0].clientX / innerWidth;
-        let y = e.originalEvent.touches[0].clientY / innerHeight;
+        const x = e.originalEvent.touches[0].clientX / innerWidth;
+        const y = e.originalEvent.touches[0].clientY / innerHeight;
 
         $root.prop('--mouse-x', x);
         $root.prop('--mouse-y', y);

@@ -37,7 +37,7 @@ function saveEvent($saveBtn) {
         return;
     }
 
-    let event = {};
+    const event = {};
     $('input,textarea,select')
         .filter((index, element) => !$(element).attr('class').includes('squad')
             && !$(element).attr('class').includes('slot')
@@ -83,7 +83,7 @@ function saveEvent($saveBtn) {
         data: JSON.stringify(event)
     })
         .done(savedEvent => window.location.href = eventDetailsUrl.replace('{eventId}', savedEvent.id))
-        .fail(response => alert(JSON.stringify(response) + '\nAktion fehlgeschlagen. Später erneut versuchen\n' + JSON.stringify(event)));
+        .fail(response => alert(`${JSON.stringify(response)}\nAktion fehlgeschlagen. Später erneut versuchen\n${JSON.stringify(event)}`));
 }
 
 //Gets or sets value in given obj with given (dot notated) key
@@ -103,7 +103,7 @@ function indexObjWithDotNotationKey(obj, key, value) {
 }
 
 function getDetails(update = false) {
-    let details = [];
+    const details = [];
     $('#eventDetails .js-field').each(function (fieldIndex, fieldElement) {
         const $field = $(fieldElement);
         const $fieldText = $field.find('.js-field-text');
@@ -120,10 +120,10 @@ function getDetails(update = false) {
 }
 
 function getSquads(update = false) {
-    let squads = [];
+    const squads = [];
     $('#squads .js-complete-squad').each(function (completeSquadIndex, completeSquadElement) {
         const $completeSquad = $(completeSquadElement);
-        let squad = {
+        const squad = {
             name: $completeSquad.find('.js-squad-name').val().trim(),
             slotList: []
         };

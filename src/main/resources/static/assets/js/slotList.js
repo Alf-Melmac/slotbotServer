@@ -9,36 +9,39 @@ $(function () {
     const $addSquad = $('#addSquad');
 
     //Only allow positive whole numbers
-    $squads.on('keypress', '.js-slot-number', event => (event.charCode === 8 || event.charCode === 0 || event.charCode === 13) ? null : event.charCode >= 48 && event.charCode <= 57);
+    $squads.on('keypress', '.js-slot-number', event => {
+        const charCode = event.charCode;
+        return (charCode === 8 || charCode === 0 || charCode === 13) ? null : charCode >= 48 && charCode <= 57;
+    });
 
     const newSlot =
-        '<div class="form-row align-items-center js-slot">' +
-        '   <div class="col-md-1">' +
-        '      <input class="form-control js-slot-number" type="number" min="1" value="{defaultSlotValue}" required>' +
-        '   </div>' +
-        '   <div class="col-md-10">' +
-        '      <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>' +
-        '   </div>' +
-        '   <div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>' +
-        '</div>';
+        `<div class="form-row align-items-center js-slot">
+           <div class="col-md-1">
+              <input class="form-control js-slot-number" type="number" min="1" value="{defaultSlotValue}" required>
+           </div>
+           <div class="col-md-10">
+              <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>
+           </div>
+           <div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>
+        </div>`;
 
     const newSquad =
-        '<div class="form-group js-complete-squad">' +
-        '   <div class="form-row align-items-center js-squad">' +
-        '       <div><em class="fas fa-arrows-alt-v"></em></div>' +
-        '       <div class="col-md-11">' +
-        '           <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>' +
-        '       </div>' +
-        '       <div class="d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>' +
-        '   </div>' +
-        '' +
-        '   <div class="ml-5 js-slots">' +
-        newSlot +
-        '       <div type="button" class="btn btn-success rounded-circle js-add-slot" title="Slot hinzufügen">' +
-        '           <em class="fas fa-plus"></em>' +
-        '       </div>' +
-        '   </div>' +
-        '</div>';
+        `<div class="form-group js-complete-squad">
+           <div class="form-row align-items-center js-squad">
+               <div><em class="fas fa-arrows-alt-v"></em></div>
+               <div class="col-md-11">
+                   <input class="form-control js-squad-name" type="text" placeholder="Squad Name" required>
+               </div>
+               <div class="d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>
+           </div>
+        
+           <div class="ml-5 js-slots">
+               ${newSlot}
+               <div type="button" class="btn btn-success rounded-circle js-add-slot" title="Slot hinzufügen">
+                   <em class="fas fa-plus"></em>
+               </div>
+           </div>
+        </div>`;
 
     $addSquad.on('click', function () {
         $squads.append(newSquad.replace('{defaultSlotValue}', findFirstUnusedSlotNumber()));

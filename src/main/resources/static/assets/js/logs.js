@@ -10,10 +10,11 @@ $(function () {
         serverSide: true,
         orderMulti: false,
         ajax: function (data, callback) {
-            let dataResult = {};
-            dataResult.page = data.start / data.length;
-            dataResult.size = data.length;
-            dataResult.filter = data.search.value;
+            const dataResult = {
+                page: data.start / data.length,
+                size: data.length,
+                filter: data.search.value
+            };
 
             let property = data.columns[data.order[0].column].data;
             switch (property) { //Map ActionLogDto to ActionLog attributes

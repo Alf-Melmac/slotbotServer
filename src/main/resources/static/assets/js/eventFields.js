@@ -35,7 +35,7 @@ $(function () {
     $('#eventTypeName').on('input', function () {
         const $input = $(this);
         //Check if option is in datalist
-        const match = $('#' + $input.attr('list') + ' option').filter(function () {
+        const match = $(`#${$input.attr('list')} option`).filter(function () {
             return ($(this).val() === $input.val());
         });
 
@@ -88,16 +88,16 @@ function fillField($field, field, update) {
     $field.find('.js-field-title').val(field.title);
     switch (field.type) {
         case 'TEXT':
-            setInput($field, text(field));
+            setInput($field, _text(field));
             break;
         case 'TEXT_WITH_SELECTION':
-            setInput($field, textWithSelection(field));
+            setInput($field, _textWithSelection(field));
             break;
         case 'BOOLEAN':
-            setInput($field, boolean(field));
+            setInput($field, _boolean(field));
             break;
         case 'SELECTION':
-            setInput($field, selection(field));
+            setInput($field, _selection(field));
             break;
         default:
             break;
@@ -124,11 +124,11 @@ function selectionInput(input, field) {
     return s.replace('{options}', options);
 }
 
-const text_ =
+const textarea =
     '<textarea id="{selectionId}" class="form-control one-row js-field-text" type="text" placeholder="Information" required>{text}</textarea>';
 
-function text(field) {
-    return setText(setSelectionId(text_, field.title), field.text);
+function _text(field) {
+    return setText(setSelectionId(textarea, field.title), field.text);
 }
 
 const text_with_selection =
@@ -137,21 +137,21 @@ const text_with_selection =
     '   {options}' +
     '</datalist>';
 
-function textWithSelection(field) {
+function _textWithSelection(field) {
     return setText(selectionInput(text_with_selection, field), field.text);
 }
 
-const boolean_ =
+const checkbox =
     '<div class="custom-control custom-checkbox">' +
     '   <input id="{selectionId}" class="custom-control-input js-field-text" type="checkbox" required {checked}>' +
     '   <label for="{selectionId}" class="custom-control-label"></label>' +
     '</div>';
 
-function boolean(field) {
-    return setSelectionId(boolean_.replaceAll('{checked}', field.text === 'true' ? 'checked' : ''), field.title);
+function _boolean(field) {
+    return setSelectionId(checkbox.replaceAll('{checked}', field.text === 'true' ? 'checked' : ''), field.title);
 }
 
-const selection_ =
+const select =
     '<select id="{selectionId}" class="form-control custom-select js-field-text" required>' +
     '   <option selected disabled>Auswählen...</option>' +
     '   {options}' +
@@ -163,11 +163,11 @@ const selection_with_text =
     '   {options}' +
     '</select>';
 
-function selection(field) {
+function _selection(field) {
     if (field.text) {
         return setText(selectionInput(selection_with_text, field), field.text);
     }
-    return selectionInput(selection_, field);
+    return selectionInput(select, field);
 }
 
 function setInput($field, html) {

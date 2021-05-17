@@ -49,7 +49,7 @@ $(function () {
     $smartWizard.on('showStep', function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
         $prevBtn.prop('disabled', stepPosition === 'first');
 
-        let last = stepPosition === 'last';
+        const last = stepPosition === 'last';
         $nextBtn.prop('disabled', last);
         $btnFinish.toggle(last);
     });
