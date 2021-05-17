@@ -103,7 +103,11 @@ public final class EventFieldUtils {
 	 */
 	private static Optional<EventFieldDefaultDto> getOptionalMatchingDefaultField(@NonNull EventField eventField) {
 		final String title = eventField.getTitle();
-		return getDefault(eventField).stream()
+		final List<EventFieldDefaultDto> defaultFields = getDefault(eventField);
+		if (defaultFields == null) {
+			return Optional.empty();
+		}
+		return defaultFields.stream()
 				.filter(field -> title.equalsIgnoreCase(field.getTitle()))
 				.findAny(); //Event field default titles are unique
 	}
