@@ -19,7 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @EventFieldDefault(eventTypeName = "Arma 3")
 public final class Arma3FieldUtils {
 	private static final List<String> MOD_PACKS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN",
-			"Joined_Operations_2020", "Alliance_2021v1");
+			"Joined_Operations_2020", "Alliance_2021v3");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
 			"Ba Long, Quang Tri province, Vietnam", "Beketow", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
@@ -75,6 +75,10 @@ public final class Arma3FieldUtils {
 				return linkTo(methodOn(FileWebController.class).getFile("Joined_Operations_2020v2.html")).toUri().toString();
 			case "Alliance_2021v1":
 				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v1.html")).toUri().toString();
+			case "Alliance_2021v2":
+				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v2.html")).toUri().toString();
+			case "Alliance_2021v3":
+				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v3.html")).toUri().toString();
 			default:
 				return null;
 		}
