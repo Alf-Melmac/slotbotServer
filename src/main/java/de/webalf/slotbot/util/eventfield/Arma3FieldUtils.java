@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util.eventfield;
 
-import de.webalf.slotbot.controller.website.FileController;
+import de.webalf.slotbot.controller.website.FileWebController;
 import de.webalf.slotbot.model.annotations.EventFieldDefault;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import lombok.experimental.UtilityClass;
@@ -58,23 +58,23 @@ public final class Arma3FieldUtils {
 		}
 		switch (modPack) {
 			case "2008_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2008_ArmaMachtBock.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2008_ArmaMachtBock.html")).toUri().toString();
 			case "2012_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2012_ArmaMachtBock_Full.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2012_ArmaMachtBock_Full.html")).toUri().toString();
 			case "2101_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2101_ArmaMachtBock_Full_v2.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2101_ArmaMachtBock_Full_v2.html")).toUri().toString();
 			case "2103_ArmaMachtBock":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2103_ArmaMachtBock_Full.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2103_ArmaMachtBock_Full.html")).toUri().toString();
 			case "2102_Event":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2102_Event.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2102_Event.html")).toUri().toString();
 			case "2104_ArmaMachtBock_GM":
-				return linkTo(methodOn(FileController.class).getFile("Arma_3_Preset_2104_ArmaMachtBock_GM.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2104_ArmaMachtBock_GM.html")).toUri().toString();
 			case "2105_ArmaMachtBock_VN":
-				return linkTo(methodOn(FileController.class).getFile("2105_ArmaMachtBock_VN.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("2105_ArmaMachtBock_VN.html")).toUri().toString();
 			case "Joined_Operations_2020":
-				return linkTo(methodOn(FileController.class).getFile("Joined_Operations_2020v2.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Joined_Operations_2020v2.html")).toUri().toString();
 			case "Alliance_2021v1":
-				return linkTo(methodOn(FileController.class).getFile("Alliance_2021v1.html")).toUri().toString();
+				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v1.html")).toUri().toString();
 			default:
 				return null;
 		}

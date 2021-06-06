@@ -100,3 +100,30 @@ function checkUniqueSlotNumbers() {
     const slotNumbers = getSlotNumbers();
     return slotNumbers.length === new Set(slotNumbers).size;
 }
+
+function addSlotList(slotList) {
+    $('#uploadSlotlistModal').modal('toggle'); //Close upload modal
+    $('.js-trash').trigger('click'); //Remove all existing squads and slots
+
+    for (const squad of slotList) {
+        $('#addSquad').trigger('click');
+        fillSquad($('.js-complete-squad').last(), squad);
+    }
+}
+
+function fillSquad($squad, squad) {
+    $squad.find('.js-squad-name').val(squad.name);
+    let first = true;
+    for (const slot of squad.slotList) {
+        if (!first) {
+            $squad.find('.js-add-slot').trigger('click');
+        } else {
+            first = false;
+        }
+        const $slot = $squad.find('.js-slot').last();
+        if (slot.number !== 0) {
+            $slot.find('.js-slot-number').val(slot.number);
+        }
+        $slot.find('.js-slot-name').val(slot.name);
+    }
+}

@@ -21,10 +21,10 @@ public final class StringUtils {
 		return org.springframework.util.StringUtils.hasText(term);
 	}
 
-	private static final String REGEX = "(\"[^\"]*\"|'[^']*'|[^\"' ]+)";
+	private static final Pattern QUOTES = Pattern.compile("(\"[^\"]*\"|'[^']*'|[^\"' ]+)");
 
 	public static List<String> splitOnSpacesExceptQuotes(String str) {
-		final Matcher m = Pattern.compile(REGEX).matcher(str);
+		final Matcher m = QUOTES.matcher(str);
 		List<String> s = new ArrayList<>();
 		while (m.find()) {
 			String group = m.group();
@@ -52,5 +52,11 @@ public final class StringUtils {
 			}
 		}
 		return true;
+	}
+
+	private static final String NON_DIGIT_REGEX = "\\D";
+
+	public static String removeNonDigitCharacters(String str) {
+		return str.replaceAll(NON_DIGIT_REGEX, "");
 	}
 }

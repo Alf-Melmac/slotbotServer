@@ -2,6 +2,7 @@ package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
+import de.webalf.slotbot.controller.FileController;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.service.EventService;
@@ -67,6 +68,7 @@ public class EventWebController {
 		mav.addObject("date", date);
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
+		mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
 				.getEventDetailsHtml(Long.MIN_VALUE))

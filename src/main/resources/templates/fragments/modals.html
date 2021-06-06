@@ -21,5 +21,30 @@
 		</div>
 	</div>
 </div>
+
+<div th:fragment="uploadSlotlistModal" id="uploadSlotlistModal" class="modal fade" tabindex="-1"
+     aria-labelledby="uploadSlotlistModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header border border-secondary">
+				<h5 id="uploadSlotlistModalLabel" class="modal-title">Slotliste hochladen <mark>(Beta)</mark></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Lade hier deine <em>mission.sqm</em> hoch, um daraus die Slotliste generieren zu lassen. Du kannst
+					sie danach noch bearbeiten.</p>
+				<form enctype="multipart/form-data" id="uploadForm">
+					<input type="file" accept=".sqm"/>
+				</form>
+				<progress></progress>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" data-dismiss="modal">Schließen</button>
+			</div>
+		</div>
+	</div>
+</div>
 </body>
 </html>

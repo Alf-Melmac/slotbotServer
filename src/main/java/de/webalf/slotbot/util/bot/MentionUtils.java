@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 
 import java.util.regex.Pattern;
 
+import static de.webalf.slotbot.util.StringUtils.removeNonDigitCharacters;
+
 /**
  * @author Alf
  * @since 11.01.2021
@@ -22,6 +24,6 @@ public final class MentionUtils {
 	}
 
 	public static String getId(String mention) {
-		return mention.replaceAll("\\D", "");
+		return removeNonDigitCharacters(mention);
 	}
 }

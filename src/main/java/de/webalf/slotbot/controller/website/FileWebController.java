@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class FileController {
+public class FileWebController {
 	private final FileService fileService;
 
 	@GetMapping("/download/{filename:.+}")

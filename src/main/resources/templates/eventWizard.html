@@ -143,7 +143,7 @@
 							<h3>Details</h3>
 						</div>
 						<div class="col-md-3">
-							<div id="addDefaultFields" class="btn btn-secondary float-right collapse" type="button"
+							<div id="addDefaultFields" class="btn btn-secondary float-right" type="button"
 							     data-toggle="modal" data-target="#addDefaultFieldsWarning"></div>
 						</div>
 					</div>
@@ -164,11 +164,14 @@
 
 				<div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
 					<div class="row">
-						<div class="col-md-9">
+						<div class="col-md-7">
 							<h3>Teilnahmeplatzaufzählung</h3>
 						</div>
-						<div class="col-md-3">
-							<div id="renumber" class="btn btn-secondary float-right" type="button">Neu nummerieren</div>
+						<div class="col-md-5">
+							<div id="uploadSlotlist" class="btn btn-secondary mr-2" type="button"
+							     data-toggle="modal" data-target="#uploadSlotlistModal">Slotliste hochladen
+							</div>
+							<div id="renumber" class="btn btn-secondary" type="button">Neu nummerieren</div>
 						</div>
 					</div>
 					<form>
@@ -199,8 +202,9 @@
 	</div>
 </section>
 
-<!--Add default fields warning-->
+<!--Add modals-->
 <div th:replace="fragments/modals.html :: addDefaultFieldsWarning"></div>
+<div th:replace="fragments/modals.html :: uploadSlotlistModal"></div>
 
 <footer th:insert="fragments/general.html :: footer"></footer>
 
@@ -211,6 +215,7 @@
 	/*<![CDATA[*/
 	const eventsUrl = /*[[${eventsUrl}]]*/ '';
 	const eventFieldDefaultsUrl = /*[[${eventFieldDefaultsUrl}]]*/ '';
+	const uploadSqmFileUrl = /*[[${uploadSqmFileUrl}]]*/ '';
 	const postEventUrl = /*[[${postEventUrl}]]*/ '';
 	const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
 	/*]]>*/
@@ -218,6 +223,7 @@
 <script th:src="@{/assets/js/eventSave.js}"></script>
 <script th:src="@{/assets/js/eventFields.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
+<script th:src="@{/assets/js/uploadSqmFile.js}"></script>
 <script th:src="@{/assets/js/eventWizard.js}"></script>
 </body>
 </html>
