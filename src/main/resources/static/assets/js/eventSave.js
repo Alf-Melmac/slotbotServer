@@ -39,7 +39,8 @@ function saveEvent($saveBtn) {
 
     const event = {};
     $('input,textarea,select')
-        .filter((index, element) => !$(element).attr('class').includes('squad')
+        .filter((index, element) => $(element).attr('type') !== 'file' &&
+            !$(element).attr('class').includes('squad')
             && !$(element).attr('class').includes('slot')
             && !$(element).attr('class').includes('field'))
         .each(function (index, element) {
