@@ -22,7 +22,14 @@ $(function () {
            <div class="col-md-10">
               <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>
            </div>
-           <div class="col-md-1 d-flex btn btn-xl btn-wht js-trash" type="button"><em class="far fa-trash-alt"></em></div>
+           <div class="col-md-1 d-flex">
+                <div class="btn btn-xl btn-lock p-0 pr-1 js-lock" type="button" title="Blockierung">
+                    <em class="fas fa-lock-open"></em>
+                </div>
+                <div class="btn btn-xl btn-wht p-0 js-trash" type="button">
+                    <em class="far fa-trash-alt"></em>
+                </div>
+           </div>
         </div>`;
 
     const newSquad =
@@ -59,8 +66,12 @@ $(function () {
         $this.appendTo($slots);
     });
 
+    $squads.on('click', '.js-lock:not(.js-blocked, .btn-denied)', function () {
+        $(this).find('.fas').toggleClass('fa-lock-open fa-lock');
+    });
+
     $squads.on('click', '.js-trash', function () {
-        const $row = $(this).parent('.form-row');
+        const $row = $(this).parents('.form-row');
         if ($row.hasClass('js-squad')) {
             $row.parent('.js-complete-squad').remove();
         } else {

@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
+
 /**
  * @author Alf
  * @since 30.10.2020
@@ -24,4 +26,8 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	List<EventDetailsSlotDto> slotList;
 
 	boolean notEmpty;
+
+	public boolean isReserve() {
+		return getName().equals(RESERVE_NAME);
+	}
 }

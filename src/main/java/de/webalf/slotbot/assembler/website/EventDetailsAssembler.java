@@ -14,6 +14,7 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.model.dtos.website.EventEditDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,9 @@ public class EventDetailsAssembler {
 		if (slot.getUser() != null) {
 			if (slot.getUser().isDefaultUser()) {
 				text = slot.getReplacementText();
+				if (StringUtils.isEmpty(text)) {
+					text = "Gesperrt";
+				}
 				blocked = true;
 			} else {
 				text = discordApiService.getName(LongUtils.toString(slot.getUser().getId()));

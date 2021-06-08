@@ -47,7 +47,7 @@ public class Squad extends AbstractIdEntity {
 		this.event = event;
 	}
 
-	static final String RESERVE_NAME = "Reserve";
+	public static final String RESERVE_NAME = "Reserve";
 
 	// Getter
 

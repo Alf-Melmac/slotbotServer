@@ -18,3 +18,15 @@
 .btn-denied:hover {
   color: gray;
 }
+
+.btn-lock .fa-lock-open {
+  color: mediumseagreen;
+}
+
+.btn-lock .fa-lock {
+  color: lightcoral;
+}
+
+.btn-lock:not(.js-blocked):hover {
+  opacity: 50%;
+}

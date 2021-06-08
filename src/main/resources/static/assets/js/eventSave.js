@@ -138,6 +138,12 @@ function getSquads(update = false) {
                 name: $slot.find('.js-slot-name').val().trim(),
                 number: $slot.find('.js-slot-number').val()
             };
+            if ($slot.find('.fa-lock').length !== 0) {
+                slot.user = {
+                    id: defaultUserId
+                }
+                slot.replacementText = 'Gesperrt'
+            }
             if (update) {
                 slot.id = $slot.data('slotid');
             }

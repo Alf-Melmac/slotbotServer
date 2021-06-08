@@ -174,9 +174,9 @@
 						<div class="col-md-11">
 							<!--suppress HtmlFormInputWithoutLabel -->
 							<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
-							       required th:value="${squad.name}">
+							       required th:value="${squad.name}" th:disabled="${squad.isReserve()}">
 						</div>
-						<div th:unless="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-wht js-trash" type="button">
+						<div th:unless="${squad.isNotEmpty() || squad.isReserve()}" class="d-flex btn btn-xl btn-wht js-trash" type="button">
 							<em class="far fa-trash-alt"></em>
 						</div>
 						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied"
@@ -191,23 +191,35 @@
 							<div class="col-md-1">
 								<!--suppress HtmlFormInputWithoutLabel -->
 								<input class="form-control js-slot-number" type="number" min="1" value="1"
-								       required th:value="${slot.number}">
+								       required th:value="${slot.number}" th:disabled="${squad.isReserve()}">
 							</div>
 							<div class="col-md-10">
 								<!--suppress HtmlFormInputWithoutLabel -->
 								<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
-								       required th:value="${slot.name}">
+								       required th:value="${slot.name}" th:disabled="${squad.isReserve()}">
 							</div>
-							<div th:unless="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-wht js-trash"
-							     type="button">
-								<em class="far fa-trash-alt"></em>
-							</div>
-							<div th:if="${slot.isOccupied()}" class="col-md-1 d-flex btn btn-xl btn-denied"
-							     title="Dieser Slot ist belegt">
-								<em class="far fa-trash-alt"></em>
+							<div th:unless="${squad.isReserve()}" class="col-md-1 d-flex">
+								<div th:unless="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock"
+								     th:classappend="${slot.isOccupied()} ? 'btn-denied' : 'btn-lock'"
+								     type="button" title="Blockierung">
+									<em class="fas fa-lock-open"></em>
+								</div>
+								<div th:if="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock js-blocked"
+								     th:classappend="${slot.isOccupied()} ? 'btn-denied' : 'btn-lock'"
+								     type="button" title="Blockierung">
+									<em class="fas fa-lock"></em>
+								</div>
+								<div th:unless="${slot.isOccupied()}" class="btn btn-xl btn-wht p-0 js-trash"
+								     type="button">
+									<em class="far fa-trash-alt"></em>
+								</div>
+								<div th:if="${slot.isOccupied()}" class="btn btn-xl btn-denied p-0"
+								     title="Dieser Slot ist belegt">
+									<em class="far fa-trash-alt"></em>
+								</div>
 							</div>
 						</div>
-						<div type="button" class="btn btn-success rounded-circle js-add-slot"
+						<div th:unless="${squad.isReserve()}" type="button" class="btn btn-success rounded-circle js-add-slot"
 						     title="Slot hinzufügen">
 							<em class="fas fa-plus"></em>
 						</div>
@@ -236,7 +248,7 @@
 				</div>
 				<div class="col-md-6">
 					<div id="btnSaveSlotlist" class="btn btn-primary float-right" tabindex="0" data-toggle="popover"
-					        data-trigger="focus" data-content="Alle Pflichtfelder ausfüllen!">
+					     data-trigger="focus" data-content="Alle Pflichtfelder ausfüllen!">
 						Slotliste speichern
 					</div>
 				</div>
@@ -285,6 +297,8 @@
 	const putEventEditableUrl = /*[[${putEventEditableUrl}]]*/ '';
 	const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
 	const savedEvent = /*[[${event}]]*/ '';
+
+	const defaultUserId = /*[[${T(de.webalf.slotbot.model.User).DEFAULT_USER_ID}]]*/ '';
 	/*]]>*/
 </script>
 <script th:src="@{/assets/js/eventSave.js}"></script>
