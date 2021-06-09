@@ -1,5 +1,6 @@
 package de.webalf.slotbot.exception;
 
+import de.webalf.slotbot.model.annotations.ResponseView;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 22.06.2020
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource not found")
+@ResponseView
 public class ResourceNotFoundException extends RuntimeException {
+
+	private static final long serialVersionUID = 3327000772094345936L;
 
 	public ResourceNotFoundException() {
 		super();
