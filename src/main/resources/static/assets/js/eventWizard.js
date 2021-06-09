@@ -60,4 +60,43 @@ $(function () {
             return areAllRequiredFieldsFilled('[required]:visible');
         }
     });
+
+    if (copyEvent) {
+        for (const [key, value] of Object.entries(copyEvent)) {
+            if (key === 'eventType') {
+                Object.entries(value).forEach(([childKey, childValue]) => setValue(`${key}.${childKey}`, childValue));
+                continue;
+            } else if (key === 'hidden') {
+                if (value) {
+                    $('#eventHidden').trigger('click');
+                }
+                continue;
+            }
+            setValue(key, value);
+        }
+    }
 });
+
+const skipDtoKeys = ['date', 'channel', 'infoMsg', 'slotListMsg', 'channelUrl', 'pictureUrl', 'missionTypesFiltered'];
+function setValue(dtoKey, value) {
+    if (dtoKey.endsWith('id') || skipDtoKeys.includes(dtoKey)) {
+        return;
+    } else if (dtoKey === 'rawPictureUrl') {
+        dtoKey = 'pictureUrl';
+    } else if (dtoKey === 'squadList') {
+        return addSlotList(value);
+    } else if (dtoKey === 'details') {
+        return addFields(value);
+    } else if (dtoKey === 'reserveParticipating') {
+        if (typeof value == 'boolean') {
+            const $el = $(`[data-dtokey='${dtoKey}']`);
+            $el.prop('indeterminate', false);
+            $el.prop('checked', value);
+            if (value) {
+                $el.addClass('active');
+            }
+        }
+        return;
+    }
+    $(`[data-dtokey='${dtoKey}']`).val(value);
+}

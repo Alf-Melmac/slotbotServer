@@ -51,7 +51,7 @@ $(function () {
         emptytext: 'Kein Bild'
     });
 
-    addFields($('#addField'), savedEvent.details, true);
+    addFields(savedEvent.details, $('#addField'), true);
 
     //Event hidden button
     $('#eventHidden').on('click', function () {

@@ -41,13 +41,16 @@
 					<img class="img-fluid" alt="Event Bild" th:src="${event.getPictureUrl()}"/>
 				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="row">
-					<div class="col-md-11">
+			<div class="col-md-8">
+				<div class="row justify-content-start">
+					<div th:classappend="${hasEventManageRole ? 'col-md-10' : 'col-md-12'}">
 						<h1 th:text="${event.name}">Event Titel</h1>
 					</div>
-					<div class="col-md-1 float-right" th:if="${hasEventManageRole}">
-						<div id="eventEdit" class="btn btn-xl btn-wht" type="button"><em class="far fa-edit"></em></div>
+					<div class="col-md-2" th:if="${hasEventManageRole}">
+						<div class="row">
+							<div id="eventCopy" class="col-auto btn btn-xl btn-wht" type="button"><em class="far fa-clone"></em></div>
+							<div id="eventEdit" class="col-auto btn btn-xl btn-wht" type="button"><em class="far fa-edit"></em></div>
+						</div>
 					</div>
 				</div>
 				<div class="row">
@@ -204,6 +207,7 @@
 <script th:replace="fragments/scripts.html :: jqueryANDbootstrap"></script>
 <script th:inline="javascript">
 	/*<![CDATA[*/
+	const createEventUrl = /*[[${createEventUrl}]]*/ '';
 	const eventEditUrl = /*[[${eventEditUrl}]]*/ '';
 	/*]]>*/
 </script>

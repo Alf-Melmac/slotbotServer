@@ -9,6 +9,7 @@ import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.BotPermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class EventWebController {
 				.toUri().toString()
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
-		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null)).toUri().toString());
+		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, null)).toUri().toString());
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventManageRoles", BotPermissionHelper.getEventManageApplicationRoles());
 
@@ -60,12 +61,16 @@ public class EventWebController {
 
 	@GetMapping("/new")
 	@PreAuthorize(HAS_ROLE_CREATOR)
-	public ModelAndView getWizardHtml(@RequestParam(required = false) String date) {
+	public ModelAndView getWizardHtml(@RequestParam(required = false) String date, @RequestParam(required = false) String copyEvent) {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("date", date);
+		if (StringUtils.isNotEmpty(copyEvent) && StringUtils.onlyNumbers(copyEvent)) {
+			eventService.findOptionalById(Integer.parseInt(copyEvent))
+					.ifPresent(event -> mav.addObject("copyEvent", eventDetailsAssembler.toDto(event)));
+		}
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
@@ -87,6 +92,7 @@ public class EventWebController {
 		final EventDetailsDto detailsDto = eventDetailsAssembler.toDto(eventService.findById(eventId));
 		mav.addObject("event", detailsDto);
 		mav.addObject("eventDescriptionHtml", DiscordMarkdown.toHtml(detailsDto.getDescription()));
+		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, Long.toString(eventId))).toUri().toString());
 		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
 		mav.addObject("hasEventManageRole", BotPermissionHelper.hasEventManageRole());
 		return mav;

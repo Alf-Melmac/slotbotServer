@@ -73,11 +73,11 @@ $(function () {
             return;
         }
         $('.js-field').remove();
-        addFields($addField, defaultFields);
+        addFields(defaultFields, $addField);
     });
 });
 
-function addFields($addField, fields, update = false) {
+function addFields(fields, $addField = $('#addField'), update = false) {
     for (const field of fields) {
         $addField.trigger('click');
         fillField($('.js-field').last(), field, update);
@@ -87,9 +87,6 @@ function addFields($addField, fields, update = false) {
 function fillField($field, field, update) {
     $field.find('.js-field-title').val(field.title);
     switch (field.type) {
-        case 'TEXT':
-            setInput($field, _text(field));
-            break;
         case 'TEXT_WITH_SELECTION':
             setInput($field, _textWithSelection(field));
             break;
@@ -99,8 +96,9 @@ function fillField($field, field, update) {
         case 'SELECTION':
             setInput($field, _selection(field));
             break;
+        case 'TEXT':
         default:
-            break;
+            setInput($field, _text(field));
     }
     if (update) {
         $field.attr('data-fieldid', field.id);
