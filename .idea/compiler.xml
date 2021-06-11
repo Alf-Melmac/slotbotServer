@@ -9,8 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/hibernate/hibernate-jpamodelgen/5.4.31.Final/hibernate-jpamodelgen-5.4.31.Final.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/jboss/logging/jboss-logging/3.4.1.Final/jboss-logging-3.4.1.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/hibernate/hibernate-jpamodelgen/5.5.0.Final/hibernate-jpamodelgen-5.5.0.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/jboss/logging/jboss-logging/3.4.2.Final/jboss-logging-3.4.2.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar" />
           <entry name="$MAVEN_REPOSITORY$/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/glassfish/jaxb/jaxb-runtime/2.3.1/jaxb-runtime-2.3.1.jar" />
@@ -55,7 +55,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/slf4j/jcl-over-slf4j/1.6.6/jcl-over-slf4j-1.6.6.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/servicemix/bundles/org.apache.servicemix.bundles.javax-inject/1_2/org.apache.servicemix.bundles.javax-inject-1_2.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/apache/felix/org.apache.felix.framework/5.4.0/org.apache.felix.framework-5.4.0.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/2.4.5/spring-boot-configuration-processor-2.4.5.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/2.4.7/spring-boot-configuration-processor-2.4.7.jar" />
         </processorPath>
         <module name="slotbotServer" />
       </profile>
