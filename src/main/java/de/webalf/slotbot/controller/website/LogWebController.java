@@ -17,9 +17,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @Controller
 @RequestMapping(ADMIN + "/logs")
+@PreAuthorize(HAS_ROLE_ADMIN)
 public class LogWebController {
 	@GetMapping
-	@PreAuthorize(HAS_ROLE_ADMIN)
 	public ModelAndView getLogsHtml() {
 		ModelAndView mav = new ModelAndView("logs");
 

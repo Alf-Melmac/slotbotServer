@@ -57,6 +57,7 @@ public final class Arma3FieldUtils {
 	private static Map<String, String> DOWNLOADABLE_MOD_PACKS = new HashMap<>();
 
 	public static void fillDownloadableModPacks(Set<String> fileNames) {
+		DOWNLOADABLE_MOD_PACKS.clear();
 		fileNames.forEach(fileName -> {
 			final Matcher matcher = FILE_PATTERN.matcher(fileName);
 			matcher.find();

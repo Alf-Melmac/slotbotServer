@@ -68,7 +68,8 @@
 	</div>
 </nav>
 
-<nav th:fragment="oneLink (link, text, fixed)" class="navbar navbar-light navbar-expand-md" th:classappend="${fixed} ? 'fixed-top'" id="mainNav">
+<nav th:fragment="oneLink (link, text, fixed)" class="navbar navbar-light navbar-expand-md"
+     th:classappend="${fixed} ? 'fixed-top'" id="mainNav">
 	<div class="container">
 		<div>
 			<a th:href="${startUrl}">
@@ -80,6 +81,32 @@
 			<ul class="nav navbar-nav ml-auto">
 				<li class="nav-item nav-link" role="presentation">
 					<a class="nav-link active" th:href="${link}" th:text="${text}">Link-Text</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<nav th:fragment="twoButtonLinks (link1, text1, link2, text2, fixed)" class="navbar navbar-light navbar-expand-md"
+     th:classappend="${fixed} ? 'fixed-top'" id="mainNav">
+	<div class="container">
+		<div>
+			<a th:href="${startUrl}">
+				<img class="navbar-logo" th:attr="src=@{/assets/img/amb_logo.jpg}" alt="AMB">
+				<a class="navbar-brand" th:href="${startUrl}">Arma macht Bock</a>
+			</a>
+		</div>
+		<div id="navbar">
+			<ul class="nav navbar-nav ml-auto">
+				<li class="nav-item nav-link" role="presentation">
+					<button class="btn btn-outline-secondary p-0">
+						<a class="nav-link" th:href="${link1}" th:text="${text1}">Link-Text</a>
+					</button>
+				</li>
+				<li class="nav-item nav-link" role="presentation">
+					<button class="btn btn-outline-secondary p-0">
+						<a class="nav-link" th:href="${link2}" th:text="${text2}">Link-Text</a>
+					</button>
 				</li>
 			</ul>
 		</div>

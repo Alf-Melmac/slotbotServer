@@ -30,18 +30,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @Controller
 @RequestMapping(ADMIN)
+@PreAuthorize(HAS_ROLE_ADMIN)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AdminWebController {
 	private final BattlemetricsApiService battlemetricsApiService;
 	private final ExternalServerService externalServerService;
 
 	@GetMapping
-	@PreAuthorize(HAS_ROLE_ADMIN)
 	public ModelAndView getAdminHtml() {
 		ModelAndView mav = new ModelAndView("admin");
 
 		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 		mav.addObject("logsUrl", linkTo(methodOn(LogWebController.class).getLogsHtml()).toUri().toString());
+		mav.addObject("utilsUrl", linkTo(methodOn(AdminUtilsWebController.class).getAdminUtilsHtml()).toUri().toString());
 		mav.addObject("serverToggleUrl", linkTo(methodOn(AdminWebController.class).postServerRestart(null)).toUri().toString());
 
 		Set<Server> servers = battlemetricsApiService.getServers();
@@ -57,8 +58,7 @@ public class AdminWebController {
 		return mav;
 	}
 
-	@PostMapping("/server}")
-	@PreAuthorize(HAS_ROLE_ADMIN)
+	@PostMapping("/server")
 	public ResponseEntity<Void> postServerRestart(@RequestBody String serverIp) {
 		externalServerService.restartServer(battlemetricsApiService.findIdentifierByFullIp(serverIp));
 		return new ResponseEntity<>(HttpStatus.OK);

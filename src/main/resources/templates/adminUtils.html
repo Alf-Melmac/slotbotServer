@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta th:replace="fragments/general.html :: head('Admin Utils')"/>
+
+	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: oneLink (${adminUrl}, Admin, true)"></nav>
+
+<section class="content-section">
+	<div class="container">
+		<button type="button" class="btn btn-secondary btn-lg btn-block" value="listFiles">Update file list</button>
+	</div>
+</section>
+
+<footer th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	const postActionUrl = /*[[${postActionUrl}]]*/ '';
+	/*]]>*/
+</script>
+<script th:src="@{/assets/js/adminUtils.js}"></script>
+</body>
+</html>
