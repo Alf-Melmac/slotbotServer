@@ -39,7 +39,7 @@ public class EventTypeService {
 	}
 
 	public void deleteUnused() {
-		eventTypeRepository.deleteInBatch(eventTypeRepository.findAll()
+		eventTypeRepository.deleteAllInBatch(eventTypeRepository.findAll()
 				.stream().filter(eventType -> eventType.getEvents().isEmpty()).collect(Collectors.toUnmodifiableList()));
 	}
 }
