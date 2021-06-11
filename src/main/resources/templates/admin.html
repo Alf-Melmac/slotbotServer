@@ -7,7 +7,7 @@
 	<link rel="stylesheet" th:href="@{/assets/css/cards.css}">
 </head>
 <body>
-<nav th:replace="fragments/navbar.html :: admin"></nav>
+<nav th:replace="fragments/navbar.html :: oneLink (${logsUrl}, Logs, false)"></nav>
 
 <section class="content-section">
 	<div class="container">

@@ -68,7 +68,7 @@
 	</div>
 </nav>
 
-<nav th:fragment="admin" class="navbar navbar-light navbar-expand-md" id="mainNav">
+<nav th:fragment="oneLink (link, text, fixed)" class="navbar navbar-light" th:classappend="${fixed} ? 'fixed-top'" id="mainNav">
 	<div class="container">
 		<div>
 			<a th:href="${startUrl}">
@@ -79,7 +79,7 @@
 		<div id="navbar">
 			<ul class="nav navbar-nav ml-auto">
 				<li class="nav-item nav-link" role="presentation">
-					<a class="nav-link active" th:href="${logsUrl}">Logs</a>
+					<a class="nav-link active" th:href="${link}" th:text="${text}">Link-Text</a>
 				</li>
 			</ul>
 		</div>
