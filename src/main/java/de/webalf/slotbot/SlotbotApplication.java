@@ -1,5 +1,6 @@
 package de.webalf.slotbot;
 
+import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.service.external.ExternalServerService;
 import org.springframework.boot.SpringApplication;
@@ -35,5 +36,8 @@ public class SlotbotApplication {
 
 		//Initialize external server
 		applicationContext.getBean(ExternalServerService.class).fillIpServerMap();
+
+		//Initial fetch of file directories
+		applicationContext.getBean(FileService.class).listFiles();
 	}
 }

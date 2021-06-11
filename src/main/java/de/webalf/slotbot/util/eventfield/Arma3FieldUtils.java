@@ -4,8 +4,14 @@ import de.webalf.slotbot.controller.website.FileWebController;
 import de.webalf.slotbot.model.annotations.EventFieldDefault;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.model.enums.EventFieldType.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -17,9 +23,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @UtilityClass
 @EventFieldDefault(eventTypeName = "Arma 3")
+@Slf4j
 public final class Arma3FieldUtils {
 	private static final List<String> MOD_PACKS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN",
-			"Joined_Operations_2020", "Alliance_2021v3");
+			"Alliance_2021v3");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
 			"Ba Long, Quang Tri province, Vietnam", "Beketow", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
@@ -46,6 +53,31 @@ public final class Arma3FieldUtils {
 			EventFieldDefaultDto.builder().title("Navigation").type(TEXT).build()
 	);
 
+	public static final Pattern FILE_PATTERN = Pattern.compile("^(Arma_3_Preset_)?(.+)\\.html");
+	private static Map<String, String> DOWNLOADABLE_MOD_PACKS = new HashMap<>();
+
+	public static void fillDownloadableModPacks(Set<String> fileNames) {
+		fileNames.forEach(fileName -> {
+			final Matcher matcher = FILE_PATTERN.matcher(fileName);
+			matcher.find();
+			DOWNLOADABLE_MOD_PACKS.put(replaceSpecialNames(matcher.group(2)), fileName);
+		});
+		log.info("Found {} downloadable mod packs", DOWNLOADABLE_MOD_PACKS.size());
+	}
+
+	private static String replaceSpecialNames(String matchedName) {
+		switch (matchedName) {
+			case "2012_ArmaMachtBock_Full":
+				return "2012_ArmaMachtBock";
+			case "2101_ArmaMachtBock_Full_v2":
+				return "2101_ArmaMachtBock";
+			case "2103_ArmaMachtBock_Full":
+				return "2103_ArmaMachtBock";
+			default:
+				return matchedName;
+		}
+	}
+
 	/**
 	 * Matches the given string to a known modpack url
 	 *
@@ -56,31 +88,10 @@ public final class Arma3FieldUtils {
 		if (modPack == null) {
 			return null;
 		}
-		switch (modPack) {
-			case "2008_ArmaMachtBock":
-				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2008_ArmaMachtBock.html")).toUri().toString();
-			case "2012_ArmaMachtBock":
-				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2012_ArmaMachtBock_Full.html")).toUri().toString();
-			case "2101_ArmaMachtBock":
-				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2101_ArmaMachtBock_Full_v2.html")).toUri().toString();
-			case "2103_ArmaMachtBock":
-				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2103_ArmaMachtBock_Full.html")).toUri().toString();
-			case "2102_Event":
-				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2102_Event.html")).toUri().toString();
-			case "2104_ArmaMachtBock_GM":
-				return linkTo(methodOn(FileWebController.class).getFile("Arma_3_Preset_2104_ArmaMachtBock_GM.html")).toUri().toString();
-			case "2105_ArmaMachtBock_VN":
-				return linkTo(methodOn(FileWebController.class).getFile("2105_ArmaMachtBock_VN.html")).toUri().toString();
-			case "Joined_Operations_2020":
-				return linkTo(methodOn(FileWebController.class).getFile("Joined_Operations_2020v2.html")).toUri().toString();
-			case "Alliance_2021v1":
-				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v1.html")).toUri().toString();
-			case "Alliance_2021v2":
-				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v2.html")).toUri().toString();
-			case "Alliance_2021v3":
-				return linkTo(methodOn(FileWebController.class).getFile("Alliance_2021v3.html")).toUri().toString();
-			default:
-				return null;
+		final String fileName = DOWNLOADABLE_MOD_PACKS.get(modPack);
+		if (fileName != null) {
+			return linkTo(methodOn(FileWebController.class).getFile(fileName)).toUri().toString();
 		}
+		return null;
 	}
 }

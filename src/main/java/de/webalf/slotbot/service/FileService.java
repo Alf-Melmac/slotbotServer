@@ -2,16 +2,26 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Alf
@@ -19,6 +29,7 @@ import java.nio.file.Paths;
  */
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 public class FileService {
 	private final StorageProperties storageProperties;
 
@@ -59,8 +70,34 @@ public class FileService {
 	}
 
 	/**
+	 * Populates caches that need files from the file directories
+	 */
+	public void listFiles() {
+		Arma3FieldUtils.fillDownloadableModPacks(listDownloadFilesAndFilter(Arma3FieldUtils.FILE_PATTERN));
+	}
+
+	/**
+	 * Return file names of every file in the download directory (non recursive) matching the given pattern
+	 *
+	 * @param filterPattern that the file name must match
+	 * @return set of file names
+	 */
+	public Set<String> listDownloadFilesAndFilter(@NonNull Pattern filterPattern) {
+		try (Stream<Path> list = Files.list(Paths.get(storageProperties.getDownload()))) {
+			return list
+					.filter(file -> Files.isRegularFile(file) && filterPattern.matcher(file.getFileName().toString()).matches())
+					.map(Path::getFileName)
+					.map(Path::toString)
+					.collect(Collectors.toUnmodifiableSet());
+		} catch (IOException e) {
+			log.error("Failed to list download files", e);
+		}
+		return Collections.emptySet();
+	}
+
+	/**
 	 * @param filename only used for readable exception
-	 * @param path to get resource from
+	 * @param path     to get resource from
 	 * @return resource
 	 * @throws ResourceNotFoundException if resource doesn't exists in this location or the path is a malformedURL
 	 */
