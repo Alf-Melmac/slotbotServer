@@ -2,13 +2,16 @@ package de.webalf.slotbot.service.external;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
+import de.webalf.slotbot.exception.IgnoreErrorResponseErrorHandler;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.RestTemplatesUtil;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.util.ListUtils;
@@ -69,7 +72,12 @@ public class DiscordApiService {
 	private User getUser(String userId) {
 		String url = "/users/" + userId;
 
-		return buildWebClient().get().uri(url).retrieve().bodyToMono(User.class).block();
+		return buildWebClient().get().uri(url).retrieve().bodyToMono(User.class)
+				.onErrorResume(error -> {
+					log.error("Failed to get user {}", userId, error);
+					return Mono.just(new User());
+				})
+				.block();
 	}
 
 	private boolean wait = false;
@@ -90,19 +98,16 @@ public class DiscordApiService {
 			wait = false;
 		}
 
-		return buildWebClient().get().uri(url).exchange()
-				.doOnSuccess(clientResponse -> {
-					HttpHeaders httpHeaders = clientResponse.headers().asHttpHeaders();
-					List<String> remainingHeaders = httpHeaders.get("x-ratelimit-remaining");
-					List<String> resetAfterHeaders = httpHeaders.get("x-ratelimit-reset-after");
-					if (!ListUtils.isEmpty(remainingHeaders) && !ListUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.get(0))) {
-						wait = true;
-						waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
-					}
-				})
-				.flatMap(clientResponse -> clientResponse.bodyToMono(GuildMember.class))
-				.onErrorResume(error -> Mono.just(new GuildMember()))
-				.block();
+		final ResponseEntity<GuildMember> response = RestTemplatesUtil
+				.get("https://discord.com/api/v8" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), GuildMember.class);
+		final HttpHeaders headers = response.getHeaders();
+		List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
+		List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
+		if (!ListUtils.isEmpty(remainingHeaders) && !ListUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.get(0))) {
+			wait = true;
+			waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
+		}
+		return response.getBody();
 	}
 
 	/**

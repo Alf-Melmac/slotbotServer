@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +36,8 @@ public class ExternalServerService {
 	public HttpStatus ping() {
 		HttpStatus status = null;
 		try {
-			status = buildWebClient().get().uri("/status").exchange().map(ClientResponse::statusCode).block();
+			status = buildWebClient().get().uri("/status")
+					.exchangeToMono(response -> Mono.just(response.statusCode())).block();
 		} catch (Exception ignored) {
 		}
 		return status;
