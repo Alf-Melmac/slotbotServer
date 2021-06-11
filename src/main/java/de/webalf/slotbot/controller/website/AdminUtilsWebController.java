@@ -1,5 +1,6 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AdminUtilsWebController {
 	private final FileService fileService;
+	private final EventTypeService eventTypeService;
 
 	@GetMapping
 	public ModelAndView getAdminUtilsHtml() {
@@ -48,6 +50,8 @@ public class AdminUtilsWebController {
 	public ResponseEntity<Void> postAction(@PathVariable String action) {
 		if ("listFiles".equals(action)) {
 			fileService.listFiles();
+		} else if ("deleteUnusedEventTypes".equals(action)) {
+			eventTypeService.deleteUnused();
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

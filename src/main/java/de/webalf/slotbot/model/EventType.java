@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -35,6 +33,9 @@ public class EventType extends AbstractSuperIdEntity {
 	@NotBlank
 	@Size(max = 7) //Expected format: #rrggbb
 	private String color;
+
+	@OneToMany(mappedBy = "eventType")
+	private List<Event> events;
 
 	public void setColor(String color) {
 		if (!HEX_COLOR.matcher(color).matches()) {
