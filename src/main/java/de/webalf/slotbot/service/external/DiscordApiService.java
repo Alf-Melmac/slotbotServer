@@ -75,7 +75,9 @@ public class DiscordApiService {
 		return buildWebClient().get().uri(url).retrieve().bodyToMono(User.class)
 				.onErrorResume(error -> {
 					log.error("Failed to get user {}", userId, error);
-					return Mono.just(new User());
+					final User errorUser = new User();
+					errorUser.setUsername("Unbekannter Nutzer");
+					return Mono.just(errorUser);
 				})
 				.block();
 	}
