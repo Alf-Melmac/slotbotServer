@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static de.webalf.slotbot.service.bot.command.event.EventPrint.sendSpacerEmojiIfEmpty;
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 
 /**
@@ -32,14 +35,16 @@ public class EventUpdateService {
 	public void update(@NonNull Event event) throws IllegalStateException {
 		log.trace("Update");
 
-		final TextChannel eventChannel = botService.getJda().getTextChannelById(event.getChannel());
+		final TextChannel eventChannel = botService.getJda().getTextChannelById(event.getDiscordInformation().getChannel());
 		if (eventChannel == null) {
-			throw new IllegalStateException("Channel " + event.getChannel() + " couldn't be found.");
+			throw new IllegalStateException("Channel " + event.getDiscordInformation().getChannel() + " couldn't be found.");
 		}
 
 		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-		eventChannel.editMessageById(event.getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
-		eventChannel.editMessageById(event.getSlotListMsg(), eventApiDto.getSlotList()).queue();
+		eventChannel.editMessageById(event.getDiscordInformation().getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
+		final List<String> slotList = eventApiDto.getSlotList();
+		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
+		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), sendSpacerEmojiIfEmpty(ListUtils.shift(slotList))).queue();
 	}
 
 	public void informAboutSlotChange(@NonNull Event event, @NonNull Slot slot, User currentUser, User previousUser) {

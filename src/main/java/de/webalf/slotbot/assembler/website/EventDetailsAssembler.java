@@ -47,10 +47,7 @@ public class EventDetailsAssembler {
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
-				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
-				.infoMsg(LongUtils.toString(event.getInfoMsg()))
-				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
@@ -72,10 +69,7 @@ public class EventDetailsAssembler {
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
-				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
-				.infoMsg(LongUtils.toString(event.getInfoMsg()))
-				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
@@ -87,8 +81,8 @@ public class EventDetailsAssembler {
 
 	private String getChannelUrl(@NonNull Event event) {
 		String channelUrl = null;
-		if (event.getChannel() != null) {
-			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getChannel());
+		if (event.isAssigned()) {
+			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getDiscordInformation().getChannel());
 		}
 		return channelUrl;
 	}

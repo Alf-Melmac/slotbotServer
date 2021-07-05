@@ -42,13 +42,6 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Builder.Default
 	private boolean hidden = false;
 
-	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
-	private String channel;
-
-	private String infoMsg;
-
-	private String slotListMsg;
-
 	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
 	private String description;
 
@@ -62,6 +55,8 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	private String missionLength;
 
 	private Boolean reserveParticipating;
+
+	private EventDiscordInformationDto discordInformation;
 
 	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
 	public String getPictureUrl() {

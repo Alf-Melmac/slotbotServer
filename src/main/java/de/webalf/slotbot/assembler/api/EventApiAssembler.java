@@ -8,7 +8,6 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.model.dtos.api.EventApiViewDto;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
-import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +40,7 @@ public final class EventApiAssembler {
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
-				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(SquadApiAssembler.toDtoList(event.getSquadList()))
-				.infoMsg(LongUtils.toString(event.getInfoMsg()))
-				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())

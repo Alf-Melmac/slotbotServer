@@ -2,6 +2,7 @@ package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
@@ -48,12 +49,16 @@ public class AddEventToChannel implements DiscordCommand {
 
 	private Consumer<Event> addEventConsumer(@NonNull Message message) {
 		return event -> {
-			if (event.getChannel() != null) {
-				replyAndDelete(message, "Das Event ist bereits <#" + event.getChannel() + "> zugeordnet.");
+			if (event.isAssigned()) {
+				replyAndDelete(message, "Das Event ist bereits " + event.getDiscordInformation().getChannelAsMention() + " zugeordnet.");
 				return;
 			}
 
-			eventBotService.updateEvent(EventDto.builder().id(event.getId()).channel(message.getChannel().getId()).build());
+			eventBotService.updateEvent(
+					EventDto.builder()
+							.id(event.getId())
+							.discordInformation(EventDiscordInformationDto.builder().channel(message.getChannel().getId()).build())
+							.build());
 			replyAndDelete(message, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
 		};
 	}

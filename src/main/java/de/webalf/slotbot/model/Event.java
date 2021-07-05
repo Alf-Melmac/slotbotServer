@@ -29,7 +29,7 @@ import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
  * @since 22.06.2020
  */
 @Entity
-@Table(name = "event", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "event_channel"})})
+@Table(name = "event", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -59,19 +59,10 @@ public class Event extends AbstractSuperIdEntity {
 	@Builder.Default
 	private boolean hidden = false;
 
-	@Column(name = "event_channel", unique = true)
-	private Long channel;
-
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
 	private List<Squad> squadList;
-
-	@Column(name = "event_info_msg")
-	private Long infoMsg;
-
-	@Column(name = "event_slotlist_msg")
-	private Long slotListMsg;
 
 	@Column(name = "event_description", length = (int) (MessageEmbed.TEXT_MAX_LENGTH * 1.25))
 	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
@@ -96,6 +87,10 @@ public class Event extends AbstractSuperIdEntity {
 	@OrderColumn
 	@JsonManagedReference
 	private List<EventField> details;
+
+	@OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	private EventDiscordInformation discordInformation;
 
 	// Getter
 
@@ -147,12 +142,19 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * Checks if the event has already been printed
+	 * Checks whether a channel is assigned to the event
 	 *
-	 * @return true if event has already been printed
+	 * @return true if a channel has been assigned to the event
+	 */
+	public boolean isAssigned() {
+		return getDiscordInformation() != null;
+	}
+
+	/**
+	 * @see EventDiscordInformation#isPrinted()
 	 */
 	public boolean isPrinted() {
-		return getInfoMsg() != null || getSlotListMsg() != null;
+		return isAssigned() && getDiscordInformation().isPrinted();
 	}
 
 	private Optional<Squad> findSquadByName(String name) {
@@ -283,18 +285,6 @@ public class Event extends AbstractSuperIdEntity {
 		setDateTime(getDateTime().withHour(time.getHour()).withMinute(time.getMinute()));
 	}
 
-	public void setChannelString(String channelString) {
-		setChannel(Long.parseLong(channelString));
-	}
-
-	public void setInfoMsgString(String infoMsgString) {
-		setInfoMsg(Long.parseLong(infoMsgString));
-	}
-
-	public void setSlotListMsgString(String slotListMsgString) {
-		setSlotListMsg(Long.parseLong(slotListMsgString));
-	}
-
 	/**
 	 * Set parents in child objects
 	 */
@@ -308,6 +298,10 @@ public class Event extends AbstractSuperIdEntity {
 
 		for (EventField field : getDetails()) {
 			field.setEvent(this);
+		}
+
+		if (getDiscordInformation() != null) {
+			getDiscordInformation().setEvent(this);
 		}
 	}
 

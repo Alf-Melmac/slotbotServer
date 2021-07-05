@@ -1,12 +1,16 @@
 package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
+import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.util.ListUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +48,7 @@ public class EventPrint implements DiscordCommand {
 	private Consumer<Event> eventPrintConsumer(Message message, @NonNull MessageChannel channel) {
 		return event -> {
 			if (event.isPrinted()) {
-				sendDmAndDeleteMessage(message, "Schau erstmal hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getChannel() + "/" + event.getInfoMsg() + "> oder hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getChannel() + "/" + event.getSlotListMsg() + ">.");
+				sendDmAndDeleteMessage(message, "Schau erstmal hier <https://discordapp.com/channels/" + message.getGuild().getId() + "/" + event.getDiscordInformation().getChannel() + "/" + event.getDiscordInformation().getInfoMsg() + ">.");
 				return;
 			}
 
@@ -58,28 +62,49 @@ public class EventPrint implements DiscordCommand {
 
 	private Consumer<Message> infoMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto) {
 		return infoMsg -> {
-			eventApiDto.setInfoMsg(infoMsg.getId());
+			eventApiDto.setDiscordInformation(EventDiscordInformationDto.builder().channel(channel.getId()).infoMsg(infoMsg.getId()).build());
 
 			//Send Spacer
 			channel.sendMessage("https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png").queue();
 
-			channel.sendMessage(eventApiDto.getSlotList()) //Send SlotList
-					.queue(slotListMsgConsumer(channel, eventApiDto));
+			final List<String> slotListMessages = eventApiDto.getSlotList();
+			if (slotListMessages.size() > 2) {
+				throw BusinessRuntimeException.builder().title("Aktuell sind nur maximal zwei Slotlist-Nachrichten mit jeweils " + Message.MAX_CONTENT_LENGTH + " Zeichen möglich.").build();
+			}
+			channel.sendMessage(ListUtils.shift(slotListMessages)) //Send SlotList
+					.queue(slotListMsgConsumer(channel, eventApiDto, slotListMessages));
 		};
 	}
 
 	/**
 	 * Must be called after {@link #infoMsgConsumer(MessageChannel, EventApiDto)} to update the event with both message ids
 	 */
-	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto) {
+	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages) {
 		return slotListMsg -> {
-			eventApiDto.setSlotListMsg(slotListMsg.getId());
+			eventApiDto.getDiscordInformation().setSlotListMsgPartOne(slotListMsg.getId());
+
+			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
+
+			channel.sendMessage(sendSpacerEmojiIfEmpty(ListUtils.shift(slotListMessages)))
+					.queue(slotListMsgLastConsumer(channel, eventApiDto));
+		};
+	}
+
+	public static String sendSpacerEmojiIfEmpty(String message) {
+		return StringUtils.isEmpty(message) ? ":black_small_square:" : message;
+	}
+
+	/**
+	 * Must be called after {@link #infoMsgConsumer(MessageChannel, EventApiDto)} to update the event with both message ids
+	 */
+	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto) {
+		return slotListMsg -> {
+			eventApiDto.getDiscordInformation().setSlotListMsgPartTwo(slotListMsg.getId());
 
 			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
 
 			eventBotService.updateEvent(eventApiDto);
 		};
 	}
-
 
 }

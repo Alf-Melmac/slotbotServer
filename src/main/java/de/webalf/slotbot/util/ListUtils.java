@@ -35,6 +35,9 @@ public final class ListUtils {
 	 * @return first now removed element
 	 */
 	public static <T> T shift(@NonNull List<T> list) {
+		if (list.isEmpty()) {
+			return null;
+		}
 		final T firstEl = list.get(0);
 		list.remove(0);
 		return firstEl;

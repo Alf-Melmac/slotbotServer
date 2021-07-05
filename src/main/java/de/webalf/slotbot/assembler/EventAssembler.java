@@ -3,7 +3,6 @@ package de.webalf.slotbot.assembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
-import de.webalf.slotbot.util.LongUtils;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -26,16 +25,14 @@ public final class EventAssembler {
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
 				.creator(dto.getCreator().trim())
 				.hidden(dto.isHidden())
-				.channel(LongUtils.parseLongWrapper(dto.getChannel()))
 				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
-				.infoMsg(LongUtils.parseLongWrapper(dto.getInfoMsg()))
-				.slotListMsg(LongUtils.parseLongWrapper(dto.getSlotListMsg()))
 				.description(dto.getDescription())
 				.pictureUrl(dto.getPictureUrl())
 				.missionType(dto.getMissionType())
 				.missionLength(dto.getMissionLength())
 				.reserveParticipating(dto.getReserveParticipating())
 				.details(EventFieldAssembler.fromDtoIterable(dto.getDetails()))
+				.discordInformation(EventDiscordInformationAssembler.fromDto(dto.getDiscordInformation()))
 				.build();
 	}
 
@@ -52,16 +49,14 @@ public final class EventAssembler {
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
-				.channel(LongUtils.toString(event.getChannel()))
 				.squadList(SquadAssembler.toReferencelessDtoList(event.getSquadList()))
-				.infoMsg(LongUtils.toString(event.getInfoMsg()))
-				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.details(EventFieldAssembler.toReferencelessDtoList(event.getDetails()))
+				.discordInformation(EventDiscordInformationAssembler.toDto(event.getDiscordInformation()))
 				.build();
 	}
 
@@ -78,14 +73,12 @@ public final class EventAssembler {
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
 				.hidden(event.isHidden())
-				.channel(LongUtils.toString(event.getChannel()))
-				.infoMsg(LongUtils.toString(event.getInfoMsg()))
-				.slotListMsg(LongUtils.toString(event.getSlotListMsg()))
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
+				.discordInformation(EventDiscordInformationAssembler.toDto(event.getDiscordInformation()))
 				.build();
 	}
 }
