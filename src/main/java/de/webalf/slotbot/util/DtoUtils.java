@@ -41,7 +41,7 @@ public final class DtoUtils {
 	}
 
 	public static void ifPresentParse(String value, Consumer<Long> consumer) {
-		if (isPresent((Object) value)) {
+		if (isPresent(value)) {
 			consumer.accept(LongUtils.parseLong(value));
 		}
 	}
@@ -73,6 +73,12 @@ public final class DtoUtils {
 	public static void ifPresent(UserDto value, Consumer<User> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(UserAssembler.fromDto(value));
+		}
+	}
+
+	public static <T> void ifPresentObject(T value, Consumer<T> consumer) {
+		if (isPresent(value)) {
+			consumer.accept(value);
 		}
 	}
 }

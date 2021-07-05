@@ -8,14 +8,10 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.AbstractEventDto;
-import de.webalf.slotbot.model.dtos.EventDto;
-import de.webalf.slotbot.model.dtos.SlotDto;
-import de.webalf.slotbot.model.dtos.UserDto;
+import de.webalf.slotbot.model.dtos.*;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DtoUtils;
-import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.BotPermissionHelper;
 import lombok.NonNull;
@@ -25,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.ListUtils;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +44,7 @@ public class EventService {
 	private final UserService userService;
 	private final EventTypeService eventTypeService;
 	private final EventFieldService eventFieldService;
+	private final EventDiscordInformationService eventDiscordInformationService;
 
 	/**
 	 * Creates a new event with values from the {@link EventDto}
@@ -55,7 +53,9 @@ public class EventService {
 	 * @return saved new event
 	 */
 	public Event createEvent(@NonNull EventDto eventDto) {
-		if (StringUtils.isNotEmpty(eventDto.getChannel()) && eventRepository.findByChannel(LongUtils.parseLong(eventDto.getChannel())).isPresent()) {
+		final EventDiscordInformationDto discordInformation = eventDto.getDiscordInformation();
+		if (discordInformation != null &&
+				StringUtils.isNotEmpty(discordInformation.getChannel()) && findOptionalByChannel(discordInformation.getChannel()).isPresent()) {
 			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
 		}
 		Event event = EventAssembler.fromDto(eventDto);
@@ -75,7 +75,17 @@ public class EventService {
 	 * @return Event found by channel or empty optional
 	 */
 	public Optional<Event> findOptionalByChannel(long channel) {
-		return eventRepository.findByChannel(channel);
+		return eventDiscordInformationService.findEventByChannel(channel);
+	}
+
+	/**
+	 * Returns an optional for the event associated with the given channelId
+	 *
+	 * @param channel to find event for
+	 * @return Event found by channel or empty optional
+	 */
+	private Optional<Event> findOptionalByChannel(@NotBlank String channel) {
+		return eventDiscordInformationService.findEventByChannel(channel);
 	}
 
 	/**
@@ -151,27 +161,29 @@ public class EventService {
 	public Event updateEvent(@NonNull AbstractEventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 
-		if (StringUtils.isNotEmpty(dto.getChannel())
-				&& eventRepository.findByChannel(LongUtils.parseLong(dto.getChannel())).filter(event1 -> !event1.equals(event)).isPresent()) {
-			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
+		final EventDiscordInformationDto discordInformationDto = dto.getDiscordInformation();
+		if (discordInformationDto != null) {
+			final String channel = discordInformationDto.getChannel();
+			if (StringUtils.isNotEmpty(channel)
+					&& findOptionalByChannel(channel).filter(event1 -> !event1.equals(event)).isPresent()) {
+				throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
+			}
 		}
 
-		if (dto.getEventType() != null) {
-			event.setEventType(eventTypeService.find(dto.getEventType()));
-		}
+
+		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType())));
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresent(dto.isHidden(), event::setHidden);
-		DtoUtils.ifPresentOrEmpty(dto.getChannel(), event::setChannelString);
-		DtoUtils.ifPresentOrEmpty(dto.getInfoMsg(), event::setInfoMsgString);
-		DtoUtils.ifPresentOrEmpty(dto.getSlotListMsg(), event::setSlotListMsgString);
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getRawPictureUrl(), event::setPictureUrl);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
+		DtoUtils.ifPresentObject(discordInformationDto, discordInformation ->
+				event.setDiscordInformation(eventDiscordInformationService.updateOrCreateDiscordInformation(discordInformation, event)));
 
 		return event;
 	}
