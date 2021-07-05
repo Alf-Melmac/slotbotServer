@@ -61,19 +61,19 @@ public class SlotService {
 		}
 
 		List<Slot> eventSlotList = new ArrayList<>();
-		slotList.forEach(slotDto -> eventSlotList.add(updateSlot(slotDto, squad)));
+		slotList.forEach(slotDto -> eventSlotList.add(updateOrCreateSlot(slotDto, squad)));
 		squadSlots.addAll(eventSlotList);
 	}
 
 	/**
-	 * Updates a slot with the given values identified by its id
+	 * Updates a slot with the given values identified by its id. If no slot can be found, a new one is created.
 	 * (!) Squad can not be changed
 	 *
 	 * @param dto   with new values
 	 * @param squad is required when a new slot must be created
 	 * @return updated Slot
 	 */
-	private Slot updateSlot(@NonNull SlotDto dto, @NonNull Squad squad) {
+	private Slot updateOrCreateSlot(@NonNull SlotDto dto, @NonNull Squad squad) {
 		Slot slot = slotRepository.findById(dto.getId()).orElseGet(() -> Slot.builder().squad(squad).build());
 
 		DtoUtils.ifPresent(dto.getName(), slot::setName);

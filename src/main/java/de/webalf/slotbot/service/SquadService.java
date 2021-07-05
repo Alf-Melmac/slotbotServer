@@ -30,7 +30,7 @@ public class SquadService {
 	 * Updates the squadList of the given event to the given squadList
 	 *
 	 * @param squadList new squadList
-	 * @param event to update
+	 * @param event     to update
 	 */
 	void updateSquadList(@NonNull List<SquadDto> squadList, @NonNull Event event) {
 		List<Squad> eventSquads = event.getSquadList();
@@ -42,7 +42,7 @@ public class SquadService {
 		}
 
 		List<Squad> eventSquadList = new ArrayList<>();
-		squadList.forEach(squadDto -> eventSquadList.add(updateSquad(squadDto, event)));
+		squadList.forEach(squadDto -> eventSquadList.add(updateOrCreateSquad(squadDto, event)));
 		eventSquadList.removeAll(Collections.singletonList(null));
 		eventSquads.addAll(eventSquadList);
 
@@ -50,14 +50,14 @@ public class SquadService {
 	}
 
 	/**
-	 * Updates a squad with the given values identified by its id
+	 * Updates a squad with the given values identified by its id. If no squad can be found, a new one will be created.
 	 * (!) Event can not be changed
 	 *
 	 * @param dto   with new values
 	 * @param event is required when a new squad must be created
 	 * @return updated Squad
 	 */
-	private Squad updateSquad(@NonNull SquadDto dto, @NonNull Event event) {
+	private Squad updateOrCreateSquad(@NonNull SquadDto dto, @NonNull Event event) {
 		Squad squad = squadRepository.findById(dto.getId()).orElseGet(() -> Squad.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getName(), squad::setName);

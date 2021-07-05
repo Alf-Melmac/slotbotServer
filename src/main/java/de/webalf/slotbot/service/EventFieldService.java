@@ -28,7 +28,7 @@ public class EventFieldService {
 	 * Updates the details of the given event to the given detail list
 	 *
 	 * @param detailsDtos new details
-	 * @param event to update
+	 * @param event       to update
 	 */
 	void updateEventDetails(@NonNull List<EventFieldDto> detailsDtos, @NonNull Event event) {
 		List<EventField> existingDetails = event.getDetails();
@@ -40,21 +40,21 @@ public class EventFieldService {
 		}
 
 		List<EventField> eventDetails = new ArrayList<>();
-		detailsDtos.forEach(eventFieldDto -> eventDetails.add(updateEventField(eventFieldDto, event)));
+		detailsDtos.forEach(eventFieldDto -> eventDetails.add(updateOrCreateEventField(eventFieldDto, event)));
 		existingDetails.addAll(eventDetails);
 
 		event.validate();
 	}
 
 	/**
-	 * Updates a event field with the given values identified by its id
+	 * Updates a event field with the given values identified by its id. If no field can be found, a new one is created.
 	 * (!) Event can not be changed
 	 *
 	 * @param dto   with new values
 	 * @param event is required when a new field must be created
 	 * @return updated or new event field
 	 */
-	private EventField updateEventField(@NonNull EventFieldDto dto, @NonNull Event event) {
+	private EventField updateOrCreateEventField(@NonNull EventFieldDto dto, @NonNull Event event) {
 		EventField eventField = eventFieldRepository.findById(dto.getId()).orElseGet(() -> EventField.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getTitle(), eventField::setTitle);
