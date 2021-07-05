@@ -1,5 +1,7 @@
 package de.webalf.slotbot.util.bot;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 import java.util.regex.Pattern;
@@ -25,5 +27,41 @@ public final class MentionUtils {
 
 	public static String getId(String mention) {
 		return removeNonDigitCharacters(mention);
+	}
+
+	/**
+	 * @param channelId to mention
+	 * @return string that is a mention inside discord
+	 */
+	public static String getChannelAsMention(long channelId) {
+		return getAsMention(Long.toString(channelId), MentionType.CHANNEL);
+	}
+
+	/**
+	 * @param userId to mention
+	 * @return string that is a mention inside discord
+	 */
+	public static String getUserAsMention(String userId) {
+		return getAsMention(userId, MentionType.USER);
+	}
+
+	/**
+	 * Mentions the given {@link MentionType} with the given id in discord
+	 *
+	 * @param id of the object to mention
+	 * @param mentionType type that should be mentioned
+	 * @return string that mentions inside discord
+	 */
+	private static String getAsMention(String id, MentionType mentionType) {
+		return "<" + mentionType.getMENTION_PREFIX() + id + ">";
+	}
+
+	@Getter
+	@AllArgsConstructor
+	private enum MentionType {
+		CHANNEL("#"),
+		USER("@");
+
+		private final String MENTION_PREFIX;
 	}
 }

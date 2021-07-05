@@ -4,6 +4,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -49,7 +50,7 @@ public class SlotReferencelessDto extends AbstractIdEntityDto {
 
 		final boolean isBlocked = !isEmpty && LongUtils.parseLong(getUser().getId()) == User.DEFAULT_USER_ID;
 		if (!isEmpty && !isBlocked) {
-			slotText.append("**<@").append(getUser().getId()).append(">**");
+			slotText.append("**").append(MentionUtils.getUserAsMention(getUser().getId())).append("**");
 		} else if (isBlocked) {
 			slotText.append("*").append(getReplacementText()).append("*");
 		}
