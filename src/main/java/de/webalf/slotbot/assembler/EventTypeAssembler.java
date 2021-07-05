@@ -16,7 +16,6 @@ public final class EventTypeAssembler {
 		}
 
 		return EventType.builder()
-				.id(dto.getId())
 				.name(dto.getName())
 				.color(dto.getColor())
 				.build();
@@ -24,7 +23,6 @@ public final class EventTypeAssembler {
 
 	public static EventTypeDto toDto(EventType eventType) {
 		return EventTypeDto.builder()
-				.id(eventType.getId())
 				.name(eventType.getName())
 				.color(eventType.getColor())
 				.build();

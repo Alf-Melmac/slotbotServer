@@ -18,12 +18,16 @@ import java.util.regex.Pattern;
  * @since 07.04.2021
  */
 @Entity
-@Table(name = "event_type", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
+@Table(name = "event_type", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}),
+		@UniqueConstraint(columnNames = {"event_type_name", "event_color"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class EventType extends AbstractSuperIdEntity {
+	//The ID of this entity does not matter. The main unique key is the name and the colour.
+	//Entities are to be found and created using these values.
+
 	@Column(name = "event_type_name", length = 100)
 	@NotBlank
 	@Size(max = 80)
@@ -36,6 +40,11 @@ public class EventType extends AbstractSuperIdEntity {
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;
+
+	@Override
+	public long getId() throws IllegalCallerException {
+		throw new IllegalCallerException("EventTypes should be identified by their name and color pair.");
+	}
 
 	public void setColor(String color) {
 		if (!HEX_COLOR.matcher(color).matches()) {
