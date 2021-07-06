@@ -41,7 +41,7 @@ public class EventUpdateService {
 		}
 
 		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-		eventChannel.editMessageById(event.getDiscordInformation().getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
+		eventChannel.editMessageEmbedsById(event.getDiscordInformation().getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
 		final List<String> slotList = eventApiDto.getSlotList();
 		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
 		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), sendSpacerEmojiIfEmpty(ListUtils.shift(slotList))).queue();

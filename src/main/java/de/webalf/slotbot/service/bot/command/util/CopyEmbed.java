@@ -42,7 +42,7 @@ public class CopyEmbed implements DiscordCommand {
 							replyAndDelete(message, "Dieser Textkanal konnte nicht gefunden werden: " + getId(channelMention));
 							return;
 						}
-						channel.sendMessage(embed).queue();
+						channel.sendMessageEmbeds(embed).queue();
 					}, replyErrorMessage(message));
 		}
 

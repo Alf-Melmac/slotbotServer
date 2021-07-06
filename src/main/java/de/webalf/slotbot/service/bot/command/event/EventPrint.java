@@ -53,7 +53,7 @@ public class EventPrint implements DiscordCommand {
 			}
 
 			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-			channel.sendMessage(EventUtils.buildDetailsEmbed(eventApiDto)) //Send event details
+			channel.sendMessageEmbeds(EventUtils.buildDetailsEmbed(eventApiDto)) //Send event details
 					.queue(infoMsgConsumer(channel, eventApiDto));
 
 			deleteMessagesInstant(message);
@@ -71,6 +71,7 @@ public class EventPrint implements DiscordCommand {
 			if (slotListMessages.size() > 2) {
 				throw BusinessRuntimeException.builder().title("Aktuell sind nur maximal zwei Slotlist-Nachrichten mit jeweils " + Message.MAX_CONTENT_LENGTH + " Zeichen möglich.").build();
 			}
+			//noinspection ConstantConditions Shift doesn't return null here
 			channel.sendMessage(ListUtils.shift(slotListMessages)) //Send SlotList
 					.queue(slotListMsgConsumer(channel, eventApiDto, slotListMessages));
 		};
