@@ -51,12 +51,13 @@ public class Commands {
 	@AllArgsConstructor
 	public enum Util implements CommandEnum {
 		ADMIN(Admin.class),
-		HELP(Help.class),
-		VOTE(Vote.class),
-		SET_STEAM_ID(SteamId.class),
-		POST_MESSAGE(PostMessage.class),
+		COPY_EMBED(CopyEmbed.class),
+		DONATION_EMBED(DonationEmbed.class),
 		EDIT_MESSAGE(EditMessage.class),
-		COPY_EMBED(CopyEmbed.class);
+		HELP(Help.class),
+		POST_MESSAGE(PostMessage.class),
+		SET_STEAM_ID(SteamId.class),
+		VOTE(Vote.class);
 
 		private final Class<?> command;
 	}
@@ -69,14 +70,14 @@ public class Commands {
 		BLOCK_SLOT(BlockSlot.class),
 		DEL_SLOT(DelSlot.class),
 		EVENT_JSON(Admin.class),
+		EVENT_PING(EventPing.class),
 		EVENT_PRINT(EventPrint.class),
+		RANDOM_SLOT(RandomSlot.class),
 		RENAME_SLOT(RenameSlot.class),
 		RENAME_SQUAD(RenameSquad.class),
 		SLOT(Slot.class),
 		SWAP(Swap.class),
-		UNSLOT(Unslot.class),
-		RANDOM_SLOT(RandomSlot.class),
-		EVENT_PING(EventPing.class);
+		UNSLOT(Unslot.class);
 
 		private final Class<?> command;
 	}
