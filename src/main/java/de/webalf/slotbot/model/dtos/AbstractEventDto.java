@@ -83,6 +83,6 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	}
 
 	public ZonedDateTime getDateTimeZoned() {
-		return date.atTime(startTime).atZone(ZoneId.systemDefault());
+		return date.atTime(startTime).atZone(ZoneId.of("Europe/Berlin"));
 	}
 }
