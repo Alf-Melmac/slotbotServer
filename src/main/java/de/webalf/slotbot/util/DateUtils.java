@@ -13,7 +13,6 @@ import java.util.Comparator;
 @UtilityClass
 public final class DateUtils {
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.uuuu");
-	public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
 	public static Comparator<LocalDateTime> getLocalDateTimeComparator() {
 		return (dateTime1, dateTime2) -> {

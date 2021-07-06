@@ -13,13 +13,11 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
-import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
-import static de.webalf.slotbot.util.DateUtils.TIME_FORMATTER;
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
+import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 
 /**
  * @author Alf
@@ -90,7 +88,7 @@ public final class EventUtils {
 	}
 
 	private static void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull EventApiDto event) {
-		addField("Zeitplan", buildScheduleField(event.getDate(), event.getStartTime(), event.getMissionLength()), embedBuilder);
+		addField("Zeitplan", buildScheduleField(event.getDateTimeZoned(), event.getMissionLength()), embedBuilder);
 		addField("Missionstyp", event.getMissionType(), true, embedBuilder);
 		addField("Reserve nimmt teil", buildReserveParticipatingField(event.getReserveParticipating()), true, embedBuilder);
 		event.getDetails().forEach(field -> {
@@ -107,8 +105,8 @@ public final class EventUtils {
 		});
 	}
 
-	private static String buildScheduleField(LocalDate eventDate, LocalTime eventStartTime, String missionLength) {
-		final String dateTimeText = DATE_FORMATTER.format(eventDate) + ", " + TIME_FORMATTER.format(eventStartTime) + " Uhr";
+	private static String buildScheduleField(ZonedDateTime eventDateTime, String missionLength) {
+		final String dateTimeText = DATE_TIME_SHORT.format(eventDateTime) + " Uhr";
 		return StringUtils.isNotEmpty(missionLength) ? dateTimeText + " und dauert " + missionLength : dateTimeText;
 	}
 

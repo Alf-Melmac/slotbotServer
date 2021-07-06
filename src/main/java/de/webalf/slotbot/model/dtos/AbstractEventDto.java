@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -78,5 +80,9 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@SuppressWarnings("unused") //eventEdit.html
 	public List<String> getMissionTypesFiltered() {
 		return ListUtils.getListFiltered(MISSION_TYPES, getMissionType());
+	}
+
+	public ZonedDateTime getDateTimeZoned() {
+		return date.atTime(startTime).atZone(ZoneId.systemDefault());
 	}
 }
