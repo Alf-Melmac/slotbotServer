@@ -53,6 +53,10 @@ public class EventBotService {
 		eventService.updateEvent(dto);
 	}
 
+	public void archiveEvent(long eventId) {
+		eventService.archiveEvent(eventId);
+	}
+
 	public void slot(long channel, int slotNumber, String userId) {
 		eventService.slot(channel, slotNumber, userDtoWithId(userId));
 	}

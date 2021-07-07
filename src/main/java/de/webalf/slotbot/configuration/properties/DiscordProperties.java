@@ -26,4 +26,6 @@ public class DiscordProperties {
 
 	@NotNull
 	private long id;
+
+	private Long archive;
 }

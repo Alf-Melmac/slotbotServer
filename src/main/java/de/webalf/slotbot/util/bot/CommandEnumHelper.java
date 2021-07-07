@@ -68,6 +68,13 @@ public class CommandEnumHelper {
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for type {}", enumCommand.getName(), e);
 				}
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, DiscordProperties.class})) {
+				//ArchiveEvent
+				try {
+					constructor = declaredConstructor.newInstance(eventBotService, discordProperties);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					log.error("Failed to create new constructor instance with EventBotService and DiscordProperties parameter for type {}", enumCommand.getName(), e);
+				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{UserBotService.class})) {
 				//SteamId
 				try {

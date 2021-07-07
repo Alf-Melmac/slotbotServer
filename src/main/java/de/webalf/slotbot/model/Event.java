@@ -464,4 +464,12 @@ public class Event extends AbstractSuperIdEntity {
 		}
 		return emptySlots.get(new Random().nextInt(emptySlots.size()));
 	}
+
+	public void archive() {
+		if (LocalDateTime.now().isBefore(getDateTime())) {
+			throw BusinessRuntimeException.builder().title("Es können nur Events in der Vergangenheit archiviert werden.").build();
+		}
+
+		setDiscordInformation(null);
+	}
 }

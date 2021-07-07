@@ -13,13 +13,18 @@
 	},
 	{
 	  "name": "discord.id",
-	  "type": "java.lang.String",
+	  "type": "java.lang.Long",
 	  "description": "The id of the discord bot."
 	},
 	{
 	  "name": "discord.guild",
 	  "type": "java.lang.String",
 	  "description": "The id of the discord guild the bot runs in."
+	},
+	{
+	  "name": "discord.archive",
+	  "type": "java.lang.Long",
+	  "description": "The id of the discord channel the archive should be created in."
 	},
 	{
 	  "name": "battlemetrics.apiAccessToken",

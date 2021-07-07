@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos;
 
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.*;
@@ -11,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -83,6 +83,6 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	}
 
 	public ZonedDateTime getDateTimeZoned() {
-		return date.atTime(startTime).atZone(ZoneId.of("Europe/Berlin"));
+		return DateUtils.getDateTimeZoned(date, startTime);
 	}
 }

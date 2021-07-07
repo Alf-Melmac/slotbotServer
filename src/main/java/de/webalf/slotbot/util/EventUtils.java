@@ -77,7 +77,7 @@ public final class EventUtils {
 	 * @param url to check
 	 * @return usable url
 	 */
-	private String fixUrl(String url) {
+	private static String fixUrl(String url) {
 		//If the request was made from the discord the url is a relative URI, with absolute path
 		//If an update is triggered by the website the url is an absolut URI
 		//I wasn't able to find a fix for this other than this workaround :(
@@ -124,7 +124,18 @@ public final class EventUtils {
 	 * @param slotNumber slot number to check
 	 * @return true if the slot number is already used
 	 */
-	public boolean slotNumberPresent(List<Slot> slots, int slotNumber) {
+	public static boolean slotNumberPresent(List<Slot> slots, int slotNumber) {
 		return slots.stream().anyMatch(slot -> slot.getNumber() == slotNumber);
+	}
+
+	public static String buildArchiveMessage(Event event) {
+		String message = "**__" + event.getName() + "__** " +
+				DATE_TIME_SHORT.format(DateUtils.getDateTimeZoned(event.getDateTime())) +
+				" " + event.getEventType().getName() + " ";
+		if (StringUtils.isNotEmpty(event.getMissionType())) {
+			message += event.getMissionType() + " ";
+		}
+		message += "von " + event.getCreator() + "; " + event.getShortInformation().getSlotCount() + " verfügbare Slots";
+		return message;
 	}
 }

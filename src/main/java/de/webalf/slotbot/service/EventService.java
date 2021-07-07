@@ -209,6 +209,15 @@ public class EventService {
 	}
 
 	/**
+	 * Searches for the given event by id and archives it
+	 *
+	 * @param eventId event id
+	 */
+	public void archiveEvent(long eventId) {
+		findById(eventId).archive();
+	}
+
+	/**
 	 * Searches for the given channel the matching event and deletes it
 	 *
 	 * @param channel event channel

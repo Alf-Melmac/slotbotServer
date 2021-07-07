@@ -67,6 +67,7 @@ public class Commands {
 	public enum Event implements CommandEnum {
 		ADD_EVENT_TO_CHANNEL(AddEventToChannel.class),
 		ADD_SLOT(AddSlot.class),
+		ARCHIVE(ArchiveEvent.class),
 		BLOCK_SLOT(BlockSlot.class),
 		DEL_SLOT(DelSlot.class),
 		EVENT_PING(EventPing.class),
