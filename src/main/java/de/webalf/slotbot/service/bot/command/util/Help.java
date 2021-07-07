@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.bot.Commands;
 import de.webalf.slotbot.model.bot.Commands.CommandEnum;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.util.ListUtils.zeroArguments;
@@ -62,18 +64,28 @@ public class Help implements DiscordCommand {
 		}
 
 		final Command command = commandEnum.getAnnotation();
-		String help = "**Name:** " + command.names()[0];
+		final List<String> names = Stream.of(command.names()).collect(Collectors.toList());
+		final String mainName = ListUtils.shift(names);
+		StringBuilder help = new StringBuilder("**Name:** " + mainName);
 
 		if (StringUtils.isNotEmpty(command.description())) {
-			help += "\n**Beschreibung:** " + command.description();
+			help.append("\n**Beschreibung:** ").append(command.description());
 		}
 
-		help += "\n**Benutzung:** " + discordProperties.getPrefix() + command.names()[0];
+		if (names.size() > 0) {
+			help.append("\n**Alternative Benennungen:** ").append(ListUtils.shift(names));
+			for (String name : names) {
+				help.append(", ").append(name);
+			}
+		}
+
+		help.append("\n**Benutzung:** `").append(discordProperties.getPrefix()).append(mainName);
 		if (Arrays.stream(command.argCount()).anyMatch(number -> number != 0)) {
-			help += " " + command.usage();
+			help.append(" ").append(command.usage());
 		}
+		help.append("`");
 
-		sendDmAndDeleteMessage(message, help);
+		sendDmAndDeleteMessage(message, help.toString());
 	}
 
 	private String getAllAllowedCommands(Message message) {
