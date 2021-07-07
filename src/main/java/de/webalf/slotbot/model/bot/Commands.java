@@ -69,7 +69,6 @@ public class Commands {
 		ADD_SLOT(AddSlot.class),
 		BLOCK_SLOT(BlockSlot.class),
 		DEL_SLOT(DelSlot.class),
-		EVENT_JSON(Admin.class),
 		EVENT_PING(EventPing.class),
 		EVENT_PRINT(EventPrint.class),
 		RANDOM_SLOT(RandomSlot.class),

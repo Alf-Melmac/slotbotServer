@@ -20,11 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.thymeleaf.util.ArrayUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static de.webalf.slotbot.model.bot.Commands.Event.EVENT_JSON;
 import static de.webalf.slotbot.util.StringUtils.isNotEmpty;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 import static de.webalf.slotbot.util.bot.MessageUtils.sendDmAndDeleteMessage;
@@ -52,6 +49,8 @@ public class MessageReceivedListener extends ListenerAdapter {
 		final String args = messageText.substring(discordProperties.getPrefix().length()); //Remove prefix
 		List<String> argList = getArgList(args);
 
+		if (argList.isEmpty()) return;
+		@SuppressWarnings("ConstantConditions") //Checked with if above
 		final CommandEnum commandEnum = Commands.get(ListUtils.shift(argList));
 		//Exit if command doesn't exist
 		if (commandEnum == null) return;
@@ -101,17 +100,10 @@ public class MessageReceivedListener extends ListenerAdapter {
 	 * Returns the arguments as a list
 	 *
 	 * @param args all arguments
-	 * @return arguments {@link StringUtils#splitOnSpacesExceptQuotes(String)} or only command and arguments as second string for special commands
+	 * @return arguments {@link StringUtils#splitOnSpacesExceptQuotes(String)}
 	 */
 	private List<String> getArgList(@NonNull String args) {
-		List<String> argList;
-		if (Arrays.stream(EVENT_JSON.getAnnotation().names()).noneMatch(args.toLowerCase()::matches)) {
-			argList = StringUtils.splitOnSpacesExceptQuotes(args);
-		} else {
-			//For these special commands everything after the command is handled as one argument. Validation and potential splitting must be done by the position called up
-			argList = new ArrayList<>(Arrays.asList(args.split(" ", 2)));
-		}
-		return argList;
+		return StringUtils.splitOnSpacesExceptQuotes(args);
 	}
 
 	/**
