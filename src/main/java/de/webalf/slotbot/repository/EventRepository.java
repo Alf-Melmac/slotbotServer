@@ -20,6 +20,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	List<Event> findAllByDateTimeBetweenAndHiddenFalse(LocalDateTime start, LocalDateTime end);
 
+	@Query("SELECT e FROM Event e WHERE e.dateTime < :dateTime ORDER BY e.dateTime")
+	List<Event> findAllByDateTimeIsBeforeAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime);
+
 	@Query("SELECT s.user FROM Slot s WHERE s.squad.event.discordInformation.channel = :channel AND s.user.id <> de.webalf.slotbot.model.User.DEFAULT_USER_ID")
 	List<User> findAllParticipants(@Param("channel") long channel);
 }

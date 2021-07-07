@@ -49,6 +49,10 @@ public class EventBotService {
 		}
 	}
 
+	public List<Event> findAllInPast() {
+		return eventService.findAllInPast();
+	}
+
 	public void updateEvent(AbstractEventDto dto) {
 		eventService.updateEvent(dto);
 	}

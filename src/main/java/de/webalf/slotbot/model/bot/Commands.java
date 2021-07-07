@@ -56,6 +56,7 @@ public class Commands {
 		EDIT_MESSAGE(EditMessage.class),
 		HELP(Help.class),
 		POST_MESSAGE(PostMessage.class),
+		REBUILD_ARCHIVE(RebuildArchive.class),
 		SET_STEAM_ID(SteamId.class),
 		VOTE(Vote.class);
 

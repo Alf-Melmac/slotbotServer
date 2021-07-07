@@ -142,6 +142,15 @@ public class EventService {
 	}
 
 	/**
+	 * Returns all events that happened before now
+	 *
+	 * @return all events from the past
+	 */
+	public List<Event> findAllInPast() {
+		return eventRepository.findAllByDateTimeIsBeforeAndOrderByDateTime(LocalDateTime.now());
+	}
+
+	/**
 	 * Returns all {@link User}s slotted in the event associated with the given channelId.
 	 * {@link User#DEFAULT_USER_ID} is filtered out.
 	 *
