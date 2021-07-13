@@ -14,6 +14,7 @@ import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class EventPrint implements DiscordCommand {
 	}
 
 	public static String sendSpacerEmojiIfEmpty(String message) {
-		return StringUtils.isEmpty(message) ? ":black_small_square:" : message;
+		return StringUtils.isEmpty(message) ? EmbedBuilder.ZERO_WIDTH_SPACE : message;
 	}
 
 	/**
