@@ -2,7 +2,7 @@ package de.webalf.slotbot.util;
 
 import lombok.experimental.UtilityClass;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.springframework.util.StringUtils;
 
 /**
@@ -31,10 +31,10 @@ public final class DiscordMarkdown {
 	private static final String HTML_STRONG = "strong";
 	private static final String HTML_ITALIC = "em";
 
-	private static final Whitelist WHITELIST = Whitelist.none();
+	private static final Safelist SAFELIST = Safelist.none();
 
 	static {
-		WHITELIST.addTags("br", HTML_STRIKETHROUGH, HTML_UNDERLINE, HTML_STRONG, HTML_ITALIC);
+		SAFELIST.addTags("br", HTML_STRIKETHROUGH, HTML_UNDERLINE, HTML_STRONG, HTML_ITALIC);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public final class DiscordMarkdown {
 		markdown = replace(markdown, "*", STAR_ITALICS, HTML_ITALIC);
 		markdown = replace(markdown, "_", UNDERSCORE_ITALICS, HTML_ITALIC);
 
-		return Jsoup.clean(markdown, WHITELIST);
+		return Jsoup.clean(markdown, SAFELIST);
 	}
 
 	private static String replace(String s, String symbol, String matcher, String tag) {

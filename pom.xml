@@ -49,8 +49,9 @@
 		<!--https://github.com/atteo/classindex/releases -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
-		<jda.version>4.3.0_293</jda.version>
-		<jsoup.version>1.13.1</jsoup.version>
+		<jda.version>4.3.0_296</jda.version>
+		<!--https://jsoup.org/news/ -->
+		<jsoup.version>1.14.1</jsoup.version>
 	</properties>
 
 	<dependencies>
