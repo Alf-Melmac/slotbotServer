@@ -7,6 +7,8 @@
       <list>
         <option value="$PROJECT_DIR$/logs" />
         <option value="$PROJECT_DIR$/target" />
+        <option value="$PROJECT_DIR$/download" />
+        <option value="$PROJECT_DIR$/img" />
       </list>
     </option>
   </component>
