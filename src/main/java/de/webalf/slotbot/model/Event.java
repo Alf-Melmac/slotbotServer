@@ -64,8 +64,8 @@ public class Event extends AbstractSuperIdEntity {
 	@JsonManagedReference
 	private List<Squad> squadList;
 
-	@Column(name = "event_description", length = (int) (MessageEmbed.TEXT_MAX_LENGTH * 1.25))
-	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
+	@Column(name = "event_description", length = (int) (MessageEmbed.DESCRIPTION_MAX_LENGTH * 1.25))
+	@Size(max = MessageEmbed.DESCRIPTION_MAX_LENGTH)
 	private String description;
 
 	@Column(name = "event_picture_url", length = 2083)

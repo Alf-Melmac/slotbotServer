@@ -44,7 +44,7 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Builder.Default
 	private boolean hidden = false;
 
-	@Size(max = MessageEmbed.TEXT_MAX_LENGTH)
+	@Size(max = MessageEmbed.DESCRIPTION_MAX_LENGTH)
 	private String description;
 
 	@Size(max = 1666)
