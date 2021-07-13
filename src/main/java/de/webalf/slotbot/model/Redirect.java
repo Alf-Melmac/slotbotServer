@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank;
  * @since 03.12.2020
  */
 @Entity
-@Table(name = "redirect", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "endpoint"})})
+@Table(name = "redirect", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"endpoint"})})
 @Immutable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Redirect extends AbstractIdEntity {

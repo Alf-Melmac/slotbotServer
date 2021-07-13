@@ -16,7 +16,9 @@ import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
  */
 @EqualsAndHashCode
 @Entity
-@Table(name = "discord_user", uniqueConstraints = {@UniqueConstraint(columnNames = {"id", "user_steam_id"})}, schema = "public")
+@Table(name = "discord_user",
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"user_steam_id"})},
+		schema = "public")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
