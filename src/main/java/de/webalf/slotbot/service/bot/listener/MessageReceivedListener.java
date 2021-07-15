@@ -5,11 +5,10 @@ import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.model.bot.Commands;
-import de.webalf.slotbot.model.bot.Commands.CommandEnum;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
-import de.webalf.slotbot.util.bot.CommandEnumHelper;
+import de.webalf.slotbot.util.bot.CommandClassHelper;
+import de.webalf.slotbot.util.bot.CommandUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDmAndDeleteMessage;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class MessageReceivedListener extends ListenerAdapter {
 	private final DiscordProperties discordProperties;
-	private final CommandEnumHelper commandEnumHelper;
+	private final CommandClassHelper commandClassHelper;
 
 	@Override
 	public void onMessageReceived(@NonNull MessageReceivedEvent event) {
@@ -51,19 +50,17 @@ public class MessageReceivedListener extends ListenerAdapter {
 
 		if (argList.isEmpty()) return;
 		@SuppressWarnings("ConstantConditions") //Checked with if above
-		final CommandEnum commandEnum = Commands.get(ListUtils.shift(argList));
+		final Class<?> commandClass = CommandUtils.get(ListUtils.shift(argList));
 		//Exit if command doesn't exist
-		if (commandEnum == null) return;
+		if (commandClass == null) return;
 
-		final Command command = commandEnum.getAnnotation();
-
-		if (!validate(message, argList, commandEnum, command)) {
+		final Command command = CommandClassHelper.getCommand(commandClass);
+		if (!validate(message, argList, command)) {
 			return;
 		}
 
 		try { //Execute command
-			final Class<?> enumCommand = commandEnum.getCommand();
-			enumCommand.getMethod("execute", Message.class, List.class).invoke(commandEnumHelper.getConstructor(enumCommand), message, argList);
+			commandClass.getMethod("execute", Message.class, List.class).invoke(commandClassHelper.getConstructor(commandClass), message, argList);
 		} catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof BusinessRuntimeException || cause instanceof ForbiddenException || cause instanceof ResourceNotFoundException) {
@@ -73,10 +70,10 @@ public class MessageReceivedListener extends ListenerAdapter {
 					replyAndDelete(message, "Das gesuchte Element kann nicht erreicht werden.");
 				}
 			} else {
-				unknownException(message, argList, commandEnum, e);
+				unknownException(message, argList, commandClass, e);
 			}
 		} catch (NoSuchMethodException | IllegalAccessException e) {
-			unknownException(message, argList, commandEnum, e);
+			unknownException(message, argList, commandClass, e);
 		}
 	}
 
@@ -85,11 +82,11 @@ public class MessageReceivedListener extends ListenerAdapter {
 	 *
 	 * @return true if validation succeeded
 	 */
-	private boolean validate(Message message, List<String> argList, CommandEnum commandEnum, Command command) {
+	private boolean validate(Message message, @NonNull List<String> argList, @NonNull Command command) {
 		if (!ArrayUtils.contains(ListUtils.convertToBoxedArray(command.argCount()), argList.size())) {
 			wrongArgumentCount(message, argList, command);
 			return false;
-		} else if (!commandEnum.isAllowed(message)) {
+		} else if (!CommandUtils.isAllowed(command, message)) {
 			replyAndDelete(message, "Das darfst du hier nicht.");
 			return false;
 		}
@@ -122,8 +119,8 @@ public class MessageReceivedListener extends ListenerAdapter {
 		sendDmAndDeleteMessage(message, reply);
 	}
 
-	private void unknownException(Message message, List<String> argList, @NonNull CommandEnum commandEnum, ReflectiveOperationException e) {
-		log.error("Failed to execute command {} with arguments {}", commandEnum.toString(), argList, e);
+	private void unknownException(Message message, List<String> argList, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
+		log.error("Failed to execute command {} with arguments {}", commandClass.getName(), argList, e);
 		replyAndDelete(message, "Tja, da ist wohl was schief gelaufen.");
 	}
 }

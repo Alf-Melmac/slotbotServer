@@ -3,13 +3,12 @@ package de.webalf.slotbot.service.bot;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.service.bot.listener.MessageReceivedListener;
 import de.webalf.slotbot.service.bot.listener.ReactionAddListener;
-import de.webalf.slotbot.util.bot.CommandEnumHelper;
+import de.webalf.slotbot.util.bot.CommandClassHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,7 @@ import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BotService {
 	private final DiscordProperties discordProperties;
-	private final CommandEnumHelper commandEnumHelper;
+	private final CommandClassHelper commandClassHelper;
 	private final ReactionAddService reactionAddService;
 
 	@Getter
@@ -44,9 +43,9 @@ public class BotService {
 			jda = JDABuilder
 					//TODO: maybe default (validate caching)
 					.createLight(token)
-					.enableIntents(GatewayIntent.GUILD_MEMBERS)
+					.enableIntents(GUILD_MEMBERS)
 					.addEventListeners(
-							new MessageReceivedListener(discordProperties, commandEnumHelper),
+							new MessageReceivedListener(discordProperties, commandClassHelper),
 							new ReactionAddListener(reactionAddService))
 					.disableIntents(GUILD_BANS, GUILD_EMOJIS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING)
 					.build();
