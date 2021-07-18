@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import java.util.List;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 
 /**
  * @author Alf
@@ -17,7 +18,8 @@ import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 @Command(names = {"postMessage", "post", "messagePost"},
 		description = "Sendet die übergebene Nachricht in den gleichen Kanal.",
 		usage = "<Nachricht>",
-		argCount = {1})
+		argCount = {1},
+		authorization = EVENT_MANAGE)
 public class PostMessage implements DiscordCommand {
 	@Override
 	public void execute(Message message, List<String> args) {

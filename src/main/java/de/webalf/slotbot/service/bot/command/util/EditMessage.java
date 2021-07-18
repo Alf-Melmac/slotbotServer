@@ -9,6 +9,7 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyErrorMessage;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 
 /**
  * @author Alf
@@ -18,7 +19,8 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyErrorMessage;
 @Command(names = {"editMessage", "edit", "messageEdit"},
 		description = "Bearbeitet die übergebene Bot-Nachricht. Wurde z.B. vorher mit postMessage verschickt.",
 		usage = "<MessageId> <NeuerText>",
-		argCount = {2})
+		argCount = {2},
+		authorization = EVENT_MANAGE)
 public class EditMessage implements DiscordCommand {
 	@Override
 	public void execute(Message message, List<String> args) {
