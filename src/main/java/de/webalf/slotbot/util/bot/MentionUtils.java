@@ -53,7 +53,7 @@ public final class MentionUtils {
 	 * @return string that mentions inside discord
 	 */
 	private static String getAsMention(String id, MentionType mentionType) {
-		return "<" + mentionType.getMENTION_PREFIX() + id + ">";
+		return "<" + mentionType.getMentionPrefix() + id + ">";
 	}
 
 	@Getter
@@ -62,6 +62,6 @@ public final class MentionUtils {
 		CHANNEL("#"),
 		USER("@");
 
-		private final String MENTION_PREFIX;
+		private final String mentionPrefix;
 	}
 }

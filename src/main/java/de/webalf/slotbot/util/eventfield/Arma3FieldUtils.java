@@ -54,7 +54,7 @@ public final class Arma3FieldUtils {
 	);
 
 	public static final Pattern FILE_PATTERN = Pattern.compile("^(Arma_3_Preset_)?(.+)\\.html");
-	private static Map<String, String> DOWNLOADABLE_MOD_PACKS = new HashMap<>();
+	private static final Map<String, String> DOWNLOADABLE_MOD_PACKS = new HashMap<>();
 
 	public static void fillDownloadableModPacks(Set<String> fileNames) {
 		DOWNLOADABLE_MOD_PACKS.clear();
