@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="de.webalf.slotbot.model.annotations.EventFieldDefault" />
-      <item index="1" class="java.lang.String" itemvalue="lombok.Builder" />
+    <list size="3">
+      <item index="0" class="java.lang.String" itemvalue="de.webalf.slotbot.model.annotations.Command" />
+      <item index="1" class="java.lang.String" itemvalue="de.webalf.slotbot.model.annotations.EventFieldDefault" />
+      <item index="2" class="java.lang.String" itemvalue="lombok.Builder" />
     </list>
   </component>
   <component name="MavenProjectsManager">
@@ -13,7 +14,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="adopt-openj9-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
@@ -96,5 +97,9 @@ public class CommandClassHelper {
 
 	public static Command getCommand(@NonNull Class<?> commandClass) {
 		return commandClass.getAnnotation(Command.class);
+	}
+
+	public static SlashCommand getSlashCommand(@NonNull Class<?> commandClass) {
+		return commandClass.getAnnotation(SlashCommand.class);
 	}
 }

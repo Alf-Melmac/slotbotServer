@@ -1,12 +1,17 @@
 package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotBlank;
@@ -14,6 +19,7 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.ListUtils.oneArgument;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
+import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
@@ -33,7 +39,11 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		usage = "<Slotnummer> (<@ZuSlottendePerson>)",
 		argCount = {1, 2},
 		authorization = NONE)
-public class Slot implements DiscordCommand {
+@SlashCommand(name = "slot",
+		description = "Slottet dich in ein Event.",
+		authorization = NONE,
+		optionPosition = 0)
+public class Slot implements DiscordCommand, DiscordSlashCommand {
 	private final EventBotService eventBotService;
 
 	@Override
@@ -78,5 +88,30 @@ public class Slot implements DiscordCommand {
 
 	private void selfSlot(@NonNull Message message, @NotBlank String slot) {
 		slot(message, slot, message.getAuthor().getId());
+	}
+
+	static final String OPTION_SLOT_NUMBER = "slotnummer";
+	static final List<List<OptionData>> SLOT_OPTIONS = List.of(
+			List.of(new OptionData(OptionType.INTEGER, OPTION_SLOT_NUMBER, "Nummer des erwünschten Slots.", true))
+	);
+
+	@Override
+	public void execute(SlashCommandEvent event) {
+		log.trace("Slash command: slot");
+
+		@SuppressWarnings("ConstantConditions") //Required option
+		final int slotNumber = Math.toIntExact(event.getOption(OPTION_SLOT_NUMBER).getAsLong());
+		selfSlot(event, slotNumber);
+
+		finishedSlashCommandAction(event);
+	}
+
+	@Override
+	public List<OptionData> getOptions(int optionPosition) {
+		return SLOT_OPTIONS.get(optionPosition);
+	}
+
+	private void selfSlot(SlashCommandEvent event, int slotNumber) {
+		eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
 	}
 }

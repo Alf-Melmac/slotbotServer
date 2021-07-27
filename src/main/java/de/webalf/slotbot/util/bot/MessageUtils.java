@@ -1,5 +1,6 @@
 package de.webalf.slotbot.util.bot;
 
+import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -30,7 +31,7 @@ import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 @UtilityClass
 @Slf4j
 public final class MessageUtils {
-	private static final int STANDARD_DELETION_TIME = 5; //In seconds
+	static final int STANDARD_DELETION_TIME = 5; //In seconds
 
 	/**
 	 * Checks if the given message is not {@link Message#isFromGuild()}
@@ -126,7 +127,7 @@ public final class MessageUtils {
 	}
 
 	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<Message> success) {
-		message.reply(reply).queue(success, fail -> log.warn("Failed to send reply", fail));
+		message.reply(reply).queue(success, fail -> log.warn("Failed to send message reply", fail));
 	}
 
 	/**
@@ -190,7 +191,7 @@ public final class MessageUtils {
 				failure);
 	}
 
-	private static Consumer<Message> doNothing() {
+	static Consumer<Message> doNothing() {
 		return unused -> {};
 	}
 
@@ -207,7 +208,7 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Returns the known role {@link de.webalf.slotbot.service.external.DiscordApiService#KNOWN_ROLE_NAMES} names of the message author in the message guild
+	 * Returns the known role {@link DiscordApiService#KNOWN_ROLE_NAMES} names of the message author in the message guild
 	 *
 	 * @param message to analyze
 	 * @return set of role names
