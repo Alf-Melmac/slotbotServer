@@ -23,7 +23,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 @Command(names = {"rebuildArchive"},
-		description = "Sendet alle Archivnachrichten erneut in den Event-Kanal.",
+		description = "Sendet alle Archivnachrichten erneut in den Archiv-Kanal.",
 		authorization = ADMINISTRATIVE)
 public class RebuildArchive implements DiscordCommand {
 	private final EventBotService eventBotService;
