@@ -121,7 +121,9 @@ public class BattlemetricsApiService {
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 		private LocalDateTime updatedAt;
 
+		@Builder.Default
 		private boolean isArma = false;
+		@Builder.Default
 		private boolean knownExternal = false;
 
 		/**

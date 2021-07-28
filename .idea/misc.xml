@@ -7,6 +7,16 @@
       <item index="2" class="java.lang.String" itemvalue="lombok.Builder" />
     </list>
   </component>
+  <component name="MavenCompilerTasksManager">
+    <option name="beforeRebuildTask">
+      <set>
+        <MavenCompilerTask>
+          <option name="goal" value="clean" />
+          <option name="projectPath" value="$PROJECT_DIR$/pom.xml" />
+        </MavenCompilerTask>
+      </set>
+    </option>
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

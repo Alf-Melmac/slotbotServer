@@ -19,6 +19,7 @@ import static de.webalf.slotbot.model.enums.EventFieldType.TEXT_WITH_SELECTION;
  * @author Alf
  * @since 10.05.2021
  */
+@SuppressWarnings("unchecked") //Suppressing cast to List<EventFieldDefaultDto>
 @UtilityClass
 @Slf4j
 public final class EventFieldUtils {
@@ -43,7 +44,6 @@ public final class EventFieldUtils {
 		ClassIndex.getAnnotated(EventFieldDefault.class)
 				.forEach(aClass -> {
 					try {
-						//noinspection unchecked
 						eventTypeNameToFieldDefaults.put(
 								aClass.getAnnotation(EventFieldDefault.class).eventTypeName(),
 								(List<EventFieldDefaultDto>) aClass.getDeclaredField("FIELDS").get(null)

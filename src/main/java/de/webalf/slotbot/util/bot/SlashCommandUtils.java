@@ -47,7 +47,7 @@ public final class SlashCommandUtils {
 	 * @return command privileges with allowed roles
 	 * @see #getAllowedRoles(SlashCommand)
 	 */
-	public Set<CommandPrivilege> getCommandPrivileges(@NonNull Guild guild, SlashCommand slashCommand) {
+	public static Set<CommandPrivilege> getCommandPrivileges(@NonNull Guild guild, SlashCommand slashCommand) {
 		return getAllowedRoles(slashCommand).stream()
 				.map(discordRole -> CommandPrivilege.enableRole(guild.getRolesByName(discordRole, false).get(0).getId()))
 				.collect(Collectors.toUnmodifiableSet());

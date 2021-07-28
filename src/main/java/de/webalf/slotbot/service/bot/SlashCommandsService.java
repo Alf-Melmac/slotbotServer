@@ -58,9 +58,9 @@ public class SlashCommandsService {
 		}));
 	}
 
+	@SuppressWarnings("unchecked") //The class must implement an interface and thus we can assume the correct return type here
 	private List<OptionData> getOptions(Class<?> commandClass, int optionPosition) {
 		try {
-			//noinspection unchecked The class must implement an interface and thus we can assume the correct return type here
 			return (List<OptionData>) commandClass.getMethod("getOptions", int.class).invoke(commandClassHelper.getConstructor(commandClass), optionPosition);
 		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 			log.error("Failed to getOptions {}", e.getMessage());
