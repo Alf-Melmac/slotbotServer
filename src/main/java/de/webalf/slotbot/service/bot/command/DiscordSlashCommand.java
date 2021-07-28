@@ -4,6 +4,7 @@ import de.webalf.slotbot.model.annotations.SlashCommand;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,5 +20,7 @@ public interface DiscordSlashCommand {
 	 * @return list of every option of all slash commands
 	 */
 	@SuppressWarnings("unused") //Used by SlashCommandsService#getOptions(Class, int)
-	List<OptionData> getOptions(int optionPosition);
+	default List<OptionData> getOptions(int optionPosition) {
+		return Collections.emptyList();
+	}
 }

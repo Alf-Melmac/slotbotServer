@@ -1,18 +1,22 @@
 package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 import static de.webalf.slotbot.util.ListUtils.zeroArguments;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
+import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
@@ -31,7 +35,10 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		usage = "(<@AuzuslottendePerson>)",
 		argCount = {0, 1},
 		authorization = NONE)
-public class Unslot implements DiscordCommand {
+@SlashCommand(name = "unslot",
+		description = "Slottet dich aus einem Event aus.",
+		authorization = NONE)
+public class Unslot implements DiscordCommand, DiscordSlashCommand {
 	private final EventBotService eventBotService;
 
 	@Override
@@ -78,5 +85,18 @@ public class Unslot implements DiscordCommand {
 	private void selfUnslot(@NonNull Message message) {
 		unslot(message, message.getAuthor().getId());
 		deleteMessagesInstant(message);
+	}
+
+	@Override
+	public void execute(SlashCommandEvent event) {
+		log.trace("Slash command: unslot");
+
+		unslot(event);
+
+		finishedSlashCommandAction(event);
+	}
+
+	private void unslot(SlashCommandEvent event) {
+		eventBotService.unslot(event.getChannel().getIdLong(), event.getUser().getId());
 	}
 }
