@@ -35,24 +35,19 @@ public class EventType extends AbstractSuperIdEntity {
 
 	@Column(name = "event_color", length = 7)
 	@NotBlank
-	@Size(max = 7) //Expected format: #rrggbb
+	@Size(max = 7) //Expected format: #RRGGBB
 	private String color;
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;
 
-	@Override
-	public long getId() throws IllegalCallerException {
-		throw new IllegalCallerException("EventTypes should be identified by their name and color pair.");
-	}
-
 	public void setColor(String color) {
 		if (!HEX_COLOR.matcher(color).matches()) {
-			throw BusinessRuntimeException.builder().title(color + " is not a valid hex color.").build();
+			throw BusinessRuntimeException.builder().title(color + " is not a valid upper case hex color.").build();
 		}
 
 		this.color = color.startsWith("#") ? color : "#" + color;
 	}
 
-	private static final Pattern HEX_COLOR = Pattern.compile("^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+	private static final Pattern HEX_COLOR = Pattern.compile("^#?([A-F0-9]{6}|[A-F0-9]{3})$");
 }

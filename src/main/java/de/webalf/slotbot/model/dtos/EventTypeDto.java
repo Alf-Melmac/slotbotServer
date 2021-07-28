@@ -28,4 +28,8 @@ public class EventTypeDto extends AbstractIdEntityDto {
 	@NotBlank
 	@Size(max = 7)
 	String color;
+
+	public String getColor() {
+		return color.toUpperCase();
+	}
 }

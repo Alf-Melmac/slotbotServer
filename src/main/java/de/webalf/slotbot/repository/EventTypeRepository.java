@@ -1,9 +1,13 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.EventType;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.NotSupportedException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,4 +17,19 @@ import java.util.Optional;
 @Repository
 public interface EventTypeRepository extends JpaRepository<EventType, Long> {
 	Optional<EventType> findEventTypeByNameAndColor(String name, String color);
+
+	/**
+	 * @see #findEventTypeByNameAndColor(String, String)
+	 */
+	@SneakyThrows(NotSupportedException.class)
+	@Override
+	default Optional<EventType> findById(@NotNull Long l) {
+		throw new NotSupportedException("Id shouldn't be used to get entity. Use findEventTypeByNameAndColor");
+	}
+
+	@SneakyThrows(NotSupportedException.class)
+	@Override
+	default List<EventType> findAllById(@NotNull Iterable<Long> iterable) {
+		throw new NotSupportedException("Id shouldn't be used to get entity.");
+	}
 }
