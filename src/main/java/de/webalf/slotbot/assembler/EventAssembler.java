@@ -27,7 +27,7 @@ public final class EventAssembler {
 				.hidden(dto.isHidden())
 				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
 				.description(dto.getDescription())
-				.pictureUrl(dto.getPictureUrl())
+				.pictureUrl(dto.getRawPictureUrl())
 				.missionType(dto.getMissionType())
 				.missionLength(dto.getMissionLength())
 				.reserveParticipating(dto.getReserveParticipating())

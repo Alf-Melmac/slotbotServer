@@ -45,7 +45,7 @@ $(function () {
 
     $('#eventPicture').editable({
         inputclass: 'w-4',
-        value: savedEvent.pictureUrl,
+        value: savedEvent.rawPictureUrl,
         type: 'text',
         name: 'pictureUrl',
         emptytext: 'Kein Bild'
