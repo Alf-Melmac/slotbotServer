@@ -91,12 +91,8 @@ public class Unslot implements DiscordCommand, DiscordSlashCommand {
 	public void execute(SlashCommandEvent event) {
 		log.trace("Slash command: unslot");
 
-		unslot(event);
+		eventBotService.unslot(event.getChannel().getIdLong(), event.getUser().getId());
 
 		finishedSlashCommandAction(event);
-	}
-
-	private void unslot(SlashCommandEvent event) {
-		eventBotService.unslot(event.getChannel().getIdLong(), event.getUser().getId());
 	}
 }

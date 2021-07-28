@@ -5,6 +5,7 @@ import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.atteo.classindex.ClassIndex;
 
@@ -61,5 +62,35 @@ public final class SlashCommandUtils {
 	 */
 	private static Set<String> getAllowedRoles(@NonNull SlashCommand command) {
 		return Arrays.stream(command.authorization().getRoles()).map(ApplicationPermissionHelper.Role::getDiscordRole).collect(Collectors.toUnmodifiableSet());
+	}
+
+	/**
+	 * Returns the string value of the given not null {@link OptionMapping}
+	 *
+	 * @param option to get text from
+	 * @return string
+	 */
+	public static String getStringOption(@NonNull OptionMapping option) {
+		return option.getAsString();
+	}
+
+	/**
+	 * Returns the string value of the given nullable {@link OptionMapping}
+	 *
+	 * @param option to get text from
+	 * @return string or null
+	 */
+	public static String getOptionalStringOption(OptionMapping option) {
+		return option == null ? null : getStringOption(option);
+	}
+
+	/**
+	 * Returns the integer value of the given not null {@link OptionMapping}
+	 *
+	 * @param option to get int from
+	 * @return int
+	 */
+	public static int getIntegerOption(@NonNull OptionMapping option) {
+		return Math.toIntExact(option.getAsLong());
 	}
 }

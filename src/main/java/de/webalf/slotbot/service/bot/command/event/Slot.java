@@ -24,6 +24,7 @@ import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
+import static de.webalf.slotbot.util.bot.SlashCommandUtils.getIntegerOption;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
@@ -90,8 +91,8 @@ public class Slot implements DiscordCommand, DiscordSlashCommand {
 		slot(message, slot, message.getAuthor().getId());
 	}
 
-	static final String OPTION_SLOT_NUMBER = "slotnummer";
-	static final List<List<OptionData>> SLOT_OPTIONS = List.of(
+	private static final String OPTION_SLOT_NUMBER = "slotnummer";
+	private static final List<List<OptionData>> OPTIONS = List.of(
 			List.of(new OptionData(OptionType.INTEGER, OPTION_SLOT_NUMBER, "Nummer des erwünschten Slots.", true))
 	);
 
@@ -100,18 +101,14 @@ public class Slot implements DiscordCommand, DiscordSlashCommand {
 		log.trace("Slash command: slot");
 
 		@SuppressWarnings("ConstantConditions") //Required option
-		final int slotNumber = Math.toIntExact(event.getOption(OPTION_SLOT_NUMBER).getAsLong());
-		selfSlot(event, slotNumber);
+		final int slotNumber = getIntegerOption(event.getOption(OPTION_SLOT_NUMBER));
+		eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
 
 		finishedSlashCommandAction(event);
 	}
 
 	@Override
 	public List<OptionData> getOptions(int optionPosition) {
-		return SLOT_OPTIONS.get(optionPosition);
-	}
-
-	private void selfSlot(SlashCommandEvent event, int slotNumber) {
-		eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
+		return OPTIONS.get(optionPosition);
 	}
 }
