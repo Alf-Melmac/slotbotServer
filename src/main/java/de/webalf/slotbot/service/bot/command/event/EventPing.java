@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.annotations.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
-import de.webalf.slotbot.util.bot.SlashCommandUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
@@ -22,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
+import static de.webalf.slotbot.util.bot.SlashCommandUtils.getStringOption;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
 /**
@@ -70,7 +70,7 @@ public class EventPing implements DiscordCommand, DiscordSlashCommand {
 		final String mentions = buildMentions(eventBotService.findAllParticipants(event.getChannel().getIdLong()));
 
 		@SuppressWarnings("ConstantConditions") //Required option
-		final String message = SlashCommandUtils.getStringOption(event.getOption(OPTION_MESSAGE));
+		final String message = getStringOption(event.getOption(OPTION_MESSAGE));
 
 		event.getChannel().sendMessage(message + "\n" + mentions).queue();
 
