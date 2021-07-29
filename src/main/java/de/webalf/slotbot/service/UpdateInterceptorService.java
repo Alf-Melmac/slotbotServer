@@ -69,10 +69,12 @@ public class UpdateInterceptorService {
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
 			final Event event = slot.getSquad().getEvent();
-			for (int i = 0; i < propertyNames.length; i++) {
-				if (propertyNames[i].equals(Slot_.USER)) {
-					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
-					break;
+			if (!slot.isInReserve()) {
+				for (int i = 0; i < propertyNames.length; i++) {
+					if (propertyNames[i].equals(Slot_.USER)) {
+						eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
+						break;
+					}
 				}
 			}
 			return event;
