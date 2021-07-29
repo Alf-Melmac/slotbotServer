@@ -24,7 +24,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @Slf4j
 @Command(names = {"postMessage", "post", "messagePost"},
 		description = "Sendet die übergebene Nachricht in den gleichen Kanal.",
-		usage = "<Nachricht>",
+		usage = "\"<Nachricht>\"",
 		argCount = {1},
 		authorization = EVENT_MANAGE)
 @SlashCommand(name = "postMessage",
