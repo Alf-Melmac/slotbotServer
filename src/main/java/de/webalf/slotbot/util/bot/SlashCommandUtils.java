@@ -5,6 +5,7 @@ import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.atteo.classindex.ClassIndex;
@@ -92,5 +93,15 @@ public final class SlashCommandUtils {
 	 */
 	public static int getIntegerOption(@NonNull OptionMapping option) {
 		return Math.toIntExact(option.getAsLong());
+	}
+
+	/**
+	 * Returns the id of the {@link User} of the given not null {@link OptionMapping}
+	 *
+	 * @param option to get user id from
+	 * @return user id
+	 */
+	public static long getUserOption(@NonNull OptionMapping option) {
+		return option.getAsUser().getIdLong();
 	}
 }

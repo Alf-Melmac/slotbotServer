@@ -154,9 +154,13 @@ public final class MessageUtils {
 	}
 
 	private static void sendDm(@NonNull User user, @NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure) {
+		sendDm(user, messageText, success, callSuccessOnFailure, reply -> replyAndDeleteOnlySend(message, reply));
+	}
+
+	public static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure, @NonNull Consumer<String> replyConsumer) {
 		final Consumer<? super Throwable> failure = fail -> {
 			dmFailure(user, success, callSuccessOnFailure, fail);
-			replyAndDeleteOnlySend(message, "Erlaube mir doch bitte dir eine private Nachricht zu senden :(");
+			replyConsumer.accept("Erlaube mir doch bitte dir eine private Nachricht zu senden :(");
 		};
 
 		sendDm(user, messageText, success, failure);
