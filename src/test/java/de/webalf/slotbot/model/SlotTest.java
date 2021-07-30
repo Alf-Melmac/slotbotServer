@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
+import static de.webalf.slotbot.model.SquadTest.buildReserveSquad;
 import static org.junit.jupiter.api.Assertions.*;
-
 
 /**
  * @author Alf
@@ -113,7 +113,7 @@ class SlotTest {
 
 	@Test
 	void blockSlotDoesNotBlockInReserve() {
-		final Slot sut = Slot.builder().squad(Squad.builder().name(Squad.RESERVE_NAME).build()).build();
+		final Slot sut = Slot.builder().squad(buildReserveSquad()).build();
 
 		final User defaultUser = User.builder().build();
 		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () ->
