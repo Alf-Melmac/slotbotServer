@@ -18,9 +18,13 @@ import static de.webalf.slotbot.model.enums.EventFieldType.TEXT;
 public class OptKampagneFieldUtils {
 	@SuppressWarnings("unused") //EventFieldUtils#eventTypeNameToFieldDefaults
 	static final List<EventFieldDefaultDto> FIELDS = List.of(
-			EventFieldDefaultDto.builder().title("Karte").type(TEXT).text("Livonia").build(),
+			EventFieldDefaultDto.builder().title("Karte").type(TEXT).text("Virolahti").build(),
 			EventFieldDefaultDto.builder().title("Modpack").type(TEXT)
-					.text("https://opt4.net/forum/index.php?thread/219-wie-bekomme-ich-die-n%C3%B6tigen-mods-zum-mitspielen").build(),
-			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).text("true").build()
+					.text("http://repo.opt4.net/opt/.a3s/autoconfig").build(),
+			EventFieldDefaultDto.builder().title("Teamspeak").type(TEXT)
+					.text("ts3server://ts.opt4.net?port=9987").build(),
+			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).text("true").build(),
+			EventFieldDefaultDto.builder().title("Server").type(TEXT).text("arma.opt4.net:2302").build(),
+			EventFieldDefaultDto.builder().title("Passwort").type(TEXT).text("opt2020").build()
 	);
 }
