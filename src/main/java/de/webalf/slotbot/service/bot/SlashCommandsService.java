@@ -37,6 +37,7 @@ public class SlashCommandsService {
 	 * @param guild to update commands for
 	 */
 	public void updateCommands(@NonNull Guild guild) {
+		log.info("Updating commands for {}...", guild.getName());
 		final List<CommandData> commands = SlashCommandUtils.commandToClassMap.values().stream()
 				.map(slashCommandClass -> { //For each slash command
 					final SlashCommand slashCommand = getSlashCommand(slashCommandClass);
@@ -50,12 +51,14 @@ public class SlashCommandsService {
 					return commandData;
 				}).collect(Collectors.toUnmodifiableList());
 
+		log.info("Found {} commands. Starting update...", commands.size());
 		guild.updateCommands().addCommands(commands).queue(updatedCommands -> updatedCommands.forEach(command -> { //Update discord commands
 			final SlashCommand slashCommand = getSlashCommand(SlashCommandUtils.get(command.getName()));
 			if (slashCommand.authorization() != NONE) { //Set authorized roles if needed
 				guild.updateCommandPrivilegesById(command.getIdLong(), getCommandPrivileges(guild, slashCommand)).queue();
 			}
 		}));
+		log.info("Finished command update for {}.", guild.getName());
 	}
 
 	@SuppressWarnings("unchecked") //The class must implement an interface and thus we can assume the correct return type here
