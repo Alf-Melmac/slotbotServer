@@ -7,6 +7,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * Squad Dto that includes important fields needed to display a slotlist
  *
@@ -17,7 +19,7 @@ import java.util.List;
 @Value
 public class SquadApiViewDto {
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String name;
 
 	List<SlotApiViewDto> slotList;

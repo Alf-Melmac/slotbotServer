@@ -7,6 +7,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
+import static de.webalf.slotbot.util.MaxLength.COLOR_RGB;
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * @author Alf
  * @since 24.10.2020
@@ -15,13 +18,13 @@ import java.time.LocalDateTime;
 @Value
 public class CalendarEventDto {
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String title;
 
 	LocalDateTime start;
 
 	@NotBlank
-	@Size(max = 7)
+	@Size(max = COLOR_RGB)
 	String color;
 
 	String description;

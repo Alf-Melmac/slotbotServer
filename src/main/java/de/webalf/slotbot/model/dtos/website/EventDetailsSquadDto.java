@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
+import static de.webalf.slotbot.util.MaxLength.TEXT;
 
 /**
  * @author Alf
@@ -20,7 +21,7 @@ import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 @SuperBuilder
 public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String name;
 
 	List<EventDetailsSlotDto> slotList;

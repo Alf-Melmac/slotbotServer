@@ -5,7 +5,6 @@ import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.List;
+
+import static de.webalf.slotbot.util.MaxLength.*;
 
 /**
  * @author Alf
@@ -28,7 +29,7 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	private EventTypeDto eventType;
 
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String name;
 
 	@NotNull
@@ -38,22 +39,22 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	private LocalTime startTime;
 
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String creator;
 
 	@Builder.Default
 	private boolean hidden = false;
 
-	@Size(max = MessageEmbed.DESCRIPTION_MAX_LENGTH)
+	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
 
-	@Size(max = 1666)
+	@Size(max = URL)
 	private String pictureUrl;
 
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String missionType;
 
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String missionLength;
 
 	private Boolean reserveParticipating;

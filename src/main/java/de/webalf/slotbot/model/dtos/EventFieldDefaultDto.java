@@ -7,7 +7,11 @@ import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_TITLE;
+import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_VALUE;
 
 /**
  * @author Alf
@@ -18,6 +22,7 @@ import java.util.List;
 @SuperBuilder
 public class EventFieldDefaultDto extends AbstractIdEntityDto {
 	@NotBlank
+	@Size(max = EMBEDDABLE_TITLE)
 	String title;
 
 	@NonNull
@@ -25,5 +30,6 @@ public class EventFieldDefaultDto extends AbstractIdEntityDto {
 
 	List<String> selection;
 
+	@Size(max = EMBEDDABLE_VALUE)
 	String text;
 }

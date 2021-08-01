@@ -8,7 +8,6 @@ import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.springframework.util.CollectionUtils;
 import org.thymeleaf.util.ListUtils;
 
@@ -23,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
+import static de.webalf.slotbot.util.MaxLength.*;
 
 /**
  * @author Alf
@@ -40,9 +40,9 @@ public class Event extends AbstractSuperIdEntity {
 	@JoinColumn(name = "event_type")
 	private EventType eventType;
 
-	@Column(name = "event_name", length = 100)
+	@Column(name = "event_name", length = TEXT_DB)
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String name;
 
 	@Column(name = "event_date")
@@ -50,9 +50,9 @@ public class Event extends AbstractSuperIdEntity {
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 
-	@Column(name = "event_creator", length = 100)
+	@Column(name = "event_creator", length = TEXT_DB)
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String creator;
 
 	@Column(name = "event_hidden")
@@ -64,20 +64,20 @@ public class Event extends AbstractSuperIdEntity {
 	@JsonManagedReference
 	private List<Squad> squadList;
 
-	@Column(name = "event_description", length = (int) (MessageEmbed.DESCRIPTION_MAX_LENGTH * 1.25))
-	@Size(max = MessageEmbed.DESCRIPTION_MAX_LENGTH)
+	@Column(name = "event_description", length = EMBEDDABLE_DESCRIPTION_DB)
+	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
 
-	@Column(name = "event_picture_url", length = 2083)
-	@Size(max = 1666)
+	@Column(name = "event_picture_url", length = URL_DB)
+	@Size(max = URL)
 	private String pictureUrl;
 
-	@Column(name = "event_mission_type", length = 100)
-	@Size(max = 80)
+	@Column(name = "event_mission_type", length = TEXT_DB)
+	@Size(max = TEXT)
 	private String missionType;
 
-	@Column(name = "event_mission_length", length = 100)
-	@Size(max = 80)
+	@Column(name = "event_mission_length", length = TEXT_DB)
+	@Size(max = TEXT)
 	private String missionLength;
 
 	@Column(name = "event_reserve_participating")

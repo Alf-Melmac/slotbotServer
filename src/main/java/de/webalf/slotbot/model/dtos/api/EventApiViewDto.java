@@ -11,6 +11,8 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * Event Dto that includes important fields needed to display a slotlist
  *
@@ -22,7 +24,7 @@ import java.util.List;
 @SuperBuilder
 public class EventApiViewDto extends AbstractIdEntityDto {
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String name;
 
 	@NotNull

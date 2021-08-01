@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static de.webalf.slotbot.util.MaxLength.*;
+
 /**
  * @author Alf
  * @since 07.04.2021
@@ -28,14 +30,14 @@ public class EventType extends AbstractSuperIdEntity {
 	//The ID of this entity does not matter. The main unique key is the name and the colour.
 	//Entities are to be found and created using these values.
 
-	@Column(name = "event_type_name", length = 100)
+	@Column(name = "event_type_name", length = TEXT_DB)
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String name;
 
-	@Column(name = "event_color", length = 7)
+	@Column(name = "event_color", length = COLOR_RGB_DB)
 	@NotBlank
-	@Size(max = 7) //Expected format: #RRGGBB
+	@Size(max = COLOR_RGB) //Expected format: #RRGGBB
 	private String color;
 
 	@OneToMany(mappedBy = "eventType")

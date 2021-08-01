@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * @author Alf
  * @since 13.04.2021
@@ -16,7 +18,7 @@ import java.util.List;
 @Data
 @SuperBuilder
 public class SquadReferencelessDto extends AbstractIdEntityDto {
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private final String name;
 
 	private final List<? extends SlotReferencelessDto> slotList;

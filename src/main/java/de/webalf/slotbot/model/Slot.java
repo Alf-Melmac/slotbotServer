@@ -9,6 +9,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
+
 /**
  * @author Alf
  * @since 22.06.2020
@@ -20,9 +23,9 @@ import javax.validation.constraints.Size;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Slot extends AbstractIdEntity {
-	@Column(name = "slot_name", length = 100)
+	@Column(name = "slot_name", length = TEXT_DB)
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String name;
 
 	@Column(name = "slot_number")
@@ -37,8 +40,8 @@ public class Slot extends AbstractIdEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@Column(name = "slot_replacement", length = 100)
-	@Size(max = 80)
+	@Column(name = "slot_replacement", length = TEXT_DB)
+	@Size(max = TEXT)
 	private String replacementText;
 
 	@Builder

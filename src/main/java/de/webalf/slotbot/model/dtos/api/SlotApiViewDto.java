@@ -7,6 +7,8 @@ import lombok.Value;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * Slot Dto that includes important fields needed to display a slotlist
  *
@@ -17,7 +19,7 @@ import javax.validation.constraints.Size;
 @Value
 public class SlotApiViewDto {
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String name;
 
 	int number;

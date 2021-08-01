@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static de.webalf.slotbot.util.MaxLength.COLOR_RGB;
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * @author Alf
  * @since 08.04.2021
@@ -22,11 +25,11 @@ public class EventTypeDto extends AbstractIdEntityDto {
 	//Entities are to be found and created using these values.
 
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String name;
 
 	@NotBlank
-	@Size(max = 7)
+	@Size(max = COLOR_RGB)
 	String color;
 
 	public String getColor() {

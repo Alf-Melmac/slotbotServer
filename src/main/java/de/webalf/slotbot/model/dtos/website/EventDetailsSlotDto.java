@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * @author Alf
  * @since 30.10.2020
@@ -17,7 +19,7 @@ import javax.validation.constraints.Size;
 @SuperBuilder
 public class EventDetailsSlotDto extends AbstractIdEntityDto {
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	String name;
 
 	int number;

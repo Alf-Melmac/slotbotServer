@@ -13,6 +13,9 @@ import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
 
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
+
 /**
  * @author Alf
  * @since 22.06.2020
@@ -23,9 +26,9 @@ import java.util.Optional;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Squad extends AbstractIdEntity {
-	@Column(name = "squad_name")
+	@Column(name = "squad_name", length = TEXT_DB)
 	@NotBlank
-	@Size(max = 80)
+	@Size(max = TEXT)
 	private String name;
 
 	@OneToMany(mappedBy = "squad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

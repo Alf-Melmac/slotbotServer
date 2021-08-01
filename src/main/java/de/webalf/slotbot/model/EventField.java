@@ -6,11 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import static de.webalf.slotbot.util.MaxLength.*;
 
 /**
  * @author Alf
@@ -23,14 +24,14 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class EventField extends AbstractSuperIdEntity {
-	@Column(name = "event_field_name", length = (int) (MessageEmbed.TITLE_MAX_LENGTH * 1.25))
+	@Column(name = "event_field_name", length = EMBEDDABLE_TITLE_DB)
 	@NotBlank
-	@Size(max = MessageEmbed.TITLE_MAX_LENGTH)
+	@Size(max = EMBEDDABLE_TITLE)
 	private String title;
 
-	@Column(name = "event_field_text", length = (int) (MessageEmbed.VALUE_MAX_LENGTH * 1.25))
+	@Column(name = "event_field_text", length = EMBEDDABLE_VALUE_DB)
 	@NotBlank
-	@Size(max = MessageEmbed.VALUE_MAX_LENGTH)
+	@Size(max = EMBEDDABLE_VALUE)
 	private String text;
 
 	@ManyToOne(targetEntity = Event.class/*, fetch = FetchType.LAZY*/)
