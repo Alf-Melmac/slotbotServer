@@ -6,11 +6,15 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.doNothing;
+import static net.dv8tion.jda.api.EmbedBuilder.ZERO_WIDTH_SPACE;
 
 /**
  * Util class to work with {@link Interaction}s
@@ -42,6 +46,26 @@ public final class InteractionUtils {
 
 	private static void reply(@NonNull Interaction interaction, @NotBlank String reply, Consumer<Message> success) {
 		interaction.getHook().sendMessage(reply).queue(success, fail -> log.warn("Failed to send interaction reply", fail));
+	}
+
+	/**
+	 * Sends an empty message with the given {@link SelectionMenu}
+	 *
+	 * @param interaction   to add selection menu to
+	 * @param selectionMenu to add
+	 */
+	public static void addSelectionMenu(@NonNull Interaction interaction, SelectionMenu selectionMenu) {
+		interaction.getHook().sendMessage(ZERO_WIDTH_SPACE).addActionRow(selectionMenu).queue();
+	}
+
+	/**
+	 * Replies to the given interaction with the given reply and removes all action rows
+	 *
+	 * @param interaction to reply to
+	 * @param reply       reply text
+	 */
+	public static void replyAndRemoveComponents(@NonNull ComponentInteraction interaction, @NotBlank String reply) {
+		interaction.editMessage(reply).setActionRows(Collections.emptyList()).queue();
 	}
 
 	/**

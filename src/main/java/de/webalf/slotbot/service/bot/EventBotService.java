@@ -39,6 +39,10 @@ public class EventBotService {
 		}
 	}
 
+	public Event findById(long eventId) {
+		return eventService.findById(eventId);
+	}
+
 	public Optional<Event> findByChannel(@NonNull Message message, long channel) {
 		final Optional<Event> optionalEvent = eventService.findOptionalByChannel(channel);
 		if (optionalEvent.isPresent()) {
@@ -51,6 +55,10 @@ public class EventBotService {
 
 	public List<Event> findAllInPast() {
 		return eventService.findAllInPast();
+	}
+
+	public List<Event> findAllNotAssignedInFuture() {
+		return eventService.findAllNotAssignedInFuture();
 	}
 
 	public void updateEvent(AbstractEventDto dto) {

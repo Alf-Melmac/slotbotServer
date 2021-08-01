@@ -2,9 +2,9 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.service.bot.listener.GuildReadyListener;
+import de.webalf.slotbot.service.bot.listener.InteractionListener;
 import de.webalf.slotbot.service.bot.listener.MessageReceivedListener;
 import de.webalf.slotbot.service.bot.listener.ReactionAddListener;
-import de.webalf.slotbot.service.bot.listener.SlashCommandListener;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class BotService {
 							new MessageReceivedListener(discordProperties, commandClassHelper),
 							new ReactionAddListener(reactionAddService),
 							new GuildReadyListener(slashCommandsService),
-							new SlashCommandListener(commandClassHelper))
+							new InteractionListener(commandClassHelper))
 					.disableIntents(GUILD_BANS, GUILD_EMOJIS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING)
 					.build();
 		} catch (LoginException e) {

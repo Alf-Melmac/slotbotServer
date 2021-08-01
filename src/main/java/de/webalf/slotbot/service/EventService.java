@@ -151,6 +151,15 @@ public class EventService {
 	}
 
 	/**
+	 * Returns all events that are scheduled in the future and have no discord information
+	 *
+	 * @return all events in the future that have no channel
+	 */
+	public List<Event> findAllNotAssignedInFuture() {
+		return eventRepository.findAllByDateTimeIsAfterAndOrderByDateTime(LocalDateTime.now());
+	}
+
+	/**
 	 * Returns all {@link User}s slotted in the event associated with the given channelId.
 	 * {@link User#DEFAULT_USER_ID} is filtered out.
 	 *
