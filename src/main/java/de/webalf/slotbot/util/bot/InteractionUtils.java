@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Collections;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.doNothing;
@@ -65,7 +64,7 @@ public final class InteractionUtils {
 	 * @param reply       reply text
 	 */
 	public static void replyAndRemoveComponents(@NonNull ComponentInteraction interaction, @NotBlank String reply) {
-		interaction.editMessage(reply).setActionRows(Collections.emptyList()).queue();
+		interaction.editMessage(reply).setActionRows().queue();
 	}
 
 	/**
