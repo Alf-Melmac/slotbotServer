@@ -3,7 +3,6 @@ package de.webalf.slotbot.repository;
 import de.webalf.slotbot.model.EventType;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.NotSupportedException;
@@ -15,7 +14,7 @@ import java.util.Optional;
  * @since 09.04.2021
  */
 @Repository
-public interface EventTypeRepository extends JpaRepository<EventType, Long> {
+public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventType> {
 	Optional<EventType> findEventTypeByNameAndColor(String name, String color);
 
 	/**

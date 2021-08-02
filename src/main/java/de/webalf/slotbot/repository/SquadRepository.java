@@ -1,7 +1,6 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.Squad;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @since 23.06.2020
  */
 @Repository
-public interface SquadRepository extends JpaRepository<Squad, Long> {
+public interface SquadRepository extends IdEntityJpaRepository<Squad> {
 }

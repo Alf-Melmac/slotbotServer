@@ -2,7 +2,6 @@ package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,7 +14,7 @@ import java.util.List;
  * @since 22.06.2020
  */
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	List<Event> findAllByDateTimeBetween(LocalDateTime start, LocalDateTime end);
 
 	List<Event> findAllByDateTimeBetweenAndHiddenFalse(LocalDateTime start, LocalDateTime end);

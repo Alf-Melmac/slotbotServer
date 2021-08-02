@@ -1,7 +1,6 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.Slot;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @since 23.06.2020
  */
 @Repository
-public interface SlotRepository extends JpaRepository<Slot, Long> {
+public interface SlotRepository extends IdEntityJpaRepository<Slot> {
 }
