@@ -2,6 +2,7 @@ package de.webalf.slotbot.service.external;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
+import de.webalf.slotbot.constant.AuthorizationCheckValues;
 import de.webalf.slotbot.exception.IgnoreErrorResponseErrorHandler;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.RestTemplatesUtil;
@@ -49,7 +50,7 @@ public class DiscordApiService {
 		log.info("Login of: [" + user.getId() + "] " + member.getUser().getUsername());
 
 		return getRoles(member.getRoles()).stream()
-				.map(role -> ROLE_PREFIX + getApplicationRoleName(role))
+				.map(role -> AuthorizationCheckValues.ROLE_PREFIX + getApplicationRoleName(role))
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
