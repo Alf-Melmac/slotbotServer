@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVENT_MANAGE;
 
 /**
  * @author Alf
@@ -40,20 +40,20 @@ public class EventController {
 	}
 
 	@PostMapping
-	@PreAuthorize(HAS_ROLE_CREATOR)
+	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
 	public EventReferencelessDto postEvent(@Valid @RequestBody EventDto event) {
 		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize(HAS_ROLE_CREATOR)
+	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
 	public EventReferencelessDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		event.setId(eventId);
 		return EventAssembler.toReferencelessDto(eventService.updateEvent(event));
 	}
 
 	@PostMapping("/editable")
-	@PreAuthorize(HAS_ROLE_CREATOR)
+	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
 	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {
 		EventDto dto = EventDto.builder().id(pk).build();
 		try {
@@ -66,7 +66,7 @@ public class EventController {
 	}
 
 	@PutMapping("/fields")
-	@PreAuthorize(HAS_ROLE_CREATOR)
+	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
 	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestBody String eventTypeName) {
 		return getDefault(eventTypeName);
 	}

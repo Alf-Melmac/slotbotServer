@@ -1,8 +1,10 @@
 package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.service.bot.SlashCommandsService;
+import de.webalf.slotbot.util.bot.RoleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +21,8 @@ public class GuildReadyListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event) {
-		slashCommandsService.updateCommands(event.getGuild());
+		final Guild guild = event.getGuild();
+		RoleUtils.checkRequiredRoles(guild);
+		slashCommandsService.updateCommands(guild);
 	}
 }

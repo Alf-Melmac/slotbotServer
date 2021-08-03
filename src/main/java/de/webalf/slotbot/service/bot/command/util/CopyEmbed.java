@@ -13,6 +13,7 @@ import java.util.List;
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isChannelMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.ADMINISTRATIVE;
 
 /**
  * @author Alf
@@ -22,7 +23,8 @@ import static de.webalf.slotbot.util.bot.MessageUtils.*;
 @Command(names = {"copyEmbed", "embedCopy"},
 		description = "Kopiert ein Embed einer Nachricht im aktuellen Kanal in einen anderen Kanal.",
 		usage = "<MessageId des zu kopierenden Embeds> <NeuerKanal>",
-		argCount = {2})
+		argCount = {2},
+		authorization = ADMINISTRATIVE)
 public class CopyEmbed implements DiscordCommand {
 	@Override
 	public void execute(Message message, List<String> args) {

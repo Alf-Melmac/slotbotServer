@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.constant.Urls.ADMIN;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_ADMIN;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_SYS_ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -25,7 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @Controller
 @RequestMapping(ADMIN + "/utils")
-@PreAuthorize(HAS_ROLE_ADMIN)
+@PreAuthorize(HAS_ROLE_SYS_ADMIN)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AdminUtilsWebController {
 	private final FileService fileService;

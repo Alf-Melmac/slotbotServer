@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.List;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.ADMINISTRATIVE;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SYS_ADMINISTRATION;
 
 /**
  * @author Alf
@@ -22,7 +22,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @Command(names = {"admin"},
 		description = "Admin Funktionalitäten!",
 		argCount = {1},
-		authorization = ADMINISTRATIVE,
+		authorization = SYS_ADMINISTRATION,
 		dmAllowed = true)
 public class Admin implements DiscordCommand {
 	@Override

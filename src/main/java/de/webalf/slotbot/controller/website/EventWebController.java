@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_CREATOR;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVENT_MANAGE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -60,7 +60,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/new")
-	@PreAuthorize(HAS_ROLE_CREATOR)
+	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
 	public ModelAndView getWizardHtml(@RequestParam(required = false) String date, @RequestParam(required = false) String copyEvent) {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
@@ -99,7 +99,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/{id}/edit")
-	@PreAuthorize(HAS_ROLE_CREATOR)
+	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventEdit");
 

@@ -22,18 +22,18 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.IS_AUTHENTICAT
  */
 @UtilityClass
 public final class ApplicationPermissionHelper {
-	public static final String ADMINISTRATIVE_ROLES = ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.ADMIN + HAS_ANY_ROLE_NEXT + ApplicationPermissionHelper.Role.ApplicationRoles.MOD;
+	private static final String ADMINISTRATIVE_ROLES = ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.ADMIN;
+	public static final String HAS_ROLE_SYS_ADMIN = HAS_ROLE + ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_ADMIN = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ROLE_CLOSE;
-	public static final String HAS_ROLE_CREATOR = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.CREATOR + HAS_ROLE_CLOSE;
+	public static final String HAS_ROLE_EVENT_MANAGE = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.EVENT_MANAGE + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_EVERYONE = IS_AUTHENTICATED;
 
 	@Getter
 	@AllArgsConstructor
 	public enum Role {
-		SERVER_ADMIN(ROLE_SERVER_ADMIN, ApplicationRoles.SYS_ADMIN),
-		ADMINISTRATOR(ROLE_ADMINISTRATOR, ApplicationRoles.ADMIN),
-		MODERATOR(ROLE_MODERATOR, ApplicationRoles.MOD),
-		CREATOR(ROLE_CREATOR, ApplicationRoles.CREATOR),
+		SERVER_ADMIN(ROLE_SYS_ADMIN, ApplicationRoles.SYS_ADMIN),
+		ADMINISTRATOR(ROLE_ADMIN, ApplicationRoles.ADMIN),
+		EVENT_MANAGE(ROLE_EVENT_MANGE, ApplicationRoles.EVENT_MANAGE),
 		EVERYONE(ROLE_EVERYONE, ApplicationRoles.USER);
 
 		@NotBlank
@@ -45,8 +45,7 @@ public final class ApplicationPermissionHelper {
 		static class ApplicationRoles {
 			private static final String SYS_ADMIN = "SYS_ADMIN";
 			private static final String ADMIN = "ADMIN";
-			private static final String MOD = "MOD";
-			private static final String CREATOR = "CREATOR";
+			private static final String EVENT_MANAGE = "EVENT_MANAGE";
 			private static final String USER = "USER";
 		}
 

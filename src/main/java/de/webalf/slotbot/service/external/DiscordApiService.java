@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.getByDiscordRole;
 
 /**
@@ -35,12 +34,12 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Rol
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
-	public static final String ROLE_SERVER_ADMIN = "Server Admin";
-	public static final String ROLE_ADMINISTRATOR = "Administrator";
-	public static final String ROLE_MODERATOR = "Moderator";
-	public static final String ROLE_CREATOR = "Creator";
+	private static final String ROLE_PREFIX = "Slotbot_";
+	public static final String ROLE_SYS_ADMIN = ROLE_PREFIX + "Sys_Admin";
+	public static final String ROLE_ADMIN = ROLE_PREFIX + "Admin";
+	public static final String ROLE_EVENT_MANGE = ROLE_PREFIX + "Event_Manage";
 	public static final String ROLE_EVERYONE = "@everyone";
-	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_SERVER_ADMIN, ROLE_ADMINISTRATOR, ROLE_MODERATOR, ROLE_CREATOR, ROLE_EVERYONE);
+	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_SYS_ADMIN, ROLE_ADMIN, ROLE_EVENT_MANGE, ROLE_EVERYONE);
 
 	private List<Role> roles = new ArrayList<>();
 

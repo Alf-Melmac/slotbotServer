@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.ADMINISTRATIVE;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SYS_ADMINISTRATION;
 
 /**
  * @author Alf
@@ -24,7 +24,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @Slf4j
 @Command(names = {"rebuildArchive"},
 		description = "Sendet alle Archivnachrichten erneut in den Archiv-Kanal.",
-		authorization = ADMINISTRATIVE)
+		authorization = SYS_ADMINISTRATION)
 public class RebuildArchive implements DiscordCommand {
 	private final EventBotService eventBotService;
 	private final DiscordProperties discordProperties;

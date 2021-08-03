@@ -24,7 +24,7 @@ public @interface Command {
 
 	int[] argCount() default {0};
 
-	Authorization authorization() default Authorization.ADMINISTRATIVE;
+	Authorization authorization() default Authorization.SYS_ADMINISTRATION;
 
 	boolean dmAllowed() default false;
 }

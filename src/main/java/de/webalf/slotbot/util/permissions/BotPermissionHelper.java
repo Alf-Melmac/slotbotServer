@@ -27,8 +27,9 @@ public final class BotPermissionHelper {
 	@Getter
 	@AllArgsConstructor
 	public enum Authorization {
-		ADMINISTRATIVE(new ApplicationPermissionHelper.Role[]{SERVER_ADMIN, ADMINISTRATOR, MODERATOR}),
-		EVENT_MANAGE(Stream.concat(Arrays.stream(ADMINISTRATIVE.getRoles()), Stream.of(ApplicationPermissionHelper.Role.CREATOR)).toArray(ApplicationPermissionHelper.Role[]::new)),
+		SYS_ADMINISTRATION(new ApplicationPermissionHelper.Role[]{SERVER_ADMIN}),
+		ADMINISTRATIVE(Stream.concat(Arrays.stream(SYS_ADMINISTRATION.getRoles()), Stream.of(ADMINISTRATOR)).toArray(ApplicationPermissionHelper.Role[]::new)),
+		EVENT_MANAGE(Stream.concat(Arrays.stream(ADMINISTRATIVE.getRoles()), Stream.of(ApplicationPermissionHelper.Role.EVENT_MANAGE)).toArray(ApplicationPermissionHelper.Role[]::new)),
 		NONE(new ApplicationPermissionHelper.Role[]{EVERYONE});
 
 		@NonNull
