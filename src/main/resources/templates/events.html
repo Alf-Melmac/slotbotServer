@@ -18,8 +18,10 @@
 		<div id="calendar"></div>
 
 		<div id="spinner">
-			<div id="spin"></div>
-			<div id="spin-backdrop" class="modal-backdrop show"></div>
+			<div class="spinner spinner-grow text-info" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<div class="modal-backdrop show"></div>
 		</div>
 	</div>
 </section>
@@ -28,6 +30,7 @@
 
 <script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
 <script th:replace="fragments/scripts.html :: fullcalendar"></script>
+<script th:src="@{/assets/js/spinner.js}"></script>
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const getEventsUrl = /*[[${getEventsUrl}]]*/ '';
