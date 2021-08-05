@@ -39,7 +39,7 @@
 		<springframework.security.version>5.5.1</springframework.security.version>
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
 		<!--https://in.relation.to/hibernate-orm/index.html -->
-		<hibernate.version>5.5.5.Final</hibernate.version>
+		<hibernate.version>5.5.6.Final</hibernate.version>
 		<!--https://jdbc.postgresql.org/documentation/changelog.html -->
 		<postgresql.version>42.2.23</postgresql.version>
 		<mysql.version>8.0.23</mysql.version>
@@ -49,7 +49,7 @@
 		<!--https://github.com/atteo/classindex/releases -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
-		<jda.version>4.3.0_301</jda.version>
+		<jda.version>4.3.0_305</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.14.1</jsoup.version>
 	</properties>
