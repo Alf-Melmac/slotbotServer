@@ -42,7 +42,6 @@ public final class SelectionMenuUtils {
 	 * @return shortened label if needed
 	 */
 	public static String buildSelectionLabel(@NotBlank String label) {
-		//TODO Replace int once https://github.com/DV8FromTheWorld/JDA/pull/1752 is merged
-		return label.substring(0, Math.min(label.length(), 25));
+		return label.substring(0, Math.min(label.length(), SelectOption.LABEL_MAX_LENGTH));
 	}
 }
