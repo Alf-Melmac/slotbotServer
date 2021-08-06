@@ -17,4 +17,7 @@ public class StorageProperties {
 
 	@NotBlank
 	private String images = "./img";
+
+	@NotBlank
+	private String calendarOutput = "./calendar";
 }

@@ -5,6 +5,7 @@ application.properties
 logs/
 /download/
 /img/
+/calendar/
 
 ### STS ###
 .apt_generated

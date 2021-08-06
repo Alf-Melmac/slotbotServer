@@ -39,7 +39,7 @@ public class FileService {
 	 *
 	 * @param filename file to load
 	 * @return file as {@link Resource}
-	 * @throws ResourceNotFoundException if file doesn't exists or the path is a malformedURL
+	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
 	 */
 	@Cacheable("fileLoader")
 	public Resource loadAsResource(String filename) {
@@ -54,7 +54,7 @@ public class FileService {
 	 *
 	 * @param path img path to load
 	 * @return file as {@link Resource}
-	 * @throws ResourceNotFoundException if file doesn't exists or the path is a malformedURL
+	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
 	 */
 	@Cacheable("imgLoader")
 	public Resource loadImgAsResource(String path) {
@@ -70,6 +70,20 @@ public class FileService {
 	}
 
 	/**
+	 * Returns the given file by name as a {@link Resource}
+	 * Searches in {@link StorageProperties#getCalendarOutput()} path
+	 *
+	 * @param filename ics file to load
+	 * @return file as {@link Resource}
+	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
+	 */
+	public Resource loadIcsAsResource(String filename) {
+		final Path file = Paths.get(storageProperties.getCalendarOutput()).resolve(filename);
+
+		return getResource(filename, file);
+	}
+
+	/**
 	 * Populates caches that need files from the file directories
 	 */
 	public void listFiles() {
@@ -77,7 +91,7 @@ public class FileService {
 	}
 
 	/**
-	 * Return file names of every file in the download directory (non recursive) matching the given pattern
+	 * Return file names of every file in the download directory (non-recursive) matching the given pattern
 	 *
 	 * @param filterPattern that the file name must match
 	 * @return set of file names
@@ -99,7 +113,7 @@ public class FileService {
 	 * @param filename only used for readable exception
 	 * @param path     to get resource from
 	 * @return resource
-	 * @throws ResourceNotFoundException if resource doesn't exists in this location or the path is a malformedURL
+	 * @throws ResourceNotFoundException if resource doesn't exist in this location or the path is a malformedURL
 	 */
 	private Resource getResource(String filename, Path path) {
 		try {

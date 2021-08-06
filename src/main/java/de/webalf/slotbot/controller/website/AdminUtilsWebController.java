@@ -1,5 +1,6 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class AdminUtilsWebController {
 	private final FileService fileService;
 	private final EventTypeService eventTypeService;
+	private final EventCalendarService eventCalendarService;
 
 	@GetMapping
 	public ModelAndView getAdminUtilsHtml() {
@@ -52,6 +54,8 @@ public class AdminUtilsWebController {
 			fileService.listFiles();
 		} else if ("deleteUnusedEventTypes".equals(action)) {
 			eventTypeService.deleteUnused();
+		} else if ("rebuildCalendar".equals(action)) {
+			eventCalendarService.rebuildCalendar();
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

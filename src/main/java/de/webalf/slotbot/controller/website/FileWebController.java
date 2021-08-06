@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,5 +35,14 @@ public class FileWebController {
 		final Resource img = fileService.loadImgAsResource(request.getRequestURI().replace("/assets/img", ""));
 		return ResponseEntity.ok()
 				.body(img);
+	}
+
+	@GetMapping("/calendar/{filename:.+}")
+	public ResponseEntity<Resource> getCalendar(@PathVariable String filename) {
+		final Resource file = fileService.loadIcsAsResource(filename);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.body(file);
 	}
 }

@@ -52,6 +52,7 @@
 		<jda.version>4.3.0_305</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.14.1</jsoup.version>
+		<ical4j.version>4.0.0-alpha9</ical4j.version>
 	</properties>
 
 	<dependencies>
@@ -197,6 +198,13 @@
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<!--Calendar-->
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>${ical4j.version}</version>
 		</dependency>
 	</dependencies>
 

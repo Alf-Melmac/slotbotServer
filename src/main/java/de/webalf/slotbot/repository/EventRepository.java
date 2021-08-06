@@ -19,6 +19,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 
 	List<Event> findAllByDateTimeBetweenAndHiddenFalse(LocalDateTime start, LocalDateTime end);
 
+	List<Event> findAllByHiddenFalse();
+
 	@Query("SELECT e FROM Event e WHERE e.dateTime < :dateTime ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsBeforeAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime);
 
