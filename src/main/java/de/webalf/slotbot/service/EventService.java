@@ -151,12 +151,21 @@ public class EventService {
 	}
 
 	/**
+	 * Returns all events that are scheduled after now
+	 *
+	 * @return all events from the future
+	 */
+	public List<Event> findAllInFuture() {
+		return eventRepository.findAllByDateTimeIsAfter(LocalDateTime.now());
+	}
+
+	/**
 	 * Returns all events that are scheduled in the future and have no discord information
 	 *
 	 * @return all events in the future that have no channel
 	 */
 	public List<Event> findAllNotAssignedInFuture() {
-		return eventRepository.findAllByDateTimeIsAfterAndOrderByDateTime(LocalDateTime.now());
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOrderByDateTime(LocalDateTime.now());
 	}
 
 	/**

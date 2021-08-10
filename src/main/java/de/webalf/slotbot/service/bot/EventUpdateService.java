@@ -31,6 +31,7 @@ import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 public class EventUpdateService {
 	private final BotService botService;
 	private final MessageHelper messageHelper;
+	private final EventNotificationService eventNotificationService;
 
 	public void update(@NonNull Event event) throws IllegalStateException {
 		log.trace("Update");
@@ -50,11 +51,13 @@ public class EventUpdateService {
 
 	public void informAboutSlotChange(@NonNull Event event, @NonNull Slot slot, User currentUser, User previousUser) {
 		final String eventDate = DATE_FORMATTER.format(event.getDateTime().toLocalDate());
-		if (currentUser != null && !currentUser.isDefaultUser()) {
+		if (previousUser != null && !previousUser.isDefaultUser()) {
+			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
+			eventNotificationService.removeNotification(event, previousUser);
+		} else if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 			longTimeNoSee(currentUser);
-		} else if (previousUser != null && !previousUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
+			eventNotificationService.updateNotification(event, currentUser);
 		}
 	}
 

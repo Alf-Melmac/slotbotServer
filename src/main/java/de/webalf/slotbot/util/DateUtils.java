@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  * @author Alf
@@ -30,5 +31,9 @@ public final class DateUtils {
 
 	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDate date, @NonNull LocalTime time) {
 		return date.atTime(time).atZone(ZONE_BERLIN);
+	}
+
+	public static Date asDate(LocalDateTime localDateTime) {
+		return Date.from(localDateTime.atZone(ZONE_BERLIN).toInstant());
 	}
 }

@@ -52,6 +52,8 @@
 		<jda.version>4.3.0_306</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.14.1</jsoup.version>
+		<!--https://github.com/quartz-scheduler/quartz/releases -->
+		<quartz.version>2.3.2</quartz.version>
 	</properties>
 
 	<dependencies>
@@ -123,14 +125,6 @@
 			</exclusions>
 		</dependency>
 
-		<!--Only use during development-->
-		<!--<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<version>${springframework.boot.version}</version>
-			<scope>runtime</scope>
-		</dependency>-->
-
 		<!--Database-->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -166,6 +160,13 @@
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>${jsoup.version}</version>
+		</dependency>
+
+		<!--Scheduling-->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz.version}</version>
 		</dependency>
 
 		<!--Compilation-->
