@@ -17,6 +17,7 @@ public final class ApiPermissionHelper {
 	public static final String HAS_READ_PUBLIC_PERMISSION = HAS_ANY_ROLE + READ_PUBLIC + HAS_ANY_ROLE_NEXT + READ + HAS_ANY_ROLE_NEXT + WRITE + HAS_ROLE_CLOSE;
 	public static final String HAS_READ_PERMISSION = HAS_ANY_ROLE + READ + HAS_ANY_ROLE_NEXT + WRITE + HAS_ROLE_CLOSE;
 	public static final String HAS_WRITE_PERMISSION = HAS_ROLE + WRITE + HAS_ROLE_CLOSE;
+	public static final String HAS_ADMIN_PERMISSION = HAS_ROLE + ADMIN + HAS_ROLE_CLOSE;
 
 	private static final Set<String> READ_ROLES = Set.of(READ, WRITE);
 
