@@ -257,6 +257,8 @@ public class EventService {
 		Event event = findByChannel(channel);
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		User user = userService.find(userDto);
+		event.unslotIfAlreadySlotted(user);
+		eventRepository.saveAndFlush(event);
 		slotService.slot(slot, user);
 		return event;
 	}

@@ -309,6 +309,10 @@ public class Event extends AbstractSuperIdEntity {
 		getSquadList().remove(squad);
 	}
 
+	public void unslotIfAlreadySlotted(User user) {
+		findSlotOfUser(user).ifPresent(oldSlot -> oldSlot.unslotWithoutUpdate(user));
+	}
+
 	/**
 	 * Informs the event about an slot update (slot, unslot, new slot(s) created, slot(s) removed).
 	 * Uses {@link Event#moveReservists()} to change reserve if needed
