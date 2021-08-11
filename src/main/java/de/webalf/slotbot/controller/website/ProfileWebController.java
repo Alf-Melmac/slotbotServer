@@ -17,6 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -32,6 +34,7 @@ public class ProfileWebController {
 	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public ModelAndView getProfile(@PathVariable(value = "userId") String userId) {
 		ModelAndView mav = new ModelAndView("profile");
+		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 
 		final GuildMember guildMember = discordApiService.getGuildMemberWithUser(userId);
 		mav.addObject("user", guildMember);
