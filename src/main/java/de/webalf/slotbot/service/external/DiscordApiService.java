@@ -6,6 +6,7 @@ import de.webalf.slotbot.constant.AuthorizationCheckValues;
 import de.webalf.slotbot.exception.IgnoreErrorResponseErrorHandler;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.RestTemplatesUtil;
+import de.webalf.slotbot.util.bot.DiscordUserUtils;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +119,8 @@ public class DiscordApiService {
 	 * @param userId user to seach for
 	 * @return {@link GuildMember} with the given user
 	 */
-	private GuildMember getGuildMemberWithUser(String userId) {
+	@Cacheable("guildMember")
+	public GuildMember getGuildMemberWithUser(String userId) {
 		GuildMember member = getGuildMember(userId);
 		if (member.getUser() == null) {
 			log.warn("Fetching user of id " + userId);
@@ -134,7 +136,7 @@ public class DiscordApiService {
 	 * @param roleIds to get role objects for
 	 * @return set of matching roles
 	 */
-	private Set<Role> getRoles(Set<Long> roleIds) {
+	public Set<Role> getRoles(Set<Long> roleIds) {
 		if (!SetUtils.isEmpty(roleIds)) {
 			fillRoles();
 
@@ -192,6 +194,7 @@ public class DiscordApiService {
 		private long id;
 		private String username;
 		private String avatar;
+		private short discriminator;
 		private String locale;
 	}
 
@@ -200,7 +203,7 @@ public class DiscordApiService {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
-	private static class Role {
+	public static class Role {
 		private long id;
 		private String name;
 		private int position;
@@ -211,12 +214,12 @@ public class DiscordApiService {
 	@Builder
 	@AllArgsConstructor
 	@NoArgsConstructor
-	private static class GuildMember {
+	public static class GuildMember {
 		private User user;
 		private String nick;
 		private Set<Long> roles;
 
-		String getNick() {
+		public String getNick() {
 			if (nick != null) {
 				return nick;
 			} else if (user != null) {
@@ -224,6 +227,10 @@ public class DiscordApiService {
 			} else {
 				return null;
 			}
+		}
+
+		public String getAvatarUrl() {
+			return DiscordUserUtils.getAvatarUrl(Long.toString(user.id), user.avatar, Short.toString(user.discriminator));
 		}
 	}
 }

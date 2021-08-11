@@ -14,3 +14,7 @@
 textarea.one-row { /*Default font size plus border*/
   height: 2.5em;
 }
+
+.mw-6 {
+  max-width: 6em;
+}

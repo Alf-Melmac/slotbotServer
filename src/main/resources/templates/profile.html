@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta th:replace="fragments/general.html :: head('Profil')"/>
+
+	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/cards.css}">
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: default(true)"></nav>
+
+<section class="content-section">
+	<div class="container">
+		<div class="d-flex justify-content-center">
+			<div class="card">
+				<div class="card-body text-center">
+					<div class="mb-2">
+						<img class="rounded-circle img-fluid mw-6" th:src="${user.getAvatarUrl()}" alt="Discord avatar"/>
+					</div>
+					<h4 class="mb-2" th:text="${user.getNick()}"></h4>
+					<p class="text-muted" th:text="${roles}"></p>
+					<div class="d-flex justify-content-center mt-5">
+						<div>
+							<p class="h5">?</p>
+							<p class="text-muted mb-0">Teilgenommene Events</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<p th:text="${ownProfile}"></p>
+	</div>
+</section>
+
+<footer th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
+</body>
+</html>

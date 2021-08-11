@@ -15,6 +15,11 @@ body:not(p, li) {
   margin-right: 10px;
 }
 
+.navbar-profile-picture {
+  padding: 0;
+  max-height: 2.5em;
+}
+
 .modal-content {
   background-color: #3a3a3a;
 }

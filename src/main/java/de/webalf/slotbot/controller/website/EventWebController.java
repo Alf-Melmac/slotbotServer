@@ -10,10 +10,14 @@ import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
+import de.webalf.slotbot.util.bot.DiscordUserUtils;
 import de.webalf.slotbot.util.permissions.BotPermissionHelper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,8 +45,6 @@ public class EventWebController {
 	private static final String START_URL = linkTo(methodOn(StartWebController.class).getStart()).toUri().toString();
 	private static final String EVENTS_URL_STRING = "eventsUrl";
 	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString();
-	private static final String LOGIN_URL_STRING = "loginUrl";
-	private static final String LOGIN_URL = linkTo(methodOn(LoginWebController.class).getLogin()).toUri().toString();
 
 	@GetMapping
 	public ModelAndView getEventHtml() {
@@ -87,7 +89,7 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
 		mav.addObject(START_URL_STRING, START_URL);
-		mav.addObject(LOGIN_URL_STRING, LOGIN_URL);
+		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		final EventDetailsDto detailsDto = eventDetailsAssembler.toDto(eventService.findById(eventId));
 		mav.addObject("event", detailsDto);
@@ -113,5 +115,15 @@ public class EventWebController {
 		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
 		return mav;
+	}
+
+	private void addCalendarSubPageObjects(@NonNull ModelAndView mav) {
+		mav.addObject("loginUrl", linkTo(methodOn(LoginWebController.class).getLogin()).toUri().toString());
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof OAuth2User) {
+			OAuth2User oAuth2User = (OAuth2User) principal;
+			mav.addObject("avatarUrl", DiscordUserUtils.getAvatarUrl(oAuth2User.getAttribute("id"), oAuth2User.getAttribute("avatar"), oAuth2User.getAttribute("discriminator")));
+			mav.addObject("profileUrl", linkTo(methodOn(ProfileWebController.class).getProfile(oAuth2User.getAttribute("id"))).toUri().toString());
+		}
 	}
 }

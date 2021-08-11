@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Alf
  * @since 17.01.2021
@@ -24,5 +26,13 @@ public final class DiscordUserUtils {
 		}
 
 		return null;
+	}
+
+	public static String getAvatarUrl(@NotBlank String id, String avatar, @NotBlank String discriminator) {
+		return avatar != null ? "https://cdn.discordapp.com/avatars/" + id + "/" + avatar + ".png" : getDefaultAvatarUrl(Short.parseShort(discriminator));
+	}
+
+	private static String getDefaultAvatarUrl(short discriminator) {
+		return "https://cdn.discordapp.com/embed/avatars/" + discriminator % 5 + ".png";
 	}
 }
