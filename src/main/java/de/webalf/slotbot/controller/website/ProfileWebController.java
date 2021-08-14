@@ -42,13 +42,14 @@ public class ProfileWebController {
 		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 
 		final GuildMember guildMember = discordApiService.getGuildMemberWithUser(userId);
+		final User user = userService.find(Long.parseLong(userId));
 		mav.addObject("user", guildMember);
 		mav.addObject("roles", "@" + discordApiService.getRoles(guildMember.getRoles()).stream().map(Role::getName).collect(Collectors.joining(", @")));
+		mav.addObject("participatedEventsCount", userService.getParticipatedEventsCount(user));
 
 		final boolean ownProfile = isLoggedInUser(userId);
 		mav.addObject("ownProfile", ownProfile);
 		if (ownProfile) {
-			final User user = userService.find(Long.parseLong(userId));
 			mav.addObject("notificationSettings", notificationSettingsService.findAllPublicSettings(user));
 			mav.addObject("deleteAllByUserUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
 			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
