@@ -1,4 +1,4 @@
-package de.webalf.slotbot.service;
+package de.webalf.slotbot.service.job;
 
 import de.webalf.slotbot.model.JobInfo;
 import de.webalf.slotbot.util.bot.MessageHelper;

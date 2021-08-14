@@ -475,5 +475,6 @@ public class Event extends AbstractSuperIdEntity {
 		}
 
 		setDiscordInformation(null);
+		//TODO delete notification settings
 	}
 }

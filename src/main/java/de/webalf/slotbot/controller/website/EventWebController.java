@@ -67,6 +67,7 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		mav.addObject(START_URL_STRING, START_URL);
+		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("date", date);
 		if (StringUtils.isNotEmpty(copyEvent) && StringUtils.onlyNumbers(copyEvent)) {
@@ -106,6 +107,7 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventEdit");
 
 		mav.addObject(START_URL_STRING, START_URL);
+		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		final Event event = eventService.findById(eventId);
 		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
