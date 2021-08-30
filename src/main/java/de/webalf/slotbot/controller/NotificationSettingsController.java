@@ -41,7 +41,7 @@ public class NotificationSettingsController {
 	public List<NotificationSettingsReferencelessDto> updateNotificationSettings(@PathVariable(name = "userId") String userId, @RequestBody List<NotificationSettingDto> notificationSettings) {
 		assertIsLoggedInUser(userId);
 		return NotificationSettingAssembler.toReferencelessDtoList(
-				notificationSettingsService.updatePublicNotificationSettings(userService.find(Long.parseLong(userId)), notificationSettings)
+				notificationSettingsService.updateGlobalNotificationSettings(userService.find(Long.parseLong(userId)), notificationSettings)
 		);
 	}
 }

@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.NotificationSetting;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.NotificationSettingDto;
@@ -28,26 +29,31 @@ public class NotificationSettingsService {
 	 * Finds all {@link NotificationSetting}s for the given {@link User} that don't have an event link
 	 *
 	 * @param user to get settings for
-	 * @return all public settings of user
+	 * @return all global settings of user
 	 */
-	public List<NotificationSetting> findAllPublicSettings(User user) {
+	public List<NotificationSetting> findSettings(User user) {
 		return notificationSettingRepository.findAllByUserAndEventIsNull(user);
+	}
+
+	public List<NotificationSetting> findSettings(User user, Event event) {
+		final List<NotificationSetting> settingsForEvent = notificationSettingRepository.findAllByUserAndEvent(user, event);
+		return settingsForEvent.isEmpty() ? findSettings(user) : settingsForEvent;
 	}
 
 	/**
 	 * Sets the public {@link NotificationSetting}s for the given {@link User}
 	 *
 	 * @param user                    to update settings for
-	 * @param notificationSettingDtos new complete list with new or updated settings
+	 * @param dtos new complete list with new or updated settings
 	 * @return saved public notification settings
 	 */
-	public List<NotificationSetting> updatePublicNotificationSettings(User user, @NonNull List<NotificationSettingDto> notificationSettingDtos) {
+	public List<NotificationSetting> updateGlobalNotificationSettings(User user, @NonNull List<NotificationSettingDto> dtos) {
 		List<NotificationSetting> notificationSettings = new ArrayList<>();
-		notificationSettingDtos.forEach(notificationSettingDto ->
+		dtos.forEach(notificationSettingDto ->
 				notificationSettings.add(updateOrCreateNotificationSetting(user, notificationSettingDto)));
 
 		//Delete removed settings
-		final List<NotificationSetting> existingSettings = new ArrayList<>(findAllPublicSettings(user));
+		final List<NotificationSetting> existingSettings = new ArrayList<>(findSettings(user));
 		existingSettings.removeIf(existingSetting ->
 				notificationSettings.stream().anyMatch(notificationSetting -> existingSetting.getId() == notificationSetting.getId()));
 		notificationSettingRepository.deleteAll(existingSettings);

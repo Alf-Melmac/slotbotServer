@@ -184,6 +184,13 @@ public class Event extends AbstractSuperIdEntity {
 		return getSquadList().stream().filter(squad -> !squad.isReserve()).collect(Collectors.toUnmodifiableSet());
 	}
 
+	public Set<User> getAllParticipants() {
+		return getSquadList().stream()
+				.flatMap(squad -> squad.getSlotList().stream()
+						.map(Slot::getUser).filter(Objects::nonNull))
+				.collect(Collectors.toUnmodifiableSet());
+	}
+
 	/**
 	 * Returns 25% of the slot counts but at least one
 	 *

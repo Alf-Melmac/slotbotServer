@@ -56,6 +56,8 @@ public class AdminUtilsWebController {
 			eventTypeService.deleteUnused();
 		} else if ("rebuildEventNotifications".equals(action)) {
 			eventNotificationService.rebuildAllNotifications();
+		} else if ("getInfo".equals(action)) {
+			eventNotificationService.test();
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

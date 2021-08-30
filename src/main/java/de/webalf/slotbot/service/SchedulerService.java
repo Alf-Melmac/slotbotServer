@@ -1,7 +1,9 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.JobInfo;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -11,9 +13,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import static de.webalf.slotbot.util.JobUtils.*;
+import static de.webalf.slotbot.util.JobUtils.buildTrigger;
+import static de.webalf.slotbot.util.JobUtils.createJobKey;
 
 /**
  * @author Alf
@@ -25,18 +31,42 @@ import static de.webalf.slotbot.util.JobUtils.*;
 public class SchedulerService {
 	private final Scheduler scheduler;
 
-	public void schedule(Class<? extends Job> jobClass, JobInfo info) {
-		final JobDetail jobDetail = buildJobDetails(jobClass, info);
-		final Trigger trigger = buildTrigger(info);
+	//NEW
+	@PostConstruct
+	private void init() {
+		try {
+			scheduler.start();
+		} catch (SchedulerException e) {
+			log.error("Failed to start scheduler", e);
+		}
+	}
 
+	//NEW
+	public void initJob(JobDetail jobDetail) {
+		try {
+			scheduler.addJob(jobDetail, true, true);
+		} catch (SchedulerException e) {
+			log.error("Failed to init job", e);
+		}
+	}
+
+	//NEW
+	public void schedule(JobInfo info) {
+		final Trigger trigger = buildTrigger(info);
 		try {
 			if (log.isTraceEnabled()) {
-				log.trace("Scheduling {} named '{}'", jobClass.getSimpleName(), info.getName());
+				log.trace("Scheduling trigger for {} named '{}'", info.getJobName(), info.getName());
 			}
-			scheduler.scheduleJob(jobDetail, trigger);
+			scheduler.scheduleJob(trigger);
 		} catch (SchedulerException e) {
 			log.error("Failed to schedule job", e);
 		}
+	}
+
+	//NEW
+	public void schedule(@NonNull Iterable<? extends JobInfo> infos) {
+		StreamSupport.stream(infos.spliterator(), true)
+						.forEach(this::schedule);
 	}
 
 	public List<JobInfo> getAllRunningJobs() {
@@ -54,8 +84,59 @@ public class SchedulerService {
 					.filter(Objects::nonNull)
 					.collect(Collectors.toUnmodifiableList());
 		} catch (SchedulerException e) {
-			log.error("Failed to get all running jobs");
+			log.error("Failed to get all running jobs", e);
 			return Collections.emptyList();
+		}
+	}
+
+	//NEW
+	public List<JobInfo> getAllTriggers() {
+		try {
+			return scheduler.getTriggerKeys(GroupMatcher.anyGroup())
+					.stream()
+					.map(triggerKey -> {
+						final Trigger trigger = getTrigger(triggerKey);
+						if (trigger == null) {
+							log.warn("Missing trigger '{}'", triggerKey.getName());
+							return null;
+						}
+						return (JobInfo) trigger.getJobDataMap().get(triggerKey.getName());
+					})
+					.filter(Objects::nonNull)
+					.collect(Collectors.toUnmodifiableList());
+		} catch (SchedulerException e) {
+			log.error("Failed to get all triggers", e);
+			return Collections.emptyList();
+		}
+	}
+
+	public List<Trigger> getTriggersOfJobsInGroup(String groupName) {
+		try {
+			return scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))
+					.stream().flatMap(jobKey -> {
+						try {
+							return scheduler.getTriggersOfJob(jobKey).stream();
+						} catch (SchedulerException e) {
+							log.error("Failed to get trigger of job {}", jobKey.getName(), e);
+							return Stream.empty();
+						}
+					})
+					.collect(Collectors.toUnmodifiableList());
+		} catch (SchedulerException e) {
+			log.error("Failed to get all running jobs", e);
+			return Collections.emptyList();
+		}
+	}
+
+	public void reschedule(@NonNull Trigger oldTrigger, Date newStart) {
+		final Trigger newTrigger = oldTrigger.getTriggerBuilder()
+				.startAt(newStart)
+				.build();
+
+		try {
+			scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
+		} catch (SchedulerException e) {
+			log.error("Failed to reschedule job {}", oldTrigger.getJobKey().getName(), e);
 		}
 	}
 
@@ -80,11 +161,12 @@ public class SchedulerService {
 		}
 	}
 
-	public void deleteAllJobs() {
+	//NEW
+	public void unscheduleAll() {
 		try {
-			scheduler.deleteJobs(new ArrayList<>(scheduler.getJobKeys(GroupMatcher.anyGroup())));
+			scheduler.unscheduleJobs(new ArrayList<>(scheduler.getTriggerKeys(GroupMatcher.anyGroup())));
 		} catch (SchedulerException e) {
-			log.error("Failed to get all job keys to delete them", e);
+			log.error("Failed to get all triggers to unschedule all jobs", e);
 		}
 	}
 
@@ -97,15 +179,17 @@ public class SchedulerService {
 		return null;
 	}
 
-	@PostConstruct
-	private void init() {
+	//NEW
+	private Trigger getTrigger(TriggerKey triggerKey) {
 		try {
-			scheduler.start();
+			return scheduler.getTrigger(triggerKey);
 		} catch (SchedulerException e) {
-			log.error("Failed to start scheduler", e);
+			log.error("Failed to get trigger '{}'", triggerKey.getName(), e);
 		}
+		return null;
 	}
 
+	//NEW
 	@PreDestroy
 	private void cleanUp() {
 		try {
@@ -113,5 +197,13 @@ public class SchedulerService {
 		} catch (SchedulerException e) {
 			log.error("Failed to shutdown scheduler", e);
 		}
+	}
+
+	@SneakyThrows
+	public void test() {
+		Consumer<JobKey> jobKeyConsumer = jobKey -> log.error("Name " + jobKey.getName() + " Gorup: " + jobKey.getGroup());
+
+		scheduler.getJobKeys(GroupMatcher.jobGroupEquals("1483"))
+				.forEach(jobKeyConsumer);
 	}
 }

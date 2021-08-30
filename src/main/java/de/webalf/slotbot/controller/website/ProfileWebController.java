@@ -50,9 +50,9 @@ public class ProfileWebController {
 		final boolean ownProfile = isLoggedInUser(userId);
 		mav.addObject("ownProfile", ownProfile);
 		if (ownProfile) {
-			mav.addObject("notificationSettings", notificationSettingsService.findAllPublicSettings(user));
+			mav.addObject("notificationSettings", notificationSettingsService.findSettings(user));
 			mav.addObject("deleteAllByUserUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
-			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
+			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettings(userId, null)).toUri().toString());
 		}
 
 		return mav;

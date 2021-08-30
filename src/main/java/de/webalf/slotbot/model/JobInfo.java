@@ -18,6 +18,8 @@ public class JobInfo implements Serializable {
 	private static final long serialVersionUID = -7375951716910560335L;
 	@NotBlank
 	String name;
+	String group;
+	String jobName;
 	long recipient;
 	@NonNull
 	Date start;

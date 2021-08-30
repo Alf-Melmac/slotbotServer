@@ -4,16 +4,21 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.JobInfo;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.service.EventService;
+import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.service.job.EventNotificationJob;
+import de.webalf.slotbot.util.DateUtils;
+import de.webalf.slotbot.util.JobUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.util.JobUtils.buildJobInfoForEvent;
+import static de.webalf.slotbot.util.JobUtils.buildJobDetails;
 import static de.webalf.slotbot.util.JobUtils.buildJobNameForUserInEvent;
 
 /**
@@ -26,21 +31,23 @@ import static de.webalf.slotbot.util.JobUtils.buildJobNameForUserInEvent;
 public class EventNotificationService {
 	private final SchedulerService schedulerService;
 	private final EventService eventService;
+	private final NotificationSettingsService notificationSettingsService;
+
+	@PostConstruct
+	private void init() {
+		log.error("--- PostConstruct ENS");
+		schedulerService.initJob(buildJobDetails(EventNotificationJob.class));
+	}
 
 	/**
 	 * Deletes all existing jobs and reschedules event notifications
 	 */
 	public void rebuildAllNotifications() {
-		schedulerService.deleteAllJobs();
+		schedulerService.unscheduleAll();
 		final List<Event> allInFuture = eventService.findAllInFuture();
 		log.info("Building notifications for {} events.", allInFuture.size());
-		allInFuture.forEach(event -> event.getSquadList().forEach(squad -> squad.getSlotList().forEach(slot -> {
-					if (slot.isEmpty()) {
-						return;
-					}
-					schedulerService.schedule(EventNotificationJob.class, buildJobInfoForEvent(event, slot.getUser()));
-				}))
-		);
+		allInFuture.forEach(event -> event.getAllParticipants().forEach(user ->
+				schedulerService.schedule(buildJobInfosForUserInEvent(user, event))));
 	}
 
 	/**
@@ -49,12 +56,22 @@ public class EventNotificationService {
 	 * @param event about which notification is to be sent
 	 * @param user  to notify
 	 */
-	public void updateNotification(Event event, User user) {
+	public void updateOrCreateNotification(Event event, User user) {
+		 //TODO
+
+
+
 		final String jobName = buildJobNameForUserInEvent(user, event);
-		final JobInfo jobInfo = buildJobInfoForEvent(event, user);
-		schedulerService.getRunningJob(jobName).ifPresentOrElse(
-				job -> schedulerService.updateJob(jobName, job, jobInfo),
-				() -> schedulerService.schedule(EventNotificationJob.class, jobInfo));
+		final List<JobInfo> jobInfos = buildJobInfosForUserInEvent(user, event);
+		jobInfos.forEach(jobInfo ->
+				schedulerService.getRunningJob(jobName).ifPresentOrElse(
+						job -> schedulerService.updateJob(jobName, job, jobInfo),
+						() -> schedulerService.schedule(jobInfo)));
+	}
+
+	public void updateNotification(Event event) {
+		schedulerService.getTriggersOfJobsInGroup(Long.toString(event.getId()))
+				.forEach(trigger -> schedulerService.reschedule(trigger, DateUtils.asDate(event.getDateTime().minusHours(1))));
 	}
 
 	/**
@@ -65,5 +82,16 @@ public class EventNotificationService {
 	 */
 	public void removeNotification(Event event, User user) {
 		schedulerService.deleteJob(buildJobNameForUserInEvent(user, event));
+	}
+
+	private List<JobInfo> buildJobInfosForUserInEvent(User user, Event event) {
+		return notificationSettingsService.findSettings(user, event).stream()
+				.map(notificationSetting ->
+						JobUtils.buildJobInfoForEvent(event, user, notificationSetting.getNotificationTime(event.getDateTime())))
+				.collect(Collectors.toUnmodifiableList());
+	}
+
+	public void test() {
+		schedulerService.test();
 	}
 }

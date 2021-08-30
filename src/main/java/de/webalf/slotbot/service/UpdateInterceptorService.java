@@ -60,6 +60,8 @@ public class UpdateInterceptorService {
 
 	private Event getEvent(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 		if (entity instanceof Event) {
+
+			//eventUpdateService.updateEventNotifications(previousState, currentState);
 			return (Event) entity;
 		} else if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;

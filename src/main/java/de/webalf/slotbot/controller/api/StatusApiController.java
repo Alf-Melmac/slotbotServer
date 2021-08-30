@@ -39,4 +39,10 @@ public class StatusApiController {
 	public List<JobInfo> getAllRunningJobs() {
 		return schedulerService.getAllRunningJobs();
 	}
+
+	@GetMapping("/triggers")
+	@PreAuthorize(HAS_ADMIN_PERMISSION)
+	public List<JobInfo> getAllRunningTriggers() {
+		return schedulerService.getAllTriggers();
+	}
 }

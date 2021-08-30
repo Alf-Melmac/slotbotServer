@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * @author Alf
@@ -30,4 +31,8 @@ public class NotificationSetting extends AbstractSuperIdEntity {
 	@ManyToOne
 	@JoinColumn(name = "event_id")
 	private Event event;
+
+	public LocalDateTime getNotificationTime(LocalDateTime eventTime) {
+		return eventTime.minusHours(hoursBeforeEvent).minusMinutes(minutesBeforeEvent);
+	}
 }
