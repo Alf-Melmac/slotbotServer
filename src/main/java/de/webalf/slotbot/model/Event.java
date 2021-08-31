@@ -280,7 +280,7 @@ public class Event extends AbstractSuperIdEntity {
 	 * @param date to set
 	 */
 	public void setDate(LocalDate date) {
-		setDateTime(getDateTime().withDayOfMonth(date.getDayOfMonth()).withMonth(date.getMonth().getValue()).withYear(date.getYear()));
+		setDateTime(getDateTime().withYear(date.getYear()).withMonth(date.getMonth().getValue()).withDayOfMonth(date.getDayOfMonth()));
 	}
 
 	/**
