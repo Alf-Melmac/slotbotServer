@@ -51,7 +51,7 @@
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
 		<jda.version>4.3.0_306</jda.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.14.1</jsoup.version>
+		<jsoup.version>1.14.2</jsoup.version>
 	</properties>
 
 	<dependencies>
