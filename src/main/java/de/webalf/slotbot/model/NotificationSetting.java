@@ -5,6 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author Alf
@@ -32,7 +33,17 @@ public class NotificationSetting extends AbstractSuperIdEntity {
 	@JoinColumn(name = "event_id")
 	private Event event;
 
-	public LocalDateTime getNotificationTime(LocalDateTime eventTime) {
+	/**
+	 * Calculates the time in minutes from now to the notification time
+	 *
+	 * @param eventTime event start time
+	 * @return delay until notification must be sent
+	 */
+	public int getNotificationDelay(LocalDateTime eventTime) {
+		return (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), getNotificationTime(eventTime));
+	}
+
+	private LocalDateTime getNotificationTime(@NonNull LocalDateTime eventTime) {
 		return eventTime.minusHours(hoursBeforeEvent).minusMinutes(minutesBeforeEvent);
 	}
 }

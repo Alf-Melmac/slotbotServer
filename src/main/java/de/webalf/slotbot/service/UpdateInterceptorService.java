@@ -9,6 +9,8 @@ import org.hibernate.collection.internal.PersistentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Alf
  * @since 29.12.2020
@@ -60,9 +62,14 @@ public class UpdateInterceptorService {
 
 	private Event getEvent(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 		if (entity instanceof Event) {
-
-			//eventUpdateService.updateEventNotifications(previousState, currentState);
-			return (Event) entity;
+			final Event event = (Event) entity;
+			for (int i = 0; i < propertyNames.length; i++) {
+				if (propertyNames[i].equals(Event_.DATE_TIME)) {
+					eventUpdateService.updateEventNotifications((LocalDateTime) previousState[i], event);
+					break;
+				}
+			}
+			return event;
 		} else if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;
 			if (!squad.isReserve()) {

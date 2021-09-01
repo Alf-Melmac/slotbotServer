@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
+import de.webalf.slotbot.service.bot.EventNotificationService;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -157,6 +158,13 @@ public class Event extends AbstractSuperIdEntity {
 		return isAssigned() && getDiscordInformation().isPrinted();
 	}
 
+	public Set<User> getAllParticipants() {
+		return getSquadList().stream()
+				.flatMap(squad -> squad.getSlotList().stream()
+						.map(Slot::getUser).filter(Objects::nonNull))
+				.collect(Collectors.toUnmodifiableSet());
+	}
+
 	private Optional<Squad> findSquadByName(String name) {
 		for (Squad squad : getSquadList()) {
 			if (squad.getName().equalsIgnoreCase(name)) {
@@ -182,13 +190,6 @@ public class Event extends AbstractSuperIdEntity {
 	 */
 	private Set<Squad> getSquadsExceptReserve() {
 		return getSquadList().stream().filter(squad -> !squad.isReserve()).collect(Collectors.toUnmodifiableSet());
-	}
-
-	public Set<User> getAllParticipants() {
-		return getSquadList().stream()
-				.flatMap(squad -> squad.getSlotList().stream()
-						.map(Slot::getUser).filter(Objects::nonNull))
-				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**
@@ -482,6 +483,6 @@ public class Event extends AbstractSuperIdEntity {
 		}
 
 		setDiscordInformation(null);
-		//TODO delete notification settings
+		EventNotificationService.removeNotifications(this);
 	}
 }

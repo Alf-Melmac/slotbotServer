@@ -35,6 +35,13 @@ public class NotificationSettingsService {
 		return notificationSettingRepository.findAllByUserAndEventIsNull(user);
 	}
 
+	/**
+	 * Finds all {@link NotificationSetting}s for the given {@link User} for the given {@link Event}
+	 *
+	 * @param user  to be notified
+	 * @param event to notify about
+	 * @return all event specific settings or global settings
+	 */
 	public List<NotificationSetting> findSettings(User user, Event event) {
 		final List<NotificationSetting> settingsForEvent = notificationSettingRepository.findAllByUserAndEvent(user, event);
 		return settingsForEvent.isEmpty() ? findSettings(user) : settingsForEvent;
@@ -43,7 +50,7 @@ public class NotificationSettingsService {
 	/**
 	 * Sets the public {@link NotificationSetting}s for the given {@link User}
 	 *
-	 * @param user                    to update settings for
+	 * @param user to update settings for
 	 * @param dtos new complete list with new or updated settings
 	 * @return saved public notification settings
 	 */

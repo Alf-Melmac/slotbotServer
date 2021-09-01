@@ -49,9 +49,9 @@ public class EventUpdateService {
 		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), sendSpacerEmojiIfEmpty(ListUtils.shift(slotList))).queue();
 	}
 
-	public void updateEventNotifications(Event oldEvent, Event newEvent) {
-		if (!oldEvent.getDateTime().isEqual(newEvent.getDateTime())) {
-			eventNotificationService.updateNotification(newEvent);
+	public void updateEventNotifications(@NonNull LocalDateTime oldEventDateTime, @NonNull Event newEvent) {
+		if (!oldEventDateTime.isEqual(newEvent.getDateTime())) {
+			eventNotificationService.updateNotifications(newEvent);
 		}
 	}
 
@@ -59,11 +59,11 @@ public class EventUpdateService {
 		final String eventDate = DATE_FORMATTER.format(event.getDateTime().toLocalDate());
 		if (previousUser != null && !previousUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
-			eventNotificationService.removeNotification(event, previousUser);
+			EventNotificationService.removeNotifications(event, previousUser);
 		} else if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 			longTimeNoSee(currentUser);
-			eventNotificationService.updateOrCreateNotification(event, currentUser);
+			eventNotificationService.createNotifications(event, currentUser);
 		}
 	}
 

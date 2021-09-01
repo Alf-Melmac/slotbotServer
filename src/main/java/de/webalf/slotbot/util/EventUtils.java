@@ -18,6 +18,7 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
+import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 
 /**
  * @author Alf
@@ -128,7 +129,11 @@ public final class EventUtils {
 		return slots.stream().anyMatch(slot -> slot.getNumber() == slotNumber);
 	}
 
-	public static String buildArchiveMessage(Event event) {
+	public static String buildNotificationMessage(@NonNull Event event) {
+		return "**Erinnerung**: Das Event **" + event.getName() + "** geht " + RELATIVE.format(DateUtils.getDateTimeZoned(event.getDateTime())) + " los.";
+	}
+
+	public static String buildArchiveMessage(@NonNull Event event) {
 		String message = "**__" + event.getName() + "__** " +
 				DATE_TIME_SHORT.format(DateUtils.getDateTimeZoned(event.getDateTime())) +
 				" " + event.getEventType().getName() + " ";
