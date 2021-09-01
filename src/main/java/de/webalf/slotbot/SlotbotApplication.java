@@ -32,16 +32,16 @@ public class SlotbotApplication {
 		//Start spring application
 		final ApplicationContext applicationContext = SpringApplication.run(SlotbotApplication.class, args);
 
-		//Start discord bot
-		applicationContext.getBean(BotService.class).startUp();
-
-		//Initialize external server
-		applicationContext.getBean(ExternalServerService.class).fillIpServerMap();
-
 		//Initial fetch of file directories
 		applicationContext.getBean(FileService.class).listFiles();
 
+		//Start discord bot
+		applicationContext.getBean(BotService.class).startUp();
+
 		//Create all notifications
 		applicationContext.getBean(EventNotificationService.class).rebuildAllNotifications();
+
+		//Initialize external server
+		applicationContext.getBean(ExternalServerService.class).fillIpServerMap();
 	}
 }
