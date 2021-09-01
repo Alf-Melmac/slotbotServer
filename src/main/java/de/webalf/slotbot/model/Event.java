@@ -483,6 +483,6 @@ public class Event extends AbstractSuperIdEntity {
 		}
 
 		setDiscordInformation(null);
-		EventNotificationService.removeNotifications(this);
+		EventNotificationService.removeNotifications(getId());
 	}
 }

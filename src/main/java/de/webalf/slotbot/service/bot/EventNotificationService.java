@@ -80,11 +80,11 @@ public class EventNotificationService {
 	/**
 	 * Recreates all notifications for the given event
 	 *
-	 * @param event to refresh notifications for
+	 * @param eventId event to refresh notifications for
 	 */
-	public void updateNotifications(@NonNull Event event) {
-		removeNotifications(event);
-		createNotificationsForAllParticipants(event);
+	public void updateNotifications(long eventId) {
+		removeNotifications(eventId);
+		createNotificationsForAllParticipants(eventService.findById(eventId));
 	}
 
 	/**
@@ -111,10 +111,10 @@ public class EventNotificationService {
 	/**
 	 * Removes all notifications for the given event
 	 *
-	 * @param event to no longer notify about
+	 * @param eventId event to no longer notify about
 	 */
-	public static void removeNotifications(@NonNull Event event) {
-		getNotificationIdentifiersWhere(identifier -> identifier.getEventId() == event.getId())
+	public static void removeNotifications(long eventId) {
+		getNotificationIdentifiersWhere(identifier -> identifier.getEventId() == eventId)
 				.forEach(SCHEDULED_NOTIFICATIONS::remove);
 	}
 

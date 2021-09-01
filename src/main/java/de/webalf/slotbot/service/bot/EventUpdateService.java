@@ -49,9 +49,9 @@ public class EventUpdateService {
 		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), sendSpacerEmojiIfEmpty(ListUtils.shift(slotList))).queue();
 	}
 
-	public void updateEventNotifications(@NonNull LocalDateTime oldEventDateTime, @NonNull Event newEvent) {
-		if (!oldEventDateTime.isEqual(newEvent.getDateTime())) {
-			eventNotificationService.updateNotifications(newEvent);
+	public void updateEventNotifications(@NonNull LocalDateTime oldEventDateTime, LocalDateTime newEventDateTime, long eventId) {
+		if (!oldEventDateTime.isEqual(newEventDateTime)) {
+			eventNotificationService.updateNotifications(eventId);
 		}
 	}
 

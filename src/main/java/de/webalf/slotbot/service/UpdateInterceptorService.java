@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 public class UpdateInterceptorService {
 	private final EventUpdateService eventUpdateService;
 	private final MessageHelper messageHelper;
+	private final SchedulerService schedulerService;
 
 	/**
 	 * Informs the discord bot about a deletion in an event
@@ -65,7 +66,10 @@ public class UpdateInterceptorService {
 			final Event event = (Event) entity;
 			for (int i = 0; i < propertyNames.length; i++) {
 				if (propertyNames[i].equals(Event_.DATE_TIME)) {
-					eventUpdateService.updateEventNotifications((LocalDateTime) previousState[i], event);
+					int finalI = i;
+					//The action here must be scheduled, because the event must be saved before.
+					//Without saving the event notifications for the event can not be found, because it comes to a StackOverflow. Hibernate bug?
+					schedulerService.schedule(() -> eventUpdateService.updateEventNotifications((LocalDateTime) previousState[finalI], event.getDateTime(), event.getId()), 1);
 					break;
 				}
 			}
