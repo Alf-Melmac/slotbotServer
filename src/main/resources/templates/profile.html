@@ -76,8 +76,13 @@
 						<em class="fas fa-plus"></em>
 					</div>
 
-					<div id="btnSaveNotifications" class="btn btn-primary float-right">
-						Benachrichtigungen speichern
+					<div class="float-right">
+						<span class="text-info" data-toggle="tooltip" data-placement="left" title="Anpassungen an den globalen Einstellungen werden nur für Slottungen nach dieser Änderungen übernommen.">
+							<em class="fas fa-info-circle"></em>
+						</span>
+						<span id="btnSaveNotifications" class="btn btn-primary">
+							Benachrichtigungen speichern
+						</span>
 					</div>
 				</div>
 			</form>
@@ -89,13 +94,14 @@
 
 <footer th:insert="fragments/general.html :: footer"></footer>
 
-<script th:replace="fragments/scripts.html :: jqueryANDbootstrap"></script>
+<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const deleteAllByUserUrl = /*[[${deleteAllByUserUrl}]]*/ '';
 	const putNotificationSettingsUrl = /*[[${putNotificationSettingsUrl}]]*/ '';
 	/*]]>*/
 </script>
+<script th:src="@{/assets/js/tooltip.js}"></script>
 <script th:src="@{/assets/js/notifications.js}"></script>
 </body>
 </html>
