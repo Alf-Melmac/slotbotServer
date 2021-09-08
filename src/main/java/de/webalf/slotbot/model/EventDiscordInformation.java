@@ -43,7 +43,7 @@ public class EventDiscordInformation {
 	}
 
 	/**
-	 * Checks if the event has already been printed. Printing is asserted if a info message id is assigned
+	 * Checks if the event has already been printed. Printing is asserted if an info message id is assigned
 	 *
 	 * @return true if event has already been printed
 	 */

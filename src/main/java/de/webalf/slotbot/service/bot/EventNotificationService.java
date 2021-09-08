@@ -15,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.EventUtils.buildNotificationMessage;
 
@@ -126,7 +127,7 @@ public class EventNotificationService {
 				.build();
 	}
 
-	private static Stream<NotificationIdentifier> getNotificationIdentifiersWhere(Predicate<NotificationIdentifier> filterPredicate) {
-		return SCHEDULED_NOTIFICATIONS.keySet().stream().filter(filterPredicate);
+	private static Set<NotificationIdentifier> getNotificationIdentifiersWhere(Predicate<NotificationIdentifier> filterPredicate) {
+		return SCHEDULED_NOTIFICATIONS.keySet().stream().filter(filterPredicate).collect(Collectors.toUnmodifiableSet());
 	}
 }

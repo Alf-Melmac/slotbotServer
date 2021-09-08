@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
@@ -32,6 +33,7 @@ public class EventUpdateService {
 	private final BotService botService;
 	private final MessageHelper messageHelper;
 	private final EventNotificationService eventNotificationService;
+	private final SchedulerService schedulerService;
 
 	public void update(@NonNull Event event) throws IllegalStateException {
 		log.trace("Update");
@@ -49,9 +51,18 @@ public class EventUpdateService {
 		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), sendSpacerEmojiIfEmpty(ListUtils.shift(slotList))).queue();
 	}
 
+	/**
+	 * Checks if the event date has changed and {@link EventNotificationService#updateNotifications(long)} if needed
+	 *
+	 * @param oldEventDateTime old event time
+	 * @param newEventDateTime edited event time
+	 * @param eventId          changed event
+	 */
 	public void updateEventNotifications(@NonNull LocalDateTime oldEventDateTime, LocalDateTime newEventDateTime, long eventId) {
 		if (!oldEventDateTime.isEqual(newEventDateTime)) {
-			eventNotificationService.updateNotifications(eventId);
+			//The action here must be scheduled, because the event must be saved before.
+			//Without saving the event notifications for the event can not be found, because it comes to a StackOverflow. Hibernate bug?
+			schedulerService.schedule(() -> eventNotificationService.updateNotifications(eventId), 1);
 		}
 	}
 
@@ -63,7 +74,7 @@ public class EventUpdateService {
 		} else if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 			longTimeNoSee(currentUser);
-			eventNotificationService.createNotifications(event, currentUser);
+			schedulerService.schedule(() -> eventNotificationService.createNotifications(event, currentUser), 1);
 		}
 	}
 

@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 public class UpdateInterceptorService {
 	private final EventUpdateService eventUpdateService;
 	private final MessageHelper messageHelper;
-	private final SchedulerService schedulerService;
 
 	/**
 	 * Informs the discord bot about a deletion in an event
@@ -64,15 +63,7 @@ public class UpdateInterceptorService {
 	private Event getEvent(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 		if (entity instanceof Event) {
 			final Event event = (Event) entity;
-			for (int i = 0; i < propertyNames.length; i++) {
-				if (propertyNames[i].equals(Event_.DATE_TIME)) {
-					int finalI = i;
-					//The action here must be scheduled, because the event must be saved before.
-					//Without saving the event notifications for the event can not be found, because it comes to a StackOverflow. Hibernate bug?
-					schedulerService.schedule(() -> eventUpdateService.updateEventNotifications((LocalDateTime) previousState[finalI], event.getDateTime(), event.getId()), 1);
-					break;
-				}
-			}
+			eventUpdate(previousState, propertyNames, event);
 			return event;
 		} else if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;
@@ -82,17 +73,30 @@ public class UpdateInterceptorService {
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
 			final Event event = slot.getSquad().getEvent();
-			if (!slot.isInReserve()) {
-				for (int i = 0; i < propertyNames.length; i++) {
-					if (propertyNames[i].equals(Slot_.USER)) {
-						eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
-						break;
-					}
-				}
-			}
+			slotUpdate(currentState, previousState, propertyNames, slot, event);
 			return event;
 		}
 		return null;
+	}
+
+	private void eventUpdate(Object[] previousState, String[] propertyNames, Event event) {
+		for (int i = 0; i < propertyNames.length; i++) {
+			if (propertyNames[i].equals(Event_.DATE_TIME)) {
+				eventUpdateService.updateEventNotifications((LocalDateTime) previousState[i], event.getDateTime(), event.getId());
+				break;
+			}
+		}
+	}
+
+	private void slotUpdate(Object[] currentState, Object[] previousState, String[] propertyNames, Slot slot, Event event) {
+		if (!slot.isInReserve()) {
+			for (int i = 0; i < propertyNames.length; i++) {
+				if (propertyNames[i].equals(Slot_.USER)) {
+					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
+					break;
+				}
+			}
+		}
 	}
 
 	public void onSave(Object entity) {
