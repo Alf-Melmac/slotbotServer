@@ -168,7 +168,7 @@ public final class SqmParser {
 	 * @param squad to add slot to
 	 */
 	private void readSlot(String s, Squad squad) {
-		final Matcher matcher = DIGIT.matcher(s);
+		final Matcher matcher = DIGIT.matcher(s.trim());
 
 		Slot slot;
 		if (matcher.find()) {
