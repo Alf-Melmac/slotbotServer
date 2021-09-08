@@ -85,14 +85,21 @@ public final class SqmParser {
 					if (line.contains(DESCRIPTION)) { //First slot description contains squad/group name
 						final String descriptionText = getDescriptionText(line);
 
+						String squadName;
+						String slotName;
 						if (!descriptionText.contains("@")) {
-							throw BusinessRuntimeException.builder().title("In Zeile " + lineNumber + " fehlt die erwartete Gruppendefinition.").build();
+							log.debug("Line {} is missing group definition", lineNumber);
+							squadName = "";
+							slotName = descriptionText;
+						} else {
+							final String[] squadNameSplit = descriptionText.split("@", 2);
+							squadName = squadNameSplit[1];
+							slotName = squadNameSplit[0];
 						}
 
-						final String[] squadNameSplit = descriptionText.split("@", 2);
-						nextSquad = Squad.builder().name(squadNameSplit[1]).slotList(new ArrayList<>()).build();
+						nextSquad = Squad.builder().name(squadName).slotList(new ArrayList<>()).build();
 						log.trace("Created new Squad '{}'", nextSquad.getName());
-						readSlot(squadNameSplit[0], nextSquad);
+						readSlot(slotName, nextSquad);
 						step = step.next();
 					}
 					break;
