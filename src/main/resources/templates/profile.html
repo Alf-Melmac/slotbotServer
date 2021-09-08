@@ -2,6 +2,9 @@
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta th:replace="fragments/general.html :: head('Profil')"/>
+	<meta property="og:title" th:content="${user.getNick()}">
+	<meta property="og:image" th:content="${user.getAvatarUrl()}">
+	<meta property="og:description" th:content="${participatedEventsCount + ' Teilnahmen'}">
 
 	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
