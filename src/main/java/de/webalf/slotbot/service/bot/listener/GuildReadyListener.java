@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.bot.listener;
 
+import de.webalf.slotbot.service.bot.InviteService;
 import de.webalf.slotbot.service.bot.SlashCommandsService;
 import de.webalf.slotbot.util.bot.RoleUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class GuildReadyListener extends ListenerAdapter {
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event) {
 		final Guild guild = event.getGuild();
+		InviteService.initialize(guild);
 		RoleUtils.checkRequiredRoles(guild);
 		slashCommandsService.updateCommands(guild);
 	}

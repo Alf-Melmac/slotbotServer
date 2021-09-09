@@ -28,4 +28,6 @@ public class DiscordProperties {
 	private long id;
 
 	private Long archive;
+
+	private Long modLog;
 }
