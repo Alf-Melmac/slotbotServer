@@ -1,6 +1,8 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.controller.NotificationSettingsController;
+import de.webalf.slotbot.controller.UserController;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.service.NotificationSettingsService;
@@ -55,7 +57,7 @@ public class ProfileWebController {
 		if (isUnknownUser(guildMember)) {
 			throw new ResourceNotFoundException("Unknown discord user " + userId);
 		}
-		mav.addObject("user", guildMember);
+		mav.addObject("guildMember", guildMember);
 		mav.addObject("roles", "@" + discordApiService.getRoles(guildMember.getRoles()).stream().map(Role::getName).collect(Collectors.joining(", @")));
 		final User user = userService.find(Long.parseLong(userId));
 		mav.addObject("participatedEventsCount", userService.getParticipatedEventsCount(user));
@@ -63,6 +65,8 @@ public class ProfileWebController {
 		final boolean ownProfile = isLoggedInUser(userId);
 		mav.addObject("ownProfile", ownProfile);
 		if (ownProfile) {
+			mav.addObject("user", UserAssembler.toDto(user));
+			mav.addObject("putUserEditableUrl", linkTo(methodOn(UserController.class).updateEventEditable(user.getId(), null, null)).toUri().toString());
 			mav.addObject("notificationSettings", notificationSettingsService.findSettings(user));
 			mav.addObject("deleteAllByUserUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
 			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettings(userId, null)).toUri().toString());

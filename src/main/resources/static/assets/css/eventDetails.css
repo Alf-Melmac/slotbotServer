@@ -1,16 +1,16 @@
 .viewMore[aria-expanded="false"]:before {
-    content:"Beschreibung anzeigen";
+  content:"Beschreibung anzeigen";
 }
 
 .viewMore[aria-expanded="true"]:before {
-    content:"Weniger anzeigen";
+  content:"Weniger anzeigen";
 }
 
 .complete-squad {
-    border-bottom-width: 2px;
-    border-bottom-style: dashed;
+  border-bottom-width: 2px;
+  border-bottom-style: dashed;
 }
 
 .slot-number {
-    min-width: 3%;
+  min-width: 3%;
 }

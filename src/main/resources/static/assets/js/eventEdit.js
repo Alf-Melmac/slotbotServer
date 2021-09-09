@@ -126,14 +126,6 @@ function requiredField(value) {
     }
 }
 
-function showSavedToast() {
-    $('#savedToast').toast('show');
-}
-
-function showErrorToast() {
-    $('#errorToast').toast('show');
-}
-
 function putUpdate(data, callback) {
     $.ajax(putEventUrl, {
         method: 'PUT',

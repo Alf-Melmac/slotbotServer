@@ -2,15 +2,18 @@
 <html lang="de" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta th:replace="fragments/general.html :: head('Profil')"/>
-	<meta property="og:title" th:content="${user.getNick()}">
-	<meta property="og:image" th:content="${user.getAvatarUrl()}">
+	<meta property="og:title" th:content="${guildMember.getNick()}">
+	<meta property="og:image" th:content="${guildMember.getAvatarUrl()}">
 	<meta property="og:description" th:content="${participatedEventsCount + ' Event-Teilnahmen'}">
 
 	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
-	<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
-	<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/cards.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/profile.css}">
+	<th:block th:if="${ownProfile}">
+		<link th:replace="fragments/styles.html :: editable">
+		<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
+		<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
+	</th:block>
 </head>
 <body>
 <nav th:replace="fragments/navbar.html :: default(true)"></nav>
@@ -21,11 +24,19 @@
 			<div class="card">
 				<div class="card-body text-center">
 					<div class="mb-2">
-						<img class="rounded-circle img-fluid mw-6" th:src="${user.getAvatarUrl()}"
+						<img class="rounded-circle img-fluid mw-6" th:src="${guildMember.getAvatarUrl()}"
 						     alt="Discord avatar"/>
 					</div>
-					<h4 class="mb-2" th:text="${user.getNick()}"></h4>
+					<h4 class="mb-2" th:text="${guildMember.getNick()}"></h4>
+
 					<p sec:authorize="isAuthenticated()" class="text-muted" th:text="${roles}"></p>
+
+					<form th:if="${ownProfile}">
+						<div class="form-group">
+							<label for="steamId">Steam-ID</label>
+							<a id="steamId" class="form-control" href="#"></a>
+						</div>
+					</form>
 					<div class="d-flex justify-content-center mt-5">
 						<div>
 							<p class="h5" th:text="${participatedEventsCount}">?</p>
@@ -93,19 +104,25 @@
 	</div>
 </section>
 
-<div th:if="${ownProfile}" th:replace="fragments/toasts.html"></div>
+<footer th:if="${ownProfile}" th:insert="fragments/general.html :: footer"></footer>
+<footer th:unless="${ownProfile}" th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
 
-<footer sec:authorize="isAuthenticated()" th:insert="fragments/general.html :: footer"></footer>
-<footer sec:authorize="isAnonymous()" th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
+<th:block th:if="${ownProfile}">
+	<div th:replace="fragments/toasts.html"></div>
 
-<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
-<script th:inline="javascript">
-	/*<![CDATA[*/
-	const deleteAllByUserUrl = /*[[${deleteAllByUserUrl}]]*/ '';
-	const putNotificationSettingsUrl = /*[[${putNotificationSettingsUrl}]]*/ '';
-	/*]]>*/
-</script>
-<script th:src="@{/assets/js/tooltip.js}"></script>
-<script th:src="@{/assets/js/notifications.js}"></script>
+	<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
+	<script th:replace="fragments/scripts.html :: xeditable"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const deleteAllByUserUrl = /*[[${deleteAllByUserUrl}]]*/ '';
+		const putNotificationSettingsUrl = /*[[${putNotificationSettingsUrl}]]*/ '';
+		const user = /*[[${user}]]*/ '';
+		const putUserEditableUrl = /*[[${putUserEditableUrl}]]*/ '';
+		/*]]>*/
+	</script>
+	<script th:src="@{/assets/js/profile.js}"></script>
+	<script th:src="@{/assets/js/tooltip.js}"></script>
+	<script th:src="@{/assets/js/notifications.js}"></script>
+</th:block>
 </body>
 </html>

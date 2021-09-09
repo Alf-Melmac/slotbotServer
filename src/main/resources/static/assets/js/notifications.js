@@ -71,14 +71,6 @@ $(function () {
     });
 });
 
-function showSavedToast() {
-    $('#savedToast').toast('show');
-}
-
-function showErrorToast() {
-    $('#errorToast').toast('show');
-}
-
 function prepBeforeSave() {
     // noinspection JSJQueryEfficiency
     $('.js-notification-settings-row').each(function (index, element) {

@@ -50,3 +50,7 @@
   width: 18em !important;
   max-width: 70vw;
 }
+
+.w-card {
+  width: 12.5em !important;
+}
