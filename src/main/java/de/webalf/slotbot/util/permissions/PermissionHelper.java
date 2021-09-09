@@ -15,6 +15,20 @@ public final class PermissionHelper {
 	public static final String IS_AUTHENTICATED = "isAuthenticated()"; //Isn't anonymous (logged in)
 
 	/**
+	 * Returns the user id of the currently logged in oauth user
+	 *
+	 * @return user id or empty string
+	 */
+	public static String getLoggedInUserId() {
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof OAuth2User) {
+			OAuth2User oAuth2User = (OAuth2User) principal;
+			return oAuth2User.getAttribute("id");
+		}
+		return "";
+	}
+
+	/**
 	 * @throws ForbiddenException if userId doesn't match logged in user
 	 */
 	public static void assertIsLoggedInUser(String userId) {
@@ -30,11 +44,6 @@ public final class PermissionHelper {
 	 * @return true if the logged in person has the given user id
 	 */
 	public static boolean isLoggedInUser(@NonNull String userId) {
-		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof OAuth2User) {
-			OAuth2User oAuth2User = (OAuth2User) principal;
-			return userId.equals(oAuth2User.getAttribute("id"));
-		}
-		return false;
+		return userId.equals(getLoggedInUserId());
 	}
 }
