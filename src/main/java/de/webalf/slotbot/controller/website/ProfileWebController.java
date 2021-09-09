@@ -1,5 +1,6 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.assembler.NotificationSettingAssembler;
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.controller.NotificationSettingsController;
 import de.webalf.slotbot.controller.UserController;
@@ -67,7 +68,7 @@ public class ProfileWebController {
 		if (ownProfile) {
 			mav.addObject("user", UserAssembler.toDto(user));
 			mav.addObject("putUserEditableUrl", linkTo(methodOn(UserController.class).updateEventEditable(user.getId(), null, null)).toUri().toString());
-			mav.addObject("notificationSettings", notificationSettingsService.findSettings(user));
+			mav.addObject("notificationSettings", NotificationSettingAssembler.toReferencelessDtoList(notificationSettingsService.findSettings(user)));
 			mav.addObject("deleteAllByUserUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
 			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettings(userId, null)).toUri().toString());
 		}

@@ -16,6 +16,7 @@ import java.util.stream.StreamSupport;
 public final class NotificationSettingAssembler {
 	private static NotificationSettingsReferencelessDto toReferencelessDto(NotificationSetting notificationSetting) {
 		return NotificationSettingsReferencelessDto.builder()
+				.id(notificationSetting.getId())
 				.hoursBeforeEvent(notificationSetting.getHoursBeforeEvent())
 				.minutesBeforeEvent(notificationSetting.getMinutesBeforeEvent())
 				.build();
