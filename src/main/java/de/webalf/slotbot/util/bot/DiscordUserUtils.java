@@ -17,7 +17,7 @@ public final class DiscordUserUtils {
 	/**
 	 * Returns the private channel for the given user by id
 	 *
-	 * @return the matching private channel or null if it doesn't exists
+	 * @return the matching private channel or null if it doesn't exist
 	 */
 	public static PrivateChannel getPrivateChannel(@NonNull JDA jda, long userId) {
 		final User user = jda.retrieveUserById(userId).complete();
