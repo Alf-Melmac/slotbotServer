@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 
 /**
@@ -61,8 +62,6 @@ public class ArchiveEvent implements DiscordCommand {
 			return;
 		}
 
-		archiveChannel.sendMessage(EventUtils.buildArchiveMessage(archivedEvent)).queue(
-				ignored -> message.getTextChannel().delete().queue()
-		);
+		sendMessage(archiveChannel, EventUtils.buildArchiveMessage(archivedEvent), ignored -> message.getTextChannel().delete().queue());
 	}
 }

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
@@ -128,6 +129,49 @@ public final class MessageUtils {
 
 	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<Message> success) {
 		message.reply(reply).queue(success, fail -> log.warn("Failed to send message reply", fail));
+	}
+
+	/**
+	 * Sends the given message in the given channel
+	 *
+	 * @param channel to send into
+	 * @param message to send
+	 */
+	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message) {
+		sendMessage(channel, message, doNothing());
+	}
+
+	/**
+	 * Sends the given message in the given channel and queues the given success consumer
+	 *
+	 * @param channel to send into
+	 * @param message to send
+	 * @param success message consumer
+	 */
+	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, Consumer<Message> success) {
+		channel.sendMessage(message).queue(success);
+	}
+
+	/**
+	 * Sends the given text in the channel of the given message
+	 * Shortcut for {@code sendMessage(message.getChannel(), text)}
+	 *
+	 * @param message on which channel text should be sent
+	 * @param text    to send
+	 */
+	public static void sendMessage(@NonNull Message message, @NotBlank String text) {
+		sendMessage(message.getChannel(), text);
+	}
+
+	/**
+	 * Sends the given text in the channel of the given message
+	 * Shortcut for {@code sendMessage(interaction.getChannel(), text)}
+	 *
+	 * @param interaction on which channel text should be sent
+	 * @param message    to send
+	 */
+	public static void sendMessage(@NonNull CommandInteraction interaction, @NotBlank String message) {
+		sendMessage(interaction.getChannel(), message);
 	}
 
 	/**

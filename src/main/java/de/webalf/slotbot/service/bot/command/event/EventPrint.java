@@ -66,15 +66,15 @@ public class EventPrint implements DiscordCommand {
 			eventApiDto.setDiscordInformation(EventDiscordInformationDto.builder().channel(channel.getId()).infoMsg(infoMsg.getId()).build());
 
 			//Send Spacer
-			channel.sendMessage("https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png").queue();
+			sendMessage(channel, "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png");
 
 			final List<String> slotListMessages = eventApiDto.getSlotList();
 			if (slotListMessages.size() > 2) {
 				throw BusinessRuntimeException.builder().title("Aktuell sind nur maximal zwei Slotlist-Nachrichten mit jeweils " + Message.MAX_CONTENT_LENGTH + " Zeichen möglich.").build();
 			}
-			//noinspection ConstantConditions Shift doesn't return null here
-			channel.sendMessage(ListUtils.shift(slotListMessages)) //Send SlotList
-					.queue(slotListMsgConsumer(channel, eventApiDto, slotListMessages));
+			//Send SlotList
+			sendMessage(channel, ListUtils.shift(slotListMessages),
+					slotListMsgConsumer(channel, eventApiDto, slotListMessages));
 		};
 	}
 
@@ -87,8 +87,8 @@ public class EventPrint implements DiscordCommand {
 
 			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
 
-			channel.sendMessage(sendSpacerEmojiIfEmpty(ListUtils.shift(slotListMessages)))
-					.queue(slotListMsgLastConsumer(channel, eventApiDto));
+			sendMessage(channel, sendSpacerEmojiIfEmpty(ListUtils.shift(slotListMessages)),
+					slotListMsgLastConsumer(channel, eventApiDto));
 		};
 	}
 

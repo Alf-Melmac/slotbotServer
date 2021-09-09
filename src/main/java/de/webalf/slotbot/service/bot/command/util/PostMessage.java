@@ -14,6 +14,7 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
+import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getStringOption;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 
@@ -36,7 +37,7 @@ public class PostMessage implements DiscordCommand, DiscordSlashCommand {
 	public void execute(Message message, List<String> args) {
 		log.trace("Command: postMessage");
 
-		message.getChannel().sendMessage(args.get(0)).queue();
+		sendMessage(message, args.get(0));
 
 		deleteMessagesInstant(message);
 	}
@@ -53,7 +54,7 @@ public class PostMessage implements DiscordCommand, DiscordSlashCommand {
 		@SuppressWarnings("ConstantConditions") //Required option
 		final String message = getStringOption(event.getOption(OPTION_MESSAGE));
 
-		event.getChannel().sendMessage(message).queue();
+		sendMessage(event, message);
 
 		finishedSlashCommandAction(event);
 	}
