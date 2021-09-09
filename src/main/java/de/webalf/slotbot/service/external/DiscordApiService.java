@@ -67,6 +67,7 @@ public class DiscordApiService {
 		return guildMember.getNick();
 	}
 
+	private static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
 	/**
 	 * @see <a href="https://discord.com/developers/docs/resources/user#get-user" target"_top">https://discord.com/developers/docs/resources/user#get-user</a>
 	 */
@@ -77,10 +78,14 @@ public class DiscordApiService {
 				.onErrorResume(error -> {
 					log.error("Failed to get user {}", userId, error);
 					final User errorUser = new User();
-					errorUser.setUsername("Unbekannter Nutzer");
+					errorUser.setUsername(UNKNOWN_USER_NAME);
 					return Mono.just(errorUser);
 				})
 				.block();
+	}
+
+	public static boolean isUnknownUser(@NonNull GuildMember member) {
+		return UNKNOWN_USER_NAME.equals(member.getUser().getUsername());
 	}
 
 	private boolean wait = false;

@@ -1,6 +1,7 @@
 package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.controller.NotificationSettingsController;
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserService;
@@ -15,9 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.stream.Collectors;
 
+import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
+import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
@@ -37,19 +41,23 @@ public class ProfileWebController {
 	private final NotificationSettingsService notificationSettingsService;
 
 	@GetMapping("{userId}")
-	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public ModelAndView getProfile(@PathVariable(value = "userId") String userId) {
 		if ("me".equals(userId)) {
-			return new ModelAndView("redirect:" + linkTo(methodOn(ProfileWebController.class).getProfile(getLoggedInUserId())).toUri());
+			return new ModelAndView("redirect:" + linkTo(methodOn(ProfileWebController.class).getProfileRedirect()).toUri());
+		} else if (!onlyNumbers(userId)) {
+			throw new ResourceNotFoundException("Profile request with invalid id " + userId);
 		}
 
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 
 		final GuildMember guildMember = discordApiService.getGuildMemberWithUser(userId);
-		final User user = userService.find(Long.parseLong(userId));
+		if (isUnknownUser(guildMember)) {
+			throw new ResourceNotFoundException("Unknown discord user " + userId);
+		}
 		mav.addObject("user", guildMember);
 		mav.addObject("roles", "@" + discordApiService.getRoles(guildMember.getRoles()).stream().map(Role::getName).collect(Collectors.joining(", @")));
+		final User user = userService.find(Long.parseLong(userId));
 		mav.addObject("participatedEventsCount", userService.getParticipatedEventsCount(user));
 
 		final boolean ownProfile = isLoggedInUser(userId);
@@ -61,5 +69,13 @@ public class ProfileWebController {
 		}
 
 		return mav;
+	}
+
+	@GetMapping("/redirect/me")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public RedirectView getProfileRedirect() {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setUrl(linkTo(methodOn(ProfileWebController.class).getProfile(getLoggedInUserId())).toUri().toString());
+		return redirectView;
 	}
 }

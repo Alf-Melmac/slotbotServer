@@ -29,7 +29,10 @@ public final class DiscordUserUtils {
 	}
 
 	public static String getAvatarUrl(@NotBlank String id, String avatar, @NotBlank String discriminator) {
-		return avatar != null ? "https://cdn.discordapp.com/avatars/" + id + "/" + avatar + ".png" : getDefaultAvatarUrl(Short.parseShort(discriminator));
+		if (avatar == null) {
+			return getDefaultAvatarUrl(Short.parseShort(discriminator));
+		}
+		return "https://cdn.discordapp.com/avatars/" + id + "/" + avatar + (avatar.startsWith("a_") ? ".gif" : ".png");
 	}
 
 	private static String getDefaultAvatarUrl(short discriminator) {

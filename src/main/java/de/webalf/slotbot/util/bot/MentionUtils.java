@@ -14,8 +14,8 @@ import static de.webalf.slotbot.util.StringUtils.removeNonDigitCharacters;
  */
 @UtilityClass
 public final class MentionUtils {
-	private static final Pattern USER_MENTION = Pattern.compile("^<@!?\\d{17,18}>$");
-	private static final Pattern CHANNEL_MENTION = Pattern.compile("^<#?\\d{17,18}>$");
+	private static final Pattern USER_MENTION = Pattern.compile("^<@!?\\d{17,19}>$");
+	private static final Pattern CHANNEL_MENTION = Pattern.compile("^<#?\\d{17,19}>$");
 
 	public static boolean isUserMention(String arg) {
 		return USER_MENTION.matcher(arg).matches();

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta th:replace="fragments/general.html :: head('Profil')"/>
 	<meta property="og:title" th:content="${user.getNick()}">
 	<meta property="og:image" th:content="${user.getAvatarUrl()}">
-	<meta property="og:description" th:content="${participatedEventsCount + ' Teilnahmen'}">
+	<meta property="og:description" th:content="${participatedEventsCount + ' Event-Teilnahmen'}">
 
 	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
@@ -25,11 +25,11 @@
 						     alt="Discord avatar"/>
 					</div>
 					<h4 class="mb-2" th:text="${user.getNick()}"></h4>
-					<p class="text-muted" th:text="${roles}"></p>
+					<p sec:authorize="isAuthenticated()" class="text-muted" th:text="${roles}"></p>
 					<div class="d-flex justify-content-center mt-5">
 						<div>
 							<p class="h5" th:text="${participatedEventsCount}">?</p>
-							<p class="text-muted mb-0">Teilgenommene Events</p>
+							<p class="text-muted mb-0">Event-Teilnahmen</p>
 						</div>
 					</div>
 				</div>
@@ -95,7 +95,8 @@
 
 <div th:if="${ownProfile}" th:replace="fragments/toasts.html"></div>
 
-<footer th:insert="fragments/general.html :: footer"></footer>
+<footer sec:authorize="isAuthenticated()" th:insert="fragments/general.html :: footer"></footer>
+<footer sec:authorize="isAnonymous()" th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
 
 <script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
 <script th:inline="javascript">
