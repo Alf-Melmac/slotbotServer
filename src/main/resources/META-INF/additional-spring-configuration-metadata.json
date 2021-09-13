@@ -28,7 +28,7 @@
 	},
 	{
 	  "name": "discord.modLog",
-	  "type": "java.lang.String",
+	  "type": "java.lang.Long",
 	  "description": "The id of the discord channel the mod log messages should be posted in."
 	},
 	{
