@@ -12,6 +12,7 @@ import java.util.List;
  * @since 18.07.2021
  */
 public interface DiscordSlashCommand {
+	@SuppressWarnings("unused") //Used by InteractionListener#onSlashCommand(SlashCommandEvent)
 	void execute(SlashCommandEvent event);
 
 	/**

@@ -6,6 +6,8 @@ import de.webalf.slotbot.model.annotations.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,7 @@ public class CommandClassHelper {
 	private final DiscordProperties discordProperties;
 
 	/**
-	 * Tries to create a new constructor instance for the given {@link de.webalf.slotbot.service.bot.command.DiscordCommand}
+	 * Tries to create a new constructor instance for the given {@link DiscordCommand} or {@link DiscordSlashCommand} class
 	 *
 	 * @param commandClass command to get constructor for
 	 * @return a new instance of the declared constructor
@@ -43,7 +45,7 @@ public class CommandClassHelper {
 			Class<?>[] parameterTypes = declaredConstructor.getParameterTypes();
 
 			if (parameterTypes.length == 0) {
-				//Admin, CopyEmbed, DonationEmbed, EditMessage, PostMessage, Vote
+				//CopyEmbed, DonationEmbed, EditMessage, PostMessage, Vote
 				try {
 					constructor = declaredConstructor.newInstance();
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
