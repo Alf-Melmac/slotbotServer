@@ -1,7 +1,10 @@
 package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
-import de.webalf.slotbot.service.bot.listener.*;
+import de.webalf.slotbot.service.bot.listener.GuildReadyListener;
+import de.webalf.slotbot.service.bot.listener.InteractionListener;
+import de.webalf.slotbot.service.bot.listener.MessageReceivedListener;
+import de.webalf.slotbot.service.bot.listener.ReactionAddListener;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,6 @@ public class BotService {
 	private final CommandClassHelper commandClassHelper;
 	private final ReactionAddService reactionAddService;
 	private final SlashCommandsService slashCommandsService;
-	private final InviteService inviteService;
 
 	@Getter
 	private JDA jda;
@@ -44,14 +46,13 @@ public class BotService {
 			jda = JDABuilder
 					//TODO: maybe default (validate caching)
 					.createLight(token)
-					.enableIntents(GUILD_MEMBERS, GUILD_INVITES)
+					.enableIntents(GUILD_MEMBERS)
 					.addEventListeners(
 							new MessageReceivedListener(discordProperties, commandClassHelper),
 							new ReactionAddListener(reactionAddService),
 							new GuildReadyListener(slashCommandsService),
-							new InteractionListener(commandClassHelper),
-							new GuildInviteListener(inviteService))
-					.disableIntents(GUILD_BANS, GUILD_EMOJIS, GUILD_VOICE_STATES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING)
+							new InteractionListener(commandClassHelper))
+					.disableIntents(GUILD_BANS, GUILD_EMOJIS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING)
 					.build();
 		} catch (LoginException e) {
 			log.error("Failed to start discord bot", e);

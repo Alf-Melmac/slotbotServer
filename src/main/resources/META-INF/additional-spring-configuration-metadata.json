@@ -27,11 +27,6 @@
 	  "description": "The id of the discord channel the archive should be created in."
 	},
 	{
-	  "name": "discord.modLog",
-	  "type": "java.lang.Long",
-	  "description": "The id of the discord channel the mod log messages should be posted in."
-	},
-	{
 	  "name": "battlemetrics.apiAccessToken",
 	  "type": "java.lang.String",
 	  "description": "A Personal Access Tokens of the battlemetrics api. Can be acquired under https://www.battlemetrics.com/developers. Permissions needed: rcon:read."
