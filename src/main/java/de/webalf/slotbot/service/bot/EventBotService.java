@@ -44,13 +44,17 @@ public class EventBotService {
 	}
 
 	public Optional<Event> findByChannel(@NonNull Message message, long channel) {
-		final Optional<Event> optionalEvent = eventService.findOptionalByChannel(channel);
+		final Optional<Event> optionalEvent = findByChannel(channel);
 		if (optionalEvent.isPresent()) {
 			return optionalEvent;
 		} else {
 			replyAndDelete(message, "Hier konnte kein Event gefunden werden.");
 			return Optional.empty();
 		}
+	}
+
+	public Optional<Event> findByChannel(long channel) {
+		return eventService.findOptionalByChannel(channel);
 	}
 
 	public List<Event> findAllInPast() {

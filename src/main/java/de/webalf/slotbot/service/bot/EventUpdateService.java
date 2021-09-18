@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static de.webalf.slotbot.service.bot.command.event.EventPrint.sendSpacerEmojiIfEmpty;
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
+import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 
 /**
  * @author Alf
@@ -48,7 +48,7 @@ public class EventUpdateService {
 		final List<String> slotList = eventApiDto.getSlotList();
 		//noinspection ConstantConditions SlotList can't be null here
 		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
-		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), sendSpacerEmojiIfEmpty(ListUtils.shift(slotList))).queue();
+		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
 	}
 
 	/**

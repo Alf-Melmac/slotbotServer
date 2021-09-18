@@ -53,7 +53,7 @@ public class CommandClassHelper {
 				}
 				break;
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class})) {
-				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPing, EventPrint, RandomSlot, RenameSlot, Slot, Unslot
+				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
