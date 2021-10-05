@@ -12,13 +12,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
+ * Handles exceptions thrown in controllers annotated with {@link Controller}.
+ * <p>
+ * This translates exceptions to human-readable and valuable error messages for the caller.
+ *
  * @author Alf
  * @since 09.06.2021
  */
 @ControllerAdvice(annotations = Controller.class)
 @Order(2)
 @Slf4j
-public class WebResponseEntityExceptionHandler  extends ResponseEntityExceptionHandler {
+public class WebResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = {ResourceNotFoundException.class, MethodArgumentTypeMismatchException.class})
 	protected RedirectView handleConflict(RuntimeException ex) {

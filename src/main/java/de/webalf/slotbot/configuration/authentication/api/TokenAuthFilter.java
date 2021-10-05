@@ -1,8 +1,9 @@
 package de.webalf.slotbot.configuration.authentication.api;
 
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.authentication.ApiToken;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,12 +30,18 @@ import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
  * @since 23.09.2020
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TokenAuthFilter extends OncePerRequestFilter {
 	@Value("${slotbot.auth.token.name:slotbot-auth-token}")
 	private String tokenName;
 
 	private final TokenAuthProvider tokenAuthProvider;
+	private final HandlerExceptionResolver resolver;
+
+	@Autowired
+	public TokenAuthFilter(TokenAuthProvider tokenAuthProvider, @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+		this.tokenAuthProvider = tokenAuthProvider;
+		this.resolver = resolver;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
@@ -42,7 +50,14 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
 		// if there is an auth token, create an Authentication object
 		if (authToken != null) {
-			final Authentication auth = new SlotbotAuthentication(authToken, mapAuthorities(authToken));
+			Set<GrantedAuthority> grantedAuthorities;
+			try {
+				grantedAuthorities = mapAuthorities(authToken);
+			} catch (ForbiddenException ex) {
+				resolver.resolveException(request, response, null, ex);
+				return;
+			}
+			final Authentication auth = new SlotbotAuthentication(authToken, grantedAuthorities);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 		}
 
@@ -50,7 +65,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	private Set<GrantedAuthority> mapAuthorities(@NotBlank String token) {
+	private Set<GrantedAuthority> mapAuthorities(@NotBlank String token) throws ForbiddenException {
 		final ApiToken apiToken = tokenAuthProvider.getApiToken(token);
 		return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + apiToken.getType().name()));
 	}

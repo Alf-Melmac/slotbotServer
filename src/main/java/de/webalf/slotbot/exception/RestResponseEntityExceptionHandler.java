@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Handles exceptions thrown in all layers.
+ * Handles exceptions thrown in controllers annotated with {@link RestController}.
  * <p>
- * This translated exceptions to human readable and valuable error messages for the caller.
+ * This translates exceptions to human-readable and valuable error messages for the caller.
  *
  * @author Alf
  * @since 09.08.2020
@@ -80,7 +80,7 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 	 * @param e exception to check
 	 * @return annotated Status or HttpStatus.INTERNAL_SERVER_ERROR
 	 */
-	private HttpStatus determineHttpStatus(Exception e) {
+	static HttpStatus determineHttpStatus(Exception e) {
 		if (e instanceof BadCredentialsException) {
 			return HttpStatus.UNAUTHORIZED;
 		}
