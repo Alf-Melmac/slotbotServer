@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import javax.security.auth.login.LoginException;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
@@ -57,5 +58,10 @@ public class BotService {
 		} catch (LoginException e) {
 			log.error("Failed to start discord bot", e);
 		}
+	}
+
+	@PreDestroy
+	private void cleanUp() {
+		jda.shutdownNow();
 	}
 }

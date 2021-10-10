@@ -7,6 +7,7 @@ import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 /**
@@ -22,6 +23,10 @@ public final class DtoUtils {
 
 	private static boolean isPresent(String value) {
 		return StringUtils.isNotEmpty(value);
+	}
+
+	private static <T extends Collection<?>> boolean isPresent(T value) {
+		return CollectionUtils.isNotEmpty(value);
 	}
 
 	private static boolean isPresent(Object value) {
@@ -49,6 +54,12 @@ public final class DtoUtils {
 	public static void ifPresent(int value, Consumer<Integer> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);
+		}
+	}
+
+	public static <T extends Collection<?>> void ifPresent(T values, Consumer<T> consumer) {
+		if (isPresent(values)) {
+			consumer.accept(values);
 		}
 	}
 

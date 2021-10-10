@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 
 /**
  * @author Alf
@@ -18,7 +17,7 @@ public class LoginWebController {
 	@GetMapping
 	public ModelAndView getLogin() {
 		ModelAndView mav = new ModelAndView("login");
-		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
+		addLayoutSettings(mav);
 		return mav;
 	}
 }

@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static de.webalf.slotbot.util.GuildUtils.Guild.findByDiscordGuild;
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
@@ -57,7 +58,7 @@ public final class EventUtils {
 
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
-				.setTitle(event.getName(), fixUrl(event.getUrl()))
+				.setTitle(event.getName(), fixUrl(event.getUrl(), event.getOwnerGuild()))
 				.setDescription(event.getDescription())
 				.setThumbnail(thumbnail)
 				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
@@ -76,14 +77,15 @@ public final class EventUtils {
 	 * Ensures that the url is an absolute uri
 	 *
 	 * @param url to check
+	 * @param ownerGuild owner of event
 	 * @return usable url
 	 */
-	private static String fixUrl(String url) {
+	private static String fixUrl(String url, String ownerGuild) {
 		//If the request was made from the discord the url is a relative URI, with absolute path
 		//If an update is triggered by the website the url is an absolut URI
 		//I wasn't able to find a fix for this other than this workaround :(
 		if (!url.startsWith("http")) {
-			return "https://armamachtbock.de" + url;
+			return findByDiscordGuild(Long.parseLong(ownerGuild)).getBaseUrl() + url;
 		}
 		return url;
 	}
@@ -100,7 +102,7 @@ public final class EventUtils {
 				text = "Nein";
 			}
 			if (StringUtils.isNotEmpty(field.getLink())) {
-				text = "[" + text + "](" + fixUrl(field.getLink()) + ")";
+				text = "[" + text + "](" + fixUrl(field.getLink(), event.getOwnerGuild()) + ")";
 			}
 			addField(field.getTitle(), text, true, embedBuilder);
 		});

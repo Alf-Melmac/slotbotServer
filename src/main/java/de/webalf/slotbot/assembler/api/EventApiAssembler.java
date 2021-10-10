@@ -39,6 +39,7 @@ public final class EventApiAssembler {
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.hidden(event.isHidden())
 				.squadList(SquadApiAssembler.toDtoList(event.getSquadList()))
 				.description(event.getDescription())

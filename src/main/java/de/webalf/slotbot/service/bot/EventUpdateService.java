@@ -38,17 +38,19 @@ public class EventUpdateService {
 	public void update(@NonNull Event event) throws IllegalStateException {
 		log.trace("Update");
 
-		final TextChannel eventChannel = botService.getJda().getTextChannelById(event.getDiscordInformation().getChannel());
-		if (eventChannel == null) {
-			throw new IllegalStateException("Channel " + event.getDiscordInformation().getChannel() + " couldn't be found.");
-		}
+		event.getDiscordInformation().forEach(discordInformation -> {
+			final TextChannel eventChannel = botService.getJda().getTextChannelById(discordInformation.getChannel());
+			if (eventChannel == null) {
+				throw new IllegalStateException("Channel " + discordInformation.getChannel() + " couldn't be found.");
+			}
 
-		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-		eventChannel.editMessageEmbedsById(event.getDiscordInformation().getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
-		final List<String> slotList = eventApiDto.getSlotList();
-		//noinspection ConstantConditions SlotList can't be null here
-		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
-		eventChannel.editMessageById(event.getDiscordInformation().getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
+			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
+			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
+			final List<String> slotList = eventApiDto.getSlotList();
+			//noinspection ConstantConditions SlotList can't be null here
+			eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
+			eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
+		});
 	}
 
 	/**

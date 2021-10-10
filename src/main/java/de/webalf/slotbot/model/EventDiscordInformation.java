@@ -12,8 +12,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "event_discord_information", uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"event_channel"}), @UniqueConstraint(columnNames = {"event_info_msg"}),
-		@UniqueConstraint(columnNames = {"event_slotlist_msg_one"}), @UniqueConstraint(columnNames = {"event_slotlist_msg_two"})})
+		@UniqueConstraint(columnNames = {"discord_information_channel"}), @UniqueConstraint(columnNames = {"discord_information_info_msg"}),
+		@UniqueConstraint(columnNames = {"discord_information_slotlist_msg_one"}), @UniqueConstraint(columnNames = {"discord_information_slotlist_msg_two"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,33 +21,27 @@ import javax.persistence.*;
 @Builder
 public class EventDiscordInformation {
 	@Id
-	@Column(name = "event_channel", unique = true, nullable = false, updatable = false)
+	@Column(name = "discord_information_channel", unique = true, nullable = false, updatable = false)
 	private long channel;
 
-	@Column(name = "event_info_msg", unique = true)
+	@Column(name = "discord_information_guild", nullable = false, updatable = false)
+	private long guild;
+
+	@Column(name = "discord_information_info_msg", unique = true)
 	private Long infoMsg;
 
-	@Column(name = "event_slotlist_msg_one", unique = true)
+	@Column(name = "discord_information_slotlist_msg_one", unique = true)
 	private Long slotListMsgPartOne;
 
-	@Column(name = "event_slotlist_msg_two", unique = true)
+	@Column(name = "discord_information_slotlist_msg_two", unique = true)
 	private Long slotListMsgPartTwo;
 
-	@OneToOne(targetEntity = Event.class, optional = false)
+	@ManyToOne(targetEntity = Event.class, optional = false)
 	@JoinColumn(name = "event_id")
 	@JsonBackReference
 	private Event event;
 
 	public String getChannelAsMention() {
 		return MentionUtils.getChannelAsMention(getChannel());
-	}
-
-	/**
-	 * Checks if the event has already been printed. Printing is asserted if an info message id is assigned
-	 *
-	 * @return true if event has already been printed
-	 */
-	public boolean isPrinted() {
-		return getInfoMsg() != null;
 	}
 }

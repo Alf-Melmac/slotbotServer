@@ -9,8 +9,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.service.external.DiscordApiService.GuildMember;
-import de.webalf.slotbot.service.external.DiscordApiService.Role;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,9 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.stream.Collectors;
-
 import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
+import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
@@ -40,6 +38,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ProfileWebController {
 	private final DiscordApiService discordApiService;
+	private final DiscordAuthenticationService discordAuthenticationService;
 	private final UserService userService;
 	private final NotificationSettingsService notificationSettingsService;
 
@@ -52,14 +51,13 @@ public class ProfileWebController {
 		}
 
 		ModelAndView mav = new ModelAndView("profile");
-		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 
-		final GuildMember guildMember = discordApiService.getGuildMemberWithUser(userId);
-		if (isUnknownUser(guildMember)) {
+		final DiscordApiService.User discordUser = discordApiService.getUser(userId);
+		if (isUnknownUser(discordUser)) {
 			throw new ResourceNotFoundException("Unknown discord user " + userId);
 		}
-		mav.addObject("guildMember", guildMember);
-		mav.addObject("roles", "@" + discordApiService.getRoles(guildMember.getRoles()).stream().map(Role::getName).collect(Collectors.joining(", @")));
+		mav.addObject("discordUser", discordUser);
+		mav.addObject("roles", "@" + String.join(", @", discordAuthenticationService.getRoles(userId)));
 		final User user = userService.find(Long.parseLong(userId));
 		mav.addObject("participatedEventsCount", userService.getParticipatedEventsCount(user));
 
@@ -73,6 +71,7 @@ public class ProfileWebController {
 			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettings(userId, null)).toUri().toString());
 		}
 
+		addLayoutSettings(mav);
 		return mav;
 	}
 

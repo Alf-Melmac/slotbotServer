@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.MaxLength.*;
 
@@ -42,6 +44,8 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String creator;
 
+	private String ownerGuild;
+
 	@Builder.Default
 	private boolean hidden = false;
 
@@ -59,7 +63,7 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 
 	private Boolean reserveParticipating;
 
-	private EventDiscordInformationDto discordInformation;
+	private Set<EventDiscordInformationDto> discordInformation;
 
 	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
 	public String getPictureUrl() {
@@ -85,5 +89,10 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 
 	public ZonedDateTime getDateTimeZoned() {
 		return DateUtils.getDateTimeZoned(date, startTime);
+	}
+
+	public Optional<EventDiscordInformationDto> getDiscordInformation(String guildId) {
+		return getDiscordInformation().stream()
+				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild().equals(guildId)).findAny();
 	}
 }

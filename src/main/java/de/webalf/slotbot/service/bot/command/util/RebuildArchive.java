@@ -34,7 +34,7 @@ public class RebuildArchive implements DiscordCommand {
 	public void execute(Message message, List<String> args) {
 		log.trace("Command: rebuildArchive");
 
-		final Long archiveChannelId = discordProperties.getArchive();
+		final Long archiveChannelId = discordProperties.getArchive(message.getGuild().getIdLong());
 		if (archiveChannelId == null) {
 			return;
 		}

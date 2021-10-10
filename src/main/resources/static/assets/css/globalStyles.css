@@ -42,13 +42,16 @@ textarea::selection {
   font-size: 1em;
 }
 
+.link-btn:hover {
+  transform: scale(1.2);
+}
+
 .link-btn.twitter-btn {
-  color: #00acff;
-  text-shadow: 0 0 30px #00acff;
+  color: #1da1f2;
+  text-shadow: 0 0 30px #1da1f2;
 }
 .link-btn.twitter-btn:hover {
-  transform: scale(1.2);
-  box-shadow: 0 30px 45px -15px rgb(51, 189, 255);
+  box-shadow: 0 30px 45px -15px rgb(12, 133, 208);
 }
 
 .link-btn.yt-btn {
@@ -56,8 +59,7 @@ textarea::selection {
   text-shadow: 0 0 30px #FF0000;
 }
 .link-btn.yt-btn:hover {
-  transform: scale(1.2);
-  box-shadow: 0 30px 45px -15px rgb(255, 51, 51);
+  box-shadow: 0 30px 45px -15px rgb(204, 0, 0);
 }
 
 .link-btn.twitch-btn {
@@ -65,7 +67,6 @@ textarea::selection {
   text-shadow: 0 0 30px #9147ff;
 }
 .link-btn.twitch-btn:hover {
-  transform: scale(1.2);
   box-shadow: 0 30px 45px -15px rgb(115, 20, 255);
 }
 
@@ -74,6 +75,21 @@ textarea::selection {
   text-shadow: 0 0 30px #e6e6e6;
 }
 .link-btn.wiki-btn:hover {
-  transform: scale(1.2);
   box-shadow: 0 30px 45px -15px rgb(205, 205, 205);
+}
+
+.link-btn.insta-btn {
+  color: #c13584;
+  text-shadow: 0 0 30px #c13584;
+}
+.link-btn.insta-btn:hover {
+  box-shadow: 0 30px 45px -15px rgb(153, 42, 105);
+}
+
+.link-btn.discord-btn {
+  color: #5865f2;
+  text-shadow: 0 0 30px #5865f2;
+}
+.link-btn.discord-btn:hover {
+  box-shadow: 0 30px 45px -15px rgb(41, 57, 238);
 }

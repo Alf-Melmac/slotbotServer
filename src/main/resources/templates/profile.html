@@ -2,8 +2,8 @@
 <html lang="de" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta th:replace="fragments/general.html :: head('Profil')"/>
-	<meta property="og:title" th:content="${guildMember.getNick()}">
-	<meta property="og:image" th:content="${guildMember.getAvatarUrl()}">
+	<meta property="og:title" th:content="${discordUser.getUsername()}">
+	<meta property="og:image" th:content="${discordUser.getAvatarUrl()}">
 	<meta property="og:description" th:content="${participatedEventsCount + ' Event-Teilnahmen'}">
 
 	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
@@ -24,10 +24,10 @@
 			<div class="card">
 				<div class="card-body text-center">
 					<div class="mb-2">
-						<img class="rounded-circle img-fluid mw-6" th:src="${guildMember.getAvatarUrl()}"
+						<img class="rounded-circle img-fluid mw-6" th:src="${discordUser.getAvatarUrl()}"
 						     alt="Discord avatar"/>
 					</div>
-					<h4 class="mb-2" th:text="${guildMember.getNick()}"></h4>
+					<h4 class="mb-2" th:text="${discordUser.getUsername()}"></h4>
 
 					<p sec:authorize="isAuthenticated()" class="text-muted" th:text="${roles}"></p>
 

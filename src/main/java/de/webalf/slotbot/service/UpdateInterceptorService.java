@@ -36,7 +36,7 @@ public class UpdateInterceptorService {
 	}
 
 	private void update(Event event) {
-		if (event == null || !event.isPrinted()) {
+		if (event == null || !event.isAssigned()) {
 			return;
 		}
 

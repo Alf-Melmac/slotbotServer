@@ -77,7 +77,7 @@ $(function () {
     }
 });
 
-const skipDtoKeys = ['date', 'channel', 'infoMsg', 'slotListMsg', 'channelUrl', 'pictureUrl', 'missionTypesFiltered'];
+const skipDtoKeys = ['date', 'channel', 'infoMsg', 'slotListMsg', 'pictureUrl', 'missionTypesFiltered'];
 function setValue(dtoKey, value) {
     if (dtoKey.endsWith('id') || skipDtoKeys.includes(dtoKey)) {
         return;

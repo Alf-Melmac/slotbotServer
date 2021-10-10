@@ -17,12 +17,16 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class SelectionMenuUtils {
-	public static final Map<String, Class<?>> idToClassMap = new HashMap<>();
+	private static final Map<String, Class<?>> idToClassMap = new HashMap<>();
 
 	static {
 		final Iterable<Class<?>> classIterable = ClassIndex.getAnnotated(SelectionMenuListener.class);
 		StreamSupport.stream(classIterable.spliterator(), false)
-				.forEach(command -> idToClassMap.put(command.getAnnotation(SelectionMenuListener.class).value(), command));
+				.forEach(command -> {
+					for (String menuId : command.getAnnotation(SelectionMenuListener.class).value()) {
+						idToClassMap.put(menuId, command);
+					}
+				});
 	}
 
 	/**

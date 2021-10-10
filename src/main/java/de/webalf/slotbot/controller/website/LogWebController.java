@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.constant.Urls.ADMIN;
+import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -23,9 +24,9 @@ public class LogWebController {
 	public ModelAndView getLogsHtml() {
 		ModelAndView mav = new ModelAndView("logs");
 
-		mav.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
 		mav.addObject("adminUrl", linkTo(methodOn(AdminWebController.class).getAdminHtml()).toUri().toString());
 
+		addLayoutSettings(mav);
 		return mav;
 	}
 }

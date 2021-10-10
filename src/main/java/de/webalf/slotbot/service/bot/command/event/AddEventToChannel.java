@@ -3,6 +3,7 @@ package de.webalf.slotbot.service.bot.command.event;
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.annotations.SelectionMenuListener;
 import de.webalf.slotbot.model.annotations.SlashCommand;
@@ -13,6 +14,7 @@ import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSelectionMenu;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.util.GuildUtils.Guild;
 import de.webalf.slotbot.util.ListUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +25,12 @@ import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
@@ -48,7 +54,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @SlashCommand(name = "addEventToChannel",
 		description = "Wähle ein Event aus und ordne es den aktuellen Kanal zu.",
 		authorization = EVENT_MANAGE)
-@SelectionMenuListener("addEventToChannel")
+@SelectionMenuListener({"addEventToChannel", "addForeignEventToChannel"})
 public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, DiscordSelectionMenu {
 	private final EventBotService eventBotService;
 
@@ -73,13 +79,15 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 
 	private Consumer<Event> addEventConsumer(@NonNull Message message) {
 		return event -> {
-			if (event.isAssigned()) {
-				replyAndDelete(message, "Das Event ist bereits " + event.getDiscordInformation().getChannelAsMention() + " zugeordnet.");
+			final long guildId = message.getGuild().getIdLong();
+			final Optional<EventDiscordInformation> discordInformation = event.getDiscordInformation(guildId);
+			if (discordInformation.isPresent()) {
+				replyAndDelete(message, "Das Event ist bereits " + discordInformation.get().getChannelAsMention() + " zugeordnet.");
 				return;
 			}
 
 			final MessageChannel channel = message.getChannel();
-			addEventAndPrint(event, channel);
+			addEventAndPrint(event, channel, guildId);
 			replyAndDelete(message, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
 		};
 	}
@@ -89,38 +97,57 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 		log.trace("Slash command: addEventToChannel");
 
 		if (existingEventInThisChannel(slashCommandEvent.getChannel())) {
-			reply(slashCommandEvent, "Diesem Kanal ist bereits ein Event zugeornet.");
+			reply(slashCommandEvent, "Diesem Kanal ist bereits ein Event zugeordnet.");
 			return;
 		}
 
-		final List<Event> events = eventBotService.findAllNotAssignedInFuture();
-		if (events.isEmpty()) {
+		final List<Event> events = eventBotService.findAllNotAssignedInFuture(slashCommandEvent.getGuild().getIdLong());
+		final List<Event> foreignEvents = eventBotService.findAllForeignNotAssignedInFuture(slashCommandEvent.getGuild().getIdLong());
+		final boolean eventsEmpty = events.isEmpty();
+		final boolean foreignEventsEmpty = foreignEvents.isEmpty();
+		if (eventsEmpty && foreignEventsEmpty) {
 			reply(slashCommandEvent, "Kein nicht zugeordnetes Event in der Zukunft gefunden.");
 			return;
 		}
 
-		final SelectionMenu.Builder selectionMenuBuilder = SelectionMenu.create(getClass().getAnnotation(SelectionMenuListener.class).value())
-				.setPlaceholder("Event auswählen...");
-
-		for (Event event : events) {
-			selectionMenuBuilder.addOption(buildSelectionLabel(event.getName()), Long.toString(event.getId()));
+		final List<SelectionMenu> selectionMenus = new ArrayList<>(2);
+		if (!eventsEmpty) {
+			populateSelectionMenuList(events, selectionMenus, "Eigenes Event auswählen...", false);
+		}
+		if (!foreignEventsEmpty) {
+			populateSelectionMenuList(foreignEvents, selectionMenus, "Fremdes Event auswählen...", true);
 		}
 
-		addSelectionMenu(slashCommandEvent, selectionMenuBuilder.build());
+		addSelectionMenu(slashCommandEvent, selectionMenus.toArray(new SelectionMenu[0]));
+	}
+
+	private void populateSelectionMenuList(List<Event> events, List<SelectionMenu> selectionMenus, String placeholder, boolean foreign) {
+		final String[] menuIds = getClass().getAnnotation(SelectionMenuListener.class).value();
+		final SelectionMenu.Builder selectionMenuBuilder = SelectionMenu.create(foreign ? menuIds[1] : menuIds[0])
+				.setPlaceholder(placeholder);
+
+		for (Event event : events) {
+			final String name = (foreign ? "(" + Guild.findByDiscordGuild(event.getOwnerGuild()).getId() + ") " : "") + event.getName();
+			selectionMenuBuilder.addOption(buildSelectionLabel(name), Long.toString(event.getId()));
+		}
+		selectionMenus.add(selectionMenuBuilder.build());
 	}
 
 	@Override
+	@Transactional
 	public void process(SelectionMenuEvent selectionMenuEvent) {
 		log.trace("Selection menu: addEventToChannel");
 
 		final Event event = eventBotService.findById(Long.parseLong(selectionMenuEvent.getValues().get(0)));
 
-		if (event.isAssigned()) {
-			replyAndRemoveComponents(selectionMenuEvent, "Da war jemand schneller als du. Das Event ist bereits " + event.getDiscordInformation().getChannelAsMention() + " zugeordnet.");
+		final long guildId = selectionMenuEvent.getGuild().getIdLong();
+		final Optional<EventDiscordInformation> discordInformation = event.getDiscordInformation(guildId);
+		if (discordInformation.isPresent()) {
+			replyAndRemoveComponents(selectionMenuEvent, "Da war jemand schneller als du. Das Event ist bereits " + discordInformation.get().getChannelAsMention() + " zugeordnet.");
 			return;
 		}
 
-		addEventAndPrint(event, selectionMenuEvent.getChannel());
+		addEventAndPrint(event, selectionMenuEvent.getChannel(), guildId);
 		replyAndRemoveComponents(selectionMenuEvent, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
 	}
 
@@ -128,21 +155,25 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 		return eventBotService.findByChannel(channel.getIdLong()).isPresent();
 	}
 
-	private void addEventAndPrint(@NonNull Event event, @NonNull MessageChannel channel) {
+	private void addEventAndPrint(@NonNull Event event, @NonNull MessageChannel channel, long guildId) {
 		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
+		if (eventApiDto.getDiscordInformation() == null) {
+			eventApiDto.setDiscordInformation(new HashSet<>());
+		}
 		//Set event channel
-		eventApiDto.setDiscordInformation(EventDiscordInformationDto.builder().channel(channel.getId()).build());
+		final String guildIdString = Long.toString(guildId);
+		eventApiDto.getDiscordInformation().add(EventDiscordInformationDto.builder().channel(channel.getId()).guild(guildIdString).build());
 
 		channel.sendMessageEmbeds(EventUtils.buildDetailsEmbed(eventApiDto)) //Send event details
-				.queue(infoMsgConsumer(channel, eventApiDto));
+				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString));
 	}
 
 	/**
 	 * Called after the event details have been sent, to then send the first part of the slot list
 	 */
-	private Consumer<Message> infoMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto) {
+	private Consumer<Message> infoMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, String guildId) {
 		return infoMsg -> {
-			eventApiDto.setDiscordInformation(EventDiscordInformationDto.builder().channel(channel.getId()).infoMsg(infoMsg.getId()).build());
+			eventApiDto.getDiscordInformation(guildId).ifPresentOrElse(discordInformation -> discordInformation.setInfoMsg(infoMsg.getId()), () -> log.error("Failed to add infoMsg"));
 
 			//Send Spacer
 			sendMessage(channel, "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png");
@@ -153,30 +184,30 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 			}
 			//Send SlotList
 			sendMessage(channel, ListUtils.shift(slotListMessages),
-					slotListMsgConsumer(channel, eventApiDto, slotListMessages));
+					slotListMsgConsumer(channel, eventApiDto, slotListMessages, guildId));
 		};
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannel, EventApiDto)} to update the event with both message ids
+	 * Must be called after {@link #infoMsgConsumer(MessageChannel, EventApiDto, String)} to update the event with both message ids
 	 */
-	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages) {
+	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages, String guildId) {
 		return slotListMsg -> {
-			eventApiDto.getDiscordInformation().setSlotListMsgPartOne(slotListMsg.getId());
+			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartOne(slotListMsg.getId()));
 
 			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
 
 			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)),
-					slotListMsgLastConsumer(channel, eventApiDto));
+					slotListMsgLastConsumer(channel, eventApiDto, guildId));
 		};
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannel, EventApiDto)} to update the event with all message ids
+	 * Must be called after {@link #slotListMsgConsumer(MessageChannel, EventApiDto, List, String)} to update the event with the last message id
 	 */
-	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto) {
+	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, String guildId) {
 		return slotListMsg -> {
-			eventApiDto.getDiscordInformation().setSlotListMsgPartTwo(slotListMsg.getId());
+			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartTwo(slotListMsg.getId()));
 
 			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
 

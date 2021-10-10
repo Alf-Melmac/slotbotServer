@@ -32,7 +32,7 @@ public final class EventAssembler {
 				.missionLength(dto.getMissionLength())
 				.reserveParticipating(dto.getReserveParticipating())
 				.details(EventFieldAssembler.fromDtoIterable(dto.getDetails()))
-				.discordInformation(EventDiscordInformationAssembler.fromDto(dto.getDiscordInformation()))
+				.discordInformation(EventDiscordInformationAssembler.fromDtoIterable(dto.getDiscordInformation()))
 				.build();
 	}
 
@@ -48,6 +48,7 @@ public final class EventAssembler {
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.hidden(event.isHidden())
 				.squadList(SquadAssembler.toReferencelessDtoList(event.getSquadList()))
 				.description(event.getDescription())
@@ -56,7 +57,7 @@ public final class EventAssembler {
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
 				.details(EventFieldAssembler.toReferencelessDtoList(event.getDetails()))
-				.discordInformation(EventDiscordInformationAssembler.toDto(event.getDiscordInformation()))
+				.discordInformation(EventDiscordInformationAssembler.toDtoSet(event.getDiscordInformation()))
 				.build();
 	}
 
@@ -72,13 +73,14 @@ public final class EventAssembler {
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.hidden(event.isHidden())
 				.description(event.getDescription())
 				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.reserveParticipating(event.getReserveParticipating())
-				.discordInformation(EventDiscordInformationAssembler.toDto(event.getDiscordInformation()))
+				.discordInformation(EventDiscordInformationAssembler.toDtoSet(event.getDiscordInformation()))
 				.build();
 	}
 }

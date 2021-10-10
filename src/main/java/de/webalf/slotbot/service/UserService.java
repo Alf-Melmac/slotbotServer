@@ -61,8 +61,20 @@ public class UserService {
 		}
 
 		final String userId = LongUtils.toString(user.getId());
-		final UserNameDto userNameDto = UserNameDto.builder().name(discordApiService.getName(userId)).build();
+		return toUserNameDto(user, discordApiService.getName(userId));
+	}
 
+	public UserNameDto toUserNameDto(User user, long guildId) {
+		if (user == null || user.isDefaultUser()) {
+			return null;
+		}
+
+		final String userId = LongUtils.toString(user.getId());
+		return toUserNameDto(user, discordApiService.getName(userId, guildId));
+	}
+
+	public UserNameDto toUserNameDto(@NonNull User user, String name) {
+		final UserNameDto userNameDto = UserNameDto.builder().name(name).build();
 		ReflectionUtils.shallowCopyFieldState(UserAssembler.toDto(user), userNameDto);
 		return userNameDto;
 	}

@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 /**
  * @author Alf
@@ -19,13 +19,17 @@ public class DiscordProperties {
 	private String token;
 
 	@NotBlank
-	private String guild;
-
-	@NotBlank
 	private String prefix = "!";
 
-	@NotNull
-	private long id;
+	private Map<Long, Long> archive;
 
-	private Long archive;
+	/**
+	 * Returns the configured archive channel for the given guild
+	 *
+	 * @param guildId in which the event will be archived
+	 * @return channel id of the archive channel
+	 */
+	public Long getArchive(long guildId) {
+		return archive.get(guildId);
+	}
 }

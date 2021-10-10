@@ -45,13 +45,13 @@ public class ArchiveEvent implements DiscordCommand {
 
 	private Consumer<Event> archiveEventConsumer(Message message) {
 		return event -> {
-			eventBotService.archiveEvent(event.getId());
+			eventBotService.archiveEvent(event.getId(), message.getGuild().getIdLong());
 			discordArchive(message, event);
 		};
 	}
 
 	private void discordArchive(@NonNull Message message, Event archivedEvent) {
-		final Long archiveChannelId = discordProperties.getArchive();
+		final Long archiveChannelId = discordProperties.getArchive(message.getGuild().getIdLong());
 		if (archiveChannelId == null) {
 			return;
 		}

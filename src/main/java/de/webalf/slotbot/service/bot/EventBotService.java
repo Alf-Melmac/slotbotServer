@@ -61,16 +61,20 @@ public class EventBotService {
 		return eventService.findAllInPast();
 	}
 
-	public List<Event> findAllNotAssignedInFuture() {
-		return eventService.findAllNotAssignedInFuture();
+	public List<Event> findAllNotAssignedInFuture(long guildId) {
+		return eventService.findAllNotAssignedInFuture(guildId);
+	}
+
+	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
+		return eventService.findAllForeignNotAssignedInFuture(guildId);
 	}
 
 	public void updateEvent(AbstractEventDto dto) {
 		eventService.updateEvent(dto);
 	}
 
-	public void archiveEvent(long eventId) {
-		eventService.archiveEvent(eventId);
+	public void archiveEvent(long eventId, long guildId) {
+		eventService.archiveEvent(eventId, guildId);
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {

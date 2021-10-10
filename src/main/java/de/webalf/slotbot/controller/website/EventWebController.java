@@ -25,7 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVENT_MANAGE;
+import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.assertEventManagePermission;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -41,13 +44,11 @@ public class EventWebController {
 	private final EventDetailsAssembler eventDetailsAssembler;
 	private final EventTypeService eventTypeService;
 
-	private static final String START_URL_STRING = "startUrl";
-	private static final String START_URL = linkTo(methodOn(StartWebController.class).getStart()).toUri().toString();
 	private static final String EVENTS_URL_STRING = "eventsUrl";
-	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getEventHtml()).toUri().toString();
+	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getEventsHtml()).toUri().toString();
 
 	@GetMapping
-	public ModelAndView getEventHtml() {
+	public ModelAndView getEventsHtml() {
 		ModelAndView mav = new ModelAndView("events");
 
 		mav.addObject("getEventsUrl", linkTo(methodOn(EventController.class).getBetween(null, null))
@@ -55,18 +56,18 @@ public class EventWebController {
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, null)).toUri().toString());
-		mav.addObject(START_URL_STRING, START_URL);
 		mav.addObject("eventManageRoles", BotPermissionHelper.getEventManageApplicationRoles());
 
+		addLayoutSettings(mav);
 		return mav;
 	}
 
 	@GetMapping("/new")
-	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public ModelAndView getWizardHtml(@RequestParam(required = false) String date, @RequestParam(required = false) String copyEvent) {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
-		mav.addObject(START_URL_STRING, START_URL);
+		addLayoutSettings(mav);
 		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("date", date);
@@ -89,7 +90,7 @@ public class EventWebController {
 	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
 		ModelAndView mav = new ModelAndView("eventDetails");
 
-		mav.addObject(START_URL_STRING, START_URL);
+		addLayoutSettings(mav);
 		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		final EventDetailsDto detailsDto = eventDetailsAssembler.toDto(eventService.findById(eventId));
@@ -97,16 +98,18 @@ public class EventWebController {
 		mav.addObject("eventDescriptionHtml", DiscordMarkdown.toHtml(detailsDto.getDescription()));
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, Long.toString(eventId))).toUri().toString());
 		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
-		mav.addObject("hasEventManageRole", BotPermissionHelper.hasEventManageRole());
+		mav.addObject("hasEventManageRole", hasEventManagePermission(Long.parseLong(detailsDto.getOwnerGuild())));
 		return mav;
 	}
 
 	@GetMapping("/{id}/edit")
-	@PreAuthorize(HAS_ROLE_EVENT_MANAGE)
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
+		assertEventManagePermission(eventService.getGuildIdByEventId(eventId));
+
 		ModelAndView mav = new ModelAndView("eventEdit");
 
-		mav.addObject(START_URL_STRING, START_URL);
+		addLayoutSettings(mav);
 		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		final Event event = eventService.findById(eventId);

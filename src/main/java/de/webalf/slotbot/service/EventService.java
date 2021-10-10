@@ -11,9 +11,10 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.*;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
+import de.webalf.slotbot.util.CollectionUtils;
 import de.webalf.slotbot.util.DtoUtils;
-import de.webalf.slotbot.util.StringUtils;
-import de.webalf.slotbot.util.permissions.BotPermissionHelper;
+import de.webalf.slotbot.util.GuildUtils;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.ListUtils;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static de.webalf.slotbot.util.EventUtils.assertApiAccessAllowed;
+import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventManageRole;
 
 /**
  * @author Alf
@@ -48,18 +47,21 @@ public class EventService {
 
 	/**
 	 * Creates a new event with values from the {@link EventDto}
+	 * {@link Event#setOwnerGuild(long)} is set by current request uri {@link GuildUtils#getCurrentOwnerGuild()}
 	 *
 	 * @param eventDto new event
 	 * @return saved new event
 	 */
 	public Event createEvent(@NonNull EventDto eventDto) {
-		final EventDiscordInformationDto discordInformation = eventDto.getDiscordInformation();
-		if (discordInformation != null &&
-				StringUtils.isNotEmpty(discordInformation.getChannel()) && findOptionalByChannel(discordInformation.getChannel()).isPresent()) {
-			throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
+		final Set<EventDiscordInformationDto> discordInformation = eventDto.getDiscordInformation();
+		if (CollectionUtils.isNotEmpty(discordInformation) &&
+				eventDiscordInformationService.existsByChannelInDtos(discordInformation)) {
+			throw BusinessRuntimeException.builder().title("In mindestens einem der angegebenen Kanäle gibt es bereits ein Event.").build();
 		}
 		Event event = EventAssembler.fromDto(eventDto);
 		event.setEventType(eventTypeService.find(eventDto.getEventType()));
+		final long currentOwnerGuild = GuildUtils.getCurrentOwnerGuild();
+		event.setOwnerGuild(currentOwnerGuild != GUILD_PLACEHOLDER ? currentOwnerGuild : LongUtils.parseLong(eventDto.getOwnerGuild(), GUILD_PLACEHOLDER));
 
 		event.validate();
 
@@ -75,16 +77,6 @@ public class EventService {
 	 * @return Event found by channel or empty optional
 	 */
 	public Optional<Event> findOptionalByChannel(long channel) {
-		return eventDiscordInformationService.findEventByChannel(channel);
-	}
-
-	/**
-	 * Returns an optional for the event associated with the given channelId
-	 *
-	 * @param channel to find event for
-	 * @return Event found by channel or empty optional
-	 */
-	private Optional<Event> findOptionalByChannel(@NotBlank String channel) {
 		return eventDiscordInformationService.findEventByChannel(channel);
 	}
 
@@ -130,15 +122,19 @@ public class EventService {
 	}
 
 	/**
-	 * Returns all events that take place in the specified period
+	 * Returns all events owned by the given guild that take place in the specified period
 	 *
 	 * @return all events in given period
 	 */
-	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
-		if (BotPermissionHelper.hasEventManageRole()) {
-			return eventRepository.findAllByDateTimeBetween(start, end);
+	public List<Event> findAllBetweenOfGuild(LocalDateTime start, LocalDateTime end, long ownerGuild) {
+		if (ownerGuild == GUILD_PLACEHOLDER) {
+			//TODO shared events
 		}
-		return eventRepository.findAllByDateTimeBetweenAndHiddenFalse(start, end);
+
+		//TODO add other shared events to own guild
+		return hasEventManageRole() ?
+				eventRepository.findAllByOwnerGuildAndDateTimeBetween(ownerGuild, start, end) :
+				eventRepository.findAllByOwnerGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
 	}
 
 	/**
@@ -160,12 +156,24 @@ public class EventService {
 	}
 
 	/**
-	 * Returns all events that are scheduled in the future and have no discord information
+	 * Returns all events of the given owner guild that are scheduled in the future and have no discord information
 	 *
+	 * @param guildId to find events for
 	 * @return all events in the future that have no channel
 	 */
-	public List<Event> findAllNotAssignedInFuture() {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOrderByDateTime(LocalDateTime.now());
+	public List<Event> findAllNotAssignedInFuture(long guildId) {
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
+	}
+
+	/**
+	 * Returns all events that the given guild is not owner of, that are scheduled in the future and have no discord information
+	 *
+	 * @param guildId to exclude as owner guild
+	 * @return all events in the future that have no channel
+	 */
+	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
+		//TODO Make events sharable and only show then
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
 	}
 
 	/**
@@ -179,6 +187,10 @@ public class EventService {
 		return eventRepository.findAllParticipants(channel);
 	}
 
+	public long getGuildIdByEventId(long ownerGuildId) {
+		return eventRepository.findGuildById(ownerGuildId);
+	}
+
 	/**
 	 * Updates the event found by id with values from the {@link AbstractEventDto}
 	 *
@@ -187,16 +199,6 @@ public class EventService {
 	 */
 	public Event updateEvent(@NonNull AbstractEventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
-
-		final EventDiscordInformationDto discordInformationDto = dto.getDiscordInformation();
-		if (discordInformationDto != null) {
-			final String channel = discordInformationDto.getChannel();
-			if (StringUtils.isNotEmpty(channel)
-					&& findOptionalByChannel(channel).filter(event1 -> !event1.equals(event)).isPresent()) {
-				throw BusinessRuntimeException.builder().title("In diesem Kanal gibt es bereits ein Event.").build();
-			}
-		}
-
 
 		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType())));
 		DtoUtils.ifPresent(dto.getName(), event::setName);
@@ -209,8 +211,8 @@ public class EventService {
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
-		DtoUtils.ifPresentObject(discordInformationDto, discordInformation ->
-				event.setDiscordInformation(eventDiscordInformationService.updateOrCreateDiscordInformation(discordInformation, event)));
+		final Set<EventDiscordInformationDto> dtoDiscordInformation = dto.getDiscordInformation();
+		DtoUtils.ifPresent(dtoDiscordInformation, discordInformation -> eventDiscordInformationService.updateDiscordInformation(dtoDiscordInformation, event));
 
 		return event;
 	}
@@ -225,12 +227,8 @@ public class EventService {
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = updateEvent((AbstractEventDto) dto);
 
-		if (dto.getSquadList() != null) {
-			squadService.updateSquadList(dto.getSquadList(), event);
-		}
-		if (dto.getDetails() != null) {
-			eventFieldService.updateEventDetails(dto.getDetails(), event);
-		}
+		DtoUtils.ifPresent(dto.getSquadList(), squadList -> squadService.updateSquadList(squadList, event));
+		DtoUtils.ifPresent(dto.getDetails(), details -> eventFieldService.updateEventDetails(details, event));
 
 		return event;
 	}
@@ -239,9 +237,10 @@ public class EventService {
 	 * Searches for the given event by id and archives it
 	 *
 	 * @param eventId event id
+	 * @param guildId in which the event is being archived
 	 */
-	public void archiveEvent(long eventId) {
-		findById(eventId).archive();
+	public void archiveEvent(long eventId, long guildId) {
+		findById(eventId).archive(guildId);
 	}
 
 	/**

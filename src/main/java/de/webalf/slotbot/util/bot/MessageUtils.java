@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.service.external.DiscordApiService.KNOWN_ROLE_NAMES;
+import static de.webalf.slotbot.service.external.DiscordAuthenticationService.KNOWN_ROLE_NAMES;
 import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 
 /**
@@ -168,7 +168,7 @@ public final class MessageUtils {
 	 * Shortcut for {@code sendMessage(interaction.getChannel(), text)}
 	 *
 	 * @param interaction on which channel text should be sent
-	 * @param message    to send
+	 * @param message     to send
 	 */
 	public static void sendMessage(@NonNull CommandInteraction interaction, @NotBlank String message) {
 		sendMessage(interaction.getChannel(), message);
@@ -256,7 +256,7 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Returns the known role {@link DiscordApiService#KNOWN_ROLE_NAMES} names of the message author in the message guild
+	 * Returns the known role {@link DiscordAuthenticationService#KNOWN_ROLE_NAMES} names of the message author in the message guild
 	 *
 	 * @param message to analyze
 	 * @return set of role names

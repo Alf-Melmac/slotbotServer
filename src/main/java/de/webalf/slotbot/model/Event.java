@@ -41,7 +41,7 @@ public class Event extends AbstractSuperIdEntity {
 	@JoinColumn(name = "event_type")
 	private EventType eventType;
 
-	@Column(name = "event_name", length = TEXT_DB)
+	@Column(name = "event_name", length = TEXT_DB, nullable = false)
 	@NotBlank
 	@Size(max = TEXT)
 	private String name;
@@ -51,10 +51,13 @@ public class Event extends AbstractSuperIdEntity {
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 
-	@Column(name = "event_creator", length = TEXT_DB)
+	@Column(name = "event_creator", length = TEXT_DB, nullable = false)
 	@NotBlank
 	@Size(max = TEXT)
 	private String creator;
+
+	@Column(name = "event_owner_guild", nullable = false)
+	private long ownerGuild;
 
 	@Column(name = "event_hidden")
 	@Builder.Default
@@ -89,9 +92,9 @@ public class Event extends AbstractSuperIdEntity {
 	@JsonManagedReference
 	private List<EventField> details;
 
-	@OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JsonManagedReference
-	private EventDiscordInformation discordInformation;
+	private Set<EventDiscordInformation> discordInformation;
 
 	// Getter
 
@@ -148,14 +151,17 @@ public class Event extends AbstractSuperIdEntity {
 	 * @return true if a channel has been assigned to the event
 	 */
 	public boolean isAssigned() {
-		return getDiscordInformation() != null;
+		return !CollectionUtils.isEmpty(getDiscordInformation());
 	}
 
 	/**
-	 * @see EventDiscordInformation#isPrinted()
+	 * Checks whether a channel in the given guild is assigned to the event
+	 *
+	 * @param guildId to check for printed event
+	 * @return true if a channel has been assigned to the event
 	 */
-	public boolean isPrinted() {
-		return isAssigned() && getDiscordInformation().isPrinted();
+	public boolean isAssigned(long guildId) {
+		return getDiscordInformation(guildId).isPresent();
 	}
 
 	public Set<User> getAllParticipants() {
@@ -203,6 +209,17 @@ public class Event extends AbstractSuperIdEntity {
 			slotCount += squad.getSlotList().size();
 		}
 		return slotCount < 4 ? 1 : (int) Math.ceil(slotCount / 4.);
+	}
+
+	/**
+	 * Returns the matching {@link EventDiscordInformation} for the given guild
+	 *
+	 * @param guildId to find discord information for
+	 * @return optional information
+	 */
+	public Optional<EventDiscordInformation> getDiscordInformation(long guildId) {
+		return getDiscordInformation().stream()
+				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild() == guildId).findAny();
 	}
 
 	/**
@@ -309,7 +326,7 @@ public class Event extends AbstractSuperIdEntity {
 		}
 
 		if (getDiscordInformation() != null) {
-			getDiscordInformation().setEvent(this);
+			getDiscordInformation().forEach(information -> information.setEvent(this));
 		}
 	}
 
@@ -477,12 +494,15 @@ public class Event extends AbstractSuperIdEntity {
 		return emptySlots.get(new Random().nextInt(emptySlots.size()));
 	}
 
-	public void archive() {
+	public void archive(long guildId) {
 		if (LocalDateTime.now().isBefore(getDateTime())) {
 			throw BusinessRuntimeException.builder().title("Es können nur Events in der Vergangenheit archiviert werden.").build();
 		}
 
-		setDiscordInformation(null);
-		EventNotificationService.removeNotifications(getId());
+		//TODO check functionality
+		getDiscordInformation(guildId).ifPresent(informationOfGuild -> getDiscordInformation().remove(informationOfGuild));
+		if (getOwnerGuild() == guildId) {
+			EventNotificationService.removeNotifications(getId());
+		}
 	}
 }

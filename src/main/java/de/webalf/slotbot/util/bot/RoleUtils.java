@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public final class RoleUtils {
 	 * @param guild to check roles for
 	 */
 	public static void checkRequiredRoles(@NonNull Guild guild) {
-		final Set<String> knownRoleNames = DiscordApiService.KNOWN_ROLE_NAMES;
+		final Set<String> knownRoleNames = DiscordAuthenticationService.KNOWN_ROLE_NAMES;
 		final Set<String> existingRoles = guild.getRoles().stream().map(Role::getName).collect(Collectors.toUnmodifiableSet());
 
 		knownRoleNames.stream().filter(roleName -> !existingRoles.contains(roleName))
