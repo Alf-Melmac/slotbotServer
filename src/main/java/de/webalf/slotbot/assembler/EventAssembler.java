@@ -3,9 +3,12 @@ package de.webalf.slotbot.assembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
+
+import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
 
 /**
  * @author Alf
@@ -21,18 +24,21 @@ public final class EventAssembler {
 
 		return Event.builder()
 				.id(dto.getId())
+				.hidden(dto.isHidden())
+				.shareable(dto.isShareable())
 				.name(dto.getName().trim())
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
 				.creator(dto.getCreator().trim())
-				.hidden(dto.isHidden())
-				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
+				//Event type is set by using service
 				.description(dto.getDescription())
-				.pictureUrl(dto.getRawPictureUrl())
 				.missionType(dto.getMissionType())
 				.missionLength(dto.getMissionLength())
-				.reserveParticipating(dto.getReserveParticipating())
+				.pictureUrl(dto.getRawPictureUrl())
 				.details(EventFieldAssembler.fromDtoIterable(dto.getDetails()))
+				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
+				.reserveParticipating(dto.getReserveParticipating())
 				.discordInformation(EventDiscordInformationAssembler.fromDtoIterable(dto.getDiscordInformation()))
+				.ownerGuild(LongUtils.parseLong(dto.getOwnerGuild(), GUILD_PLACEHOLDER))
 				.build();
 	}
 
@@ -43,21 +49,22 @@ public final class EventAssembler {
 		final LocalDateTime dateTime = event.getDateTime();
 		return EventReferencelessDto.builder()
 				.id(event.getId())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
+				.hidden(event.isHidden())
+				.shareable(event.isShareable())
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
-				.hidden(event.isHidden())
-				.squadList(SquadAssembler.toReferencelessDtoList(event.getSquadList()))
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())
-				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
-				.reserveParticipating(event.getReserveParticipating())
+				.pictureUrl(event.getPictureUrl())
 				.details(EventFieldAssembler.toReferencelessDtoList(event.getDetails()))
+				.squadList(SquadAssembler.toReferencelessDtoList(event.getSquadList()))
+				.reserveParticipating(event.getReserveParticipating())
 				.discordInformation(EventDiscordInformationAssembler.toDtoSet(event.getDiscordInformation()))
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.build();
 	}
 
@@ -68,19 +75,20 @@ public final class EventAssembler {
 		final LocalDateTime dateTime = event.getDateTime();
 		return EventDto.builder()
 				.id(event.getId())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
+				.hidden(event.isHidden())
+				.shareable(event.isShareable())
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
-				.hidden(event.isHidden())
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())
-				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
+				.pictureUrl(event.getPictureUrl())
 				.reserveParticipating(event.getReserveParticipating())
 				.discordInformation(EventDiscordInformationAssembler.toDtoSet(event.getDiscordInformation()))
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.build();
 	}
 }

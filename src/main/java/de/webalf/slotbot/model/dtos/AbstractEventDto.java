@@ -27,8 +27,11 @@ import static de.webalf.slotbot.util.MaxLength.*;
 @Data
 @SuperBuilder
 public abstract class AbstractEventDto extends AbstractIdEntityDto {
-	@NotNull
-	private EventTypeDto eventType;
+	@Builder.Default
+	private boolean hidden = false;
+
+	@Builder.Default
+	private boolean shareable = false;
 
 	@NotBlank
 	@Size(max = TEXT)
@@ -44,16 +47,11 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String creator;
 
-	private String ownerGuild;
-
-	@Builder.Default
-	private boolean hidden = false;
+	@NotNull
+	private EventTypeDto eventType;
 
 	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
-
-	@Size(max = URL)
-	private String pictureUrl;
 
 	@Size(max = TEXT)
 	private String missionType;
@@ -61,9 +59,14 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String missionLength;
 
+	@Size(max = URL)
+	private String pictureUrl;
+
 	private Boolean reserveParticipating;
 
 	private Set<EventDiscordInformationDto> discordInformation;
+
+	private String ownerGuild;
 
 	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
 	public String getPictureUrl() {

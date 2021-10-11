@@ -37,9 +37,13 @@ import static de.webalf.slotbot.util.MaxLength.*;
 @SuperBuilder
 @Slf4j
 public class Event extends AbstractSuperIdEntity {
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "event_type")
-	private EventType eventType;
+	@Column(name = "event_hidden")
+	@Builder.Default
+	private boolean hidden = false;
+
+	@Column(name = "event_shareable")
+	@Builder.Default
+	private boolean shareable = false;
 
 	@Column(name = "event_name", length = TEXT_DB, nullable = false)
 	@NotBlank
@@ -56,25 +60,13 @@ public class Event extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String creator;
 
-	@Column(name = "event_owner_guild", nullable = false)
-	private long ownerGuild;
-
-	@Column(name = "event_hidden")
-	@Builder.Default
-	private boolean hidden = false;
-
-	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@OrderColumn
-	@JsonManagedReference
-	private List<Squad> squadList;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "event_type")
+	private EventType eventType;
 
 	@Column(name = "event_description", length = EMBEDDABLE_DESCRIPTION_DB)
 	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
-
-	@Column(name = "event_picture_url", length = URL_DB)
-	@Size(max = URL)
-	private String pictureUrl;
 
 	@Column(name = "event_mission_type", length = TEXT_DB)
 	@Size(max = TEXT)
@@ -84,8 +76,9 @@ public class Event extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String missionLength;
 
-	@Column(name = "event_reserve_participating")
-	private Boolean reserveParticipating;
+	@Column(name = "event_picture_url", length = URL_DB)
+	@Size(max = URL)
+	private String pictureUrl;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
@@ -93,8 +86,19 @@ public class Event extends AbstractSuperIdEntity {
 	private List<EventField> details;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OrderColumn
+	@JsonManagedReference
+	private List<Squad> squadList;
+
+	@Column(name = "event_reserve_participating")
+	private Boolean reserveParticipating;
+
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private Set<EventDiscordInformation> discordInformation;
+
+	@Column(name = "event_owner_guild", nullable = false, updatable = false)
+	private long ownerGuild;
 
 	// Getter
 

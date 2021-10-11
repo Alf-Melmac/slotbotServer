@@ -18,7 +18,7 @@ import java.util.List;
 public class EventDetailsDto extends AbstractEventDto {
 	String channelUrl;
 
-	List<EventDetailsSquadDto> squadList;
-
 	List<EventFieldReferencelessDto> details;
+
+	List<EventDetailsSquadDto> squadList;
 }

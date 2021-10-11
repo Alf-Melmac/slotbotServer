@@ -16,7 +16,7 @@ import java.util.List;
 @Value
 @SuperBuilder
 public class EventEditDto extends AbstractEventDto {
-	List<EventDetailsSquadDto> squadList;
-
 	List<EventFieldDefaultDto> details;
+
+	List<EventDetailsSquadDto> squadList;
 }
