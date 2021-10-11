@@ -127,7 +127,11 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 				.setPlaceholder(placeholder);
 
 		for (Event event : events) {
-			final String name = (foreign ? "(" + Guild.findByDiscordGuild(event.getOwnerGuild()).getId() + ") " : "") + event.getName();
+			final Guild guild = Guild.findByDiscordGuild(event.getOwnerGuild());
+			if (guild == null) {
+				throw new IllegalStateException("Found event (" + event.getId() + ") with non matching owner guild (" + event.getOwnerGuild() + ")");
+			}
+			final String name = (foreign ? "(" + guild.getId() + ") " : "") + event.getName();
 			selectionMenuBuilder.addOption(buildSelectionLabel(name), Long.toString(event.getId()));
 		}
 		selectionMenus.add(selectionMenuBuilder.build());

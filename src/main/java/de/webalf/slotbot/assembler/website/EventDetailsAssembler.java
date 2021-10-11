@@ -60,6 +60,7 @@ public class EventDetailsAssembler {
 	public EventEditDto toEditDto(@NonNull Event event) {
 		final LocalDateTime dateTime = event.getDateTime();
 
+		//TODO check if shareable can be changed (prevent if other guild already added event)
 		return EventEditDto.builder()
 				.id(event.getId())
 				.hidden(event.isHidden())

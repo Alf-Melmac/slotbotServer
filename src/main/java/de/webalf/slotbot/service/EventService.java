@@ -128,7 +128,9 @@ public class EventService {
 	 */
 	public List<Event> findAllBetweenOfGuild(LocalDateTime start, LocalDateTime end, long ownerGuild) {
 		if (ownerGuild == GUILD_PLACEHOLDER) {
-			//TODO shared events
+			return hasEventManageRole() ?
+					eventRepository.findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(start, end) :
+					eventRepository.findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(start, end);
 		}
 
 		//TODO add other shared events to own guild
@@ -172,8 +174,7 @@ public class EventService {
 	 * @return all events in the future that have no channel
 	 */
 	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
-		//TODO Make events sharable and only show then
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
+		return eventRepository.findAllByDateTimeIsAfterAndShareableTrueAndNotOwnerGuildAndNotScheduledAndOrderByDateTime(LocalDateTime.now(), guildId);
 	}
 
 	/**
@@ -200,16 +201,17 @@ public class EventService {
 	public Event updateEvent(@NonNull AbstractEventDto dto) {
 		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
 
-		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType())));
+		DtoUtils.ifPresent(dto.isHidden(), event::setHidden);
+		DtoUtils.ifPresent(dto.isShareable(), event::setShareable);
 		DtoUtils.ifPresent(dto.getName(), event::setName);
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
-		DtoUtils.ifPresent(dto.isHidden(), event::setHidden);
+		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType())));
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
-		DtoUtils.ifPresentOrEmpty(dto.getRawPictureUrl(), event::setPictureUrl);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
+		DtoUtils.ifPresentOrEmpty(dto.getRawPictureUrl(), event::setPictureUrl);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
 		final Set<EventDiscordInformationDto> dtoDiscordInformation = dto.getDiscordInformation();
 		DtoUtils.ifPresent(dtoDiscordInformation, discordInformation -> eventDiscordInformationService.updateDiscordInformation(dtoDiscordInformation, event));

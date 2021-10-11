@@ -3,6 +3,9 @@ $(function () {
 
     $(':checkbox').prop('indeterminate', true);
 
+    $('#eventShareable').on('click', function () {
+        $(this).find('.fas').toggleClass('fa-users-slash fa-users');
+    });
     $('#eventHidden').on('click', function () {
         $(this).find('.far').toggleClass('fa-eye fa-eye-slash');
     });
@@ -65,6 +68,11 @@ $(function () {
         for (const [key, value] of Object.entries(copyEvent)) {
             if (key === 'eventType') {
                 Object.entries(value).forEach(([childKey, childValue]) => setValue(`${key}.${childKey}`, childValue));
+                continue;
+            } else if (key === 'shareable') {
+                if (value) {
+                    $('#eventShareable').trigger('click');
+                }
                 continue;
             } else if (key === 'hidden') {
                 if (value) {

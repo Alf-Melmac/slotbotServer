@@ -49,8 +49,11 @@
 								       placeholder="Event Name"
 								       th:maxlength="${T(de.webalf.slotbot.util.MaxLength).TEXT}" required>
 							</div>
-							<div class="form-group col-md-1">
-								<div id="eventHidden" class="btn btn-xl btn-wht fa-pull-right" title="Sichtbarkeit">
+							<div class="form-group col-md-1 d-flex align-items-end">
+								<div id="eventShareable" class="btn btn-xl btn-wht p-0" title="Teilbarkeit">
+									<em class="fas fa-users-slash"></em>
+								</div>
+								<div id="eventHidden" class="btn btn-xl btn-wht pl-1 p-0" title="Sichtbarkeit">
 									<em class="far fa-eye"></em>
 								</div>
 							</div>

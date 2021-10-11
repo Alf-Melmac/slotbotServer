@@ -18,6 +18,11 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query("SELECT e.ownerGuild FROM Event e WHERE e.id = :id")
 	long findGuildById(long id);
 
+	@Query("SELECT e FROM Event e WHERE e.dateTime BETWEEN :start AND :end AND (e.shareable = true OR e.ownerGuild = de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER)")
+	List<Event> findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+	@Query("SELECT e FROM Event e WHERE e.dateTime BETWEEN :start AND :end AND e.hidden = false AND (e.shareable = true OR e.ownerGuild = de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER)")
+	List<Event> findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 	List<Event> findAllByOwnerGuildAndDateTimeBetween(long ownerGuild, LocalDateTime start, LocalDateTime end);
 
@@ -32,8 +37,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query(value = "SELECT e FROM Event e WHERE e.dateTime > :dateTime AND e.ownerGuild = :ownerGuild AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild) ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("ownerGuild") long guildId);
 
-	@Query(value = "SELECT e FROM Event e WHERE e.dateTime > :dateTime AND e.ownerGuild <> :ownerGuild AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild) ORDER BY e.dateTime")
-	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("ownerGuild") long guildId);
+	@Query(value = "SELECT e FROM Event e WHERE e.dateTime > :dateTime AND e.shareable = true AND e.ownerGuild <> :ownerGuild AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild) ORDER BY e.dateTime")
+	List<Event> findAllByDateTimeIsAfterAndShareableTrueAndNotOwnerGuildAndNotScheduledAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("ownerGuild") long guildId);
 
 	@Query("SELECT s.user FROM Slot s WHERE s.user.id <> de.webalf.slotbot.model.User.DEFAULT_USER_ID AND EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.channel = :channel AND di.event = s.squad.event)")
 	List<User> findAllParticipants(@Param("channel") long channel);

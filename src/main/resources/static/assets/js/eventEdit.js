@@ -53,6 +53,15 @@ $(function () {
 
     addFields(savedEvent.details, $('#addField'), true);
 
+    //Event shareable button
+    $('#eventShareable').on('click', function () {
+        const $icon = $(this).find('.fas');
+        putUpdate({shareable: !$icon.hasClass('fa-users')}, () => {
+            $icon.toggleClass('fa-users-slash fa-users');
+            showSavedToast();
+        });
+    });
+
     //Event hidden button
     $('#eventHidden').on('click', function () {
         const $icon = $(this).find('.far');
