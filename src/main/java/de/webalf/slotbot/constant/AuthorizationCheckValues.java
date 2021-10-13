@@ -9,6 +9,7 @@ import lombok.Value;
 @Value
 public class AuthorizationCheckValues {
 	public static final String ROLE_PREFIX = "ROLE_";
+	public static final String GUILD = "GUILD";
 
 	public static final String HAS_ROLE = "hasRole('";
 	public static final String HAS_ANY_ROLE = "hasAnyRole('";

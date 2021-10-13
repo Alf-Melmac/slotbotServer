@@ -43,6 +43,10 @@ public final class PermissionHelper {
 		return roleName + "_" + guildId;
 	}
 
+	public static String buildGuildAuthenticationWithPrefix(String roleName, long guildId) {
+		return ROLE_PREFIX + buildGuildAuthentication(roleName, guildId);
+	}
+
 	/**
 	 * @throws ForbiddenException if userId doesn't match logged in user
 	 */

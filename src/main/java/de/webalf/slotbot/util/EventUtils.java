@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
-import de.webalf.slotbot.util.permissions.ApiPermissionHelper;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -16,8 +15,10 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.GuildUtils.Guild.findByDiscordGuild;
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.*;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 
@@ -28,26 +29,94 @@ import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 @UtilityClass
 public final class EventUtils {
 	/**
-	 * Checks if the event, if hidden, is allowed to be read. Permission check is made by {@link ApiPermissionHelper#hasReadPermission()}.
+	 * Checks if the currently logged in can access the event with the given shareable and hidden state of the given ownerGuild
+	 * <table><thead><tr><th style="text-align: left;"></th> <th style="text-align: left;">Visible + Not Shareable</th> <th style="text-align: left;">Hidden + Not Shareable</th> <th style="text-align: left;">Visible + Shareable</th> <th style="text-align: left;">Hidden + Shareable</th></tr></thead> <tbody><tr><td style="text-align: left;"><strong>Own Event</strong></td> <td style="text-align: left;">READ_PUBLIC</td> <td style="text-align: left;">READ</td> <td style="text-align: left;">READ_PUBLIC</td> <td style="text-align: left;">READ</td></tr> <tr><td style="text-align: left;"><strong>Foreign Event</strong></td> <td style="text-align: left;">X</td> <td style="text-align: left;">X</td> <td style="text-align: left;">READ_PUBLIC</td> <td style="text-align: left;">READ</td></tr></tbody></table>
+	 *
+	 * @param shareable  event shareable status
+	 * @param hidden     event hidden status
+	 * @param ownerGuild event owner guild
+	 * @return true if access is allowed
+	 */
+	static boolean apiReadAccessAllowed(boolean shareable, boolean hidden, long ownerGuild) {
+		if (shareable || isCurrentGuild(ownerGuild)) {
+			return hasReadPermission(!hidden, ownerGuild);
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if read permission is given for the given event.
 	 *
 	 * @param eventDto event to check
-	 * @throws ForbiddenException if the event is hidden and read permission is not given
+	 * @throws ForbiddenException if read permission is not given
+	 * @see #apiReadAccessAllowed(boolean, boolean, long)
 	 */
-	public static void assertApiAccessAllowed(@NonNull AbstractEventDto eventDto) throws ForbiddenException {
-		if (eventDto.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
-			throw new ForbiddenException("Access Denied");
+	public static void assertApiReadAccess(@NonNull AbstractEventDto eventDto) throws ForbiddenException {
+		if (!apiReadAccessAllowed(eventDto.isShareable(), eventDto.isHidden(), Long.parseLong(eventDto.getOwnerGuild()))) {
+			throw new ForbiddenException("Not allowed to read here.");
 		}
 	}
 
 	/**
-	 * Works just like {@link #assertApiAccessAllowed(AbstractEventDto)} but expects a {@link Event} object
+	 * Checks if read permission is given for the given event.
 	 *
-	 * @see #assertApiAccessAllowed(AbstractEventDto)
+	 * @param event event to check
+	 * @throws ForbiddenException if read permission is not given
+	 * @see #apiReadAccessAllowed(boolean, boolean, long)
 	 */
-	public static void assertApiAccessAllowed(@NonNull Event event) throws ForbiddenException {
-		if (event.isHidden() && !ApiPermissionHelper.hasReadPermission()) {
-			throw new ForbiddenException("Access Denied");
+	public static void assertApiReadAccess(@NonNull Event event) throws ForbiddenException {
+		if (!apiReadAccessAllowed(event.isShareable(), event.isHidden(), event.getOwnerGuild())) {
+			throw new ForbiddenException("Not allowed to read here.");
 		}
+	}
+
+	/**
+	 * Checks if write permission is given for the given event.
+	 *
+	 * @param ownerGuild event owner guild
+	 * @return true if access is allowed
+	 */
+	private static boolean apiWriteAccessAllowed(long ownerGuild) {
+		return hasWritePermission(ownerGuild);
+	}
+
+	/**
+	 * Checks if write permission is given for the owner of the given event.
+	 *
+	 * @param event to check owner guild write permission for
+	 * @throws ForbiddenException if write permission is not given
+	 */
+	public static void assertApiWriteAccess(AbstractEventDto event) throws ForbiddenException {
+		final long ownerGuild = getOwnerGuild(event);
+		if (!apiWriteAccessAllowed(ownerGuild)) {
+			throw new ForbiddenException("Not allowed to write here.");
+		}
+	}
+
+	/**
+	 * Checks if write permission is given for the owner of the given event.
+	 *
+	 * @param event to check owner guild write permission for
+	 * @throws ForbiddenException if write permission is not given
+	 */
+	public static void assertApiWriteAccess(Event event) throws ForbiddenException {
+		final long ownerGuild = getOwnerGuild(event);
+		if (!apiWriteAccessAllowed(ownerGuild)) {
+			throw new ForbiddenException("Not allowed to write here.");
+		}
+	}
+
+	public static long getOwnerGuild(@NonNull AbstractEventDto event) {
+		return getOwnerGuild(LongUtils.parseLong(event.getOwnerGuild(), GUILD_PLACEHOLDER));
+	}
+
+	private static long getOwnerGuild(@NonNull Event event) {
+		return getOwnerGuild(event.getOwnerGuild());
+	}
+
+	private static long getOwnerGuild(long ownerGuild) {
+		final long currentOwnerGuild = GuildUtils.getCurrentOwnerGuild();
+		return currentOwnerGuild != GUILD_PLACEHOLDER ? currentOwnerGuild : ownerGuild;
 	}
 
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
@@ -76,7 +145,7 @@ public final class EventUtils {
 	/**
 	 * Ensures that the url is an absolute uri
 	 *
-	 * @param url to check
+	 * @param url        to check
 	 * @param ownerGuild owner of event
 	 * @return usable url
 	 */

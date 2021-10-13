@@ -1,6 +1,6 @@
 package de.webalf.slotbot.controller.api;
 
-import de.webalf.slotbot.assembler.api.EventApiAssembler;
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.SlotService;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static de.webalf.slotbot.constant.Urls.API;
-import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_WRITE_PERMISSION;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTIAL_WRITE_PERMISSION;
 
 /**
  * @author Alf
@@ -30,8 +30,10 @@ public class SlotApiController {
 	private final SlotService slotService;
 
 	@PutMapping("/swap")
-	@PreAuthorize(HAS_WRITE_PERMISSION)
+	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto putSwap(@RequestBody List<SlotDto> slots) {
-		return EventApiAssembler.toDto(slotService.swap(slots));
+		throw new ForbiddenException("Not yet implemented");
+		//TODO permission check
+//		return EventApiAssembler.toDto(slotService.swap(slots));
 	}
 }

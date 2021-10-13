@@ -20,10 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Set;
 
+import static de.webalf.slotbot.constant.AuthorizationCheckValues.GUILD;
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.buildGuildAuthenticationWithPrefix;
 
 /**
  * @author Alf
@@ -67,6 +68,9 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
 	private Set<GrantedAuthority> mapAuthorities(@NotBlank String token) throws ForbiddenException {
 		final ApiToken apiToken = tokenAuthProvider.getApiToken(token);
-		return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + apiToken.getType().name()));
+		final String tokenTypeName = apiToken.getType().name();
+		return Set.of(new SimpleGrantedAuthority(ROLE_PREFIX + tokenTypeName),
+				new SimpleGrantedAuthority(buildGuildAuthenticationWithPrefix(tokenTypeName, apiToken.getGuild())),
+				new SimpleGrantedAuthority(buildGuildAuthenticationWithPrefix(GUILD, apiToken.getGuild())));
 	}
 }

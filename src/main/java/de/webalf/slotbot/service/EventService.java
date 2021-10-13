@@ -13,8 +13,8 @@ import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.CollectionUtils;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.GuildUtils;
-import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import org.thymeleaf.util.ListUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static de.webalf.slotbot.util.EventUtils.assertApiAccessAllowed;
+import static de.webalf.slotbot.util.EventUtils.getOwnerGuild;
 import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventManageRole;
 
@@ -60,8 +60,7 @@ public class EventService {
 		}
 		Event event = EventAssembler.fromDto(eventDto);
 		event.setEventType(eventTypeService.find(eventDto.getEventType()));
-		final long currentOwnerGuild = GuildUtils.getCurrentOwnerGuild();
-		event.setOwnerGuild(currentOwnerGuild != GUILD_PLACEHOLDER ? currentOwnerGuild : LongUtils.parseLong(eventDto.getOwnerGuild(), GUILD_PLACEHOLDER));
+		event.setOwnerGuild(getOwnerGuild(eventDto));
 
 		event.validate();
 
@@ -117,7 +116,7 @@ public class EventService {
 	 */
 	public Event findByIdForApi(long eventId) {
 		final Event event = findById(eventId);
-		assertApiAccessAllowed(event);
+		EventUtils.assertApiReadAccess(event);
 		return event;
 	}
 
@@ -199,7 +198,7 @@ public class EventService {
 	 * @return updated event
 	 */
 	public Event updateEvent(@NonNull AbstractEventDto dto) {
-		Event event = eventRepository.findById(dto.getId()).orElseThrow(ResourceNotFoundException::new);
+		Event event = findById(dto.getId());
 
 		DtoUtils.ifPresent(dto.isHidden(), event::setHidden);
 		DtoUtils.ifPresent(dto.isShareable(), event::setShareable);
@@ -246,25 +245,22 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and deletes it
-	 *
-	 * @param channel event channel
+	 * Deletes the given event
 	 */
-	public void deleteEvent(long channel) {
-		eventRepository.delete(findByChannel(channel));
+	public void deleteEvent(Event event) {
+		eventRepository.delete(event);
 	}
 
 	/**
-	 * Searches for the given channel the matching event and enters the given user for the slot with given number, if available.
+	 * Enters the given user for the slot with given number in given event, if available.
 	 *
-	 * @param channel    event channel
+	 * @param event      event
 	 * @param slotNumber Slot to slot into
 	 * @param userDto    person that should be slotted
 	 * @return Event in which the person has been slotted
 	 * @throws BusinessRuntimeException if the slot is already occupied
 	 */
-	public Event slot(long channel, int slotNumber, UserDto userDto) {
-		Event event = findByChannel(channel);
+	public Event slot(@NonNull Event event, int slotNumber, UserDto userDto) {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		User user = userService.find(userDto);
 		event.unslotIfAlreadySlotted(user);
@@ -274,14 +270,20 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and removes the user, found by user, from its slot.
+	 * Searches for the given channel the matching event and {@link #slot(Event, int, UserDto)}
+	 */
+	public Event slot(long channel, int slotNumber, UserDto userDto) {
+		return slot(findByChannel(channel), slotNumber, userDto);
+	}
+
+	/**
+	 * Removes the user, found by userDto, from its slot in given event.
 	 *
-	 * @param channel event channel
+	 * @param event   event
 	 * @param userDto person that should be unslotted
 	 * @return Event in which the person has been unslotted
 	 */
-	public Event unslot(long channel, UserDto userDto) {
-		Event event = findByChannel(channel);
+	public Event unslot(@NonNull Event event, UserDto userDto) {
 		User user = userService.find(userDto);
 		Slot slot = event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new);
 		slotService.unslot(slot, user);
@@ -289,18 +291,31 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and removes the user, found by slotNumber, from its slot.
+	 * Searches for the given channel the matching event and {@link #unslot(Event, UserDto)}
+	 */
+	public Event unslot(long channel, UserDto userDto) {
+		return unslot(findByChannel(channel), userDto);
+	}
+
+	/**
+	 * Removes the user, found by slotNumber, from its slot in the given event.
 	 *
-	 * @param channel    event channel
+	 * @param event      event
 	 * @param slotNumber slot that should be cleared
 	 * @return Event in which the unslot has been performed
 	 */
-	public EventRecipientApiDto unslot(long channel, int slotNumber) {
-		Event event = findByChannel(channel);
+	public EventRecipientApiDto unslot(@NonNull Event event, int slotNumber) {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		User userToUnslot = slot.getUser();
 		slotService.unslot(slot, userToUnslot);
 		return EventApiAssembler.toActionDto(event, userToUnslot);
+	}
+
+	/**
+	 * Searches for the given channel the matching event and {@link #unslot(Event, int)}
+	 */
+	public EventRecipientApiDto unslot(long channel, int slotNumber) {
+		return unslot(findByChannel(channel), slotNumber);
 	}
 
 	/**
@@ -320,29 +335,34 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and renames the squad by position.
+	 * Renames the squad by position in the given event.
 	 *
-	 * @param channel       event channel
+	 * @param event         event
 	 * @param squadPosition to edit name of
 	 * @param squadName     new name
 	 * @return event in which the slot has been renamed
 	 */
-	public Event renameSquad(long channel, int squadPosition, String squadName) {
-		final Event event = findByChannel(channel);
+	public Event renameSquad(@NonNull Event event, int squadPosition, String squadName) {
 		event.findSquadByPosition(squadPosition).setName(squadName);
 		return event;
 	}
 
 	/**
-	 * Searches for the given channel the matching event and adds the given slot to the squad found by squadPosition.
+	 * Searches for the given channel the matching event and {@link #renameSquad(Event, int, String)}
+	 */
+	public Event renameSquad(long channel, int squadPosition, String squadName) {
+		return renameSquad(findByChannel(channel), squadPosition, squadName);
+	}
+
+	/**
+	 * Adds the given slot to the squad found by squadPosition in the given event.
 	 *
-	 * @param channel       event channel
+	 * @param event         event
 	 * @param squadPosition Counted, starting by 0
 	 * @param slotDto       slot to add
 	 * @return event in which the slot has been added
 	 */
-	public Event addSlot(long channel, int squadPosition, SlotDto slotDto) {
-		final Event event = findByChannel(channel);
+	public Event addSlot(@NonNull Event event, int squadPosition, SlotDto slotDto) {
 		final Squad squad = event.findSquadByPosition(squadPosition);
 		if (squad.isReserve()) {
 			throw BusinessRuntimeException.builder().title("Der Reserve kann manuell kein Slot hinzugefügt werden.").build();
@@ -352,62 +372,85 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and removes the slot by number.
+	 * Searches for the given channel the matching event and {@link #addSlot(Event, int, SlotDto)}
+	 */
+	public Event addSlot(long channel, int squadPosition, SlotDto slotDto) {
+		return addSlot(findByChannel(channel), squadPosition, slotDto);
+	}
+
+	/**
+	 * Removes the slot by number in the given event.
 	 *
-	 * @param channel    event channel
+	 * @param event      event
 	 * @param slotNumber to delete
 	 * @return event in which the slot has been deleted
 	 */
-	public Event deleteSlot(long channel, int slotNumber) {
-		Event event = findByChannel(channel);
+	public Event deleteSlot(@NonNull Event event, int slotNumber) {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		slotService.deleteSlot(slot);
 		return event;
 	}
 
 	/**
-	 * Searches for the given channel the matching event and renames the slot by number.
+	 * Searches for the given channel the matching event and {@link #deleteSlot(Event, int)}
+	 */
+	public Event deleteSlot(long channel, int slotNumber) {
+		return deleteSlot(findByChannel(channel), slotNumber);
+	}
+
+	/**
+	 * Renames the slot by number in the given event.
 	 *
-	 * @param channel    event channel
+	 * @param event      event
 	 * @param slotNumber to edit name of
 	 * @param slotName   new name
 	 * @return event in which the slot has been renamed
 	 */
-	public Event renameSlot(long channel, int slotNumber, String slotName) {
-		Event event = findByChannel(channel);
+	public Event renameSlot(@NonNull Event event, int slotNumber, String slotName) {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		slotService.renameSlot(slot, slotName);
 		return event;
 	}
 
 	/**
-	 * Searches for the given channel the matching event, blocks the slot by number and sets the replacement text.
+	 * Searches for the given channel the matching event and {@link #renameSlot(Event, int, String)}
+	 */
+	public Event renameSlot(long channel, int slotNumber, String slotName) {
+		return renameSlot(findByChannel(channel), slotNumber, slotName);
+	}
+
+	/**
+	 * Blocks the slot by number and sets the replacement text in the given event.
 	 *
-	 * @param channel         event channel
+	 * @param event           event
 	 * @param slotNumber      to block
 	 * @param replacementName text to be shown instead of user
 	 * @return event in which the slot has been blocked
 	 */
-	public Event blockSlot(long channel, int slotNumber, String replacementName) {
-		Event event = findByChannel(channel);
+	public Event blockSlot(@NonNull Event event, int slotNumber, String replacementName) {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		slotService.blockSlot(slot, replacementName);
 		return event;
 	}
 
 	/**
-	 * Searches for the given channel the matching event and returns the slots matching the two given users.
+	 * Searches for the given channel the matching event and {@link #blockSlot(Event, int, String)}
+	 */
+	public Event blockSlot(long channel, int slotNumber, String replacementName) {
+		return blockSlot(findByChannel(channel), slotNumber, replacementName);
+	}
+
+	/**
+	 * Returns the slots matching the two given users in the given event.
 	 *
-	 * @param channel  event channel
+	 * @param event    event
 	 * @param userDtos slotted users
 	 * @return two slots
 	 */
-	public List<Slot> findSwapSlots(long channel, List<UserDto> userDtos) {
+	public List<Slot> findSwapSlots(@NonNull Event event, List<UserDto> userDtos) {
 		if (ListUtils.isEmpty(userDtos) || userDtos.size() != 2) {
 			throw BusinessRuntimeException.builder().title("Zum tauschen müssen zwei Nutzer angegeben werden.").build();
 		}
-
-		Event event = findByChannel(channel);
 
 		ArrayList<Slot> slots = new ArrayList<>();
 		userDtos.forEach(userDto -> slots.add(event.findSlotOfUser(userService.find(userDto)).orElseThrow(ResourceNotFoundException::new)));
@@ -415,15 +458,21 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given channel the matching event and returns the slots matching the given slotNumber and user.
+	 * Searches for the given channel the matching event and {@link #findSwapSlots(Event, List)}
+	 */
+	public List<Slot> findSwapSlots(long channel, List<UserDto> userDtos) {
+		return findSwapSlots(findByChannel(channel), userDtos);
+	}
+
+	/**
+	 * Returns the slots matching the given slotNumber and user in the given event.
 	 *
-	 * @param channel    event channel
+	 * @param event      event
 	 * @param slotNumber slot1 to find by slotNumber
 	 * @param userDto    slot2 to find by user
 	 * @return two Slots
 	 */
-	public List<Slot> findSwapSlots(long channel, int slotNumber, UserDto userDto) {
-		Event event = findByChannel(channel);
+	public List<Slot> findSwapSlots(@NonNull Event event, int slotNumber, UserDto userDto) {
 		User user = userService.find(userDto);
 
 		Slot slotFoundByNumber = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
@@ -435,5 +484,12 @@ public class EventService {
 				event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new),
 				slotFoundByNumber
 		);
+	}
+
+	/**
+	 * Searches for the given channel the matching event and {@link #findSwapSlots(Event, int, UserDto)}
+	 */
+	public List<Slot> findSwapSlots(long channel, int slotNumber, UserDto userDto) {
+		return findSwapSlots(findByChannel(channel), slotNumber, userDto);
 	}
 }
