@@ -24,4 +24,9 @@ public class StartWebController {
 		addLayoutSettings(mav);
 		return mav;
 	}
+
+	@GetMapping("/error/403")
+	public ModelAndView getUnauthorized() {
+		return new ModelAndView("error/403");
+	}
 }

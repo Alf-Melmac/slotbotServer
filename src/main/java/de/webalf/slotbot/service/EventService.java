@@ -187,8 +187,14 @@ public class EventService {
 		return eventRepository.findAllParticipants(channel);
 	}
 
-	public long getGuildIdByEventId(long ownerGuildId) {
-		return eventRepository.findGuildById(ownerGuildId);
+	/**
+	 * Returns the owner guild of the event found by its id.
+	 *
+	 * @param eventId to find owner guild of
+	 * @return owner guild
+	 */
+	public long getGuildIdByEventId(long eventId) {
+		return eventRepository.findGuildById(eventId);
 	}
 
 	/**

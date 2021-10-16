@@ -23,7 +23,7 @@ $(function () {
     });
 
     // Allow event manage roles to click on the calendar to create event
-    if (eventManageRoles.includes(authentication.authorities.filter(authority => authority.authority.startsWith('ROLE_'))[0].authority)) {
+    if (canManageEvents) {
         calendar.on('dateClick', function (info) {
             window.location.href = `${createEventUrl}?date=${info.dateStr}`;
         });

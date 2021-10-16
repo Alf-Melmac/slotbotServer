@@ -47,13 +47,20 @@ public class DiscordAuthenticationService {
 						}
 						return;
 					}
-					final Set<String> memberRoles = guildMember.getRoles().stream()
-							.map(Role::getName)
+					Set<String> guildRoles = guildMember.getRoles().stream().map(Role::getName).collect(Collectors.toUnmodifiableSet());
+					boolean noGuildRole = false;
+					if (guildRoles.isEmpty()) {
+						guildRoles = Set.of(ROLE_EVERYONE);
+						noGuildRole = true;
+					}
+					final Set<String> memberRoles = guildRoles.stream()
 							.filter(KNOWN_ROLE_NAMES::contains)
 							.map(ApplicationPermissionHelper::getApplicationRoleName)
 							.collect(Collectors.toUnmodifiableSet());
 					roles.addAll(memberRoles);
-					roles.addAll(memberRoles.stream().map(role -> buildGuildAuthentication(role, guild.getIdLong())).collect(Collectors.toUnmodifiableSet()));
+					if (!noGuildRole) {
+						roles.addAll(memberRoles.stream().map(role -> buildGuildAuthentication(role, guild.getIdLong())).collect(Collectors.toUnmodifiableSet()));
+					}
 				}
 		);
 

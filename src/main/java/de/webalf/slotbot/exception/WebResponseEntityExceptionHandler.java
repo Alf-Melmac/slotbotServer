@@ -24,7 +24,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Slf4j
 public class WebResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(value = {ResourceNotFoundException.class, MethodArgumentTypeMismatchException.class})
+	@ExceptionHandler(value = {ResourceNotFoundException.class, MethodArgumentTypeMismatchException.class, ForbiddenException.class})
 	protected RedirectView handleConflict(RuntimeException ex) {
 		return new RedirectView(determineRedirectView(ex));
 	}

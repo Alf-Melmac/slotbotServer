@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.util.GuildUtils.getCurrentOwnerGuild;
 import static de.webalf.slotbot.util.bot.MentionUtils.isSnowflake;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.EVENT_MANAGE;
 
@@ -113,7 +114,15 @@ public final class PermissionHelper {
 		return hasPermissionInGuild(EVENT_MANAGE, guildId);
 	}
 
+	public static boolean hasEventManagePermissionInCurrentOwnerGuild() {
+		return hasEventManagePermission(getCurrentOwnerGuild());
+	}
+
 	public static void assertEventManagePermission(Long guildId) {
 		assertPermissionInGuild(EVENT_MANAGE, guildId);
+	}
+
+	public static void assertEventManagePermissionInCurrentOwnerGuild() {
+		assertEventManagePermission(getCurrentOwnerGuild());
 	}
 }

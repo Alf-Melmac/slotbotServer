@@ -11,7 +11,6 @@ import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.bot.DiscordUserUtils;
-import de.webalf.slotbot.util.permissions.BotPermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.assertEventManagePermission;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -56,7 +54,7 @@ public class EventWebController {
 				//Remove parameters, because the calendar adds them by itself
 				.split("\\?")[0]);
 		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, null)).toUri().toString());
-		mav.addObject("eventManageRoles", BotPermissionHelper.getEventManageApplicationRoles());
+		mav.addObject("canManageEvents", hasEventManagePermissionInCurrentOwnerGuild());
 
 		addLayoutSettings(mav);
 		return mav;
@@ -65,6 +63,8 @@ public class EventWebController {
 	@GetMapping("/new")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public ModelAndView getWizardHtml(@RequestParam(required = false) String date, @RequestParam(required = false) String copyEvent) {
+		assertEventManagePermissionInCurrentOwnerGuild();
+
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		addLayoutSettings(mav);
@@ -105,14 +105,14 @@ public class EventWebController {
 	@GetMapping("/{id}/edit")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
-		assertEventManagePermission(eventService.getGuildIdByEventId(eventId));
+		final Event event = eventService.findById(eventId);
+		assertEventManagePermission(event.getOwnerGuild());
 
 		ModelAndView mav = new ModelAndView("eventEdit");
 
 		addLayoutSettings(mav);
 		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
-		final Event event = eventService.findById(eventId);
 		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
