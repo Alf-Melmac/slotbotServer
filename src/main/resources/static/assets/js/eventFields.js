@@ -65,6 +65,7 @@ $(function () {
                     $addDefaultFields.fadeIn();
                 }
             })
+            .fail(console.error);
     }
 
     $('#addDefaultFieldsConfirmed').on('click', function () {

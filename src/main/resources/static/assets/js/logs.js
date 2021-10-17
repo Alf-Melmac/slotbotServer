@@ -59,7 +59,7 @@ $(function () {
                         aaData: content
                     });
                 })
-                .fail(console.log);
+                .fail(console.error);
         },
         order: [4, 'asc'],
         columns: [
