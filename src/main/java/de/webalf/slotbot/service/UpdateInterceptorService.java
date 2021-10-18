@@ -99,15 +99,6 @@ public class UpdateInterceptorService {
 		}
 	}
 
-	public void onSave(Object entity) {
-		if (entity instanceof User) {
-			final User user = (User) entity;
-			if (!user.isDefaultUser()) {
-				messageHelper.sendDmToRecipient(user, "Schön dich bei Arma macht Bock begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!");
-			}
-		}
-	}
-
 	public void onCollectionUpdate(Object collection) {
 		if (collection instanceof PersistentList) {
 			final Object el = ((PersistentList) collection).get(0);

@@ -29,8 +29,16 @@ public final class GuildUtils {
 		return AMB.is();
 	}
 
+	public static boolean isAMB(long guildId) {
+		return AMB.getDiscordGuild() == guildId;
+	}
+
 	public static boolean isDAA() {
 		return DAA.is();
+	}
+
+	public static boolean isDAA(long guildId) {
+		return DAA.getDiscordGuild() == guildId;
 	}
 
 	static String getCurrentGroupIdentifier() {
@@ -43,11 +51,23 @@ public final class GuildUtils {
 		return currentGuild != null ? currentGuild.discordGuild : GUILD_PLACEHOLDER;
 	}
 
+	private static final String SLOTBOT_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899740543603589130/AM-name-slotbot-small.png";
+	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
+	private static final String DAA_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899747640634376272/DAA_transparent.gif";
+	public static String getLogo(long guildId) {
+		if (isAMB(guildId)) {
+			return AMB_LOGO;
+		} else if (isDAA(guildId)) {
+			return DAA_LOGO;
+		}
+		return SLOTBOT_LOGO;
+	}
+
 	@Getter
 	@AllArgsConstructor
 	public enum Guild {
-		AMB(Pattern.compile(".*(armamachtbock\\.de|arma-macht-bock\\.de).*"), "https://armamachtbock.de", "AMB", 701094826657054752L),
-		DAA(Pattern.compile(".*(deutsche-arma-allianz\\.de|deutschearmaallianz\\.de).*"), "https://deutsche-arma-allianz.de", "DAA", 874650742089203792L),
+		AMB(Pattern.compile(".*(armamachtbock\\.de|arma-macht-bock\\.de).*"), "https://armamachtbock.de", "AMB", 706254758721224707L),
+		DAA(Pattern.compile(".*(deutsche-arma-allianz\\.de|deutschearmaallianz\\.de).*"), "https://events.deutsche-arma-allianz.de", "DAA", 874650742089203792L),
 		/*LOCALHOST(Pattern.compile(".*localhost.*"), "Test", AMB.getDiscordGuild())*/
 		PUBLIC(Pattern.compile(".*todo.de.*"), "https://armamachtbock.de", "PUBLIC", GUILD_PLACEHOLDER);
 

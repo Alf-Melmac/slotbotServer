@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static de.webalf.slotbot.util.GuildUtils.isDAA;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
@@ -180,7 +181,14 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 			eventApiDto.getDiscordInformation(guildId).ifPresentOrElse(discordInformation -> discordInformation.setInfoMsg(infoMsg.getId()), () -> log.error("Failed to add infoMsg"));
 
 			//Send Spacer
-			sendMessage(channel, "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png");
+			final long ownerGuild = Long.parseLong(eventApiDto.getOwnerGuild());
+			String spacer;
+			if (isDAA(ownerGuild)) {
+				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/899736523275124827/Discord_Missionstrenner_DAA.png";
+			} else {
+				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png";
+			}
+			sendMessage(channel, spacer);
 
 			final List<String> slotListMessages = eventApiDto.getSlotList();
 			if (slotListMessages.size() > 2) {

@@ -34,12 +34,6 @@ public class HibernateInterceptor extends EmptyInterceptor {
 	}
 
 	@Override
-	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-		updateInterceptorService.onSave(entity);
-		return super.onSave(entity, id, state, propertyNames, types);
-	}
-
-	@Override
 	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
 		updateInterceptorService.onCollectionUpdate(collection);
 		super.onCollectionUpdate(collection, key);

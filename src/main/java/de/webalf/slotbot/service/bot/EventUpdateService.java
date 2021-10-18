@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
+import static de.webalf.slotbot.util.GuildUtils.isAMB;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 
 /**
@@ -75,7 +76,9 @@ public class EventUpdateService {
 			EventNotificationService.removeNotifications(event, previousUser);
 		} else if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
-			longTimeNoSee(currentUser);
+			if (isAMB(event.getOwnerGuild())) {
+				longTimeNoSee(currentUser);
+			}
 			schedulerService.schedule(() -> eventNotificationService.createNotifications(event, currentUser), 1);
 		}
 	}
@@ -83,13 +86,13 @@ public class EventUpdateService {
 	/**
 	 * If the last event slotting is more than 3 months in the past the user gets an additional message
 	 *
-	 * @param currentUser user that slots
+	 * @param user user that slots
 	 */
-	private void longTimeNoSee(@NonNull User currentUser) {
-		currentUser.getLastEventDateTime().ifPresent(lastEvent -> {
+	private void longTimeNoSee(@NonNull User user) {
+		user.getLastEventDateTime().ifPresentOrElse(lastEvent -> {
 			if (lastEvent.plusMonths(3).isBefore(LocalDateTime.now())) {
-				messageHelper.sendDmToRecipient(currentUser, "Über drei Monate haben wir dich nicht mehr gesehen. Schau doch gerne mal wieder öfter vorbei. Falls du einen neuen Technikcheck brauchst oder andere Fragen hast, melde dich doch bitte bei <@327385716977958913>.");
+				messageHelper.sendDmToRecipient(user, "Über drei Monate haben wir dich nicht mehr gesehen. Schau doch gerne mal wieder öfter vorbei. Falls du einen neuen Technikcheck brauchst oder andere Fragen hast, melde dich doch bitte bei <@327385716977958913>.");
 			}
-		});
+		}, () -> messageHelper.sendDmToRecipient(user, "Schön dich bei Arma macht Bock begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!"));
 	}
 }

@@ -120,16 +120,11 @@ public final class EventUtils {
 	}
 
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
-		String thumbnail = event.getPictureUrl();
-		if (StringUtils.isEmpty(thumbnail)) {
-			thumbnail = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
-		}
-
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
 				.setTitle(event.getName(), fixUrl(event.getUrl(), event.getOwnerGuild()))
 				.setDescription(event.getDescription())
-				.setThumbnail(thumbnail)
+				.setThumbnail(event.getPictureUrl())
 				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
 				.setTimestamp(Instant.now());
 

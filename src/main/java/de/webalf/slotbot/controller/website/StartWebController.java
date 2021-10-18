@@ -3,7 +3,6 @@ package de.webalf.slotbot.controller.website;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.GuildUtils.isDAA;
@@ -17,7 +16,7 @@ public class StartWebController {
 	@GetMapping("/")
 	public ModelAndView getStart() {
 		if (isDAA()) {
-			return new ModelAndView("redirect:" + ServletUriComponentsBuilder.fromCurrentContextPath().toUriString());
+			return new ModelAndView("redirect:https://deutsche-arma-allianz.de");
 		}
 
 		ModelAndView mav = new ModelAndView("start");

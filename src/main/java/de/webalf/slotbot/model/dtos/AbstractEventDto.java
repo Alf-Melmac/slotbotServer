@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model.dtos;
 
 import de.webalf.slotbot.util.DateUtils;
+import de.webalf.slotbot.util.GuildUtils;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.*;
@@ -68,9 +69,8 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 
 	private String ownerGuild;
 
-	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
 	public String getPictureUrl() {
-		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : AMB_LOGO;
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : GuildUtils.getLogo(Long.parseLong(ownerGuild));
 	}
 
 	public String getRawPictureUrl() {
