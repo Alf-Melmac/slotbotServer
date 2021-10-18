@@ -74,9 +74,10 @@ public class EventDetailsAssembler {
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.pictureUrl(event.getPictureUrl())
+				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.reserveParticipating(event.getReserveParticipating())
-				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.build();
 	}
 
