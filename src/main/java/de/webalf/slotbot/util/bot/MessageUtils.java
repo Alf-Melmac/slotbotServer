@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
+import org.thymeleaf.util.ListUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
@@ -79,18 +80,20 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Deletes the latest message from the given channel
+	 * Deletes the latest message from the given channel if {@link MessageType#CHANNEL_PINNED_ADD}
 	 *
 	 * @param channel in which the latest message should be deleted
 	 */
 	public static void deleteLatestMessageIfTypePinAdd(@NonNull MessageChannel channel) {
-		final long latestMessageId = channel.getLatestMessageIdLong();
-		channel.retrieveMessageById(latestMessageId).queue(message -> {
+		channel.getHistory().retrievePast(1).queue(messages -> {
+			if (ListUtils.isEmpty(messages)) {
+				return;
+			}
+			final Message message = messages.get(0);
 			if (MessageType.CHANNEL_PINNED_ADD == message.getType()) {
-				deleteMessagesInstant(channel, latestMessageId);
+				deleteMessagesInstant(channel, message.getIdLong());
 			}
 		});
-
 	}
 
 	/**
