@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.4</version>
+		<version>2.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -34,24 +34,24 @@
 		<!--Versions-->
 		<java.version>11</java.version>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<springframework.boot.version>2.5.4</springframework.boot.version>
+		<springframework.boot.version>2.5.5</springframework.boot.version>
 		<!--https://github.com/spring-projects/spring-security/releases -->
 		<springframework.security.version>5.5.2</springframework.security.version>
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
 		<!--https://in.relation.to/hibernate-orm/index.html -->
 		<hibernate.version>5.5.7.Final</hibernate.version>
 		<!--https://jdbc.postgresql.org/documentation/changelog.html -->
-		<postgresql.version>42.2.23</postgresql.version>
+		<postgresql.version>42.3.0</postgresql.version>
 		<mysql.version>8.0.23</mysql.version>
 		<!--https://projectlombok.org/changelog -->
-		<lombok.version>1.18.20</lombok.version>
+		<lombok.version>1.18.22</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<!--https://github.com/atteo/classindex/releases -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
-		<jda.version>4.3.0_314</jda.version>
+		<jda.version>4.3.0_334</jda.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.14.2</jsoup.version>
+		<jsoup.version>1.14.3</jsoup.version>
 	</properties>
 
 	<dependencies>

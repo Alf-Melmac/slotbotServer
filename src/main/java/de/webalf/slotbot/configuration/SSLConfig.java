@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Profile;
  * @since 28.09.2020
  */
 @Configuration
-@Profile("!test")
+@Profile("!test&&!dev")
 public class SSLConfig {
 	@Value("${server.port}")
 	private int serverPort;

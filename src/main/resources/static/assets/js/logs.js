@@ -4,7 +4,7 @@ $(function () {
 
     $logs.DataTable({
         language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.21/i18n/German.json"
+            url: "//cdn.datatables.net/plug-ins/1.11.3/i18n/de_de.json"
         },
         processing: true,
         serverSide: true,
