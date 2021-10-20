@@ -343,7 +343,7 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * Informs the event about an slot update (slot, unslot, new slot(s) created, slot(s) removed).
+	 * Informs the event about a slot update (slot, unslot, new slot(s) created, slot(s) removed).
 	 * Uses {@link Event#moveReservists()} to change reserve if needed
 	 */
 	void slotUpdate() {
@@ -421,7 +421,8 @@ public class Event extends AbstractSuperIdEntity {
 		List<Slot> reserveSlots = reserveSquad.getSlotList();
 		for (int i = 0; i < getDesiredReserveSize(); i++) {
 			int slotNumber = 100 + i;
-			while (findSlot(slotNumber).isPresent()) {
+			while (findSlot(slotNumber).isPresent()
+					|| EventUtils.slotNumberPresent(reserveSlots, slotNumber)) {
 				slotNumber++;
 			}
 			reserveSlots.add(Slot.builder()
