@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static de.webalf.slotbot.util.DateUtils.getDateTimeNowZoned;
+
 /**
  * @author Alf
  * @since 11.08.2021
@@ -40,7 +42,7 @@ public class NotificationSetting extends AbstractSuperIdEntity {
 	 * @return delay until notification must be sent
 	 */
 	public int getNotificationDelay(LocalDateTime eventTime) {
-		return (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), getNotificationTime(eventTime));
+		return (int) ChronoUnit.MINUTES.between(getDateTimeNowZoned(), getNotificationTime(eventTime));
 	}
 
 	private LocalDateTime getNotificationTime(@NonNull LocalDateTime eventTime) {
