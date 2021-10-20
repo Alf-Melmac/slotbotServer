@@ -114,6 +114,7 @@ public class EventWebController {
 		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
+		mav.addObject("canRevokeShareable", eventService.canRevokeShareable(event));
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("putEventEditableUrl", linkTo(methodOn(EventController.class).updateEventEditable(eventId, null, null)).toUri().toString());

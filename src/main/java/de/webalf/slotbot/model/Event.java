@@ -294,6 +294,10 @@ public class Event extends AbstractSuperIdEntity {
 		}
 	}
 
+	public boolean isSharedWithOthers() {
+		return getDiscordInformation().stream().anyMatch(information -> information.getGuild() != getOwnerGuild());
+	}
+
 	// Setter
 
 	/**
