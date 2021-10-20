@@ -24,9 +24,11 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query("SELECT e FROM Event e WHERE e.dateTime BETWEEN :start AND :end AND e.hidden = false AND (e.shareable = true OR e.ownerGuild = de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER)")
 	List<Event> findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-	List<Event> findAllByOwnerGuildAndDateTimeBetween(long ownerGuild, LocalDateTime start, LocalDateTime end);
+	@Query("SELECT e FROM Event e WHERE (e.ownerGuild = :ownerGuild OR EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild)) AND e.dateTime BETWEEN :start AND :end")
+	List<Event> findAllByGuildAndDateTimeBetween(@Param("ownerGuild") long ownerGuild, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-	List<Event> findAllByOwnerGuildAndDateTimeBetweenAndHiddenFalse(long ownerGuild, LocalDateTime start, LocalDateTime end);
+	@Query("SELECT e FROM Event e WHERE (e.ownerGuild = :ownerGuild OR EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild)) AND e.dateTime BETWEEN :start AND :end AND e.hidden = false")
+	List<Event> findAllByGuildAndDateTimeBetweenAndHiddenFalse(@Param("ownerGuild") long ownerGuild, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 	@Query("SELECT e FROM Event e WHERE e.dateTime < :dateTime ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsBeforeAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime);

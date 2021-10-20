@@ -132,10 +132,9 @@ public class EventService {
 					eventRepository.findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(start, end);
 		}
 
-		//TODO add other shared events to own guild
 		return hasEventManageRole() ?
-				eventRepository.findAllByOwnerGuildAndDateTimeBetween(ownerGuild, start, end) :
-				eventRepository.findAllByOwnerGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
+				eventRepository.findAllByGuildAndDateTimeBetween(ownerGuild, start, end) :
+				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
 	}
 
 	/**
