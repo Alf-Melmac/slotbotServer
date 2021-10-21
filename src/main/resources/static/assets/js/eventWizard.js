@@ -66,7 +66,9 @@ $(function () {
 
     if (copyEvent) {
         for (const [key, value] of Object.entries(copyEvent)) {
-            if (key === 'eventType') {
+            if (key.endsWith('id') || skipDtoKeys.includes(key)) {
+                continue;
+            } else if (key === 'eventType') {
                 Object.entries(value).forEach(([childKey, childValue]) => setValue(`${key}.${childKey}`, childValue));
                 continue;
             } else if (key === 'shareable') {
@@ -85,9 +87,9 @@ $(function () {
     }
 });
 
-const skipDtoKeys = ['date', 'channel', 'infoMsg', 'slotListMsg', 'pictureUrl', 'missionTypesFiltered'];
+const skipDtoKeys = ['date', 'discordInformation', 'ownerGuild', 'channelUrl', 'pictureUrl', 'missionTypesFiltered', 'dateTimeZoned'];
 function setValue(dtoKey, value) {
-    if (dtoKey.endsWith('id') || skipDtoKeys.includes(dtoKey)) {
+    if (dtoKey.endsWith('id')) {
         return;
     } else if (dtoKey === 'rawPictureUrl') {
         dtoKey = 'pictureUrl';

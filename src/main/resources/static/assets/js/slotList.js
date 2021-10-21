@@ -114,7 +114,7 @@ function checkUniqueSlotNumbers() {
 
 function addSlotList(slotList) {
     $('#uploadSlotlistModal').modal('hide'); //Close upload modal
-    $('.js-trash').trigger('click'); //Remove all existing squads and slots
+    $('#squads').find('.js-trash').trigger('click'); //Remove all existing squads and slots
 
     for (const squad of slotList) {
         $('#addSquad').trigger('click');
