@@ -31,10 +31,10 @@ public final class EventAssembler {
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
 				.creator(dto.getCreator().trim())
 				//Event type is set by using service
-				.description(dto.getDescription())
+				.description(dto.getDescription().trim())
 				.missionType(dto.getMissionType())
-				.missionLength(dto.getMissionLength())
-				.pictureUrl(dto.getRawPictureUrl())
+				.missionLength(dto.getMissionLength().trim())
+				.pictureUrl(dto.getRawPictureUrl().trim())
 				.details(EventFieldAssembler.fromDtoIterable(dto.getDetails()))
 				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
 				.reserveParticipating(dto.getReserveParticipating())

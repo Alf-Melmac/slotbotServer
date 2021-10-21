@@ -66,7 +66,7 @@ public class EventController {
 
 		EventDto dto = EventDto.builder().id(pk).build();
 		try {
-			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, value);
+			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, value.trim());
 		} catch (NoSuchFieldException e) {
 			log.error("Can't find field " + name + " while trying to edit it.", e);
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
