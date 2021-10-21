@@ -52,7 +52,7 @@ public final class EventUtils {
 	 * @see #apiReadAccessAllowed(boolean, boolean, long)
 	 */
 	public static void assertApiReadAccess(@NonNull AbstractEventDto eventDto) throws ForbiddenException {
-		if (!apiReadAccessAllowed(eventDto.isShareable(), eventDto.isHidden(), Long.parseLong(eventDto.getOwnerGuild()))) {
+		if (!apiReadAccessAllowed(eventDto.getShareable(), eventDto.getHidden(), Long.parseLong(eventDto.getOwnerGuild()))) {
 			throw new ForbiddenException("Not allowed to read here.");
 		}
 	}
@@ -128,7 +128,7 @@ public final class EventUtils {
 				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
 				.setTimestamp(Instant.now());
 
-		if (event.isHidden()) {
+		if (event.getHidden()) {
 			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");
 		}
 

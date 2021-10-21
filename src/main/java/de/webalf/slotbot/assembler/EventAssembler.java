@@ -8,6 +8,7 @@ import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 
+import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
 import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
 
 /**
@@ -24,8 +25,8 @@ public final class EventAssembler {
 
 		return Event.builder()
 				.id(dto.getId())
-				.hidden(dto.isHidden())
-				.shareable(dto.isShareable())
+				.hidden(parseBoolean(dto.getHidden(), false))
+				.shareable(parseBoolean(dto.getShareable(), false))
 				.name(dto.getName().trim())
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
 				.creator(dto.getCreator().trim())

@@ -28,11 +28,9 @@ import static de.webalf.slotbot.util.MaxLength.*;
 @Data
 @SuperBuilder
 public abstract class AbstractEventDto extends AbstractIdEntityDto {
-	@Builder.Default
-	private boolean hidden = false;
+	private Boolean hidden;
 
-	@Builder.Default
-	private boolean shareable = false;
+	private Boolean shareable;
 
 	@NotBlank
 	@Size(max = TEXT)
