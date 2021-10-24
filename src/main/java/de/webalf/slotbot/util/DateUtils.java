@@ -29,7 +29,7 @@ public final class DateUtils {
 	}
 
 	public static ZonedDateTime getDateTimeNowZoned() {
-		return getDateTimeZoned(LocalDateTime.now());
+		return ZonedDateTime.ofInstant(Instant.now(), ZONE_BERLIN);
 	}
 
 	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDate date, @NonNull LocalTime time) {
