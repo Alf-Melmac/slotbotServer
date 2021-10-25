@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.Duration;
 
 import static de.webalf.slotbot.util.DateUtils.getDateTimeNowZoned;
+import static de.webalf.slotbot.util.DateUtils.getDateTimeZoned;
 
 /**
  * @author Alf
@@ -27,11 +28,11 @@ public class ActionLogService {
 	private final ActionLogRepository logRepository;
 
 	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User user) {
-		logAction(action, Duration.between(getDateTimeNowZoned(), event.getDateTime()), event.getId(), user);
+		logAction(action, Duration.between(getDateTimeNowZoned(), getDateTimeZoned(event.getDateTime())), event.getId(), user);
 	}
 
 	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User user1, @NonNull User user2) {
-		Duration timeGap = Duration.between(getDateTimeNowZoned(), event.getDateTime());
+		Duration timeGap = Duration.between(getDateTimeNowZoned(), getDateTimeZoned(event.getDateTime()));
 		logAction(action, timeGap, event.getId(), user1);
 		logAction(action, timeGap, event.getId(), user2);
 	}

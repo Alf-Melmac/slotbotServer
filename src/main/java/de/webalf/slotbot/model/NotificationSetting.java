@@ -5,9 +5,11 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static de.webalf.slotbot.util.DateUtils.getDateTimeNowZoned;
+import static de.webalf.slotbot.util.DateUtils.getDateTimeZoned;
 
 /**
  * @author Alf
@@ -45,7 +47,7 @@ public class NotificationSetting extends AbstractSuperIdEntity {
 		return (int) ChronoUnit.MINUTES.between(getDateTimeNowZoned(), getNotificationTime(eventTime));
 	}
 
-	private LocalDateTime getNotificationTime(@NonNull LocalDateTime eventTime) {
-		return eventTime.minusHours(hoursBeforeEvent).minusMinutes(minutesBeforeEvent);
+	private ZonedDateTime getNotificationTime(@NonNull LocalDateTime eventTime) {
+		return getDateTimeZoned(eventTime.minusHours(hoursBeforeEvent).minusMinutes(minutesBeforeEvent));
 	}
 }
