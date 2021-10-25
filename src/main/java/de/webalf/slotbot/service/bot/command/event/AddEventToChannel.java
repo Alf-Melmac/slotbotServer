@@ -184,7 +184,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 			final long ownerGuild = Long.parseLong(eventApiDto.getOwnerGuild());
 			String spacer;
 			if (isDAA(ownerGuild)) {
-				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/901925677677297724/Trenner.png";
+				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/902303885228646420/Discord_Missionstrenner_DAA-transparent.png";
 			} else {
 				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png";
 			}
