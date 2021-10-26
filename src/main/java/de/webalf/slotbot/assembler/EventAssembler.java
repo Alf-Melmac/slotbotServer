@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
 import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.util.StringUtils.trim;
 
 /**
  * @author Alf
@@ -31,10 +32,10 @@ public final class EventAssembler {
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
 				.creator(dto.getCreator().trim())
 				//Event type is set by using service
-				.description(dto.getDescription().trim())
+				.description(trim(dto.getDescription()))
 				.missionType(dto.getMissionType())
-				.missionLength(dto.getMissionLength().trim())
-				.pictureUrl(dto.getRawPictureUrl().trim())
+				.missionLength(trim(dto.getMissionLength()))
+				.pictureUrl(trim(dto.getRawPictureUrl()))
 				.details(EventFieldAssembler.fromDtoIterable(dto.getDetails()))
 				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
 				.reserveParticipating(dto.getReserveParticipating())
