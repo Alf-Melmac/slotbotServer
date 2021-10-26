@@ -59,4 +59,33 @@ public final class StringUtils {
 	public static String removeNonDigitCharacters(String str) {
 		return str.replaceAll(NON_DIGIT_REGEX, "");
 	}
+
+	/**
+	 * Returns a trimmed version of the given string. The string may be null.
+	 *
+	 * @param str string to trim
+	 * @return trimmed version of the given string
+	 */
+	public static String trim(String str) {
+		if (str == null) {
+			return null;
+		}
+		return str.trim();
+	}
+
+	/**
+	 * Gets the first string that is not empty.
+	 *
+	 * @param fallback to use if all given strings are empty
+	 * @param strs strings that may be null or empty
+	 * @return first found not empty string or the given fallback if non is not empty
+	 */
+	public static String getFirstNotEmpty(String fallback, String... strs) {
+		for (String str : strs) {
+			if (isNotEmpty(str)) {
+				return str;
+			}
+		}
+		return fallback;
+	}
 }

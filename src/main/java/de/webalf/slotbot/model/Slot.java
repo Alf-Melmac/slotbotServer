@@ -91,6 +91,10 @@ public class Slot extends AbstractIdEntity {
 		return !isEmpty();
 	}
 
+	public boolean isBlocked() {
+		return isNotEmpty() && getUser().isDefaultUser();
+	}
+
 	// Setter
 
 	/**
@@ -146,7 +150,7 @@ public class Slot extends AbstractIdEntity {
 	}
 
 	public void blockSlot(@NonNull User defaultUser, @NotBlank String replacementName) {
-		if (isNotEmpty()) {
+		if (isNotEmpty() && !isBlocked()) {
 			throw BusinessRuntimeException.builder().title("Der Slot ist belegt, die Person muss zuerst ausgeslottet werden.").build();
 		} else if (getSquad().isReserve()) {
 			throw BusinessRuntimeException.builder().title("In der Reserve kann kein Slot blockiert werden.").build();

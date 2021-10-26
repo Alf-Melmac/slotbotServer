@@ -143,7 +143,6 @@ function getSquads(update = false) {
                 slot.user = {
                     id: defaultUserId
                 }
-                slot.replacementText = 'Gesperrt'
             }
             if (update) {
                 slot.id = $slot.data('slotid');
