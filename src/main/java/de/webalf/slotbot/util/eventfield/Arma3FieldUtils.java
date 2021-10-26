@@ -25,8 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @EventFieldDefault(eventTypeName = "Arma 3")
 @Slf4j
 public final class Arma3FieldUtils {
-	private static final List<String> MOD_PACKS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN",
-			"Alliance_2021v3");
+	private static final List<String> MOD_SETS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
 			"Ba Long, Quang Tri province, Vietnam", "Beketow", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
@@ -44,8 +43,8 @@ public final class Arma3FieldUtils {
 	@SuppressWarnings("unused") //EventFieldUtils#eventTypeNameToFieldDefaults
 	static final List<EventFieldDefaultDto> FIELDS = List.of(
 			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).build(),
-			EventFieldDefaultDto.builder().title("Modpack").type(TEXT_WITH_SELECTION).selection(MOD_PACKS)
-					.text(MOD_PACKS.get(0)).build(),
+			EventFieldDefaultDto.builder().title("Modset").type(TEXT_WITH_SELECTION).selection(MOD_SETS)
+					.text(MOD_SETS.get(0)).build(),
 			EventFieldDefaultDto.builder().title("Karte").type(SELECTION).selection(MAPS).build(),
 			EventFieldDefaultDto.builder().title("Technischer Teleport").type(TEXT).build(),
 			EventFieldDefaultDto.builder().title("Medic-System").type(TEXT).build(),
@@ -54,16 +53,16 @@ public final class Arma3FieldUtils {
 	);
 
 	public static final Pattern FILE_PATTERN = Pattern.compile("^(Arma_3_Preset_)?(.+)\\.html");
-	private static final Map<String, String> DOWNLOADABLE_MOD_PACKS = new HashMap<>();
+	private static final Map<String, String> DOWNLOADABLE_MOD_SETS = new HashMap<>();
 
-	public static void fillDownloadableModPacks(Set<String> fileNames) {
-		DOWNLOADABLE_MOD_PACKS.clear();
+	public static void fillDownloadableModSets(Set<String> fileNames) {
+		DOWNLOADABLE_MOD_SETS.clear();
 		fileNames.forEach(fileName -> {
 			final Matcher matcher = FILE_PATTERN.matcher(fileName);
 			matcher.find();
-			DOWNLOADABLE_MOD_PACKS.put(replaceSpecialNames(matcher.group(2)), fileName);
+			DOWNLOADABLE_MOD_SETS.put(replaceSpecialNames(matcher.group(2)), fileName);
 		});
-		log.info("Found {} downloadable mod packs", DOWNLOADABLE_MOD_PACKS.size());
+		log.info("Found {} downloadable mod packs", DOWNLOADABLE_MOD_SETS.size());
 	}
 
 	private static String replaceSpecialNames(String matchedName) {
@@ -80,16 +79,16 @@ public final class Arma3FieldUtils {
 	}
 
 	/**
-	 * Matches the given string to a known modpack url
+	 * Matches the given string to a known modSet url
 	 *
-	 * @param modPack to get url for
+	 * @param modSet to get url for
 	 * @return download url if known or null
 	 */
-	public static String getModPackUrl(String modPack) {
-		if (modPack == null) {
+	public static String getModSetUrl(String modSet) {
+		if (modSet == null) {
 			return null;
 		}
-		final String fileName = DOWNLOADABLE_MOD_PACKS.get(modPack);
+		final String fileName = DOWNLOADABLE_MOD_SETS.get(modSet);
 		if (fileName != null) {
 			return linkTo(methodOn(FileWebController.class).getFile(fileName)).toUri().toString();
 		}

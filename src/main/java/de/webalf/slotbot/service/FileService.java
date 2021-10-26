@@ -73,7 +73,7 @@ public class FileService {
 	 * Populates caches that need files from the file directories
 	 */
 	public void listFiles() {
-		Arma3FieldUtils.fillDownloadableModPacks(listDownloadFilesAndFilter(Arma3FieldUtils.FILE_PATTERN));
+		Arma3FieldUtils.fillDownloadableModSets(listDownloadFilesAndFilter(Arma3FieldUtils.FILE_PATTERN));
 	}
 
 	/**
