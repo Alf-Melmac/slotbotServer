@@ -28,7 +28,8 @@ public final class SlashCommandUtils {
 	static {
 		final Iterable<Class<?>> commandList = ClassIndex.getAnnotated(SlashCommand.class);
 		StreamSupport.stream(commandList.spliterator(), false)
-				.forEach(command -> commandToClassMap.put(CommandClassHelper.getSlashCommand(command).name().toLowerCase(), command));
+				.forEach(command -> Arrays.stream(CommandClassHelper.getSlashCommand(command))
+						.forEach(slashCommand -> commandToClassMap.put(slashCommand.name().toLowerCase(), command)));
 	}
 
 	/**
@@ -103,5 +104,15 @@ public final class SlashCommandUtils {
 	 */
 	public static long getUserOption(@NonNull OptionMapping option) {
 		return option.getAsUser().getIdLong();
+	}
+
+	/**
+	 * Returns the user id of the given nullable {@link OptionMapping}
+	 *
+	 * @param option to get user from
+	 * @return user id or null
+	 */
+	public static Long getOptionalUserOption(OptionMapping option) {
+		return option == null ? null : getUserOption(option);
 	}
 }

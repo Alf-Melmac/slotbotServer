@@ -3,6 +3,7 @@ package de.webalf.slotbot.util.bot;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.annotations.SlashCommand;
+import de.webalf.slotbot.model.annotations.SlashCommands;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
@@ -101,7 +102,29 @@ public class CommandClassHelper {
 		return commandClass.getAnnotation(Command.class);
 	}
 
-	public static SlashCommand getSlashCommand(@NonNull Class<?> commandClass) {
-		return commandClass.getAnnotation(SlashCommand.class);
+	/**
+	 * Get all {@link SlashCommand} annotations on the given class
+	 *
+	 * @param commandClass command class
+	 * @return all slash commands
+	 */
+	public static SlashCommand[] getSlashCommand(@NonNull Class<?> commandClass) {
+		final SlashCommand slashCommand = commandClass.getAnnotation(SlashCommand.class);
+		if (slashCommand == null) {
+			return commandClass.getAnnotation(SlashCommands.class).value();
+		}
+		return new SlashCommand[]{slashCommand};
+	}
+
+	/**
+	 * Returns the {@link SlashCommand} found by the given name
+	 *
+	 * @param name of the slash command
+	 * @return slash command
+	 */
+	public static SlashCommand getSlashCommand(String name) {
+		return Arrays.stream(getSlashCommand(SlashCommandUtils.get(name)))
+				.filter(slashCommand -> slashCommand.name().toLowerCase().equals(name))
+				.findAny().orElseThrow(IllegalStateException::new);
 	}
 }

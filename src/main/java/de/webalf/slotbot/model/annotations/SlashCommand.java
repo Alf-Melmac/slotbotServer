@@ -3,10 +3,7 @@ package de.webalf.slotbot.model.annotations;
 import de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization;
 import org.atteo.classindex.IndexAnnotated;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.ADMINISTRATIVE;
 
@@ -16,6 +13,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Repeatable(SlashCommands.class)
 @IndexAnnotated
 public @interface SlashCommand {
 	String name();

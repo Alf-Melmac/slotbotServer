@@ -25,6 +25,7 @@ import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getIntegerOption;
+import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalUserOption;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
@@ -44,6 +45,10 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		description = "Slottet dich in ein Event.",
 		authorization = NONE,
 		optionPosition = 0)
+@SlashCommand(name = "forceSlot",
+		description = "Slottet jemanden anderen in ein Event.",
+		authorization = EVENT_MANAGE,
+		optionPosition = 1)
 public class Slot implements DiscordCommand, DiscordSlashCommand {
 	private final EventBotService eventBotService;
 
@@ -92,8 +97,11 @@ public class Slot implements DiscordCommand, DiscordSlashCommand {
 	}
 
 	private static final String OPTION_SLOT_NUMBER = "slotnummer";
+	private static final String OPTION_SLOT_USER = "user";
 	private static final List<List<OptionData>> OPTIONS = List.of(
-			List.of(new OptionData(OptionType.INTEGER, OPTION_SLOT_NUMBER, "Nummer des erwünschten Slots.", true))
+			List.of(new OptionData(OptionType.INTEGER, OPTION_SLOT_NUMBER, "Nummer des erwünschten Slots.", true)),
+			List.of(new OptionData(OptionType.INTEGER, OPTION_SLOT_NUMBER, "Nummer des erwünschten Slots.", true),
+					new OptionData(OptionType.USER, OPTION_SLOT_USER, "Zu slottende Person.", true))
 	);
 
 	@Override
@@ -102,7 +110,13 @@ public class Slot implements DiscordCommand, DiscordSlashCommand {
 
 		@SuppressWarnings("ConstantConditions") //Required option
 		final int slotNumber = getIntegerOption(event.getOption(OPTION_SLOT_NUMBER));
-		eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
+
+		final Long user = getOptionalUserOption(event.getOption(OPTION_SLOT_USER));
+		if (user == null) { //Self slot
+			eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
+		} else { //Slot others
+			eventBotService.slot(event.getChannel().getIdLong(), slotNumber, Long.toString(user));
+		}
 
 		finishedSlashCommandAction(event);
 	}
