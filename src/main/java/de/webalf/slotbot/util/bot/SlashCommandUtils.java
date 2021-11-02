@@ -97,6 +97,16 @@ public final class SlashCommandUtils {
 	}
 
 	/**
+	 * Returns the integer value of the given nullable {@link OptionMapping}
+	 *
+	 * @param option to get int from
+	 * @return int or null
+	 */
+	public static Integer getOptionalIntegerOption(OptionMapping option) {
+		return option == null ? null : getIntegerOption(option);
+	}
+
+	/**
 	 * Returns the id of the {@link User} of the given not null {@link OptionMapping}
 	 *
 	 * @param option to get user id from
