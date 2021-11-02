@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.bot;
 
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
@@ -43,18 +44,12 @@ public class EventBotService {
 		return eventService.findById(eventId);
 	}
 
-	public Optional<Event> findByChannel(@NonNull Message message, long channel) {
-		final Optional<Event> optionalEvent = findByChannel(channel);
-		if (optionalEvent.isPresent()) {
-			return optionalEvent;
-		} else {
-			replyAndDelete(message, "Hier konnte kein Event gefunden werden.");
-			return Optional.empty();
-		}
-	}
-
 	public Optional<Event> findByChannel(long channel) {
 		return eventService.findOptionalByChannel(channel);
+	}
+
+	public Event findByChannelOrThrow(long channel) {
+		return findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public List<Event> findAllInPast() {
