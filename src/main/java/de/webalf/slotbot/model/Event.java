@@ -158,16 +158,6 @@ public class Event extends AbstractSuperIdEntity {
 		return !CollectionUtils.isEmpty(getDiscordInformation());
 	}
 
-	/**
-	 * Checks whether a channel in the given guild is assigned to the event
-	 *
-	 * @param guildId to check for printed event
-	 * @return true if a channel has been assigned to the event
-	 */
-	public boolean isAssigned(long guildId) {
-		return getDiscordInformation(guildId).isPresent();
-	}
-
 	public Set<User> getAllParticipants() {
 		return getSquadList().stream()
 				.flatMap(squad -> squad.getSlotList().stream()
@@ -305,7 +295,7 @@ public class Event extends AbstractSuperIdEntity {
 	 *
 	 * @param date to set
 	 */
-	public void setDate(LocalDate date) {
+	public void setDate(@NonNull LocalDate date) {
 		setDateTime(getDateTime().withYear(date.getYear()).withMonth(date.getMonth().getValue()).withDayOfMonth(date.getDayOfMonth()));
 	}
 
@@ -314,7 +304,7 @@ public class Event extends AbstractSuperIdEntity {
 	 *
 	 * @param time to set
 	 */
-	public void setTime(LocalTime time) {
+	public void setTime(@NonNull LocalTime time) {
 		setDateTime(getDateTime().withHour(time.getHour()).withMinute(time.getMinute()));
 	}
 
@@ -508,7 +498,6 @@ public class Event extends AbstractSuperIdEntity {
 			throw BusinessRuntimeException.builder().title("Es können nur Events in der Vergangenheit archiviert werden.").build();
 		}
 
-		//TODO check functionality
 		getDiscordInformation(guildId).ifPresent(informationOfGuild -> getDiscordInformation().remove(informationOfGuild));
 		if (getOwnerGuild() == guildId) {
 			EventNotificationService.removeNotifications(getId());
