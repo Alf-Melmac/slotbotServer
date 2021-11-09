@@ -40,6 +40,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 
 				.oauth2Login()
 				.loginPage("/login")
+				.defaultSuccessUrl("/events")
 				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
 				.and()
 				.userInfoEndpoint().userService(oAuthUserService());
