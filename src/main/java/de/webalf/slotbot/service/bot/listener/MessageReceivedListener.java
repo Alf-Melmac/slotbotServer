@@ -50,7 +50,7 @@ public class MessageReceivedListener extends ListenerAdapter {
 			return;
 		}
 
-		log.debug("Received command: {} from {}", messageText, event.getAuthor().getId());
+		log.debug("Received command: '{}' from {}", messageText, event.getAuthor().getId());
 
 		List<String> argList = getArgList(args);
 
