@@ -40,12 +40,18 @@ public class MessageReceivedListener extends ListenerAdapter {
 		final Message message = event.getMessage();
 		final String messageText = message.getContentRaw().trim();
 
-		//Ignore message without prefix or from other bots
-		if (!messageText.startsWith(discordProperties.getPrefix()) || event.getAuthor().isBot()) return;
+		//Ignore message without prefix or from other bots and remove prefix from args
+		String args;
+		if (messageText.startsWith(discordProperties.getPrefix())) {
+			args = messageText.substring(discordProperties.getPrefix().length());
+		} else if (messageText.startsWith("/")) {
+			args = messageText.substring(1);
+		} else {
+			return;
+		}
 
 		log.debug("Received command: {} from {}", messageText, event.getAuthor().getId());
 
-		final String args = messageText.substring(discordProperties.getPrefix().length()); //Remove prefix
 		List<String> argList = getArgList(args);
 
 		if (argList.isEmpty()) return;
