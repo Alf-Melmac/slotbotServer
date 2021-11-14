@@ -46,7 +46,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		authorization = NONE,
 		optionPosition = 0)
 @SlashCommand(name = "forceSlot",
-		description = "Slottet jemanden anderen in ein Event.",
+		description = "Slottet jemand anderen in ein Event.",
 		authorization = EVENT_MANAGE,
 		optionPosition = 1)
 public class Slot implements DiscordCommand, DiscordSlashCommand {

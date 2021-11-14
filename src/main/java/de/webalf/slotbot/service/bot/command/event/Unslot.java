@@ -42,7 +42,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 		description = "Slottet dich aus einem Event aus.",
 		authorization = NONE)
 @SlashCommand(name = "forceUnslot",
-		description = "Slottet jemanden anderen aus einem Event aus.",
+		description = "Slottet jemand anderen aus einem Event aus.",
 		authorization = EVENT_MANAGE,
 		optionPosition = 0)
 public class Unslot implements DiscordCommand, DiscordSlashCommand {
