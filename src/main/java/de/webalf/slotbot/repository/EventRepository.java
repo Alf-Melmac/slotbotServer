@@ -30,7 +30,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query("SELECT e FROM Event e WHERE (e.ownerGuild = :ownerGuild OR EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild)) AND e.dateTime BETWEEN :start AND :end AND e.hidden = false")
 	List<Event> findAllByGuildAndDateTimeBetweenAndHiddenFalse(@Param("ownerGuild") long ownerGuild, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-	List<Event> findAllByHiddenFalse();
+	@Query("SELECT e FROM Event e WHERE (e.ownerGuild = :ownerGuild OR EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild)) AND e.hidden = false")
+	List<Event> findAllByGuildAndHiddenFalse(@Param("ownerGuild") long ownerGuild);
 
 	@Query("SELECT e FROM Event e WHERE e.dateTime < :dateTime ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsBeforeAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime);

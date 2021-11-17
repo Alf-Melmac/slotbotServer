@@ -137,6 +137,10 @@ public class EventService {
 				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
 	}
 
+	public List<Event> findAllByGuild(long ownerGuild) {
+		return eventRepository.findAllByGuildAndHiddenFalse(ownerGuild);
+	}
+
 	/**
 	 * Returns all events that happened before now
 	 *

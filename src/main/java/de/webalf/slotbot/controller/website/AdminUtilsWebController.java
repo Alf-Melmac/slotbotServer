@@ -58,8 +58,8 @@ public class AdminUtilsWebController {
 			eventTypeService.deleteUnused();
 		} else if ("rebuildEventNotifications".equals(action)) {
 			eventNotificationService.rebuildAllNotifications();
-		} else if ("rebuildCalendar".equals(action)) {
-			eventCalendarService.rebuildCalendar();
+		} else if ("rebuildCalendars".equals(action)) {
+			eventCalendarService.rebuildCalendars();
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

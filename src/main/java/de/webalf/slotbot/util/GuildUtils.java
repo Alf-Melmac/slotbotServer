@@ -76,6 +76,7 @@ public final class GuildUtils {
 		private final String id;
 		private final long discordGuild;
 
+		@Getter
 		private static final Map<Long, Guild> ID_GUILD_MAP;
 
 		static {

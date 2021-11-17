@@ -1,8 +1,8 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.configuration.properties.StorageProperties;
-import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.EventCalendarUtil;
+import de.webalf.slotbot.util.GuildUtils.Guild;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -26,16 +26,19 @@ import java.io.IOException;
 @Slf4j
 public class EventCalendarService {
 	private final StorageProperties storageProperties;
-	private final EventRepository eventRepository;
+	private final EventService eventService;
 
 	/**
 	 * Builds and writes the calendar including all visible events
 	 */
-	public void rebuildCalendar() {
-		log.debug("Rebuilding calendar...");
-		final Calendar calendar = EventCalendarUtil.buildEventCalendar(eventRepository.findAllByHiddenFalse());
-		writeCalendar(calendar, "event-all");
-		log.debug("Calendar write finished.");
+	public void rebuildCalendars() {
+		log.debug("Rebuilding global calendars...");
+		for (Guild guild : Guild.values()) {
+			log.debug("Building calendar for {} [{}]", guild.getId(), guild.getDiscordGuild());
+			final Calendar calendar = EventCalendarUtil.buildEventCalendar(eventService.findAllByGuild(guild.getDiscordGuild()));
+			writeCalendar(calendar, guild.getId());
+		}
+		log.debug("Calendar writes finished.");
 	}
 
 	/**

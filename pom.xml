@@ -51,7 +51,7 @@
 		<jda.version>4.3.0_346</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.14.3</jsoup.version>
-		<ical4j.version>4.0.0-alpha9</ical4j.version>
+		<ical4j.version>4.0.0-alpha10</ical4j.version>
 	</properties>
 
 	<dependencies>

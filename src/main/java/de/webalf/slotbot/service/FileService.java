@@ -49,7 +49,7 @@ public class FileService {
 	}
 
 	/**
-	 * Returns the given file by name as a {@link Resource}
+	 * Returns the given image file by name as a {@link Resource}
 	 * Searches in {@link StorageProperties#getImages()} path
 	 *
 	 * @param path img path to load
@@ -70,7 +70,7 @@ public class FileService {
 	}
 
 	/**
-	 * Returns the given file by name as a {@link Resource}
+	 * Returns the given ics file by name as a {@link Resource}
 	 * Searches in {@link StorageProperties#getCalendarOutput()} path
 	 *
 	 * @param filename ics file to load
