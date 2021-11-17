@@ -42,7 +42,7 @@ public class EventCalendarService {
 	}
 
 	/**
-	 * Writes the given calendar as an ics file to the {@link StorageProperties#calendarOutput} directory
+	 * Writes the given calendar as an ics file to the {@link StorageProperties#getCalendarOutput()} directory
 	 *
 	 * @param calendar to write
 	 * @param calendarName file name
