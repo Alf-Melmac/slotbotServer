@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static de.webalf.slotbot.constant.Urls.API;
-import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_READ_PUBLIC_PERMISSION;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTIAL_READ_PUBLIC_PERMISSION;
 
 /**
  * @author Alf
@@ -28,7 +28,7 @@ public class EventApiViewDtoController {
 	private final EventApiAssembler eventApiAssembler;
 
 	@GetMapping("/{id}")
-	@PreAuthorize(HAS_READ_PUBLIC_PERMISSION)
+	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
 	public EventApiViewDto getEventView(@PathVariable(value = "id") long eventId) {
 		log.trace("getEventView: " + eventId);
 		return eventApiAssembler.toViewDto(eventService.findByIdForApi(eventId));

@@ -1,8 +1,8 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.service.external.DiscordApiService.User;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-	private final DiscordApiService discordApiService;
+	private final DiscordAuthenticationService discordAuthenticationService;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) {
@@ -94,7 +94,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private Set<GrantedAuthority> getAuthorities(User discordUser, Map<String, Object> attributes) {
 		final Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-		discordApiService.getRoles(discordUser)
+		discordAuthenticationService.getRoles(discordUser.getId())
 				.forEach(role -> grantedAuthorities.add(new OAuth2UserAuthority(role, attributes)));
 
 		return grantedAuthorities;

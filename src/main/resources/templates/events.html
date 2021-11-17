@@ -4,8 +4,8 @@
 	<meta th:replace="fragments/general.html :: head('Events')"/>
 	<meta property="og:title" content="Die gesamte Liste aller Events. Schon beim Nächsten dabei?">
 
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.4.0/main.min.css"
-	      integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css"
+	      integrity="sha256-16PDMvytZTH9heHu9KBPjzrFTaoner60bnABykjNiM0=" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/assets/css/spinner.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/events.css}">
 </head>
@@ -36,7 +36,7 @@
 	const getEventsUrl = /*[[${getEventsUrl}]]*/ '';
 	const createEventUrl = /*[[${createEventUrl}]]*/ '';
 	const authentication = /*[[${#authentication}]]*/ '';
-	const eventManageRoles = /*[[${eventManageRoles}]]*/ '';
+	const canManageEvents = /*[[${canManageEvents}]]*/ '';
 	/*]]>*/
 </script>
 <script th:src="@{/assets/js/events.js}"></script>

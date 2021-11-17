@@ -74,6 +74,7 @@ function saveEvent($saveBtn) {
     event.details = getDetails();
     event.squadList = getSquads();
 
+    event.shareable = $('#eventShareable').find('.fas').hasClass('fa-users');
     event.hidden = $('#eventHidden').find('.far').hasClass('fa-eye-slash');
 
     $.ajax(postEventUrl, {
@@ -142,7 +143,6 @@ function getSquads(update = false) {
                 slot.user = {
                     id: defaultUserId
                 }
-                slot.replacementText = 'Gesperrt'
             }
             if (update) {
                 slot.id = $slot.data('slotid');

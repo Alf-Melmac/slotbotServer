@@ -26,6 +26,9 @@ public class ApiToken {
 	@NotBlank
 	private ApiTokenType type;
 
+	@Column(name = "api_token_guild", nullable = false, updatable = false)
+	private long guild;
+
 	@Column(name = "api_token_comment")
 	private String comment;
 }

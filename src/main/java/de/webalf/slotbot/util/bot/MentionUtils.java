@@ -14,15 +14,14 @@ import static de.webalf.slotbot.util.StringUtils.removeNonDigitCharacters;
  */
 @UtilityClass
 public final class MentionUtils {
-	private static final Pattern USER_MENTION = Pattern.compile("^<@!?\\d{17,18}>$");
-	private static final Pattern CHANNEL_MENTION = Pattern.compile("^<#?\\d{17,18}>$");
-
+	private static final Pattern USER_MENTION = Pattern.compile("^<@!?\\d{17,19}>$");
 	public static boolean isUserMention(String arg) {
 		return USER_MENTION.matcher(arg).matches();
 	}
 
-	public static boolean isChannelMention(String arg) {
-		return CHANNEL_MENTION.matcher(arg).matches();
+	private static final Pattern SNOWFLAKE = Pattern.compile("^\\d{17,19}$");
+	public static boolean isSnowflake(String arg) {
+		return SNOWFLAKE.matcher(arg).matches();
 	}
 
 	public static String getId(String mention) {

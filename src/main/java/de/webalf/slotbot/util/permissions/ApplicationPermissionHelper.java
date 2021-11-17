@@ -6,14 +6,12 @@ import lombok.Value;
 import lombok.experimental.UtilityClass;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.*;
-import static de.webalf.slotbot.service.external.DiscordApiService.*;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.ApplicationRoles;
+import static de.webalf.slotbot.service.external.DiscordAuthenticationService.*;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.*;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.IS_AUTHENTICATED;
 
 /**
@@ -25,7 +23,7 @@ public final class ApplicationPermissionHelper {
 	private static final String ADMINISTRATIVE_ROLES = ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.ADMIN;
 	public static final String HAS_ROLE_SYS_ADMIN = HAS_ROLE + ROLE_PREFIX + ApplicationRoles.SYS_ADMIN + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_ADMIN = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ROLE_CLOSE;
-	public static final String HAS_ROLE_EVENT_MANAGE = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.EVENT_MANAGE + HAS_ROLE_CLOSE;
+	public static final String HAS_POTENTIALLY_ROLE_EVENT_MANAGE = HAS_ANY_ROLE + ADMINISTRATIVE_ROLES + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + ApplicationPermissionHelper.Role.ApplicationRoles.EVENT_MANAGE + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_EVERYONE = IS_AUTHENTICATED;
 
 	@Getter
@@ -50,17 +48,13 @@ public final class ApplicationPermissionHelper {
 		}
 
 		private static final Map<String, Role> DISCORD_ROLE_VALUES;
-		private static final Map<String, Role> APPLICATION_ROLE_VALUES;
 
 		static {
 			Map<String, Role> discordRoleMap = new HashMap<>();
-			Map<String, Role> applicationRoleMap = new HashMap<>();
 			for (Role role : EnumSet.allOf(Role.class)) {
 				discordRoleMap.put(role.getDiscordRole(), role);
-				applicationRoleMap.put(role.getApplicationRole(), role);
 			}
 			DISCORD_ROLE_VALUES = Collections.unmodifiableMap(discordRoleMap);
-			APPLICATION_ROLE_VALUES = Collections.unmodifiableMap(applicationRoleMap);
 		}
 
 		/**
@@ -72,5 +66,17 @@ public final class ApplicationPermissionHelper {
 		public static Role getByDiscordRole(String role) {
 			return DISCORD_ROLE_VALUES.get(role);
 		}
+
+		public Set<Role> getAuthorizedRoles() {
+			final Role[] roles = Role.values();
+			final int i = Arrays.asList(roles).indexOf(this);
+			return Arrays.stream(roles).limit(i + 1).collect(Collectors.toUnmodifiableSet());
+		}
+	}
+
+	public static String getApplicationRoleName(String discordRole) {
+		final ApplicationPermissionHelper.Role roleEnum = getByDiscordRole(discordRole);
+		final String roleName = roleEnum != null ? roleEnum.getApplicationRole() : EVERYONE.getApplicationRole();
+		return ROLE_PREFIX + roleName;
 	}
 }

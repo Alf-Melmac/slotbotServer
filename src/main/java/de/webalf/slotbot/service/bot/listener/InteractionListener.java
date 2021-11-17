@@ -31,7 +31,7 @@ public class InteractionListener extends ListenerAdapter {
 	@Override
 	public void onSlashCommand(@NonNull SlashCommandEvent event) {
 		final String commandName = event.getName();
-		log.debug("Received slash command: {} from {}", commandName, event.getUser().getId());
+		log.debug("Received slash command: '{}' from {}", event.getCommandString(), event.getUser().getId());
 
 		final Class<?> commandClass = SlashCommandUtils.get(commandName);
 		if (commandClass == null) {

@@ -36,7 +36,7 @@ public class SlotApiAssembler {
 		return SlotApiViewDto.builder()
 				.name(slot.getName())
 				.number(slot.getNumber())
-				.user(userService.toUserNameDto(slot.getUser()))
+				.user(userService.toUserNameDto(slot.getUser(), slot.getEvent().getOwnerGuild()))
 				.build();
 	}
 

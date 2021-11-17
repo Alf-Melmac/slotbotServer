@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.bot.CommandClassHelper.getSlashCommand;
@@ -39,21 +41,26 @@ public class SlashCommandsService {
 	public void updateCommands(@NonNull Guild guild) {
 		log.info("Updating commands for {}...", guild.getName());
 		final List<CommandData> commands = SlashCommandUtils.commandToClassMap.values().stream()
-				.map(slashCommandClass -> { //For each slash command
-					final SlashCommand slashCommand = getSlashCommand(slashCommandClass);
-					final CommandData commandData = new CommandData(slashCommand.name().toLowerCase(), slashCommand.description()); //Create Command data
-					if (slashCommand.optionPosition() >= 0) { //Add options if present
-						commandData.addOptions(getOptions(slashCommandClass, slashCommand.optionPosition()));
+				.distinct()
+				.flatMap(slashCommandClass -> { //For each slash command
+					final SlashCommand[] slashCommands = getSlashCommand(slashCommandClass);
+					Set<CommandData> commandDataList = new HashSet<>();
+					for (SlashCommand slashCommand : slashCommands) {
+						final CommandData commandData = new CommandData(slashCommand.name().toLowerCase(), slashCommand.description()); //Create Command data
+						if (slashCommand.optionPosition() >= 0) { //Add options if present
+							commandData.addOptions(getOptions(slashCommandClass, slashCommand.optionPosition()));
+						}
+						if (slashCommand.authorization() != NONE) {
+							commandData.setDefaultEnabled(false);
+						}
+						commandDataList.add(commandData);
 					}
-					if (slashCommand.authorization() != NONE) {
-						commandData.setDefaultEnabled(false);
-					}
-					return commandData;
+					return commandDataList.stream();
 				}).collect(Collectors.toUnmodifiableList());
 
 		log.info("Found {} commands. Starting update...", commands.size());
 		guild.updateCommands().addCommands(commands).queue(updatedCommands -> updatedCommands.forEach(command -> { //Update discord commands
-			final SlashCommand slashCommand = getSlashCommand(SlashCommandUtils.get(command.getName()));
+			final SlashCommand slashCommand = CommandClassHelper.getSlashCommand(command.getName());
 			if (slashCommand.authorization() != NONE) { //Set authorized roles if needed
 				guild.updateCommandPrivilegesById(command.getIdLong(), getCommandPrivileges(guild, slashCommand)).queue();
 			}

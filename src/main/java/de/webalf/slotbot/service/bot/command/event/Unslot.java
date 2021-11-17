@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAc
 import static de.webalf.slotbot.util.bot.MentionUtils.getId;
 import static de.webalf.slotbot.util.bot.MentionUtils.isUserMention;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalIntegerOption;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorized;
@@ -38,6 +41,10 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.isAuthorize
 @SlashCommand(name = "unslot",
 		description = "Slottet dich aus einem Event aus.",
 		authorization = NONE)
+@SlashCommand(name = "forceUnslot",
+		description = "Slottet jemand anderen aus einem Event aus.",
+		authorization = EVENT_MANAGE,
+		optionPosition = 0)
 public class Unslot implements DiscordCommand, DiscordSlashCommand {
 	private final EventBotService eventBotService;
 
@@ -87,12 +94,27 @@ public class Unslot implements DiscordCommand, DiscordSlashCommand {
 		deleteMessagesInstant(message);
 	}
 
+	private static final String OPTION_SLOT_NUMBER = "slotnummer";
+	private static final List<List<OptionData>> OPTIONS = List.of(
+			List.of(new OptionData(OptionType.INTEGER, OPTION_SLOT_NUMBER, "Nummer des zu leerenden Slots.", true))
+	);
+
 	@Override
 	public void execute(SlashCommandEvent event) {
 		log.trace("Slash command: unslot");
 
-		eventBotService.unslot(event.getChannel().getIdLong(), event.getUser().getId());
+		final Integer slotNumber = getOptionalIntegerOption(event.getOption(OPTION_SLOT_NUMBER));
+		if (slotNumber == null) { //Self unslot
+			eventBotService.unslot(event.getChannel().getIdLong(), event.getUser().getId());
+		} else { //Unslot others
+			eventBotService.unslot(event.getChannel().getIdLong(), slotNumber);
+		}
 
 		finishedSlashCommandAction(event);
+	}
+
+	@Override
+	public List<OptionData> getOptions(int optionPosition) {
+		return OPTIONS.get(optionPosition);
 	}
 }

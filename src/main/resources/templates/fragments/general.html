@@ -1,25 +1,58 @@
 <!DOCTYPE html>
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 
-<head th:fragment="head (title)">
+<head th:fragment="head (title)" th:with="groupLowercase=${#strings.toLowerCase(group)}">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-	<title th:text="${#strings.equals(title, 'Arma macht Bock')} ? ${title} : ${'AMB - ' + title}"></title>
+	<title th:text="${#strings.equals(title, 'Arma macht Bock') || #strings.equals(title, 'Deutsche Arma Allianz')} ? ${title} : ${group + ' - ' + title}"></title>
 
 	<meta property="og:locale" content="de_DE"/>
 	<meta property="og:locale:alternate" content="en_GB"/>
 	<meta property="og:locale:alternate" content="en_US"/>
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
-	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
-	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
-	<link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
+
+	<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+		<link rel="apple-touch-icon" sizes="60x60" th:href="@{/assets/img/favicon/amb/apple-touch-icon-60x60.png}">
+		<link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/favicon/amb/apple-touch-icon-76x76.png}">
+		<link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/amb/apple-touch-icon-120x120.png}">
+		<link rel="apple-touch-icon" sizes="152x152" th:href="@{/assets/img/favicon/amb/apple-touch-icon-152x152.png}">
+		<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/amb/apple-touch-icon-180x180.png}">
+		<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/amb/favicon-32x32.png}">
+		<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/amb/favicon-16x16.png}">
+		<link rel="manifest" th:href="@{/assets/img/favicon/amb/site.webmanifest}">
+		<link rel="mask-icon" th:href="@{/assets/img/favicon/amb/safari-pinned-tab.svg}" color="#5bbad5">
+		<link rel="shortcut icon" th:href="@{/assets/img/favicon/amb/favicon.ico}">
+		<meta name="msapplication-TileColor" content="#2b5797">
+		<meta name="msapplication-config" th:attrappend="content=@{/assets/img/favicon/amb/browserconfig.xml}">
+	</th:block>
+	<th:block th:unless="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+		<link rel="apple-touch-icon" sizes="60x60" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-60x60.png}">
+		<link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-76x76.png}">
+		<link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-120x120.png}">
+		<link rel="apple-touch-icon" sizes="152x152" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-152x152.png}">
+		<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-180x180.png}">
+		<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/__${groupLowercase}__/favicon-32x32.png}">
+		<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/__${groupLowercase}__/favicon-16x16.png}">
+		<link rel="manifest" th:href="@{/assets/img/favicon/__${groupLowercase}__/site.webmanifest}">
+		<link rel="mask-icon" th:href="@{/assets/img/favicon/__${groupLowercase}__/safari-pinned-tab.svg}" color="#5bbad5">
+		<link rel="shortcut icon" th:href="@{/assets/img/favicon/__${groupLowercase}__/favicon.ico}">
+		<meta name="msapplication-TileColor" content="#2b5797">
+		<meta name="msapplication-config" th:attrappend="content=@{/assets/img/favicon/__${groupLowercase}__/browserconfig.xml}">
+	</th:block>
 
 	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
 
+	<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isAMB()}">
+		<meta name="theme-color" content="#ffffff">
+	</th:block>
+	<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+		<meta name="theme-color" content="#211f25">
+		<link rel="stylesheet" th:href="@{/assets/css/groups/globalStyles-daa.css}">
+	</th:block>
+
 	<!--Needed for footer-->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css"
-	      integrity="sha256-0fuNgzfNIlaClbDtmYyFxY8LTNCDrwsNshywr4AALy0=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
+	      integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
 </head>
 
 <body>
@@ -27,33 +60,78 @@
 <div th:fragment="footer" id="footer">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-9">
-				<h5 class="mb-0 pt-1">Arma macht Bock</h5>
-			</div>
-			<div class="col-md-3">
-				<div class="float-right">
-					<a class="btn link-btn twitter-btn"
-					   href="https://twitter.com/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
-						<!-- twitter -->
-						<em class="fab fa-twitter"></em>
-					</a>
-					<a class="btn link-btn yt-btn"
-					   href="https://armamachtbock.de/youtube" target="_blank" rel="noopener noreferrer">
-						<!-- youtube -->
-						<em class="fab fa-youtube"></em>
-					</a>
-					<a class="btn link-btn twitch-btn"
-					   href="https://www.twitch.tv/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
-						<!-- twitch -->
-						<em class="fab fa-twitch"></em>
-					</a>
-					<a class="btn link-btn wiki-btn"
-					   href="https://wiki.armamachtbock.de" target="_blank" rel="noopener noreferrer">
-						<!-- wiki -->
-						<em class="fab fa-wikipedia-w"></em>
-					</a>
+			<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+				<div class="col-md-9">
+					<h5 class="mb-0 pt-1">Slotbot</h5>
 				</div>
-			</div>
+				<div class="col-md-3">
+					<div class="float-right">
+						<a class="btn link-btn wiki-btn"
+						   href="https://armamachtbock.de" target="_blank" rel="noopener noreferrer">
+							<!-- home -->
+							<em class="fas fa-home"></em>
+						</a>
+					</div>
+				</div>
+			</th:block>
+			<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isAMB()}">
+				<div class="col-md-9">
+					<h5 class="mb-0 pt-1">Arma macht Bock</h5>
+				</div>
+				<div class="col-md-3">
+					<div class="float-right">
+						<a class="btn link-btn twitter-btn"
+						   href="https://twitter.com/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
+							<!-- twitter -->
+							<em class="fab fa-twitter"></em>
+						</a>
+						<a class="btn link-btn yt-btn"
+						   href="https://armamachtbock.de/youtube" target="_blank" rel="noopener noreferrer">
+							<!-- youtube -->
+							<em class="fab fa-youtube"></em>
+						</a>
+						<a class="btn link-btn twitch-btn"
+						   href="https://www.twitch.tv/ArmaMachtBock" target="_blank" rel="noopener noreferrer">
+							<!-- twitch -->
+							<em class="fab fa-twitch"></em>
+						</a>
+						<a class="btn link-btn wiki-btn"
+						   href="https://wiki.armamachtbock.de" target="_blank" rel="noopener noreferrer">
+							<!-- wiki -->
+							<em class="fab fa-wikipedia-w"></em>
+						</a>
+					</div>
+				</div>
+			</th:block>
+			<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+				<div class="col-md-9">
+					<h5 class="mb-0 pt-1">Deutsche Arma Allianz</h5>
+				</div>
+				<div class="col-md-3">
+					<div class="float-right">
+						<a class="btn link-btn twitter-btn"
+						   href="https://twitter.com/ArmaAllianz_DE" target="_blank" rel="noopener noreferrer">
+							<!-- twitter -->
+							<em class="fab fa-twitter"></em>
+						</a>
+						<a class="btn link-btn insta-btn" href="https://www.instagram.com/deutschearmaallianz"
+						   target="_blank" rel="noopener noreferrer">
+							<!-- instagram -->
+							<em class="fab fa-instagram"></em>
+						</a>
+						<a class="btn link-btn yt-btn" href="https://www.youtube.com/channel/UC5rsoVq3vbqBwzBvpKyrueA"
+						   target="_blank" rel="noopener noreferrer">
+							<!-- youtube -->
+							<em class="fab fa-youtube"></em>
+						</a>
+						<a class="btn link-btn discord-btn"
+						   href="https://discord.gg/utzmTBvu45" target="_blank" rel="noopener noreferrer">
+							<!-- discord -->
+							<em class="fab fa-discord"></em>
+						</a>
+					</div>
+				</div>
+			</th:block>
 		</div>
 
 		<div class="row">
@@ -62,7 +140,14 @@
 			</div>
 
 			<div class="col-md-4">
-				<small class="float-right"><a href="https://wiki.armamachtbock.de/de/Impressum">Impressum & Datenschutzerklärung</a></small>
+				<th:block th:unless="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+					<small class="float-right"><a href="https://wiki.armamachtbock.de/de/Impressum">Impressum &
+						Datenschutzerklärung</a></small>
+				</th:block>
+				<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+					<small class="float-right"><a href="https://www.deutsche-arma-allianz.de/impressum.html">Impressum &
+						Datenschutzerklärung</a></small>
+				</th:block>
 			</div>
 		</div>
 	</div>

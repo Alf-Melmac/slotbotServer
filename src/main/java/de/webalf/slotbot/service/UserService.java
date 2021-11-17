@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Alf
  * @since 06.09.2020
@@ -49,14 +51,30 @@ public class UserService {
 				.orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
 	}
 
+	public long getParticipatedEventsCount(@NonNull User user) {
+		return user.getSlots().stream().filter(slot -> slot.getEvent().getDateTime().isBefore(LocalDateTime.now())).count();
+	}
+
 	public UserNameDto toUserNameDto(User user) {
 		if (user == null || user.isDefaultUser()) {
 			return null;
 		}
 
 		final String userId = LongUtils.toString(user.getId());
-		final UserNameDto userNameDto = UserNameDto.builder().name(discordApiService.getName(userId)).build();
+		return toUserNameDto(user, discordApiService.getName(userId));
+	}
 
+	public UserNameDto toUserNameDto(User user, long guildId) {
+		if (user == null || user.isDefaultUser()) {
+			return null;
+		}
+
+		final String userId = LongUtils.toString(user.getId());
+		return toUserNameDto(user, discordApiService.getName(userId, guildId));
+	}
+
+	public UserNameDto toUserNameDto(@NonNull User user, String name) {
+		final UserNameDto userNameDto = UserNameDto.builder().name(name).build();
 		ReflectionUtils.shallowCopyFieldState(UserAssembler.toDto(user), userNameDto);
 		return userNameDto;
 	}

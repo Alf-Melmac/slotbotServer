@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.SYS_ADMINISTRATION;
 
 /**
@@ -33,7 +34,7 @@ public class RebuildArchive implements DiscordCommand {
 	public void execute(Message message, List<String> args) {
 		log.trace("Command: rebuildArchive");
 
-		final Long archiveChannelId = discordProperties.getArchive();
+		final Long archiveChannelId = discordProperties.getArchive(message.getGuild().getIdLong());
 		if (archiveChannelId == null) {
 			return;
 		}
@@ -44,6 +45,6 @@ public class RebuildArchive implements DiscordCommand {
 			return;
 		}
 
-		eventBotService.findAllInPast().forEach(event -> archiveChannel.sendMessage(EventUtils.buildArchiveMessage(event)).queue());
+		eventBotService.findAllInPast().forEach(event -> sendMessage(archiveChannel, EventUtils.buildArchiveMessage(event)));
 	}
 }

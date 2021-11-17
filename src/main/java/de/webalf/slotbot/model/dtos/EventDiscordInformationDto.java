@@ -12,13 +12,19 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Builder
 public class EventDiscordInformationDto {
-	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
+	//String is needed, because the discord snowflakes exceed the maximum size of a JavaScript number. See https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript
 	@NotBlank
 	private final String channel;
+
+	@NotBlank
+	private final String guild;
 
 	private String infoMsg;
 
 	private String slotListMsgPartOne;
 
 	private String slotListMsgPartTwo;
+
+	@NotBlank
+	private String channelUrl;
 }

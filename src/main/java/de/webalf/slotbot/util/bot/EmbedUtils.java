@@ -23,4 +23,14 @@ public final class EmbedUtils {
 		}
 		return embedBuilder;
 	}
+
+	/**
+	 * Returns {@link EmbedBuilder#ZERO_WIDTH_SPACE} if the given string is empty or null
+	 *
+	 * @param message to check
+	 * @return the message or "empty" message
+	 */
+	public static String spacerCharIfEmpty(String message) {
+		return StringUtils.isEmpty(message) ? EmbedBuilder.ZERO_WIDTH_SPACE : message;
+	}
 }

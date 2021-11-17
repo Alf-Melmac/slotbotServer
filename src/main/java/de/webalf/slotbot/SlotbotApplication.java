@@ -2,6 +2,7 @@ package de.webalf.slotbot;
 
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.bot.BotService;
+import de.webalf.slotbot.service.bot.EventNotificationService;
 import de.webalf.slotbot.service.external.ExternalServerService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,13 +32,16 @@ public class SlotbotApplication {
 		//Start spring application
 		final ApplicationContext applicationContext = SpringApplication.run(SlotbotApplication.class, args);
 
+		//Initial fetch of file directories
+		applicationContext.getBean(FileService.class).listFiles();
+
 		//Start discord bot
 		applicationContext.getBean(BotService.class).startUp();
 
+		//Create all notifications
+		applicationContext.getBean(EventNotificationService.class).rebuildAllNotifications();
+
 		//Initialize external server
 		applicationContext.getBean(ExternalServerService.class).fillIpServerMap();
-
-		//Initial fetch of file directories
-		applicationContext.getBean(FileService.class).listFiles();
 	}
 }

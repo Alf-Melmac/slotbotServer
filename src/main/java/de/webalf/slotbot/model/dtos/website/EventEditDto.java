@@ -16,9 +16,7 @@ import java.util.List;
 @Value
 @SuperBuilder
 public class EventEditDto extends AbstractEventDto {
-	String channelUrl;
+	List<EventFieldDefaultDto> details;
 
 	List<EventDetailsSquadDto> squadList;
-
-	List<EventFieldDefaultDto> details;
 }

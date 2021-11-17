@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model.dtos;
 
 import de.webalf.slotbot.util.DateUtils;
+import de.webalf.slotbot.util.GuildUtils;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.*;
@@ -13,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.MaxLength.*;
 
@@ -25,8 +28,9 @@ import static de.webalf.slotbot.util.MaxLength.*;
 @Data
 @SuperBuilder
 public abstract class AbstractEventDto extends AbstractIdEntityDto {
-	@NotNull
-	private EventTypeDto eventType;
+	private Boolean hidden;
+
+	private Boolean shareable;
 
 	@NotBlank
 	@Size(max = TEXT)
@@ -42,14 +46,11 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String creator;
 
-	@Builder.Default
-	private boolean hidden = false;
+	@NotNull
+	private EventTypeDto eventType;
 
 	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
-
-	@Size(max = URL)
-	private String pictureUrl;
 
 	@Size(max = TEXT)
 	private String missionType;
@@ -57,13 +58,17 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String missionLength;
 
+	@Size(max = URL)
+	private String pictureUrl;
+
 	private Boolean reserveParticipating;
 
-	private EventDiscordInformationDto discordInformation;
+	private Set<EventDiscordInformationDto> discordInformation;
 
-	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/759147455483740191/AM-Blau-big-bananemitschokokuchen.jpg";
+	private String ownerGuild;
+
 	public String getPictureUrl() {
-		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : AMB_LOGO;
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : GuildUtils.getLogo(Long.parseLong(ownerGuild));
 	}
 
 	public String getRawPictureUrl() {
@@ -85,5 +90,10 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 
 	public ZonedDateTime getDateTimeZoned() {
 		return DateUtils.getDateTimeZoned(date, startTime);
+	}
+
+	public Optional<EventDiscordInformationDto> getDiscordInformation(String guildId) {
+		return getDiscordInformation().stream()
+				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild().equals(guildId)).findAny();
 	}
 }

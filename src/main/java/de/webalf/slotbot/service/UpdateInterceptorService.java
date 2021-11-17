@@ -9,6 +9,8 @@ import org.hibernate.collection.internal.PersistentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Alf
  * @since 29.12.2020
@@ -34,7 +36,7 @@ public class UpdateInterceptorService {
 	}
 
 	private void update(Event event) {
-		if (event == null || !event.isPrinted()) {
+		if (event == null || !event.isAssigned()) {
 			return;
 		}
 
@@ -60,7 +62,9 @@ public class UpdateInterceptorService {
 
 	private Event getEvent(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 		if (entity instanceof Event) {
-			return (Event) entity;
+			final Event event = (Event) entity;
+			eventUpdate(previousState, propertyNames, event);
+			return event;
 		} else if (entity instanceof Squad) {
 			final Squad squad = (Squad) entity;
 			if (!squad.isReserve()) {
@@ -69,24 +73,28 @@ public class UpdateInterceptorService {
 		} else if (entity instanceof Slot) {
 			final Slot slot = (Slot) entity;
 			final Event event = slot.getSquad().getEvent();
-			if (!slot.isInReserve()) {
-				for (int i = 0; i < propertyNames.length; i++) {
-					if (propertyNames[i].equals(Slot_.USER)) {
-						eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
-						break;
-					}
-				}
-			}
+			slotUpdate(currentState, previousState, propertyNames, slot, event);
 			return event;
 		}
 		return null;
 	}
 
-	public void onSave(Object entity) {
-		if (entity instanceof User) {
-			final User user = (User) entity;
-			if (!user.isDefaultUser()) {
-				messageHelper.sendDmToRecipient(user, "Schön dich bei Arma macht Bock begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!");
+	private void eventUpdate(Object[] previousState, String[] propertyNames, Event event) {
+		for (int i = 0; i < propertyNames.length; i++) {
+			if (propertyNames[i].equals(Event_.DATE_TIME)) {
+				eventUpdateService.updateEventNotifications((LocalDateTime) previousState[i], event.getDateTime(), event.getId());
+				break;
+			}
+		}
+	}
+
+	private void slotUpdate(Object[] currentState, Object[] previousState, String[] propertyNames, Slot slot, Event event) {
+		if (!slot.isInReserve()) {
+			for (int i = 0; i < propertyNames.length; i++) {
+				if (propertyNames[i].equals(Slot_.USER)) {
+					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
+					break;
+				}
 			}
 		}
 	}

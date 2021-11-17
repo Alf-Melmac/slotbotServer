@@ -32,8 +32,8 @@ public final class EventFieldUtils {
 	public static String buildOptionalLink(EventField eventField) {
 		final String title = eventField.getTitle();
 
-		if ("Modpack".equalsIgnoreCase(title)) {
-			return Arma3FieldUtils.getModPackUrl(eventField.getText());
+		if ("Modset".equalsIgnoreCase(title)) {
+			return Arma3FieldUtils.getModSetUrl(eventField.getText());
 		}
 
 		return null;

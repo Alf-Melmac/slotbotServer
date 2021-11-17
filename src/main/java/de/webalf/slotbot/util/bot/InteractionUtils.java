@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
 
 import javax.validation.constraints.NotBlank;
 import java.util.function.Consumer;
@@ -53,8 +54,12 @@ public final class InteractionUtils {
 	 * @param interaction   to add selection menu to
 	 * @param selectionMenu to add
 	 */
-	public static void addSelectionMenu(@NonNull Interaction interaction, SelectionMenu selectionMenu) {
-		interaction.getHook().sendMessage(ZERO_WIDTH_SPACE).addActionRow(selectionMenu).queue();
+	public static void addSelectionMenu(@NonNull Interaction interaction, SelectionMenu... selectionMenu) {
+		WebhookMessageAction<Message> messageAction = interaction.getHook().sendMessage(ZERO_WIDTH_SPACE);
+		for (SelectionMenu menu : selectionMenu) {
+			messageAction = messageAction.addActionRow(menu);
+		}
+		messageAction.queue();
 	}
 
 	/**

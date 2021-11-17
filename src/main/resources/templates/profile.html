@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta th:replace="fragments/general.html :: head('Profil')"/>
+	<meta property="og:title" th:content="${discordUser.getUsername()}">
+	<meta property="og:image" th:content="${discordUser.getAvatarUrl()}">
+	<meta property="og:description" th:content="${participatedEventsCount + ' Event-Teilnahmen'}">
+
+	<link rel="stylesheet" th:href="@{/assets/css/sizes.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/cards.css}">
+	<link rel="stylesheet" th:href="@{/assets/css/profile.css}">
+	<th:block th:if="${ownProfile}">
+		<link th:replace="fragments/styles.html :: editable">
+		<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
+		<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
+	</th:block>
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: default(true)"></nav>
+
+<section class="content-section">
+	<div class="container">
+		<div class="d-flex justify-content-center">
+			<div class="card">
+				<div class="card-body text-center">
+					<div class="mb-2">
+						<img class="rounded-circle img-fluid mw-6" th:src="${discordUser.getAvatarUrl()}"
+						     alt="Discord avatar"/>
+					</div>
+					<h4 class="mb-2" th:text="${discordUser.getUsername()}"></h4>
+
+					<p sec:authorize="isAuthenticated()" class="text-muted" th:text="${roles}"></p>
+
+					<form th:if="${ownProfile}">
+						<div class="form-group">
+							<label for="steamId">Steam-ID</label>
+							<a id="steamId" class="form-control" href="#"></a>
+						</div>
+					</form>
+					<div class="d-flex justify-content-center mt-5">
+						<div>
+							<p class="h5" th:text="${participatedEventsCount}">?</p>
+							<p class="text-muted mb-0">Event-Teilnahmen</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<th:block th:if="${ownProfile}">
+			<h3 class="mt-4">Globale Benachrichtigungseinstellungen</h3>
+			<form id="notificationForm">
+				<div class="custom-control custom-switch">
+					<input id="notificationSwitch" class="custom-control-input" type="checkbox"
+					       th:checked="${!#lists.isEmpty(notificationSettings)}">
+					<label for="notificationSwitch" class="custom-control-label">Benachrichtigungen aktivieren</label>
+				</div>
+
+				<div id="notificationDetails"
+				     th:styleappend="${#lists.isEmpty(notificationSettings)} ? 'display: none;'">
+					<div id="notificationDetailSettings" class="mt-3">
+						<div class="form-row d-flex align-items-center js-notification-settings-row"
+						     th:each="notificationSetting : ${notificationSettings}" th:data-notificationid="${notificationSetting.id}">
+							<div class="btn btn-xl btn-wht p-0 js-trash" type="button">
+								<em class="far fa-trash-alt"></em>
+							</div>
+							<div class="form-group col-2 m-0">
+								<div class="input-group">
+									<input class="form-control js-input-int js-notification-hours" type="number"
+									       min="0" th:value="${notificationSetting.hoursBeforeEvent}">
+									<div class="input-group-append">
+										<span class="input-group-text">Stunden</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group col-2 m-0">
+								<div class="input-group">
+									<input class="form-control js-input-int js-notification-minutes" type="number"
+									       min="0" th:value="${notificationSetting.minutesBeforeEvent}">
+									<div class="input-group-append">
+										<span class="input-group-text">Minuten</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-7"><span>vor dem Event</span></div>
+						</div>
+					</div>
+					<div id="addNotification" type="button" class="btn btn-success rounded-circle"
+					     title="Benachrichtigung hinzufügen">
+						<em class="fas fa-plus"></em>
+					</div>
+
+					<div class="float-right">
+						<span class="text-info" data-toggle="tooltip" data-placement="left" title="Anpassungen an den globalen Einstellungen werden nur für Slottungen nach dieser Änderungen übernommen.">
+							<em class="fas fa-info-circle"></em>
+						</span>
+						<span id="btnSaveNotifications" class="btn btn-primary">
+							Benachrichtigungen speichern
+						</span>
+					</div>
+				</div>
+			</form>
+		</th:block>
+	</div>
+</section>
+
+<footer th:if="${ownProfile}" th:insert="fragments/general.html :: footer"></footer>
+<footer th:unless="${ownProfile}" th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
+
+<th:block th:if="${ownProfile}">
+	<div th:replace="fragments/toasts.html"></div>
+
+	<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
+	<script th:replace="fragments/scripts.html :: xeditable"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const deleteAllByUserUrl = /*[[${deleteAllByUserUrl}]]*/ '';
+		const putNotificationSettingsUrl = /*[[${putNotificationSettingsUrl}]]*/ '';
+		const user = /*[[${user}]]*/ '';
+		const putUserEditableUrl = /*[[${putUserEditableUrl}]]*/ '';
+		/*]]>*/
+	</script>
+	<script th:src="@{/assets/js/profile.js}"></script>
+	<script th:src="@{/assets/js/tooltip.js}"></script>
+	<script th:src="@{/assets/js/notifications.js}"></script>
+</th:block>
+</body>
+</html>

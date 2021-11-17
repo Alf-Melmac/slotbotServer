@@ -31,6 +31,7 @@ $(function () {
         })
             .done(slotList => {
                 addSlotList(slotList);
-            });
+            })
+            .fail(console.error);
     });
 });

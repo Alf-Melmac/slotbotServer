@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
+import org.thymeleaf.util.ListUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
@@ -19,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.service.external.DiscordApiService.KNOWN_ROLE_NAMES;
+import static de.webalf.slotbot.service.external.DiscordAuthenticationService.KNOWN_ROLE_NAMES;
 import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 
 /**
@@ -78,18 +80,20 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Deletes the latest message from the given channel
+	 * Deletes the latest message from the given channel if {@link MessageType#CHANNEL_PINNED_ADD}
 	 *
 	 * @param channel in which the latest message should be deleted
 	 */
 	public static void deleteLatestMessageIfTypePinAdd(@NonNull MessageChannel channel) {
-		final long latestMessageId = channel.getLatestMessageIdLong();
-		channel.retrieveMessageById(latestMessageId).queue(message -> {
+		channel.getHistory().retrievePast(1).queue(messages -> {
+			if (ListUtils.isEmpty(messages)) {
+				return;
+			}
+			final Message message = messages.get(0);
 			if (MessageType.CHANNEL_PINNED_ADD == message.getType()) {
-				deleteMessagesInstant(channel, latestMessageId);
+				deleteMessagesInstant(channel, message.getIdLong());
 			}
 		});
-
 	}
 
 	/**
@@ -128,6 +132,49 @@ public final class MessageUtils {
 
 	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<Message> success) {
 		message.reply(reply).queue(success, fail -> log.warn("Failed to send message reply", fail));
+	}
+
+	/**
+	 * Sends the given message in the given channel
+	 *
+	 * @param channel to send into
+	 * @param message to send
+	 */
+	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message) {
+		sendMessage(channel, message, doNothing());
+	}
+
+	/**
+	 * Sends the given message in the given channel and queues the given success consumer
+	 *
+	 * @param channel to send into
+	 * @param message to send
+	 * @param success message consumer
+	 */
+	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, Consumer<Message> success) {
+		channel.sendMessage(message).queue(success);
+	}
+
+	/**
+	 * Sends the given text in the channel of the given message
+	 * Shortcut for {@code sendMessage(message.getChannel(), text)}
+	 *
+	 * @param message on which channel text should be sent
+	 * @param text    to send
+	 */
+	public static void sendMessage(@NonNull Message message, @NotBlank String text) {
+		sendMessage(message.getChannel(), text);
+	}
+
+	/**
+	 * Sends the given text in the channel of the given message
+	 * Shortcut for {@code sendMessage(interaction.getChannel(), text)}
+	 *
+	 * @param interaction on which channel text should be sent
+	 * @param message     to send
+	 */
+	public static void sendMessage(@NonNull CommandInteraction interaction, @NotBlank String message) {
+		sendMessage(interaction.getChannel(), message);
 	}
 
 	/**
@@ -212,7 +259,7 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Returns the known role {@link DiscordApiService#KNOWN_ROLE_NAMES} names of the message author in the message guild
+	 * Returns the known role {@link DiscordAuthenticationService#KNOWN_ROLE_NAMES} names of the message author in the message guild
 	 *
 	 * @param message to analyze
 	 * @return set of role names

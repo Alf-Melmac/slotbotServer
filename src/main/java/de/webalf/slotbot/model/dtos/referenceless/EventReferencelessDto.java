@@ -18,9 +18,9 @@ import java.util.List;
 @SuperBuilder
 public class EventReferencelessDto extends AbstractEventDto {
 	//wildcard to allow api dto. May not be final to allow copying (EventApiAssembler#toActionDto)
-	private List<? extends SquadReferencelessDto> squadList;
-
 	private List<? extends EventFieldReferencelessDto> details;
+
+	private List<? extends SquadReferencelessDto> squadList;
 
 	/**
 	 * Returns the slotlist as content of a Discord message

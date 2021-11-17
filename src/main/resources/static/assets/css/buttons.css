@@ -30,3 +30,12 @@
 .btn-lock:not(.js-blocked):hover {
   opacity: 50%;
 }
+
+.hide-spin-button::-webkit-outer-spin-button,
+.hide-spin-button::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.hide-spin-button {
+  -moz-appearance: textfield;
+}

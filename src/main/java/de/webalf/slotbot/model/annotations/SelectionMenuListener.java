@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @IndexAnnotated
 public @interface SelectionMenuListener {
-	String value();
+	String[] value();
 }

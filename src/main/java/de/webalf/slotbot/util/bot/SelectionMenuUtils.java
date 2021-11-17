@@ -17,12 +17,16 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class SelectionMenuUtils {
-	public static final Map<String, Class<?>> idToClassMap = new HashMap<>();
+	private static final Map<String, Class<?>> idToClassMap = new HashMap<>();
 
 	static {
 		final Iterable<Class<?>> classIterable = ClassIndex.getAnnotated(SelectionMenuListener.class);
 		StreamSupport.stream(classIterable.spliterator(), false)
-				.forEach(command -> idToClassMap.put(command.getAnnotation(SelectionMenuListener.class).value(), command));
+				.forEach(command -> {
+					for (String menuId : command.getAnnotation(SelectionMenuListener.class).value()) {
+						idToClassMap.put(menuId, command);
+					}
+				});
 	}
 
 	/**
@@ -42,7 +46,6 @@ public final class SelectionMenuUtils {
 	 * @return shortened label if needed
 	 */
 	public static String buildSelectionLabel(@NotBlank String label) {
-		//TODO Replace int once https://github.com/DV8FromTheWorld/JDA/pull/1752 is merged
-		return label.substring(0, Math.min(label.length(), 25));
+		return label.substring(0, Math.min(label.length(), SelectOption.LABEL_MAX_LENGTH));
 	}
 }

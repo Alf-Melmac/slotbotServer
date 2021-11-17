@@ -9,12 +9,14 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * @author Alf
  * @since 28.09.2020
  */
 @Configuration
+@Profile("!test&&!dev")
 public class SSLConfig {
 	@Value("${server.port}")
 	private int serverPort;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
+import de.webalf.slotbot.service.bot.EventNotificationService;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -36,11 +37,15 @@ import static de.webalf.slotbot.util.MaxLength.*;
 @SuperBuilder
 @Slf4j
 public class Event extends AbstractSuperIdEntity {
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "event_type")
-	private EventType eventType;
+	@Column(name = "event_hidden")
+	@Builder.Default
+	private boolean hidden = false;
 
-	@Column(name = "event_name", length = TEXT_DB)
+	@Column(name = "event_shareable")
+	@Builder.Default
+	private boolean shareable = false;
+
+	@Column(name = "event_name", length = TEXT_DB, nullable = false)
 	@NotBlank
 	@Size(max = TEXT)
 	private String name;
@@ -50,27 +55,18 @@ public class Event extends AbstractSuperIdEntity {
 	@Convert(converter = LocalDateTimePersistenceConverter.class)
 	private LocalDateTime dateTime;
 
-	@Column(name = "event_creator", length = TEXT_DB)
+	@Column(name = "event_creator", length = TEXT_DB, nullable = false)
 	@NotBlank
 	@Size(max = TEXT)
 	private String creator;
 
-	@Column(name = "event_hidden")
-	@Builder.Default
-	private boolean hidden = false;
-
-	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@OrderColumn
-	@JsonManagedReference
-	private List<Squad> squadList;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "event_type")
+	private EventType eventType;
 
 	@Column(name = "event_description", length = EMBEDDABLE_DESCRIPTION_DB)
 	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
-
-	@Column(name = "event_picture_url", length = URL_DB)
-	@Size(max = URL)
-	private String pictureUrl;
 
 	@Column(name = "event_mission_type", length = TEXT_DB)
 	@Size(max = TEXT)
@@ -80,17 +76,29 @@ public class Event extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String missionLength;
 
-	@Column(name = "event_reserve_participating")
-	private Boolean reserveParticipating;
+	@Column(name = "event_picture_url", length = URL_DB)
+	@Size(max = URL)
+	private String pictureUrl;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
 	private List<EventField> details;
 
-	@OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OrderColumn
 	@JsonManagedReference
-	private EventDiscordInformation discordInformation;
+	private List<Squad> squadList;
+
+	@Column(name = "event_reserve_participating")
+	private Boolean reserveParticipating;
+
+	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@JsonManagedReference
+	private Set<EventDiscordInformation> discordInformation;
+
+	@Column(name = "event_owner_guild", nullable = false, updatable = false)
+	private long ownerGuild;
 
 	// Getter
 
@@ -147,14 +155,14 @@ public class Event extends AbstractSuperIdEntity {
 	 * @return true if a channel has been assigned to the event
 	 */
 	public boolean isAssigned() {
-		return getDiscordInformation() != null;
+		return !CollectionUtils.isEmpty(getDiscordInformation());
 	}
 
-	/**
-	 * @see EventDiscordInformation#isPrinted()
-	 */
-	public boolean isPrinted() {
-		return isAssigned() && getDiscordInformation().isPrinted();
+	public Set<User> getAllParticipants() {
+		return getSquadList().stream()
+				.flatMap(squad -> squad.getSlotList().stream()
+						.map(Slot::getUser).filter(Objects::nonNull))
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	private Optional<Squad> findSquadByName(String name) {
@@ -195,6 +203,17 @@ public class Event extends AbstractSuperIdEntity {
 			slotCount += squad.getSlotList().size();
 		}
 		return slotCount < 4 ? 1 : (int) Math.ceil(slotCount / 4.);
+	}
+
+	/**
+	 * Returns the matching {@link EventDiscordInformation} for the given guild
+	 *
+	 * @param guildId to find discord information for
+	 * @return optional information
+	 */
+	public Optional<EventDiscordInformation> getDiscordInformation(long guildId) {
+		return getDiscordInformation().stream()
+				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild() == guildId).findAny();
 	}
 
 	/**
@@ -265,6 +284,10 @@ public class Event extends AbstractSuperIdEntity {
 		}
 	}
 
+	public boolean isSharedWithOthers() {
+		return getDiscordInformation().stream().anyMatch(information -> information.getGuild() != getOwnerGuild());
+	}
+
 	// Setter
 
 	/**
@@ -272,8 +295,8 @@ public class Event extends AbstractSuperIdEntity {
 	 *
 	 * @param date to set
 	 */
-	public void setDate(LocalDate date) {
-		setDateTime(getDateTime().withDayOfMonth(date.getDayOfMonth()).withMonth(date.getMonth().getValue()).withYear(date.getYear()));
+	public void setDate(@NonNull LocalDate date) {
+		setDateTime(getDateTime().withYear(date.getYear()).withMonth(date.getMonth().getValue()).withDayOfMonth(date.getDayOfMonth()));
 	}
 
 	/**
@@ -281,7 +304,7 @@ public class Event extends AbstractSuperIdEntity {
 	 *
 	 * @param time to set
 	 */
-	public void setTime(LocalTime time) {
+	public void setTime(@NonNull LocalTime time) {
 		setDateTime(getDateTime().withHour(time.getHour()).withMinute(time.getMinute()));
 	}
 
@@ -301,7 +324,7 @@ public class Event extends AbstractSuperIdEntity {
 		}
 
 		if (getDiscordInformation() != null) {
-			getDiscordInformation().setEvent(this);
+			getDiscordInformation().forEach(information -> information.setEvent(this));
 		}
 	}
 
@@ -309,8 +332,12 @@ public class Event extends AbstractSuperIdEntity {
 		getSquadList().remove(squad);
 	}
 
+	public void unslotIfAlreadySlotted(User user) {
+		findSlotOfUser(user).ifPresent(oldSlot -> oldSlot.unslotWithoutUpdate(user));
+	}
+
 	/**
-	 * Informs the event about an slot update (slot, unslot, new slot(s) created, slot(s) removed).
+	 * Informs the event about a slot update (slot, unslot, new slot(s) created, slot(s) removed).
 	 * Uses {@link Event#moveReservists()} to change reserve if needed
 	 */
 	void slotUpdate() {
@@ -388,7 +415,8 @@ public class Event extends AbstractSuperIdEntity {
 		List<Slot> reserveSlots = reserveSquad.getSlotList();
 		for (int i = 0; i < getDesiredReserveSize(); i++) {
 			int slotNumber = 100 + i;
-			while (findSlot(slotNumber).isPresent()) {
+			while (findSlot(slotNumber).isPresent()
+					|| EventUtils.slotNumberPresent(reserveSlots, slotNumber)) {
 				slotNumber++;
 			}
 			reserveSlots.add(Slot.builder()
@@ -465,11 +493,14 @@ public class Event extends AbstractSuperIdEntity {
 		return emptySlots.get(new Random().nextInt(emptySlots.size()));
 	}
 
-	public void archive() {
+	public void archive(long guildId) {
 		if (LocalDateTime.now().isBefore(getDateTime())) {
 			throw BusinessRuntimeException.builder().title("Es können nur Events in der Vergangenheit archiviert werden.").build();
 		}
 
-		setDiscordInformation(null);
+		getDiscordInformation(guildId).ifPresent(informationOfGuild -> getDiscordInformation().remove(informationOfGuild));
+		if (getOwnerGuild() == guildId) {
+			EventNotificationService.removeNotifications(getId());
+		}
 	}
 }

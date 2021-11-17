@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static de.webalf.slotbot.constant.Urls.API;
-import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_READ_PUBLIC_PERMISSION;
-import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_WRITE_PERMISSION;
+import static de.webalf.slotbot.util.EventUtils.assertApiWriteAccess;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTIAL_READ_PUBLIC_PERMISSION;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTIAL_WRITE_PERMISSION;
 
 /**
  * @author Alf
@@ -28,24 +29,26 @@ public class EventApiController {
 	private final EventService eventService;
 
 	@GetMapping("/{id}")
-	@PreAuthorize(HAS_READ_PUBLIC_PERMISSION)
+	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
 	public EventApiDto getEvent(@PathVariable(value = "id") long eventId) {
 		log.trace("getEvent: " + eventId);
 		return EventApiAssembler.toDto(eventService.findByIdForApi(eventId));
 	}
 
 	@PostMapping
-	@PreAuthorize(HAS_WRITE_PERMISSION)
+	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto postEvent(@Valid @RequestBody EventDto event) {
 		log.trace("postEvent: " + event.getName());
+		assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize(HAS_WRITE_PERMISSION)
+	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		log.trace("updateEvent: " + event.getName());
 		event.setId(eventId);
+		assertApiWriteAccess(eventService.findById(eventId));
 		return EventApiAssembler.toDto(eventService.updateEvent(event));
 	}
 }

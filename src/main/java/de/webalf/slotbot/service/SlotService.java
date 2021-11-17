@@ -22,6 +22,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.webalf.slotbot.util.StringUtils.getFirstNotEmpty;
+
 /**
  * @author Alf
  * @since 27.07.2020
@@ -79,7 +81,9 @@ public class SlotService {
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
 		DtoUtils.ifPresent(dto.getUser(), slot::setUser);
-		DtoUtils.ifPresent(dto.getReplacementText(), slot::setReplacementText);
+		if (slot.isBlocked()) {
+			slot.setReplacementText(getFirstNotEmpty("Gesperrt", dto.getReplacementText(), slot.getReplacementText()));
+		}
 
 		return slot;
 	}

@@ -2,7 +2,6 @@ package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.assembler.EventFieldAssembler;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
-import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.Slot;
@@ -32,7 +31,6 @@ import java.util.stream.StreamSupport;
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventDetailsAssembler {
-	private final DiscordProperties discordProperties;
 	private final DiscordApiService discordApiService;
 
 	public EventDetailsDto toDto(@NonNull Event event) {
@@ -41,19 +39,21 @@ public class EventDetailsAssembler {
 		return EventDetailsDto.builder()
 				.channelUrl(getChannelUrl(event))
 				.id(event.getId())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
+				.hidden(event.isHidden())
+				.shareable(event.isShareable())
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
-				.hidden(event.isHidden())
-				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())
-				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
-				.reserveParticipating(event.getReserveParticipating())
+				.pictureUrl(event.getPictureUrl())
 				.details(getDetails(event.getDetails()))
+				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.reserveParticipating(event.getReserveParticipating())
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.build();
 	}
 
@@ -61,30 +61,30 @@ public class EventDetailsAssembler {
 		final LocalDateTime dateTime = event.getDateTime();
 
 		return EventEditDto.builder()
-				.channelUrl(getChannelUrl(event))
 				.id(event.getId())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
+				.hidden(event.isHidden())
+				.shareable(event.isShareable())
 				.name(event.getName())
 				.date(dateTime.toLocalDate())
 				.startTime(dateTime.toLocalTime())
 				.creator(event.getCreator())
-				.hidden(event.isHidden())
-				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())
-				.pictureUrl(event.getPictureUrl())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
-				.reserveParticipating(event.getReserveParticipating())
+				.pictureUrl(event.getPictureUrl())
 				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
+				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.reserveParticipating(event.getReserveParticipating())
+				.ownerGuild(Long.toString(event.getOwnerGuild()))
 				.build();
 	}
 
 	private String getChannelUrl(@NonNull Event event) {
-		String channelUrl = null;
-		if (event.isAssigned()) {
-			channelUrl = "discord://discordapp.com/channels/" + discordProperties.getGuild() + "/" + LongUtils.toString(event.getDiscordInformation().getChannel());
-		}
-		return channelUrl;
+		final long ownerGuild = event.getOwnerGuild();
+		return event.getDiscordInformation(ownerGuild)
+				.map(eventDiscordInformation -> "discord://discordapp.com/channels/" + ownerGuild + "/" + LongUtils.toString(eventDiscordInformation.getChannel()))
+				.orElse(null);
 	}
 
 	private List<EventFieldReferencelessDto> getDetails(List<EventField> details) {
@@ -133,7 +133,7 @@ public class EventDetailsAssembler {
 				}
 				blocked = true;
 			} else {
-				text = discordApiService.getName(LongUtils.toString(slot.getUser().getId()));
+				text = discordApiService.getName(LongUtils.toString(slot.getUser().getId()), slot.getSquad().getEvent().getOwnerGuild());
 			}
 		}
 

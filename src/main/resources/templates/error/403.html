@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 	<title>AMB - 403</title>
 
-	<meta property="og:image" content="/assets/img/amb_logo.jpg">
+	<meta property="og:image" content="/assets/img/amb-logo.jpg">
 	<meta property="og:type" content="website">
 	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
 	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
@@ -21,7 +21,7 @@
 	<div class="container">
 		<div>
 			<a href="/">
-				<img class="navbar-logo" th:attr="src=@{/assets/img/amb_logo.jpg}" alt="AMB">
+				<img class="navbar-logo" th:attr="src=@{/assets/img/amb-logo.jpg}" alt="AMB">
 				<a class="navbar-brand" href="/">Arma macht Bock</a>
 			</a>
 		</div>
@@ -56,8 +56,7 @@
 	<h1>Hier darfst du leider nicht hin</h1>
 	<h2>Zurück zur <a href="/">Startseite</a>!</h2>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:src="@{/assets/js/error/403.js}"></script>
 </body>
 </html>

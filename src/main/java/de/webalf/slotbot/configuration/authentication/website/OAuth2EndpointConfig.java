@@ -1,6 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ import java.util.Objects;
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
-	private final DiscordApiService discordApiService;
+	private final DiscordAuthenticationService discordAuthenticationService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -40,6 +40,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 
 				.oauth2Login()
 				.loginPage("/login")
+				.defaultSuccessUrl("/events")
 				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
 				.and()
 				.userInfoEndpoint().userService(oAuthUserService());
@@ -61,7 +62,7 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
-		DefaultOAuth2UserService service = new CustomOAuth2UserService(discordApiService);
+		DefaultOAuth2UserService service = new CustomOAuth2UserService(discordAuthenticationService);
 
 		service.setRequestEntityConverter(new OAuth2UserRequestEntityConverter() {
 			@Override

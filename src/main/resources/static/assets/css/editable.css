@@ -37,7 +37,7 @@
 }
 
 .w-11 {
-  width: 60em !important;
+  width: 59em !important;
   max-width: 70vw;
 }
 
@@ -49,4 +49,8 @@
 .w-4 {
   width: 18em !important;
   max-width: 70vw;
+}
+
+.w-card {
+  width: 12.5em !important;
 }

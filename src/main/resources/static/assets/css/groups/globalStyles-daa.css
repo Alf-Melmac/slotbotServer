@@ -1,0 +1,17 @@
+body {
+  background-color: #211f25;
+}
+
+body:not(p, li) {
+  color: #feff32;
+}
+
+a {
+  color: lightblue;
+}
+
+.timepicker-hour, .timepicker-minute, .timepicker-hours .hour, .timepicker-minutes .minute,
+.picker-switch, .datepicker-months .next:not(.disabled), .datepicker-months .prev:not(.disabled), .datepicker-months .month:not(.disabled),
+.datepicker-years .next:not(.disabled), .datepicker-years .prev:not(.disabled), .datepicker-years .year:not(.disabled) {
+  color: #5bc0de;
+}

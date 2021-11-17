@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
 import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
+import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getStringOption;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
@@ -47,7 +48,7 @@ public class EventPing implements DiscordCommand, DiscordSlashCommand {
 		log.trace("Command: eventPing");
 
 		final String mentions = buildMentions(eventBotService.findAllParticipants(message.getChannel().getIdLong()));
-		message.getChannel().sendMessage(args.get(0) + "\n" + mentions).queue();
+		sendMessage(message, args.get(0) + "\n" + mentions);
 
 		deleteMessagesInstant(message);
 	}
@@ -72,7 +73,7 @@ public class EventPing implements DiscordCommand, DiscordSlashCommand {
 		@SuppressWarnings("ConstantConditions") //Required option
 		final String message = getStringOption(event.getOption(OPTION_MESSAGE));
 
-		event.getChannel().sendMessage(message + "\n" + mentions).queue();
+		sendMessage(event, message + "\n" + mentions);
 
 		finishedSlashCommandAction(event);
 	}

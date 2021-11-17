@@ -15,6 +15,55 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 30.07.2021
  */
 class SlotTest {
+	//isSlotWithSlottedUser
+	@Test
+	void slotWithUserReturnsTrue() {
+		final User slottedUser = User.builder().build();
+
+		final Slot sut = Slot.builder().user(slottedUser).build();
+
+		assertTrue(sut.isSlotWithSlottedUser(slottedUser));
+	}
+
+	@Test
+	void slotWithUserReturnsFalse() {
+		final User slottedUser = User.builder().id(123).build();
+		final User otherUser = User.builder().id(456).build();
+
+		final Slot sut = Slot.builder().user(slottedUser).build();
+
+		assertFalse(sut.isSlotWithSlottedUser(otherUser));
+	}
+
+	@Test
+	void slotWithUserChecksEmptySlot() {
+		final Slot sut = Slot.builder().build();
+
+		assertFalse(sut.isSlotWithSlottedUser(User.builder().build()));
+	}
+
+	//isBlocked
+	@Test
+	void isBlockedDetectsEmptySlot() {
+		final Slot sut = Slot.builder().build();
+
+		assertFalse(sut.isBlocked());
+	}
+
+	@Test
+	void isBlockedDetectsOccupiedSlot() {
+		final Slot sut = Slot.builder().user(User.builder().build()).build();
+
+		assertFalse(sut.isBlocked());
+	}
+
+	@Test
+	void isBlockedDetectsBlockedSlot() {
+		final Slot sut = Slot.builder().user(User.builder().id(User.DEFAULT_USER_ID).build()).build();
+
+		assertTrue(sut.isBlocked());
+	}
+
 	//slotWithoutUpdate
 	@Test
 	void slotPreventsSlottingOnSameSlot() {

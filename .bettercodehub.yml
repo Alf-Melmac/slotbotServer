@@ -1,0 +1,3 @@
+component_depth: 6
+exclude:
+  - .*/3rd/.*

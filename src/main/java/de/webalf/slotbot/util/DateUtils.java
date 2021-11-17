@@ -28,6 +28,10 @@ public final class DateUtils {
 		return dateTime.atZone(ZONE_BERLIN);
 	}
 
+	public static ZonedDateTime getDateTimeNowZoned() {
+		return ZonedDateTime.ofInstant(Instant.now(), ZONE_BERLIN);
+	}
+
 	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDate date, @NonNull LocalTime time) {
 		return date.atTime(time).atZone(ZONE_BERLIN);
 	}

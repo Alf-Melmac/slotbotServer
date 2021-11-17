@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.bot;
 
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
@@ -43,30 +44,32 @@ public class EventBotService {
 		return eventService.findById(eventId);
 	}
 
-	public Optional<Event> findByChannel(@NonNull Message message, long channel) {
-		final Optional<Event> optionalEvent = eventService.findOptionalByChannel(channel);
-		if (optionalEvent.isPresent()) {
-			return optionalEvent;
-		} else {
-			replyAndDelete(message, "Hier konnte kein Event gefunden werden.");
-			return Optional.empty();
-		}
+	public Optional<Event> findByChannel(long channel) {
+		return eventService.findOptionalByChannel(channel);
+	}
+
+	public Event findByChannelOrThrow(long channel) {
+		return findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public List<Event> findAllInPast() {
 		return eventService.findAllInPast();
 	}
 
-	public List<Event> findAllNotAssignedInFuture() {
-		return eventService.findAllNotAssignedInFuture();
+	public List<Event> findAllNotAssignedInFuture(long guildId) {
+		return eventService.findAllNotAssignedInFuture(guildId);
+	}
+
+	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
+		return eventService.findAllForeignNotAssignedInFuture(guildId);
 	}
 
 	public void updateEvent(AbstractEventDto dto) {
 		eventService.updateEvent(dto);
 	}
 
-	public void archiveEvent(long eventId) {
-		eventService.archiveEvent(eventId);
+	public void archiveEvent(long eventId, long guildId) {
+		eventService.archiveEvent(eventId, guildId);
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {

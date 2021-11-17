@@ -3,9 +3,12 @@ package de.webalf.slotbot.util.bot;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.Command;
 import de.webalf.slotbot.model.annotations.SlashCommand;
+import de.webalf.slotbot.model.annotations.SlashCommands;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
+import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +33,7 @@ public class CommandClassHelper {
 	private final DiscordProperties discordProperties;
 
 	/**
-	 * Tries to create a new constructor instance for the given {@link de.webalf.slotbot.service.bot.command.DiscordCommand}
+	 * Tries to create a new constructor instance for the given {@link DiscordCommand} or {@link DiscordSlashCommand} class
 	 *
 	 * @param commandClass command to get constructor for
 	 * @return a new instance of the declared constructor
@@ -43,7 +46,7 @@ public class CommandClassHelper {
 			Class<?>[] parameterTypes = declaredConstructor.getParameterTypes();
 
 			if (parameterTypes.length == 0) {
-				//Admin, CopyEmbed, DonationEmbed, EditMessage, PostMessage, Vote
+				//CopyEmbed, DonationEmbed, EditMessage, PostMessage, Vote
 				try {
 					constructor = declaredConstructor.newInstance();
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -51,7 +54,7 @@ public class CommandClassHelper {
 				}
 				break;
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class})) {
-				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPing, EventPrint, RandomSlot, RenameSlot, Slot, Unslot
+				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -99,7 +102,29 @@ public class CommandClassHelper {
 		return commandClass.getAnnotation(Command.class);
 	}
 
-	public static SlashCommand getSlashCommand(@NonNull Class<?> commandClass) {
-		return commandClass.getAnnotation(SlashCommand.class);
+	/**
+	 * Get all {@link SlashCommand} annotations on the given class
+	 *
+	 * @param commandClass command class
+	 * @return all slash commands
+	 */
+	public static SlashCommand[] getSlashCommand(@NonNull Class<?> commandClass) {
+		final SlashCommand slashCommand = commandClass.getAnnotation(SlashCommand.class);
+		if (slashCommand == null) {
+			return commandClass.getAnnotation(SlashCommands.class).value();
+		}
+		return new SlashCommand[]{slashCommand};
+	}
+
+	/**
+	 * Returns the {@link SlashCommand} found by the given name
+	 *
+	 * @param name of the slash command
+	 * @return slash command
+	 */
+	public static SlashCommand getSlashCommand(String name) {
+		return Arrays.stream(getSlashCommand(SlashCommandUtils.get(name)))
+				.filter(slashCommand -> slashCommand.name().toLowerCase().equals(name))
+				.findAny().orElseThrow(IllegalStateException::new);
 	}
 }
