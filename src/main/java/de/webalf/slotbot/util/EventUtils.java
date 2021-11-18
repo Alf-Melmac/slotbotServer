@@ -1,5 +1,6 @@
 package de.webalf.slotbot.util;
 
+import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
@@ -21,6 +22,8 @@ import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.*;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -117,6 +120,16 @@ public final class EventUtils {
 	private static long getOwnerGuild(long ownerGuild) {
 		final long currentOwnerGuild = GuildUtils.getCurrentOwnerGuild();
 		return currentOwnerGuild != GUILD_PLACEHOLDER ? currentOwnerGuild : ownerGuild;
+	}
+
+	/**
+	 * Builds the event details url for the given event
+	 *
+	 * @param eventId event id to open details for
+	 * @return uri to event details
+	 */
+	public static String buildUrl(long eventId) {
+		return linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString();
 	}
 
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {

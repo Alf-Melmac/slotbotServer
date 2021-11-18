@@ -2,7 +2,6 @@ package de.webalf.slotbot.assembler.api;
 
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.assembler.UserAssembler;
-import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
@@ -16,8 +15,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.time.LocalDateTime;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static de.webalf.slotbot.util.EventUtils.buildUrl;
 
 /**
  * @author Alf
@@ -32,7 +30,7 @@ public final class EventApiAssembler {
 		LocalDateTime dateTime = event.getDateTime();
 
 		return EventApiDto.builder()
-				.url(getUrl(event.getId()))
+				.url(buildUrl(event.getId()))
 				.id(event.getId())
 				.hidden(event.isHidden())
 				.shareable(event.isShareable())
@@ -67,11 +65,7 @@ public final class EventApiAssembler {
 				.name(event.getName())
 				.dateTime(event.getDateTime())
 				.squadList(squadApiAssembler.toViewDtoList(event.getSquadList()))
-				.url(getUrl(event.getId()))
+				.url(buildUrl(event.getId()))
 				.build();
-	}
-
-	private static String getUrl(long eventId) {
-		return linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString();
 	}
 }
