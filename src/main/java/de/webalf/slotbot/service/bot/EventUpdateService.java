@@ -57,18 +57,21 @@ public class EventUpdateService {
 	}
 
 	/**
-	 * Checks if the event date has changed and {@link EventNotificationService#updateNotifications(long)} if needed
+	 * {@link EventNotificationService#updateNotifications(long)} for the given event
 	 *
-	 * @param oldEventDateTime old event time
-	 * @param newEventDateTime edited event time
-	 * @param eventId          changed event
+	 * @param eventId changed event
 	 */
-	public void updateEventNotifications(@NonNull LocalDateTime oldEventDateTime, LocalDateTime newEventDateTime, long eventId) {
-		if (!oldEventDateTime.isEqual(newEventDateTime)) {
-			//The action here must be scheduled, because the event must be saved before.
-			//Without saving the event notifications for the event can not be found, because it comes to a StackOverflow. Hibernate bug?
-			schedulerService.schedule(() -> eventNotificationService.updateNotifications(eventId), 1);
-		}
+	public void updateEventNotifications(long eventId) {
+		//The action here must be scheduled, because the event must be saved before.
+		//Without saving the event notifications for the event can not be found, because it comes to a StackOverflow. Hibernate bug?
+		schedulerService.schedule(() -> eventNotificationService.updateNotifications(eventId), 1);
+	}
+
+	public void rebuildCalendar(long eventId) {
+		//The action here must be scheduled, because the event must be saved before.
+		//Without saving the events for the guild can not be found, because it comes to a StackOverflow. Hibernate bug?
+		//This can be removed if guilds are database entities and eventCalendarService can exist without eventService dependency
+		schedulerService.schedule(() -> eventCalendarService.rebuildCalendars(eventId), 1);
 	}
 
 	public void informAboutSlotChange(@NonNull Event event, @NonNull Slot slot, User currentUser, User previousUser) {

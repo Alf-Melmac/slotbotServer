@@ -78,10 +78,34 @@ public class UpdateInterceptorService {
 	}
 
 	private void eventUpdate(Object[] previousState, String[] propertyNames, Event event) {
+		boolean calendarRebuildTodo = true;
 		for (int i = 0; i < propertyNames.length; i++) {
+			if (calendarRebuildTodo) {
+				if (propertyNames[i].equals(Event_.NAME)) {
+					final String oldName = (String) previousState[i];
+					final String newName = event.getName();
+					if (!oldName.equals(newName)) {
+						eventUpdateService.rebuildCalendar(event.getId());
+						calendarRebuildTodo = false;
+					}
+				} else if (propertyNames[i].equals(Event_.HIDDEN)) {
+					final boolean oldHiddenState = (boolean) previousState[i];
+					final boolean newHiddenState = event.isHidden();
+					if (oldHiddenState != newHiddenState) {
+						eventUpdateService.rebuildCalendar(event.getId());
+						calendarRebuildTodo = false;
+					}
+				}
+			}
+
 			if (propertyNames[i].equals(Event_.DATE_TIME)) {
-				eventUpdateService.updateEventNotifications((LocalDateTime) previousState[i], event.getDateTime(), event.getId());
-				break;
+				final LocalDateTime oldEventDateTime = (LocalDateTime) previousState[i];
+				final LocalDateTime newEventDateTime = event.getDateTime();
+				if (!oldEventDateTime.isEqual(newEventDateTime)) {
+					eventUpdateService.updateEventNotifications(event.getId());
+					eventUpdateService.rebuildCalendar(event.getId());
+					break;
+				}
 			}
 		}
 	}

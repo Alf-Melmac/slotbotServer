@@ -73,7 +73,7 @@ public class ProfileWebController {
 			mav.addObject("externalCalendarIntegrationActive", user.isExternalCalendarIntegrationActive());
 			mav.addObject("putExternalCalendarIntegration", linkTo(methodOn(UserController.class).updateExternalCalendarIntegration(false)).toUri().toString()
 					.replace(Boolean.FALSE.toString(), "{integrationActive}"));
-			mav.addObject("icsCalendarUrl", linkTo(methodOn(FileWebController.class).getCalendar(EventCalendarUtil.getCalendarName(user))));
+			mav.addObject("icsCalendarUrl", linkTo(methodOn(FileWebController.class).getCalendar(EventCalendarUtil.getCalendarName(user.getId()))));
 		}
 
 		addLayoutSettings(mav);

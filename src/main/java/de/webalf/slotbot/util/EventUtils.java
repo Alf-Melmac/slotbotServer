@@ -132,6 +132,16 @@ public final class EventUtils {
 		return linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString();
 	}
 
+	/**
+	 * Builds the event details url for the given event and validates with {@link #fixUrl(String, String)} that the url is an absolute uri
+	 *
+	 * @param event to build url for
+	 * @return url to event details
+	 */
+	public static String buildCorrectedUrl(@NonNull Event event) {
+		return fixUrl(buildUrl(event.getId()), Long.toString(event.getOwnerGuild()));
+	}
+
 	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))

@@ -3,7 +3,7 @@ package de.webalf.slotbot.controller;
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.UserDto;
-import de.webalf.slotbot.service.UserService;
+import de.webalf.slotbot.service.UserUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUse
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class UserController {
-	private final UserService userService;
+	private final UserUpdateService userService;
 
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_ROLE_EVERYONE)

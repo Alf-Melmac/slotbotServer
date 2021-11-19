@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.UserNameDto;
 import de.webalf.slotbot.repository.UserRepository;
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -25,33 +24,15 @@ import org.springframework.util.ReflectionUtils;
 public class UserService {
 	private final UserRepository userRepository;
 	private final DiscordApiService discordApiService;
-	private final EventCalendarService eventCalendarService;
-
-	private User createUser(@NonNull UserDto userDto) {
-		User user = UserAssembler.fromDto(userDto);
-		return userRepository.save(user);
-	}
-
-	public User update(@NonNull UserDto userDto) {
-		User user = find(LongUtils.parseLong(userDto.getId()));
-
-		DtoUtils.ifPresentParse(userDto.getSteamId64(), user::setSteamId64);
-		DtoUtils.ifPresent(userDto.getExternalCalendarIntegrationActive(), externalCalendarIntegrationActive -> {
-			user.setExternalCalendarIntegrationActive(externalCalendarIntegrationActive);
-			eventCalendarService.rebuildCalendar(user);
-		});
-
-		return user;
-	}
+	private final UserServiceImpl userServiceImpl;
 
 	User find(@NonNull UserDto userDto) {
 		return userRepository.findById(LongUtils.parseLong(userDto.getId()))
-				.orElseGet(() -> createUser(userDto));
+				.orElseGet(() -> userServiceImpl.createUser(userDto));
 	}
 
 	public User find(long id) {
-		return userRepository.findById(id)
-				.orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
+		return userServiceImpl.find(id);
 	}
 
 	public UserNameDto toUserNameDto(User user) {

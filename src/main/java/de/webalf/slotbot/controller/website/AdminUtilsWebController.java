@@ -63,7 +63,7 @@ public class AdminUtilsWebController {
 			eventNotificationService.rebuildAllNotifications();
 		} else if ("rebuildCalendars".equals(action)) {
 			for (Guild guild : Guild.values()) {
-				eventCalendarService.rebuildCalendar(guild, eventService.findAllPublicByGuild(guild.getDiscordGuild()));
+				eventCalendarService.rebuildCalendar(guild);
 			}
 		}
 		return new ResponseEntity<>(HttpStatus.OK);

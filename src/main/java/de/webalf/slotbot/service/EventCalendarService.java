@@ -2,6 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.util.EventCalendarUtil;
 import de.webalf.slotbot.util.GuildUtils.Guild;
@@ -21,8 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-
-import static de.webalf.slotbot.util.EventCalendarUtil.getCalendarName;
+import java.util.stream.Stream;
 
 /**
  * @author Alf
@@ -34,19 +34,19 @@ import static de.webalf.slotbot.util.EventCalendarUtil.getCalendarName;
 @Slf4j
 public class EventCalendarService {
 	private final StorageProperties storageProperties;
+	private final EventService eventService;
 
 	/**
 	 * Rebuilds the calendar for the given guild. This calendar includes all public visible events that the guild hosts or participates in.
 	 *
-	 * @param guild  to rebuild calendar for
-	 * @param events to include in the calendar
+	 * @param guild to rebuild calendar for
 	 */
-	//Parameter events should be removed once guild is a database entity and knows it events
-	public void rebuildCalendar(@NonNull Guild guild, Iterable<Event> events) {
-		log.debug("Building calendar for guild {} [{}]", guild.getId(), guild.getDiscordGuild());
-		final Calendar calendar = EventCalendarUtil.buildEventCalendar(events);
-		writeCalendar(calendar, getCalendarPath(guild));
-		log.trace("Calendar write finished.");
+	public void rebuildCalendar(@NonNull Guild guild) {
+		if (log.isTraceEnabled()) {
+			log.trace("Building calendar for guild {} [{}]", guild.getId(), guild.getDiscordGuild());
+		}
+		final List<Event> events = eventService.findAllPublicByGuild(guild.getDiscordGuild());
+		buildAndWrite(events, guild.getDiscordGuild());
 	}
 
 	/**
@@ -56,19 +56,48 @@ public class EventCalendarService {
 	 * @param user to rebuild calendar for
 	 */
 	public void rebuildCalendar(@NonNull User user) {
+		if (user.isDefaultUser()) {
+			return;
+		}
+		if (log.isTraceEnabled()) {
+			log.trace("Building calendar for user {}", user.getId());
+		}
 		if (!user.isExternalCalendarIntegrationActive()) {
-			deleteCalendar(user);
+			deleteCalendar(user.getId());
 			return;
 		}
 
-		log.debug("Building calendar for {}", user.getId());
-		final List<Event> events = user.getSlottedEvents();
+		buildAndWrite(user.getSlottedEvents(), user.getId());
+	}
+
+	/**
+	 * Rebuilds the calendar for the given event
+	 *
+	 * @param event that has changed
+	 */
+	private void rebuildCalendars(@NonNull Event event) {
+		if (log.isTraceEnabled()) {
+			log.trace("Building calendar for event {} [{}]", event.getName(), event.getId());
+		}
+		event.getAllParticipants().forEach(this::rebuildCalendar);
+		Stream.concat(Stream.of(event.getOwnerGuild()), event.getDiscordInformation().stream().map(EventDiscordInformation::getGuild))
+				.distinct()
+				.forEach(guild -> rebuildCalendar(Guild.findByDiscordGuild(guild)));
+	}
+
+	public void rebuildCalendars(long eventId) {
+		rebuildCalendars(eventService.findById(eventId));
+	}
+
+	private void buildAndWrite(@NonNull List<Event> events, long id) {
 		if (events.isEmpty()) {
-			deleteCalendar(user);
+			deleteCalendar(id);
 			return;
 		}
+
+		log.debug("Building calendar for {}", id);
 		final Calendar calendar = EventCalendarUtil.buildEventCalendar(events);
-		writeCalendar(calendar, getCalendarPath(user));
+		writeCalendar(calendar, getCalendarPath(id));
 		log.trace("Calendar write finished.");
 	}
 
@@ -90,29 +119,25 @@ public class EventCalendarService {
 	}
 
 	/**
-	 * Deletes the calendar for the given user
+	 * Deletes the calendar for the given id
 	 *
-	 * @param user to delete calendar for
+	 * @param id to delete calendar for. Can be a user or a guild
 	 */
-	private void deleteCalendar(User user) {
+	private void deleteCalendar(long id) {
 		try {
-			log.debug("Deleting calendar of {}", user.getId());
-			Files.deleteIfExists(Paths.get(getCalendarPath(user)));
-			log.trace("Deleted calendar.");
+			if (log.isTraceEnabled()) {
+				log.trace("Deleting calendar {}", id);
+			}
+			final boolean deleted = Files.deleteIfExists(Paths.get(getCalendarPath(id)));
+			if (deleted && log.isDebugEnabled()) {
+				log.debug("Deleted calendar of {}", id);
+			}
 		} catch (IOException e) {
-			log.error("Failed to delete calendar of {}", user.getId(), e);
+			log.error("Failed to delete calendar of {}", id, e);
 		}
 	}
 
-	private String getCalendarPath(Guild guild) {
-		return getCalendarPath(getCalendarName(guild));
-	}
-
-	private String getCalendarPath(User user) {
-		return getCalendarPath(getCalendarName(user));
-	}
-
-	private String getCalendarPath(@NotBlank String calendarName) {
-		return storageProperties.getCalendarOutput() + "/" + calendarName;
+	private String getCalendarPath(long id) {
+		return storageProperties.getCalendarOutput() + "/" + EventCalendarUtil.getCalendarName(id);
 	}
 }
