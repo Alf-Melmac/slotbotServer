@@ -5,8 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
 
@@ -34,6 +36,9 @@ public class User {
 	@Column(name = "user_steam_id")
 	private Long steamId64;
 
+	@Column(name = "user_external_calendar", nullable = false)
+	private boolean externalCalendarIntegrationActive = false;
+
 	@OneToMany(mappedBy = "user")
 	private Set<Slot> slots = new HashSet<>();
 
@@ -55,5 +60,13 @@ public class User {
 				.map(Squad::getEvent)
 				.map(Event::getDateTime)
 				.filter(dateTime -> dateTime.isBefore(LocalDateTime.now())).min(getLocalDateTimeComparator());
+	}
+
+	public long countParticipatedEvents() {
+		return getSlots().stream().filter(slot -> slot.getEvent().getDateTime().isBefore(LocalDateTime.now())).count();
+	}
+
+	public List<Event> getSlottedEvents() {
+		return getSlots().stream().map(Slot::getEvent).collect(Collectors.toUnmodifiableList());
 	}
 }

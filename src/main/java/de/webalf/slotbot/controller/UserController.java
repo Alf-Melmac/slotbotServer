@@ -8,13 +8,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.assertIsLoggedInUser;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 
 /**
  * @author Alf
@@ -29,7 +30,7 @@ public class UserController {
 
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public UserDto updateEventEditable(long pk, String name, String value) {
+	public UserDto updateUserEditable(long pk, String name, String value) {
 		final String userId = Long.toString(pk);
 		assertIsLoggedInUser(userId);
 		UserDto dto = UserDto.builder().id(userId).build();
@@ -40,5 +41,13 @@ public class UserController {
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
 		}
 		return UserAssembler.toDto(userService.update(dto));
+	}
+
+	@PutMapping("/externalcalendar/{integrationActive}")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public ResponseEntity<Void> updateExternalCalendarIntegration(@PathVariable(name = "integrationActive") boolean integrationActive) {
+		final UserDto dto = UserDto.builder().id(getLoggedInUserId()).externalCalendarIntegrationActive(integrationActive).build();
+		userService.update(dto);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

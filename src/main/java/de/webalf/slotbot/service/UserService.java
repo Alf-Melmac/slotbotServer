@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
-import java.time.LocalDateTime;
-
 /**
  * @author Alf
  * @since 06.09.2020
@@ -37,6 +35,7 @@ public class UserService {
 		User user = find(LongUtils.parseLong(userDto.getId()));
 
 		DtoUtils.ifPresentParse(userDto.getSteamId64(), user::setSteamId64);
+		DtoUtils.ifPresent(userDto.getExternalCalendarIntegrationActive(), user::setExternalCalendarIntegrationActive);
 
 		return user;
 	}
@@ -49,10 +48,6 @@ public class UserService {
 	public User find(long id) {
 		return userRepository.findById(id)
 				.orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));
-	}
-
-	public long getParticipatedEventsCount(@NonNull User user) {
-		return user.getSlots().stream().filter(slot -> slot.getEvent().getDateTime().isBefore(LocalDateTime.now())).count();
 	}
 
 	public UserNameDto toUserNameDto(User user) {

@@ -6,6 +6,7 @@ import de.webalf.slotbot.controller.NotificationSettingsController;
 import de.webalf.slotbot.controller.UserController;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.service.external.DiscordApiService;
@@ -41,6 +42,7 @@ public class ProfileWebController {
 	private final DiscordAuthenticationService discordAuthenticationService;
 	private final UserService userService;
 	private final NotificationSettingsService notificationSettingsService;
+	private final EventCalendarService eventCalendarService;
 
 	@GetMapping("{userId}")
 	public ModelAndView getProfile(@PathVariable(value = "userId") String userId) {
@@ -59,16 +61,20 @@ public class ProfileWebController {
 		mav.addObject("discordUser", discordUser);
 		mav.addObject("roles", "@" + String.join(", @", discordAuthenticationService.getRoles(userId)));
 		final User user = userService.find(Long.parseLong(userId));
-		mav.addObject("participatedEventsCount", userService.getParticipatedEventsCount(user));
+		mav.addObject("participatedEventsCount", user.countParticipatedEvents());
 
 		final boolean ownProfile = isLoggedInUser(userId);
 		mav.addObject("ownProfile", ownProfile);
 		if (ownProfile) {
 			mav.addObject("user", UserAssembler.toDto(user));
-			mav.addObject("putUserEditableUrl", linkTo(methodOn(UserController.class).updateEventEditable(user.getId(), null, null)).toUri().toString());
+			mav.addObject("putUserEditableUrl", linkTo(methodOn(UserController.class).updateUserEditable(user.getId(), null, null)).toUri().toString());
 			mav.addObject("notificationSettings", NotificationSettingAssembler.toReferencelessDtoList(notificationSettingsService.findSettings(user)));
 			mav.addObject("deleteAllByUserUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
 			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettings(userId, null)).toUri().toString());
+			mav.addObject("externalCalendarIntegrationActive", user.isExternalCalendarIntegrationActive());
+			mav.addObject("putExternalCalendarIntegration", linkTo(methodOn(UserController.class).updateExternalCalendarIntegration(false)).toUri().toString()
+					.replace(Boolean.FALSE.toString(), "{integrationActive}"));
+			mav.addObject("icsCalendarUrl", linkTo(methodOn(FileWebController.class).getCalendar(eventCalendarService.getCalendarName(user))));
 		}
 
 		addLayoutSettings(mav);

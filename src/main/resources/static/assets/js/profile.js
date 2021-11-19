@@ -14,4 +14,20 @@ $(function () {
         name: 'steamId64',
         emptytext: 'Steam 64 ID'
     });
+
+    const $externalCalendarUrl = $('#externalCalendarUrl');
+    $('#externalCalendarSwitch').on('change', function () {
+        const integrationActive = $(this).is(':checked');
+        if (integrationActive) {
+            $externalCalendarUrl.show();
+        } else {
+            $externalCalendarUrl.hide();
+        }
+        $.ajax(putExternalCalendarIntegration.replace('{integrationActive}', integrationActive), {
+                method: 'PUT'
+            }
+        )
+            .done(showSavedToast)
+            .fail(showErrorToast);
+    });
 });

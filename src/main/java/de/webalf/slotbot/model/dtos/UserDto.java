@@ -17,4 +17,6 @@ public class UserDto {
 	private String id;
 
 	private String steamId64;
+
+	private Boolean externalCalendarIntegrationActive;
 }

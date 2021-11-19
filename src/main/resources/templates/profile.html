@@ -13,6 +13,7 @@
 		<link th:replace="fragments/styles.html :: editable">
 		<link rel="stylesheet" th:href="@{/assets/css/positions.css}">
 		<link rel="stylesheet" th:href="@{/assets/css/buttons.css}">
+		<link rel="stylesheet" th:href="@{/assets/css/copy.css}">
 	</th:block>
 </head>
 <body>
@@ -48,7 +49,13 @@
 		</div>
 
 		<th:block th:if="${ownProfile}">
-			<h3 class="mt-4">Globale Benachrichtigungseinstellungen</h3>
+			<h3 class="mt-4">
+				<span>Globale Benachrichtigungseinstellungen</span>
+				<span class="text-info" data-toggle="tooltip" data-placement="right"
+				      title="Hier können die Benachrichtigungen vor einem Event konfiguriert werden. Benachrichtigungen erhältst du in Form einer Discord Privatnachricht.">
+							<em class="fas fa-info-circle"></em>
+				</span>
+			</h3>
 			<form id="notificationForm">
 				<div class="custom-control custom-switch">
 					<input id="notificationSwitch" class="custom-control-input" type="checkbox"
@@ -60,7 +67,8 @@
 				     th:styleappend="${#lists.isEmpty(notificationSettings)} ? 'display: none;'">
 					<div id="notificationDetailSettings" class="mt-3">
 						<div class="form-row d-flex align-items-center js-notification-settings-row"
-						     th:each="notificationSetting : ${notificationSettings}" th:data-notificationid="${notificationSetting.id}">
+						     th:each="notificationSetting : ${notificationSettings}"
+						     th:data-notificationid="${notificationSetting.id}">
 							<div class="btn btn-xl btn-wht p-0 js-trash" type="button">
 								<em class="far fa-trash-alt"></em>
 							</div>
@@ -91,12 +99,46 @@
 					</div>
 
 					<div class="float-right">
-						<span class="text-info" data-toggle="tooltip" data-placement="left" title="Anpassungen an den globalen Einstellungen werden nur für Slottungen nach dieser Änderungen übernommen.">
+						<span class="text-info" data-toggle="tooltip" data-placement="left"
+						      title="Anpassungen an den globalen Einstellungen werden nur für Slottungen nach dieser Änderungen übernommen.">
 							<em class="fas fa-info-circle"></em>
 						</span>
 						<span id="btnSaveNotifications" class="btn btn-primary">
 							Benachrichtigungen speichern
 						</span>
+					</div>
+				</div>
+			</form>
+
+			<hr class="solid bg-light">
+
+			<h3 class="mt-4">
+				<span>Externer Kalender</span>
+				<span class="text-info" data-toggle="tooltip" data-placement="right"
+				      title="Aktiviere hier die Integration mit externen Kalendern, um deine Events z.B. auf dem Handy einfügen zu können.">
+							<em class="fas fa-info-circle"></em>
+				</span>
+			</h3>
+			<form id="externalCalendarForm">
+				<div class="custom-control custom-switch">
+					<input id="externalCalendarSwitch" class="custom-control-input" type="checkbox"
+					       th:checked="${externalCalendarIntegrationActive}">
+					<label for="externalCalendarSwitch" class="custom-control-label">
+						Kalenderintegration aktivieren
+					</label>
+				</div>
+				<div id="externalCalendarUrl" class="mt-2"
+				     th:styleappend="${!externalCalendarIntegrationActive} ? 'display: none;'">
+					<div class="copy-to-clipboard">
+						<!--suppress HtmlFormInputWithoutLabel -->
+						<input class="text-primary w-100 p-2 text-center border border-light rounded-sm" type="text"
+						       th:value="${icsCalendarUrl}" title="Klicken zum Kopieren" readonly>
+					</div>
+					<div class='copied'></div>
+					<div class="alert alert-info mt-1" role="alert">
+						Anleitungen zum Einbinden dieser Datei im
+						<a href="https://docs.webalf.de/slotbot/eventkalender#kalender-synchronisation"
+						   class="alert-link" target="_blank" rel="noopener noreferrer">Wiki</a>.
 					</div>
 				</div>
 			</form>
@@ -118,10 +160,12 @@
 		const putNotificationSettingsUrl = /*[[${putNotificationSettingsUrl}]]*/ '';
 		const user = /*[[${user}]]*/ '';
 		const putUserEditableUrl = /*[[${putUserEditableUrl}]]*/ '';
+		const putExternalCalendarIntegration = /*[[${putExternalCalendarIntegration}]]*/ '';
 		/*]]>*/
 	</script>
 	<script th:src="@{/assets/js/profile.js}"></script>
 	<script th:src="@{/assets/js/tooltip.js}"></script>
+	<script th:src="@{/assets/js/copy.js}"></script>
 	<script th:src="@{/assets/js/notifications.js}"></script>
 </th:block>
 </body>
