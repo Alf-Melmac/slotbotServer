@@ -2,7 +2,6 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.service.bot.EventUpdateService;
-import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.collection.internal.PersistentList;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 @Slf4j
 public class UpdateInterceptorService {
 	private final EventUpdateService eventUpdateService;
-	private final MessageHelper messageHelper;
 
 	/**
 	 * Informs the discord bot about a deletion in an event

@@ -1,6 +1,7 @@
 package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.User;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 
+import javax.validation.constraints.NotBlank;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
@@ -54,5 +56,17 @@ public final class EventCalendarUtil {
 
 		// Add the event
 		calendar.add(calendarEvent);
+	}
+
+	public static String getCalendarName(@NonNull GuildUtils.Guild guild) {
+		return getCalendarName(guild.getId());
+	}
+
+	public static String getCalendarName(@NonNull User user) {
+		return getCalendarName(Long.toString(user.getId()));
+	}
+
+	private static String getCalendarName(@NotBlank String calendarName) {
+		return calendarName + ".ics";
 	}
 }

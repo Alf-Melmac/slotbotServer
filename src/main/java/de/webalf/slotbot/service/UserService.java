@@ -25,22 +25,26 @@ import org.springframework.util.ReflectionUtils;
 public class UserService {
 	private final UserRepository userRepository;
 	private final DiscordApiService discordApiService;
+	private final EventCalendarService eventCalendarService;
 
 	private User createUser(@NonNull UserDto userDto) {
 		User user = UserAssembler.fromDto(userDto);
 		return userRepository.save(user);
 	}
 
-	public User update(UserDto userDto) {
+	public User update(@NonNull UserDto userDto) {
 		User user = find(LongUtils.parseLong(userDto.getId()));
 
 		DtoUtils.ifPresentParse(userDto.getSteamId64(), user::setSteamId64);
-		DtoUtils.ifPresent(userDto.getExternalCalendarIntegrationActive(), user::setExternalCalendarIntegrationActive);
+		DtoUtils.ifPresent(userDto.getExternalCalendarIntegrationActive(), externalCalendarIntegrationActive -> {
+			user.setExternalCalendarIntegrationActive(externalCalendarIntegrationActive);
+			eventCalendarService.rebuildCalendar(user);
+		});
 
 		return user;
 	}
 
-	User find(UserDto userDto) {
+	User find(@NonNull UserDto userDto) {
 		return userRepository.findById(LongUtils.parseLong(userDto.getId()))
 				.orElseGet(() -> createUser(userDto));
 	}

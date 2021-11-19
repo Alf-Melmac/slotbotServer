@@ -137,7 +137,7 @@ public class EventService {
 				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
 	}
 
-	public List<Event> findAllByGuild(long ownerGuild) {
+	public List<Event> findAllPublicByGuild(long ownerGuild) {
 		return eventRepository.findAllByGuildAndHiddenFalse(ownerGuild);
 	}
 

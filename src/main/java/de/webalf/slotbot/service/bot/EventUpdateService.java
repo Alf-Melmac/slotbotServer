@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.ListUtils;
@@ -34,6 +35,7 @@ public class EventUpdateService {
 	private final BotService botService;
 	private final MessageHelper messageHelper;
 	private final EventNotificationService eventNotificationService;
+	private final EventCalendarService eventCalendarService;
 	private final SchedulerService schedulerService;
 
 	public void update(@NonNull Event event) throws IllegalStateException {
@@ -74,12 +76,14 @@ public class EventUpdateService {
 		if (previousUser != null && !previousUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
 			EventNotificationService.removeNotifications(event, previousUser);
+			eventCalendarService.rebuildCalendar(previousUser);
 		} else if (currentUser != null && !currentUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 			if (isAMB(event.getOwnerGuild())) {
 				longTimeNoSee(currentUser);
 			}
 			schedulerService.schedule(() -> eventNotificationService.createNotifications(event, currentUser), 1);
+			eventCalendarService.rebuildCalendar(currentUser);
 		}
 	}
 

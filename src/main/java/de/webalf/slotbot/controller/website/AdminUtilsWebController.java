@@ -1,9 +1,11 @@
 package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.service.EventCalendarService;
+import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
+import de.webalf.slotbot.util.GuildUtils.Guild;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,7 @@ public class AdminUtilsWebController {
 	private final EventTypeService eventTypeService;
 	private final EventNotificationService eventNotificationService;
 	private final EventCalendarService eventCalendarService;
+	private final EventService eventService;
 
 	@GetMapping
 	public ModelAndView getAdminUtilsHtml() {
@@ -59,7 +62,9 @@ public class AdminUtilsWebController {
 		} else if ("rebuildEventNotifications".equals(action)) {
 			eventNotificationService.rebuildAllNotifications();
 		} else if ("rebuildCalendars".equals(action)) {
-			eventCalendarService.rebuildCalendars();
+			for (Guild guild : Guild.values()) {
+				eventCalendarService.rebuildCalendar(guild, eventService.findAllPublicByGuild(guild.getDiscordGuild()));
+			}
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
