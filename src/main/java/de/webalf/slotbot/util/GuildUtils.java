@@ -68,8 +68,7 @@ public final class GuildUtils {
 	public enum Guild {
 		AMB(Pattern.compile(".*(armamachtbock\\.de|arma-macht-bock\\.de).*"), "https://armamachtbock.de", "AMB", 706254758721224707L),
 		DAA(Pattern.compile(".*(deutsche-arma-allianz\\.de|deutschearmaallianz\\.de).*"), "https://events.deutsche-arma-allianz.de", "DAA", 874650742089203792L),
-		/*LOCALHOST(Pattern.compile(".*localhost.*"), "Test", AMB.getDiscordGuild())*/
-		PUBLIC(Pattern.compile(".*todo.de.*"), "https://armamachtbock.de", "PUBLIC", GUILD_PLACEHOLDER);
+		PUBLIC(Pattern.compile(".*localhost.*"), "https://armamachtbock.de", "PUBLIC", GUILD_PLACEHOLDER);
 
 		private final Pattern urlPattern;
 		private final String baseUrl;
