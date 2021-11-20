@@ -162,11 +162,16 @@
 		<hr class="solid bg-light">
 
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-md-7">
 				<h3>Teilnahmeplatzaufzählung</h3>
 			</div>
-			<div class="col-md-3">
-				<div id="renumber" class="btn btn-secondary float-right" type="button">Neu nummerieren</div>
+			<div class="col-md-5">
+				<button id="uploadSlotlist" class="btn btn-secondary mr-2" type="button"
+				        th:classappend="${!canUploadSlotlist} ? 'btn-denied'" th:disabled="${!canUploadSlotlist}"
+				        th:title="${!canUploadSlotlist} ? 'Zum Hochladen einer Slotliste muss das Event leer sein'"
+				     data-toggle="modal" data-target="#uploadSlotlistModal">Slotliste hochladen
+				</button>
+				<div id="renumber" class="btn btn-secondary" type="button">Neu nummerieren</div>
 			</div>
 		</div>
 		<form>
@@ -264,6 +269,7 @@
 
 <!--Add default fields warning-->
 <div th:replace="fragments/modals.html :: addDefaultFieldsWarning"></div>
+<div th:if="${canUploadSlotlist}" th:replace="fragments/modals.html :: uploadSlotlistModal"></div>
 <div th:replace="fragments/toasts.html"></div>
 
 <footer th:insert="fragments/general.html :: footer"></footer>
@@ -275,11 +281,12 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const eventsUrl = /*[[${eventsUrl}]]*/ '';
+	const savedEvent = /*[[${event}]]*/ '';
 	const eventFieldDefaultsUrl = /*[[${eventFieldDefaultsUrl}]]*/ '';
-	const putEventUrl = /*[[${putEventUrl}]]*/ '';
+	const uploadSqmFileUrl = /*[[${uploadSqmFileUrl}]]*/ '';
 	const putEventEditableUrl = /*[[${putEventEditableUrl}]]*/ '';
 	const eventDetailsUrl = /*[[${eventDetailsUrl}]]*/ '';
-	const savedEvent = /*[[${event}]]*/ '';
+	const putEventUrl = /*[[${putEventUrl}]]*/ '';
 
 	const defaultUserId = /*[[${T(de.webalf.slotbot.model.User).DEFAULT_USER_ID}]]*/ '';
 	/*]]>*/
@@ -287,6 +294,7 @@
 <script th:src="@{/assets/js/eventSave.js}"></script>
 <script th:src="@{/assets/js/eventFields.js}"></script>
 <script th:src="@{/assets/js/slotList.js}"></script>
+<script th:if="${canUploadSlotlist}" th:src="@{/assets/js/uploadSqmFile.js}"></script>
 <script th:src="@{/assets/js/eventEdit.js}"></script>
 </body>
 </html>

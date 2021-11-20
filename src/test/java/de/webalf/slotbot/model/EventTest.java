@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -16,10 +18,48 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 20.10.2021
  */
 class EventTest {
+	//isEmpty
+	@Test
+	void isEmptyReturnsTrue() {
+		final Event sut = buildEventWithOneSlot(null);
+
+		assertTrue(sut.isEmpty());
+	}
 
 	@Test
+	void isEmptyDetectsSlottedUser() {
+		final long DISCORD_USER = 123456789012345678L;
+		assertTrue(MentionUtils.isSnowflake(Long.toString(DISCORD_USER)));
+
+		final Event sut = buildEventWithOneSlot(DISCORD_USER);
+
+		assertFalse(sut.isEmpty());
+	}
+
+	@Test
+	void isEmptyDetectsBlockedSlot() {
+		final Event sut = buildEventWithOneSlot(User.DEFAULT_USER_ID);
+
+		assertFalse(sut.isEmpty());
+	}
+
+	private Event buildEventWithOneSlot(Long userId) {
+		return Event.builder()
+				.squadList(new ArrayList<>(
+						List.of(Squad.builder().name("Squad")
+								.slotList(new ArrayList<>(
+										List.of(Slot.builder()
+												.number(1)
+												.user(userId != null ? User.builder().id(userId).build() : null)
+												.build())))
+								.build())))
+				.build();
+	}
+
+	//slotUpdate
+	@Test
 	void slotUpdateCreatesReserve() {
-		Event sut = buildEvent(100, 101, 102);
+		Event sut = buildEventWithReserve(100, 101, 102);
 
 		sut.slotUpdate();
 
@@ -32,7 +72,7 @@ class EventTest {
 
 	@Test
 	void slotUpdateCreatesUniqueSlotNumbers() {
-		Event sut = buildEvent(100, 101, 102, 103, 104, 105, 106, 107);
+		Event sut = buildEventWithReserve(100, 101, 102, 103, 104, 105, 106, 107);
 
 		sut.slotUpdate();
 
@@ -43,7 +83,7 @@ class EventTest {
 		assertThat(getSlotNumbers(reserveSquad)).containsExactly(108, 109);
 	}
 
-	private Event buildEvent(int... slotNumbers) {
+	private Event buildEventWithReserve(int... slotNumbers) {
 		User defaultUser = User.builder().id(User.DEFAULT_USER_ID).build();
 
 		List<Slot> slotList = new ArrayList<>();
@@ -53,7 +93,7 @@ class EventTest {
 
 		return Event.builder()
 				.squadList(new ArrayList<>(List.of(Squad.builder().name("Squad")
-								.slotList(slotList)
+						.slotList(slotList)
 						.build())))
 				.build();
 	}

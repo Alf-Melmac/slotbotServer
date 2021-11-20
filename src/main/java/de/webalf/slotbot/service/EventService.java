@@ -501,8 +501,4 @@ public class EventService {
 	public List<Slot> findSwapSlots(long channel, int slotNumber, UserDto userDto) {
 		return findSwapSlots(findByChannel(channel), slotNumber, userDto);
 	}
-
-	public boolean canRevokeShareable(@NonNull Event event) {
-		return !event.isSharedWithOthers();
-	}
 }

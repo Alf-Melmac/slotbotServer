@@ -114,12 +114,17 @@ public class EventWebController {
 		addCalendarSubPageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
-		mav.addObject("canRevokeShareable", eventService.canRevokeShareable(event));
+		mav.addObject("canRevokeShareable", event.canRevokeShareable());
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
+		final boolean canUploadSlotlist = event.isEmpty();
+		mav.addObject("canUploadSlotlist", canUploadSlotlist);
+		if (canUploadSlotlist) {
+			mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
+		}
 		mav.addObject("putEventEditableUrl", linkTo(methodOn(EventController.class).updateEventEditable(eventId, null, null)).toUri().toString());
-		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
+		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		return mav;
 	}
 

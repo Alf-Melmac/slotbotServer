@@ -149,22 +149,6 @@ public class Event extends AbstractSuperIdEntity {
 		return Optional.empty();
 	}
 
-	/**
-	 * Checks whether a channel is assigned to the event
-	 *
-	 * @return true if a channel has been assigned to the event
-	 */
-	public boolean isAssigned() {
-		return !CollectionUtils.isEmpty(getDiscordInformation());
-	}
-
-	public Set<User> getAllParticipants() {
-		return getSquadList().stream()
-				.flatMap(squad -> squad.getSlotList().stream()
-						.map(Slot::getUser).filter(Objects::nonNull))
-				.collect(Collectors.toUnmodifiableSet());
-	}
-
 	private Optional<Squad> findSquadByName(String name) {
 		for (Squad squad : getSquadList()) {
 			if (squad.getName().equalsIgnoreCase(name)) {
@@ -172,6 +156,22 @@ public class Event extends AbstractSuperIdEntity {
 			}
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Returns all usable squads. This excludes the reserve
+	 *
+	 * @return every squad that isn't the reserve
+	 */
+	private Set<Squad> getSquadsExceptReserve() {
+		return getSquadList().stream().filter(squad -> !squad.isReserve()).collect(Collectors.toUnmodifiableSet());
+	}
+
+	public Set<User> getAllParticipants() {
+		return getSquadList().stream()
+				.flatMap(squad -> squad.getSlotList().stream()
+						.map(Slot::getUser).filter(Objects::nonNull))
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	private boolean isFull() {
@@ -184,12 +184,14 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * Returns all usable squads. This excludes the reserve
+	 * Checks if the entire slot list is empty
 	 *
-	 * @return every squad that isn't the reserve
+	 * @return {@code true} if no one is slotted otherwise {@code false}
 	 */
-	private Set<Squad> getSquadsExceptReserve() {
-		return getSquadList().stream().filter(squad -> !squad.isReserve()).collect(Collectors.toUnmodifiableSet());
+	public boolean isEmpty() {
+		return getSquadList().stream()
+				.flatMap(squad -> squad.getSlotList().stream())
+				.noneMatch(Slot::isNotEmpty);
 	}
 
 	/**
@@ -206,6 +208,15 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	/**
+	 * Checks whether a channel is assigned to the event
+	 *
+	 * @return true if a channel has been assigned to the event
+	 */
+	public boolean isAssigned() {
+		return !CollectionUtils.isEmpty(getDiscordInformation());
+	}
+
+	/**
 	 * Returns the matching {@link EventDiscordInformation} for the given guild
 	 *
 	 * @param guildId to find discord information for
@@ -214,6 +225,10 @@ public class Event extends AbstractSuperIdEntity {
 	public Optional<EventDiscordInformation> getDiscordInformation(long guildId) {
 		return getDiscordInformation().stream()
 				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild() == guildId).findAny();
+	}
+
+	public boolean canRevokeShareable() {
+		return getDiscordInformation().stream().noneMatch(information -> information.getGuild() != getOwnerGuild());
 	}
 
 	/**
@@ -282,10 +297,6 @@ public class Event extends AbstractSuperIdEntity {
 		if (eventType == null) {
 			throw BusinessRuntimeException.builder().title("eventType ist ein Pflichtfeld.").build();
 		}
-	}
-
-	public boolean isSharedWithOthers() {
-		return getDiscordInformation().stream().anyMatch(information -> information.getGuild() != getOwnerGuild());
 	}
 
 	// Setter
