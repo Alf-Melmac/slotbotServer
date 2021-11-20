@@ -56,7 +56,9 @@ public final class EventCalendarUtil {
 		calendar.add(calendarEvent);
 	}
 
+	public static final String ICS_FILE_EXTENSION = ".ics";
+
 	public static String getCalendarName(long id) {
-		return id + ".ics";
+		return id + ICS_FILE_EXTENSION;
 	}
 }

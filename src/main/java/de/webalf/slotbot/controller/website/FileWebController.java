@@ -1,6 +1,7 @@
 package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.service.FileService;
+import de.webalf.slotbot.util.GuildUtils.Guild;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
 
 /**
  * @author Alf
@@ -39,6 +42,11 @@ public class FileWebController {
 
 	@GetMapping("/calendar/{filename:.+}")
 	public ResponseEntity<Resource> getCalendar(@PathVariable String filename) {
+		final Guild guild = Guild.findById(filename);
+		if (guild != null) {
+			filename = guild.getDiscordGuild() + ICS_FILE_EXTENSION;
+		}
+
 		final Resource file = fileService.loadIcsAsResource(filename);
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")

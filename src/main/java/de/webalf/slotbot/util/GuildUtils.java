@@ -78,13 +78,17 @@ public final class GuildUtils {
 
 		@Getter
 		private static final Map<Long, Guild> ID_GUILD_MAP;
+		private static final Map<String, Guild> STRING_ID_GUILD_MAP;
 
 		static {
 			final Map<Long, Guild> idGuildMap = new HashMap<>();
+			final Map<String, Guild> stringIdGuildMap = new HashMap<>();
 			for (Guild guild : Guild.values()) {
 				idGuildMap.put(guild.getDiscordGuild(), guild);
+				stringIdGuildMap.put(guild.getId(), guild);
 			}
 			ID_GUILD_MAP = Collections.unmodifiableMap(idGuildMap);
+			STRING_ID_GUILD_MAP = Collections.unmodifiableMap(stringIdGuildMap);
 		}
 
 		static Guild findCurrentGuild() {
@@ -104,6 +108,10 @@ public final class GuildUtils {
 
 		public static Guild findByDiscordGuild(long discordGuild) {
 			return ID_GUILD_MAP.get(discordGuild);
+		}
+
+		public static Guild findById(String id) {
+			return STRING_ID_GUILD_MAP.get(id);
 		}
 
 		boolean is() {
