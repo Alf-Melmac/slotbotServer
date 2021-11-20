@@ -25,9 +25,6 @@ import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
 @Getter
 @Setter
 public class User {
-	/*@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-	private Set<ActionLog> logs;*/
-
 	@Id
 	@Column(name = "id")
 	//Workaround to ignore generated values

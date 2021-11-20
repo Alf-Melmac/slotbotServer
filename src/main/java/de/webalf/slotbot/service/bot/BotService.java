@@ -45,7 +45,6 @@ public class BotService {
 
 		try {
 			jda = JDABuilder
-					//TODO: maybe default (validate caching)
 					.createLight(token)
 					.enableIntents(GUILD_MEMBERS)
 					.addEventListeners(

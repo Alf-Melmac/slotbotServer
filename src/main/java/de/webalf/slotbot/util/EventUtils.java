@@ -151,7 +151,7 @@ public final class EventUtils {
 				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
 				.setTimestamp(Instant.now());
 
-		if (event.getHidden()) {
+		if (Boolean.TRUE.equals(event.getHidden())) {
 			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");
 		}
 

@@ -488,6 +488,8 @@ public class Event extends AbstractSuperIdEntity {
 		removeSquad(reserve);
 	}
 
+	private static final Random RANDOM = new Random();
+
 	/**
 	 * Returns a random empty slot from the event.
 	 *
@@ -501,7 +503,7 @@ public class Event extends AbstractSuperIdEntity {
 		if (CollectionUtils.isEmpty(emptySlots)) {
 			throw BusinessRuntimeException.builder().title("Kein freier Slot vorhanden.").build();
 		}
-		return emptySlots.get(new Random().nextInt(emptySlots.size()));
+		return emptySlots.get(RANDOM.nextInt(emptySlots.size()));
 	}
 
 	public void archive(long guildId) {
