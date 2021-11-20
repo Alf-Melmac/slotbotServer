@@ -203,13 +203,14 @@
 								       required th:value="${slot.name}" th:disabled="${squad.isReserve()}">
 							</div>
 							<div th:unless="${squad.isReserve()}" class="col-md-1 d-flex">
-								<div th:unless="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock"
+								<button th:unless="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock"
 								     th:classappend="${slot.isOccupied()} ? 'btn-denied' : 'btn-lock'"
+								     th:disabled="${slot.isOccupied()}"
 								     type="button" title="Blockierung">
 									<em class="fas fa-lock-open"></em>
-								</div>
-								<div th:if="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock js-blocked"
-								     th:classappend="${slot.isOccupied()} ? 'btn-denied' : 'btn-lock'"
+								</button>
+								<div th:if="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock js-blocked btn-lock"
+								     th:disabled="${slot.isOccupied()}"
 								     type="button" title="Blockierung">
 									<em class="fas fa-lock"></em>
 								</div>
