@@ -24,7 +24,7 @@ public class DAAFieldUtils {
 	@SuppressWarnings("unused") //EventFieldUtils#eventTypeNameToFieldDefaults
 	static final List<EventFieldDefaultDto> FIELDS = List.of(
 			EventFieldDefaultDto.builder().title("Karte").type(TEXT_WITH_SELECTION).selection(MAPS).build(),
-			EventFieldDefaultDto.builder().title("Zeitlicher Ablauf").type(TEXT).text("Führungsbesprechung 19:15 Uhr, \nBriefing 19:30 Uhr, \nSlotting 19:45 Uhr, \nMissionsbeginn 20 Uhr").build(),
+			EventFieldDefaultDto.builder().title("Zeitlicher Ablauf").type(TEXT).text("Führungsbesprechung 19:00 Uhr, \nSlotting bis 19:45 Uhr, \nMissionsbeginn 20 Uhr").build(),
 			EventFieldDefaultDto.builder().title("Modset").type(TEXT).build(),
 			EventFieldDefaultDto.builder().title("Teamspeak").type(TEXT).build()
 	);
