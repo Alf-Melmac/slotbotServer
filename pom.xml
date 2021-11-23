@@ -45,12 +45,13 @@
 		<!--https://projectlombok.org/changelog -->
 		<lombok.version>1.18.22</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
-		<!--https://github.com/atteo/classindex/releases -->
+		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
 		<jda.version>4.3.0_346</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.14.3</jsoup.version>
+		<!--https://github.com/ical4j/ical4j/tags -->
 		<ical4j.version>4.0.0-alpha10</ical4j.version>
 	</properties>
 
