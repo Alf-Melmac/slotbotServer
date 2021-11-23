@@ -48,13 +48,13 @@ public class SlotReferencelessDto extends AbstractIdEntityDto {
 			slotText.append("**");
 		}
 
-		slotText.append(": ");
+		slotText.append(":");
 
 		final boolean isBlocked = !isEmpty && LongUtils.parseLong(getUser().getId()) == User.DEFAULT_USER_ID;
 		if (!isEmpty && !isBlocked) {
-			slotText.append("**").append(MentionUtils.getUserAsMention(getUser().getId())).append("**");
+			slotText.append(" **").append(MentionUtils.getUserAsMention(getUser().getId())).append("**");
 		} else if (isBlocked) {
-			slotText.append("*").append(getReplacementText()).append("*");
+			slotText.append(" *").append(getReplacementText()).append("*");
 		}
 		return slotText;
 	}
