@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.0</version>
+		<version>2.6.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -34,12 +34,12 @@
 		<!--Versions-->
 		<java.version>11</java.version>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<springframework.boot.version>2.6.0</springframework.boot.version>
+		<springframework.boot.version>2.6.1</springframework.boot.version>
 		<!--https://github.com/spring-projects/spring-security/releases -->
 		<springframework.security.version>5.6.0</springframework.security.version>
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
 		<!--https://in.relation.to/hibernate-orm/index.html -->
-		<hibernate.version>5.6.1.Final</hibernate.version>
+		<hibernate.version>5.6.2.Final</hibernate.version>
 		<!--https://jdbc.postgresql.org/documentation/changelog.html -->
 		<postgresql.version>42.3.1</postgresql.version>
 		<!--https://projectlombok.org/changelog -->
@@ -48,11 +48,14 @@
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
-		<jda.version>4.3.0_346</jda.version>
+		<jda.version>4.4.0_351</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.14.3</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
 		<ical4j.version>4.0.0-alpha10</ical4j.version>
+
+		<!--Hotfix, remove with next spring version-->
+		<logback.version>1.2.8</logback.version>
 	</properties>
 
 	<dependencies>
