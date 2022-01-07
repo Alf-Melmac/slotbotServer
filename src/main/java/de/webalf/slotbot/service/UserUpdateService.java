@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-//This class and UserServiceImpl can be removed once guild is a database entity and knows it events. Then EventCalendarService doesn't need EventService and circular dependency is prevented
 public class UserUpdateService {
 	private final UserServiceImpl userService;
 	private final EventCalendarService eventCalendarService;

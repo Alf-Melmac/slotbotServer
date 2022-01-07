@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventService;
+import de.webalf.slotbot.util.permissions.EventPermissionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static de.webalf.slotbot.constant.Urls.API;
-import static de.webalf.slotbot.util.EventUtils.assertApiWriteAccess;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTIAL_READ_PUBLIC_PERMISSION;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTIAL_WRITE_PERMISSION;
 
@@ -27,6 +27,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTI
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventApiController {
 	private final EventService eventService;
+	private final EventPermissionHelper eventPermissionHelper;
 
 	@GetMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
@@ -36,10 +37,9 @@ public class EventApiController {
 	}
 
 	@PostMapping
-	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
+	@PreAuthorize("@eventPermissionHelper.assertApiWriteAccess(#event)")
 	public EventApiDto postEvent(@Valid @RequestBody EventDto event) {
 		log.trace("postEvent: " + event.getName());
-		assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.createEvent(event));
 	}
 
@@ -48,7 +48,7 @@ public class EventApiController {
 	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		log.trace("updateEvent: " + event.getName());
 		event.setId(eventId);
-		assertApiWriteAccess(eventService.findById(eventId));
+		eventPermissionHelper.assertApiWriteAccess(eventService.findById(eventId));
 		return EventApiAssembler.toDto(eventService.updateEvent(event));
 	}
 }

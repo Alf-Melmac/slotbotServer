@@ -1,7 +1,6 @@
 package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.exception.ForbiddenException;
-import de.webalf.slotbot.util.GuildUtils;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,9 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
-import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
-import static de.webalf.slotbot.util.GuildUtils.getCurrentOwnerGuild;
-import static de.webalf.slotbot.util.bot.MentionUtils.isSnowflake;
+import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.EVENT_MANAGE;
 
 /**
@@ -69,13 +66,13 @@ public final class PermissionHelper {
 
 	/**
 	 * Checks if the currently logged-in user has the given permission in the given guild.
-	 * If the guild is the {@link GuildUtils#GUILD_PLACEHOLDER} the "potential permission" is checked
+	 * If the guild is the {@link de.webalf.slotbot.model.Guild#GUILD_PLACEHOLDER} the "potential permission" is checked
 	 *
 	 * @param role    to check
 	 * @param guildId in which the permission should be present
 	 * @return true if allowed
 	 */
-	private static boolean hasPermissionInGuild(@NonNull ApplicationPermissionHelper.Role role, long guildId) {
+	static boolean hasPermissionInGuild(@NonNull ApplicationPermissionHelper.Role role, long guildId) {
 		final Stream<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream();
 		final Set<String> authorizedRoles = role.getAuthorizedRoles().stream().map(authorizedRole -> ROLE_PREFIX + authorizedRole.getApplicationRole()).collect(Collectors.toUnmodifiableSet());
 		if (guildId == GUILD_PLACEHOLDER) {
@@ -92,37 +89,7 @@ public final class PermissionHelper {
 		}
 	}
 
-	/**
-	 * Asserts that the currently logged-in user has the given permission
-	 *
-	 * @param role    to check
-	 * @param guildId in which the permission should be present
-	 * @throws ForbiddenException if the permission is not present
-	 * @see #hasPermissionInGuild(ApplicationPermissionHelper.Role, long)
-	 */
-	private static void assertPermissionInGuild(ApplicationPermissionHelper.Role role, Long guildId) {
-		if (guildId == null || guildId == GUILD_PLACEHOLDER) {
-			if (!hasPermissionInGuild(role, GuildUtils.getCurrentOwnerGuild())) {
-				throw new ForbiddenException("Das darfst du hier nicht.");
-			}
-		} else if (!isSnowflake(Long.toString(guildId)) || !hasPermissionInGuild(role, guildId)) {
-			throw new ForbiddenException("Das darfst du hier nicht.");
-		}
-	}
-
 	public static boolean hasEventManagePermission(Long guildId) {
 		return hasPermissionInGuild(EVENT_MANAGE, guildId);
-	}
-
-	public static boolean hasEventManagePermissionInCurrentOwnerGuild() {
-		return hasEventManagePermission(getCurrentOwnerGuild());
-	}
-
-	public static void assertEventManagePermission(Long guildId) {
-		assertPermissionInGuild(EVENT_MANAGE, guildId);
-	}
-
-	public static void assertEventManagePermissionInCurrentOwnerGuild() {
-		assertEventManagePermission(getCurrentOwnerGuild());
 	}
 }

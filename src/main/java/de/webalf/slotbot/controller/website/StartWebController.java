@@ -1,27 +1,28 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.service.GuildService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
-import static de.webalf.slotbot.util.GuildUtils.isDAA;
 
 /**
  * @author Alf
  * @since 27.09.2020
  */
 @Controller
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StartWebController {
-	@GetMapping("/")
+	private final GuildService guildService;
+
+	@GetMapping
 	public ModelAndView getStart() {
-		if (isDAA()) {
-			return new ModelAndView("redirect:https://deutsche-arma-allianz.de");
+		if (!guildService.isAMB()) {
+			return new ModelAndView("redirect:" + guildService.findCurrentGuild().getBaseRedirectUrl());
 		}
 
-		ModelAndView mav = new ModelAndView("start");
-		addLayoutSettings(mav);
-		return mav;
+		return new ModelAndView("start");
 	}
 
 	@GetMapping("/error/403")

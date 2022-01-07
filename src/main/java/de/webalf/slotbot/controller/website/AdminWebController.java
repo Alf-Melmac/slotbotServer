@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import static de.webalf.slotbot.constant.Urls.ADMIN;
-import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -55,7 +54,6 @@ public class AdminWebController {
 				.build());
 		mav.addObject("servers", servers);
 
-		addLayoutSettings(mav);
 		return mav;
 	}
 

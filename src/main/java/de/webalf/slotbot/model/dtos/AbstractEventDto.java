@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model.dtos;
 
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.DateUtils;
-import de.webalf.slotbot.util.GuildUtils;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.*;
@@ -68,7 +68,7 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	private String ownerGuild;
 
 	public String getPictureUrl() {
-		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : GuildUtils.getLogo(Long.parseLong(ownerGuild));
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : GuildService.getLogo(Long.parseLong(ownerGuild));
 	}
 
 	public String getRawPictureUrl() {

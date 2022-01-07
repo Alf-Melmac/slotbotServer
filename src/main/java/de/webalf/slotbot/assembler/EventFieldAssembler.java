@@ -31,7 +31,6 @@ public final class EventFieldAssembler {
 				.id(dto.getId())
 				.title(dto.getTitle().trim())
 				.text(dto.getText().trim())
-				.event(EventAssembler.fromDto(dto.getEvent()))
 				.build();
 	}
 

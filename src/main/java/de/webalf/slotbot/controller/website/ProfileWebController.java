@@ -22,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
-import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
@@ -76,7 +75,6 @@ public class ProfileWebController {
 			mav.addObject("icsCalendarUrl", linkTo(methodOn(FileWebController.class).getCalendar(EventCalendarUtil.getCalendarName(user.getId()))));
 		}
 
-		addLayoutSettings(mav);
 		return mav;
 	}
 

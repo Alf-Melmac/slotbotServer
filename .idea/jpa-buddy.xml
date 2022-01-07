@@ -2,10 +2,5 @@
 <project version="4">
   <component name="JpaBuddyIdeaProjectConfig">
     <option name="defaultUnitInitialized" value="true" />
-    <option name="createEntityParentFqns">
-      <list>
-        <option value="de.webalf.slotbot.model.AbstractSuperIdEntity" />
-      </list>
-    </option>
   </component>
 </project>

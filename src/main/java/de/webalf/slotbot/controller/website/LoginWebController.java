@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
-
 /**
  * @author Alf
  * @since 25.10.2020
@@ -16,8 +14,6 @@ import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 public class LoginWebController {
 	@GetMapping
 	public ModelAndView getLogin() {
-		ModelAndView mav = new ModelAndView("login");
-		addLayoutSettings(mav);
-		return mav;
+		return new ModelAndView("login");
 	}
 }

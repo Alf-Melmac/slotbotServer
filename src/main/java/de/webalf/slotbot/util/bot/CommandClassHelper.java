@@ -9,6 +9,7 @@ import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
+import de.webalf.slotbot.util.EventHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CommandClassHelper {
 	private final EventBotService eventBotService;
+	private final EventHelper eventHelper;
 	private final SlotBotService slotBotService;
 	private final UserBotService userBotService;
 	private final DiscordProperties discordProperties;
@@ -54,11 +56,18 @@ public class CommandClassHelper {
 				}
 				break;
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class})) {
-				//AddEventToChannel, AddSlot, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
+				//AddSlot, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService parameter for type {}", commandClass.getName(), e);
+				}
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, EventHelper.class})) {
+				//AddEventToChannel
+				try {
+					constructor = declaredConstructor.newInstance(eventBotService, eventHelper);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					log.error("Failed to create new constructor instance with EventBotService and EventHelper parameter for type {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{DiscordProperties.class})) {
 				//Help

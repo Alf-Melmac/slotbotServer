@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.assembler.EventDiscordInformationAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
@@ -15,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.assembler.EventDiscordInformationAssembler.fromDto;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
@@ -27,6 +27,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventDiscordInformationService {
 	private final EventDiscordInformationRepository discordInformationRepository;
+	private final EventDiscordInformationAssembler discordInformationAssembler;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -70,19 +71,19 @@ public class EventDiscordInformationService {
 		final Set<EventDiscordInformation> eventInformation = event.getDiscordInformation();
 		//Remove already present information
 		final Set<EventDiscordInformationDto> filteredInformationDtos = discordInformationDtos.stream().filter(informationDto -> eventInformation.stream()
-						.noneMatch(information -> information.getGuild() == Long.parseLong(informationDto.getGuild()) &&
+						.noneMatch(information -> information.getGuild().getId() == Long.parseLong(informationDto.getGuild()) &&
 								information.getChannel() == Long.parseLong(informationDto.getChannel())))
 				.collect(Collectors.toSet());
 
 		if (eventInformation.stream().anyMatch(information -> filteredInformationDtos.stream()
-				.anyMatch(discordInformationDto -> information.getGuild() == Long.parseLong(discordInformationDto.getGuild())))) {
+				.anyMatch(discordInformationDto -> information.getGuild().getId() == Long.parseLong(discordInformationDto.getGuild())))) {
 			throw BusinessRuntimeException.builder().title("Mindestens einer der übergebenen Guilds ist dieses Event bereits zugeordnet.").build();
 		} else if (existsByChannelInDtos(filteredInformationDtos)) {
 			throw BusinessRuntimeException.builder().title("In mindestens einem der angegebenen Kanäle gibt es bereits ein Event.").build();
 		}
 
 		filteredInformationDtos.forEach(informationDto -> {
-			final EventDiscordInformation discordInformation = fromDto(informationDto);
+			final EventDiscordInformation discordInformation = discordInformationAssembler.fromDto(informationDto);
 			discordInformation.setEvent(event);
 			event.getDiscordInformation().add(discordInformation);
 		});

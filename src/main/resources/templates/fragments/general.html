@@ -10,7 +10,7 @@
 	<meta property="og:locale:alternate" content="en_GB"/>
 	<meta property="og:locale:alternate" content="en_US"/>
 
-	<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+	<th:block th:if="${@guildService.isSlotbot()}">
 		<link rel="apple-touch-icon" sizes="60x60" th:href="@{/assets/img/favicon/amb/apple-touch-icon-60x60.png}">
 		<link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/favicon/amb/apple-touch-icon-76x76.png}">
 		<link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/amb/apple-touch-icon-120x120.png}">
@@ -24,7 +24,7 @@
 		<meta name="msapplication-TileColor" content="#2b5797">
 		<meta name="msapplication-config" th:attrappend="content=@{/assets/img/favicon/amb/browserconfig.xml}">
 	</th:block>
-	<th:block th:unless="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+	<th:block th:unless="${@guildService.isSlotbot()}">
 		<link rel="apple-touch-icon" sizes="60x60" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-60x60.png}">
 		<link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-76x76.png}">
 		<link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/__${groupLowercase}__/apple-touch-icon-120x120.png}">
@@ -42,10 +42,10 @@
 	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
 
-	<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isAMB()}">
+	<th:block th:if="${@guildService.isAMB()}">
 		<meta name="theme-color" content="#ffffff">
 	</th:block>
-	<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+	<th:block th:if="${@guildService.isDAA()}">
 		<meta name="theme-color" content="#211f25">
 		<link rel="stylesheet" th:href="@{/assets/css/groups/globalStyles-daa.css}">
 	</th:block>
@@ -60,7 +60,7 @@
 <div th:fragment="footer" id="footer">
 	<div class="container">
 		<div class="row">
-			<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+			<th:block th:if="${@guildService.isSlotbot()}">
 				<div class="col-md-9">
 					<h5 class="mb-0 pt-1">Slotbot</h5>
 				</div>
@@ -74,7 +74,7 @@
 					</div>
 				</div>
 			</th:block>
-			<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isAMB()}">
+			<th:block th:if="${@guildService.isAMB()}">
 				<div class="col-md-9">
 					<h5 class="mb-0 pt-1">Arma macht Bock</h5>
 				</div>
@@ -103,7 +103,7 @@
 					</div>
 				</div>
 			</th:block>
-			<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+			<th:block th:if="${@guildService.isDAA()}">
 				<div class="col-md-9">
 					<h5 class="mb-0 pt-1">Deutsche Arma Allianz</h5>
 				</div>
@@ -140,11 +140,11 @@
 			</div>
 
 			<div class="col-md-4">
-				<th:block th:unless="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+				<th:block th:unless="${@guildService.isDAA()}">
 					<small class="float-right"><a href="https://wiki.armamachtbock.de/de/Impressum">Impressum &
 						Datenschutzerklärung</a></small>
 				</th:block>
-				<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+				<th:block th:if="${@guildService.isDAA()}">
 					<small class="float-right"><a href="https://www.deutsche-arma-allianz.de/impressum.html">Impressum &
 						Datenschutzerklärung</a></small>
 				</th:block>

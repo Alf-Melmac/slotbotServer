@@ -97,8 +97,9 @@ public class Event extends AbstractSuperIdEntity {
 	@JsonManagedReference
 	private Set<EventDiscordInformation> discordInformation;
 
-	@Column(name = "event_owner_guild", nullable = false, updatable = false)
-	private long ownerGuild;
+	@ManyToOne(targetEntity = Guild.class, optional = false)
+	@JoinColumn(name = "event_owner_guild")
+	private Guild ownerGuild;
 
 	// Getter
 
@@ -224,11 +225,21 @@ public class Event extends AbstractSuperIdEntity {
 	 */
 	public Optional<EventDiscordInformation> getDiscordInformation(long guildId) {
 		return getDiscordInformation().stream()
-				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild() == guildId).findAny();
+				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild().getId() == guildId).findAny();
+	}
+
+	/**
+	 * Returns the matching {@link EventDiscordInformation} for the given guild
+	 *
+	 * @param guild to find discord information for
+	 * @return optional information
+	 */
+	public Optional<EventDiscordInformation> getDiscordInformation(@NonNull Guild guild) {
+		return getDiscordInformation(guild.getId());
 	}
 
 	public boolean canRevokeShareable() {
-		return getDiscordInformation().stream().noneMatch(information -> information.getGuild() != getOwnerGuild());
+		return getDiscordInformation().stream().noneMatch(information -> information.getGuild().equals(getOwnerGuild()));
 	}
 
 	/**
@@ -512,7 +523,7 @@ public class Event extends AbstractSuperIdEntity {
 		}
 
 		getDiscordInformation(guildId).ifPresent(informationOfGuild -> getDiscordInformation().remove(informationOfGuild));
-		if (getOwnerGuild() == guildId) {
+		if (getOwnerGuild().getId() == guildId) {
 			EventNotificationService.removeNotifications(getId());
 		}
 	}

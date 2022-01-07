@@ -3,23 +3,16 @@ package de.webalf.slotbot.util;
 import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
-import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.awt.*;
-import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.List;
 
-import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
-import static de.webalf.slotbot.util.GuildUtils.Guild.findByDiscordGuild;
-import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
-import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.*;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasReadPermission;
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.isCurrentGuild;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -68,58 +61,9 @@ public final class EventUtils {
 	 * @see #apiReadAccessAllowed(boolean, boolean, long)
 	 */
 	public static void assertApiReadAccess(@NonNull Event event) throws ForbiddenException {
-		if (!apiReadAccessAllowed(event.isShareable(), event.isHidden(), event.getOwnerGuild())) {
+		if (!apiReadAccessAllowed(event.isShareable(), event.isHidden(), event.getOwnerGuild().getId())) {
 			throw new ForbiddenException("Not allowed to read here.");
 		}
-	}
-
-	/**
-	 * Checks if write permission is given for the given event.
-	 *
-	 * @param ownerGuild event owner guild
-	 * @return true if access is allowed
-	 */
-	private static boolean apiWriteAccessAllowed(long ownerGuild) {
-		return hasWritePermission(ownerGuild);
-	}
-
-	/**
-	 * Checks if write permission is given for the owner of the given event.
-	 *
-	 * @param event to check owner guild write permission for
-	 * @throws ForbiddenException if write permission is not given
-	 */
-	public static void assertApiWriteAccess(AbstractEventDto event) throws ForbiddenException {
-		final long ownerGuild = getOwnerGuild(event);
-		if (!apiWriteAccessAllowed(ownerGuild)) {
-			throw new ForbiddenException("Not allowed to write here.");
-		}
-	}
-
-	/**
-	 * Checks if write permission is given for the owner of the given event.
-	 *
-	 * @param event to check owner guild write permission for
-	 * @throws ForbiddenException if write permission is not given
-	 */
-	public static void assertApiWriteAccess(Event event) throws ForbiddenException {
-		final long ownerGuild = getOwnerGuild(event);
-		if (!apiWriteAccessAllowed(ownerGuild)) {
-			throw new ForbiddenException("Not allowed to write here.");
-		}
-	}
-
-	public static long getOwnerGuild(@NonNull AbstractEventDto event) {
-		return getOwnerGuild(LongUtils.parseLong(event.getOwnerGuild(), GUILD_PLACEHOLDER));
-	}
-
-	private static long getOwnerGuild(@NonNull Event event) {
-		return getOwnerGuild(event.getOwnerGuild());
-	}
-
-	private static long getOwnerGuild(long ownerGuild) {
-		final long currentOwnerGuild = GuildUtils.getCurrentOwnerGuild();
-		return currentOwnerGuild != GUILD_PLACEHOLDER ? currentOwnerGuild : ownerGuild;
 	}
 
 	/**
@@ -133,31 +77,13 @@ public final class EventUtils {
 	}
 
 	/**
-	 * Builds the event details url for the given event and validates with {@link #fixUrl(String, String)} that the url is an absolute uri
+	 * Builds the event details url for the given event and validates with {@link #fixUrl(String, Guild)} that the url is an absolute uri
 	 *
 	 * @param event to build url for
 	 * @return url to event details
 	 */
-	public static String buildCorrectedUrl(@NonNull Event event) {
-		return fixUrl(buildUrl(event.getId()), Long.toString(event.getOwnerGuild()));
-	}
-
-	public static MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
-		EmbedBuilder embedBuilder = new EmbedBuilder()
-				.setColor(Color.decode(event.getEventType().getColor()))
-				.setTitle(event.getName(), fixUrl(event.getUrl(), event.getOwnerGuild()))
-				.setDescription(event.getDescription())
-				.setThumbnail(event.getPictureUrl())
-				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
-				.setTimestamp(Instant.now());
-
-		if (Boolean.TRUE.equals(event.getHidden())) {
-			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");
-		}
-
-		addFields(embedBuilder, event);
-
-		return embedBuilder.build();
+	static String buildCorrectedUrl(@NonNull Event event) {
+		return fixUrl(buildUrl(event.getId()), event.getOwnerGuild());
 	}
 
 	/**
@@ -167,44 +93,14 @@ public final class EventUtils {
 	 * @param ownerGuild owner of event
 	 * @return usable url
 	 */
-	private static String fixUrl(String url, String ownerGuild) {
+	static String fixUrl(String url, Guild ownerGuild) {
 		//If the request was made from the discord the url is a relative URI, with absolute path
 		//If an update is triggered by the website the url is an absolut URI
 		//I wasn't able to find a fix for this other than this workaround :(
 		if (!url.startsWith("http")) {
-			return findByDiscordGuild(Long.parseLong(ownerGuild)).getBaseUrl() + url;
+			return ownerGuild.getBaseUrl() + url;
 		}
 		return url;
-	}
-
-	private static void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull EventApiDto event) {
-		addField("Zeitplan", buildScheduleField(event.getDateTimeZoned(), event.getMissionLength()), embedBuilder);
-		addField("Missionstyp", event.getMissionType(), true, embedBuilder);
-		addField("Reserve nimmt teil", buildReserveParticipatingField(event.getReserveParticipating()), true, embedBuilder);
-		event.getDetails().forEach(field -> {
-			String text = field.getText();
-			if ("true".equals(text)) {
-				text = "Ja";
-			} else if ("false".equals(text)) {
-				text = "Nein";
-			}
-			if (StringUtils.isNotEmpty(field.getLink())) {
-				text = "[" + text + "](" + fixUrl(field.getLink(), event.getOwnerGuild()) + ")";
-			}
-			addField(field.getTitle(), text, true, embedBuilder);
-		});
-	}
-
-	private static String buildScheduleField(ZonedDateTime eventDateTime, String missionLength) {
-		final String dateTimeText = DATE_TIME_SHORT.format(eventDateTime) + " Uhr";
-		return StringUtils.isNotEmpty(missionLength) ? dateTimeText + " und dauert " + missionLength : dateTimeText;
-	}
-
-	private static String buildReserveParticipatingField(Boolean reserveParticipating) {
-		if (reserveParticipating == null) {
-			return null;
-		}
-		return reserveParticipating ? "Ja" : "Nein";
 	}
 
 	/**

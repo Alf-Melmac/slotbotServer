@@ -1,11 +1,11 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.EventCalendarService;
-import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.FileService;
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
-import de.webalf.slotbot.util.GuildUtils.Guild;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.constant.Urls.ADMIN;
-import static de.webalf.slotbot.util.ControllerUtils.addLayoutSettings;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_SYS_ADMIN;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -37,7 +36,7 @@ public class AdminUtilsWebController {
 	private final EventTypeService eventTypeService;
 	private final EventNotificationService eventNotificationService;
 	private final EventCalendarService eventCalendarService;
-	private final EventService eventService;
+	private final GuildService guildService;
 
 	@GetMapping
 	public ModelAndView getAdminUtilsHtml() {
@@ -49,7 +48,6 @@ public class AdminUtilsWebController {
 				.toUri().toString()
 				.replace("null", "{action}"));
 
-		addLayoutSettings(mav);
 		return mav;
 	}
 
@@ -62,7 +60,7 @@ public class AdminUtilsWebController {
 		} else if ("rebuildEventNotifications".equals(action)) {
 			eventNotificationService.rebuildAllNotifications();
 		} else if ("rebuildCalendars".equals(action)) {
-			for (Guild guild : Guild.values()) {
+			for (Guild guild : guildService.findAll()) {
 				eventCalendarService.rebuildCalendar(guild);
 			}
 		}

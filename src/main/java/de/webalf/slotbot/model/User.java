@@ -16,7 +16,7 @@ import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
  * @author Alf
  * @since 06.09.2020
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "discord_user",
 		uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"user_steam_id"})},
@@ -24,12 +24,7 @@ import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-public class User {
-	@Id
-	@Column(name = "id")
-	//Workaround to ignore generated values
-	private long id;
-
+public class User extends AbstractDiscordIdEntity {
 	@Column(name = "user_steam_id")
 	private Long steamId64;
 

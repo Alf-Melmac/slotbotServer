@@ -101,15 +101,15 @@
 
 <div th:fragment="_logo">
 	<a th:href="${startUrl}">
-		<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isSlotbot()}">
+		<th:block th:if="${@guildService.isSlotbot()}">
 			<img class="navbar-logo" th:attr="src=@{/assets/img/am-name-slotbot.png}" alt="Slotbot">
 			<a class="navbar-brand" th:href="${startUrl}">Slotbot</a>
 		</th:block>
-		<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isAMB()}">
+		<th:block th:if="${@guildService.isAMB()}">
 			<img class="navbar-logo" th:attr="src=@{/assets/img/amb-logo.jpg}" alt="AMB">
 			<a class="navbar-brand" th:href="${startUrl}">Arma macht Bock</a>
 		</th:block>
-		<th:block th:if="${T(de.webalf.slotbot.util.GuildUtils).isDAA()}">
+		<th:block th:if="${@guildService.isDAA()}">
 			<img class="navbar-logo" th:attr="src=@{/assets/img/daa-full-crop-transparent.gif}" alt="DAA">
 		</th:block>
 	</a>

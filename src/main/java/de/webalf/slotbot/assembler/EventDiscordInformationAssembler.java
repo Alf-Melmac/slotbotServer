@@ -2,9 +2,12 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Set;
@@ -15,29 +18,32 @@ import java.util.stream.StreamSupport;
  * @author Alf
  * @since 04.07.2021
  */
-@UtilityClass
-public final class EventDiscordInformationAssembler {
-	public static EventDiscordInformation fromDto(EventDiscordInformationDto dto) {
+@Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+public class EventDiscordInformationAssembler {
+	private final GuildService guildService;
+
+	public EventDiscordInformation fromDto(EventDiscordInformationDto dto) {
 		if (dto == null) {
 			return null;
 		}
 
 		return EventDiscordInformation.builder()
 				.channel(Long.parseLong(dto.getChannel()))
-				.guild(Long.parseLong(dto.getGuild()))
+				.guild(guildService.find(Long.parseLong(dto.getGuild())))
 				.infoMsg(LongUtils.parseLongWrapper(dto.getInfoMsg()))
 				.slotListMsgPartOne(LongUtils.parseLongWrapper(dto.getSlotListMsgPartOne()))
 				.slotListMsgPartTwo(LongUtils.parseLongWrapper(dto.getSlotListMsgPartTwo()))
 				.build();
 	}
 
-	static Set<EventDiscordInformation> fromDtoIterable(Iterable<? extends EventDiscordInformationDto> dtos) {
+	Set<EventDiscordInformation> fromDtoIterable(Iterable<? extends EventDiscordInformationDto> dtos) {
 		if (dtos == null) {
 			return Collections.emptySet();
 		}
 
 		return StreamSupport.stream(dtos.spliterator(), true)
-				.map(EventDiscordInformationAssembler::fromDto)
+				.map(this::fromDto)
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
@@ -48,7 +54,7 @@ public final class EventDiscordInformationAssembler {
 
 		return EventDiscordInformationDto.builder()
 				.channel(LongUtils.toString(discordInformation.getChannel()))
-				.guild(LongUtils.toString(discordInformation.getGuild()))
+				.guild(LongUtils.toString(discordInformation.getGuild().getId()))
 				.infoMsg(LongUtils.toString(discordInformation.getInfoMsg()))
 				.slotListMsgPartOne(LongUtils.toString(discordInformation.getSlotListMsgPartOne()))
 				.slotListMsgPartTwo(LongUtils.toString(discordInformation.getSlotListMsgPartTwo()))
@@ -62,7 +68,7 @@ public final class EventDiscordInformationAssembler {
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
-	private String getChannelUrl(@NonNull EventDiscordInformation discordInformation) {
+	private static String getChannelUrl(@NonNull EventDiscordInformation discordInformation) {
 		return "discord://discordapp.com/channels/" + discordInformation.getGuild() + "/" + discordInformation.getChannel();
 	}
 }

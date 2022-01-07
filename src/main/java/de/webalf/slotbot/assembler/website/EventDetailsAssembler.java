@@ -2,10 +2,7 @@ package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.assembler.EventFieldAssembler;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
-import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.EventField;
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
@@ -53,7 +50,7 @@ public class EventDetailsAssembler {
 				.details(getDetails(event.getDetails()))
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.reserveParticipating(event.getReserveParticipating())
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
+				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
 	}
 
@@ -76,14 +73,14 @@ public class EventDetailsAssembler {
 				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.reserveParticipating(event.getReserveParticipating())
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
+				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
 	}
 
 	private String getChannelUrl(@NonNull Event event) {
-		final long ownerGuild = event.getOwnerGuild();
+		final Guild ownerGuild = event.getOwnerGuild();
 		return event.getDiscordInformation(ownerGuild)
-				.map(eventDiscordInformation -> "discord://discordapp.com/channels/" + ownerGuild + "/" + LongUtils.toString(eventDiscordInformation.getChannel()))
+				.map(eventDiscordInformation -> "discord://discordapp.com/channels/" + ownerGuild.getId() + "/" + LongUtils.toString(eventDiscordInformation.getChannel()))
 				.orElse(null);
 	}
 
@@ -133,7 +130,7 @@ public class EventDetailsAssembler {
 				}
 				blocked = true;
 			} else {
-				text = discordApiService.getName(LongUtils.toString(slot.getUser().getId()), slot.getSquad().getEvent().getOwnerGuild());
+				text = discordApiService.getName(LongUtils.toString(slot.getUser().getId()), slot.getSquad().getEvent().getOwnerGuild().getId());
 			}
 		}
 

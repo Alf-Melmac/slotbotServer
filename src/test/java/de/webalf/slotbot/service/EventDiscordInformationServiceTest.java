@@ -1,9 +1,11 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.assembler.EventDiscordInformationAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.EventDiscordInformation_;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.repository.EventDiscordInformationRepository;
 import de.webalf.slotbot.util.LongUtils;
@@ -32,6 +34,8 @@ import static org.mockito.Mockito.when;
 class EventDiscordInformationServiceTest {
 	@Mock
 	private EventDiscordInformationRepository discordInformationRepository;
+	@Mock
+	private EventDiscordInformationAssembler discordInformationAssembler;
 
 	@InjectMocks
 	private EventDiscordInformationService sut;
@@ -69,6 +73,7 @@ class EventDiscordInformationServiceTest {
 
 		final Set<EventDiscordInformationDto> informationDtos = buildInformationSet(Map.of(guildId, channelId));
 		final Set<EventDiscordInformation> expected = buildActualInformationSet(informationDtos, event);
+		mockAssembler(channelId, guildId);
 
 		sut.updateDiscordInformation(informationDtos, event);
 
@@ -90,6 +95,7 @@ class EventDiscordInformationServiceTest {
 
 		final Set<EventDiscordInformationDto> informationDtos = buildInformationSet(Map.of(existingGuildId, existingGuildChannel, otherGuildId, otherGuildChannel));
 		final Set<EventDiscordInformation> expected = buildActualInformationSet(informationDtos, event);
+		mockAssembler(otherGuildChannel, otherGuildId);
 
 		sut.updateDiscordInformation(informationDtos, event);
 
@@ -131,7 +137,7 @@ class EventDiscordInformationServiceTest {
 
 	private Event buildEvent(long guildId, long channel) {
 		final Set<EventDiscordInformation> information = new HashSet<>();
-		information.add(EventDiscordInformation.builder().guild(guildId).channel(channel).build());
+		information.add(EventDiscordInformation.builder().guild(Guild.builder().id(guildId).build()).channel(channel).build());
 		final Event event = Event.builder().discordInformation(information).build();
 		event.getDiscordInformation().forEach(eventDiscordInformation -> eventDiscordInformation.setEvent(event));
 		return event;
@@ -149,12 +155,17 @@ class EventDiscordInformationServiceTest {
 	private Set<EventDiscordInformation> buildActualInformationSet(Set<EventDiscordInformationDto> informationDtos, Event event) {
 		return informationDtos.stream().map(informationDto -> EventDiscordInformation.builder()
 						.event(event)
-						.guild(LongUtils.parseLong(informationDto.getGuild()))
+						.guild(Guild.builder().id(LongUtils.parseLong(informationDto.getGuild())).build())
 						.channel(LongUtils.parseLong(informationDto.getChannel()))
 						.infoMsg(LongUtils.parseLong(informationDto.getInfoMsg()))
 						.slotListMsgPartOne(LongUtils.parseLong(informationDto.getSlotListMsgPartOne()))
 						.slotListMsgPartTwo(LongUtils.parseLong(informationDto.getSlotListMsgPartTwo()))
 						.build())
 				.collect(Collectors.toUnmodifiableSet());
+	}
+
+	private void mockAssembler(long channel, long guild) {
+		when(discordInformationAssembler.fromDto(EventDiscordInformationDto.builder().channel(Long.toString(channel)).guild(Long.toString(guild)).build()))
+				.thenReturn(EventDiscordInformation.builder().channel(channel).guild(Guild.builder().id(guild).build()).build());
 	}
 }

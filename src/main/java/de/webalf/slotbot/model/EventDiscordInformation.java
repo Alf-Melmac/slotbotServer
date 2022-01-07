@@ -24,8 +24,9 @@ public class EventDiscordInformation {
 	@Column(name = "discord_information_channel", unique = true, nullable = false, updatable = false)
 	private long channel;
 
-	@Column(name = "discord_information_guild", nullable = false, updatable = false)
-	private long guild;
+	@ManyToOne(targetEntity = Guild.class, optional = false)
+	@JoinColumn(name = "discord_information_guild")
+	private Guild guild;
 
 	@Column(name = "discord_information_info_msg", unique = true)
 	private Long infoMsg;

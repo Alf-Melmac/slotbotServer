@@ -4,17 +4,13 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.*;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.CollectionUtils;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.EventUtils;
-import de.webalf.slotbot.util.GuildUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +21,7 @@ import org.thymeleaf.util.ListUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static de.webalf.slotbot.util.EventUtils.getOwnerGuild;
-import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventManageRole;
 
 /**
@@ -38,16 +33,18 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventMan
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventService {
 	private final EventRepository eventRepository;
+	private final EventAssembler eventAssembler;
 	private final SquadService squadService;
 	private final SlotService slotService;
 	private final UserService userService;
 	private final EventTypeService eventTypeService;
 	private final EventFieldService eventFieldService;
 	private final EventDiscordInformationService eventDiscordInformationService;
+	private final GuildService guildService;
 
 	/**
 	 * Creates a new event with values from the {@link EventDto}
-	 * {@link Event#setOwnerGuild(long)} is set by current request uri {@link GuildUtils#getCurrentOwnerGuild()}
+	 * {@link Event#setOwnerGuild(Guild)} is set by current request uri ({@link GuildService#getOwnerGuild(AbstractEventDto)})
 	 *
 	 * @param eventDto new event
 	 * @return saved new event
@@ -58,13 +55,11 @@ public class EventService {
 				eventDiscordInformationService.existsByChannelInDtos(discordInformation)) {
 			throw BusinessRuntimeException.builder().title("In mindestens einem der angegebenen Kanäle gibt es bereits ein Event.").build();
 		}
-		Event event = EventAssembler.fromDto(eventDto);
+		Event event = eventAssembler.fromDto(eventDto);
 		event.setEventType(eventTypeService.find(eventDto.getEventType()));
-		event.setOwnerGuild(getOwnerGuild(eventDto));
+		event.setOwnerGuild(guildService.getOwnerGuild(eventDto));
 
 		event.validate();
-
-		event.setChilds();
 
 		return eventRepository.save(event);
 	}
@@ -125,8 +120,8 @@ public class EventService {
 	 *
 	 * @return all events in given period
 	 */
-	public List<Event> findAllBetweenOfGuild(LocalDateTime start, LocalDateTime end, long ownerGuild) {
-		if (ownerGuild == GUILD_PLACEHOLDER) {
+	public List<Event> findAllBetweenOfGuild(LocalDateTime start, LocalDateTime end, @NonNull Guild ownerGuild) {
+		if (ownerGuild.getId() == GUILD_PLACEHOLDER) {
 			return hasEventManageRole() ?
 					eventRepository.findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(start, end) :
 					eventRepository.findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(start, end);
@@ -137,7 +132,7 @@ public class EventService {
 				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
 	}
 
-	public List<Event> findAllPublicByGuild(long ownerGuild) {
+	public List<Event> findAllPublicByGuild(Guild ownerGuild) {
 		return eventRepository.findAllByGuildAndHiddenFalse(ownerGuild);
 	}
 
@@ -196,8 +191,8 @@ public class EventService {
 	 * @param eventId to find owner guild of
 	 * @return owner guild
 	 */
-	public long getGuildIdByEventId(long eventId) {
-		return eventRepository.findGuildById(eventId);
+	public Guild getGuildByEventId(long eventId) {
+		return eventRepository.findOwnerGuildById(eventId);
 	}
 
 	/**

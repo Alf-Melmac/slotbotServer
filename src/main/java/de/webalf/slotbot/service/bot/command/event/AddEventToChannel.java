@@ -13,8 +13,7 @@ import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSelectionMenu;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
-import de.webalf.slotbot.util.EventUtils;
-import de.webalf.slotbot.util.GuildUtils.Guild;
+import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.ListUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static de.webalf.slotbot.util.GuildUtils.isDAA;
+import static de.webalf.slotbot.service.GuildService.isDAA;
 import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
@@ -58,6 +57,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @SelectionMenuListener({"addEventToChannel", "addForeignEventToChannel"})
 public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, DiscordSelectionMenu {
 	private final EventBotService eventBotService;
+	private final EventHelper eventHelper;
 
 	@Override
 	public void execute(Message message, List<String> args) {
@@ -128,11 +128,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 				.setPlaceholder(placeholder);
 
 		for (Event event : events) {
-			final Guild guild = Guild.findByDiscordGuild(event.getOwnerGuild());
-			if (guild == null) {
-				throw new IllegalStateException("Found event (" + event.getId() + ") with non matching owner guild (" + event.getOwnerGuild() + ")");
-			}
-			final String name = (foreign ? "(" + guild.getId() + ") " : "") + event.getName();
+			final String name = (foreign ? "(" + event.getOwnerGuild().getGroupIdentifier() + ") " : "") + event.getName();
 			selectionMenuBuilder.addOption(buildSelectionLabel(name), Long.toString(event.getId()));
 		}
 		selectionMenus.add(selectionMenuBuilder.build());
@@ -169,7 +165,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 		final String guildIdString = Long.toString(guildId);
 		eventApiDto.getDiscordInformation().add(EventDiscordInformationDto.builder().channel(channel.getId()).guild(guildIdString).build());
 
-		channel.sendMessageEmbeds(EventUtils.buildDetailsEmbed(eventApiDto)) //Send event details
+		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(eventApiDto)) //Send event details
 				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString));
 	}
 

@@ -46,7 +46,7 @@ public final class EventApiAssembler {
 				.details(EventFieldApiAssembler.toDtoList(event.getDetails()))
 				.squadList(SquadApiAssembler.toDtoList(event.getSquadList()))
 				.reserveParticipating(event.getReserveParticipating())
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
+				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
 	}
 

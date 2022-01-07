@@ -3,28 +3,34 @@ package de.webalf.slotbot.assembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.LongUtils;
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
-import static de.webalf.slotbot.util.GuildUtils.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.StringUtils.trim;
 
 /**
  * @author Alf
  * @since 23.06.2020
  */
-@UtilityClass
-public final class EventAssembler {
+@Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+public class EventAssembler {
+	private final EventDiscordInformationAssembler discordInformationAssembler;
+	private final GuildService guildService;
 
-	public static Event fromDto(EventDto dto) {
+	public Event fromDto(EventDto dto) {
 		if (dto == null) {
 			return null;
 		}
 
-		return Event.builder()
+		final Event event = Event.builder()
 				.id(dto.getId())
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))
@@ -39,9 +45,11 @@ public final class EventAssembler {
 				.details(EventFieldAssembler.fromDtoIterable(dto.getDetails()))
 				.squadList(SquadAssembler.fromDtoList(dto.getSquadList()))
 				.reserveParticipating(dto.getReserveParticipating())
-				.discordInformation(EventDiscordInformationAssembler.fromDtoIterable(dto.getDiscordInformation()))
-				.ownerGuild(LongUtils.parseLong(dto.getOwnerGuild(), GUILD_PLACEHOLDER))
+				.discordInformation(discordInformationAssembler.fromDtoIterable(dto.getDiscordInformation()))
+				.ownerGuild(guildService.find(LongUtils.parseLong(dto.getOwnerGuild(), GUILD_PLACEHOLDER)))
 				.build();
+		event.setChilds();
+		return event;
 	}
 
 	/**
@@ -66,7 +74,7 @@ public final class EventAssembler {
 				.squadList(SquadAssembler.toReferencelessDtoList(event.getSquadList()))
 				.reserveParticipating(event.getReserveParticipating())
 				.discordInformation(EventDiscordInformationAssembler.toDtoSet(event.getDiscordInformation()))
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
+				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
 	}
 
@@ -90,7 +98,7 @@ public final class EventAssembler {
 				.pictureUrl(event.getPictureUrl())
 				.reserveParticipating(event.getReserveParticipating())
 				.discordInformation(EventDiscordInformationAssembler.toDtoSet(event.getDiscordInformation()))
-				.ownerGuild(Long.toString(event.getOwnerGuild()))
+				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
 	}
 }

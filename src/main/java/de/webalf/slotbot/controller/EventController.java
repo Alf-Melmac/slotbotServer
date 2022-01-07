@@ -8,8 +8,8 @@ import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.util.GuildUtils;
-import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.util.permissions.PermissionChecker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.assertEventManagePermission;
 
 /**
  * @author Alf
@@ -34,26 +33,26 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.assertEventMan
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class EventController {
+	private final PermissionChecker permissionChecker;
+	private final GuildService guildService;
 	private final EventService eventService;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
 											 @RequestParam LocalDateTime end) {
-		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, GuildUtils.getCurrentOwnerGuild()));
+		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.findCurrentNonNullGuild()));
 	}
 
 	@PostMapping
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@PreAuthorize("@permissionChecker.assertEventManagePermission(#event.getOwnerGuild())")
 	public EventReferencelessDto postEvent(@Valid @RequestBody EventDto event) {
-		assertEventManagePermission(LongUtils.parseLongWrapper(event.getOwnerGuild()));
-
 		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public EventReferencelessDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		assertEventManagePermission(eventService.getGuildIdByEventId(eventId));
+		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
 
 		event.setId(eventId);
 		return EventAssembler.toReferencelessDto(eventService.updateEvent(event));
@@ -62,7 +61,7 @@ public class EventController {
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {
-		assertEventManagePermission(eventService.getGuildIdByEventId(pk));
+		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(pk));
 
 		EventDto dto = EventDto.builder().id(pk).build();
 		try {

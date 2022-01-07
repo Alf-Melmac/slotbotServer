@@ -25,7 +25,6 @@ public final class SquadAssembler {
 				.id(squadDto.getId())
 				.name(squadDto.getName().trim())
 				.slotList(SlotAssembler.fromDtoList(squadDto.getSlotList()))
-				.event(EventAssembler.fromDto(squadDto.getEvent()))
 				.build();
 	}
 

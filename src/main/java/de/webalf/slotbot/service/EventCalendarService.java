@@ -3,9 +3,9 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.util.EventCalendarUtil;
-import de.webalf.slotbot.util.GuildUtils.Guild;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,11 +42,16 @@ public class EventCalendarService {
 	 * @param guild to rebuild calendar for
 	 */
 	public void rebuildCalendar(@NonNull Guild guild) {
-		if (log.isTraceEnabled()) {
-			log.trace("Building calendar for guild {} [{}]", guild.getId(), guild.getDiscordGuild());
+		if (!guild.isAdvanced()) {
+			return;
 		}
-		final List<Event> events = eventService.findAllPublicByGuild(guild.getDiscordGuild());
-		buildAndWrite(events, guild.getDiscordGuild());
+
+		if (log.isTraceEnabled()) {
+			log.trace("Building calendar for guild {} [{}]", guild.getGroupIdentifier(), guild.getId());
+		}
+		//This may be moved to the guild entity once shared events are persistently matched to foreign guilds
+		final List<Event> events = eventService.findAllPublicByGuild(guild);
+		buildAndWrite(events, guild.getId());
 	}
 
 	/**
@@ -82,7 +87,7 @@ public class EventCalendarService {
 		event.getAllParticipants().forEach(this::rebuildCalendar);
 		Stream.concat(Stream.of(event.getOwnerGuild()), event.getDiscordInformation().stream().map(EventDiscordInformation::getGuild))
 				.distinct()
-				.forEach(guild -> rebuildCalendar(Guild.findByDiscordGuild(guild)));
+				.forEach(this::rebuildCalendar);
 	}
 
 	public void rebuildCalendars(long eventId) {

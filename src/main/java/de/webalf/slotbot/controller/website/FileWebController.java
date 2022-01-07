@@ -1,7 +1,8 @@
 package de.webalf.slotbot.controller.website;
 
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.FileService;
-import de.webalf.slotbot.util.GuildUtils.Guild;
+import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 @Slf4j
 public class FileWebController {
 	private final FileService fileService;
+	private final GuildService guildService;
 
 	@GetMapping("/download/{filename:.+}")
 	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
@@ -50,9 +52,9 @@ public class FileWebController {
 
 	@GetMapping("/calendar/{filename:.+}")
 	public ResponseEntity<Resource> getCalendar(@PathVariable String filename) {
-		final Guild guild = Guild.findById(filename);
+		final Guild guild = guildService.findByName(filename);
 		if (guild != null) {
-			filename = guild.getDiscordGuild() + ICS_FILE_EXTENSION;
+			filename = guild.getId() + ICS_FILE_EXTENSION;
 		}
 
 		final Resource file = fileService.loadIcsAsResource(filename);

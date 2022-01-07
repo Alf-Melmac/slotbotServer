@@ -1,6 +1,7 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.UserAssembler;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.UserNameDto;
@@ -44,13 +45,13 @@ public class UserService {
 		return toUserNameDto(user, discordApiService.getName(userId));
 	}
 
-	public UserNameDto toUserNameDto(User user, long guildId) {
+	public UserNameDto toUserNameDto(User user, @NonNull Guild guild) {
 		if (user == null || user.isDefaultUser()) {
 			return null;
 		}
 
 		final String userId = LongUtils.toString(user.getId());
-		return toUserNameDto(user, discordApiService.getName(userId, guildId));
+		return toUserNameDto(user, discordApiService.getName(userId, guild.getId()));
 	}
 
 	public UserNameDto toUserNameDto(@NonNull User user, String name) {

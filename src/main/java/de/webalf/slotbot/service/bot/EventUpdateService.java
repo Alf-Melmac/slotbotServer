@@ -7,7 +7,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.SchedulerService;
-import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.NonNull;
@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static de.webalf.slotbot.service.GuildService.isAMB;
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
-import static de.webalf.slotbot.util.GuildUtils.isAMB;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 
 /**
@@ -32,6 +32,7 @@ import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class EventUpdateService {
+	private final EventHelper eventHelper;
 	private final BotService botService;
 	private final MessageHelper messageHelper;
 	private final EventNotificationService eventNotificationService;
@@ -48,7 +49,7 @@ public class EventUpdateService {
 			}
 
 			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), EventUtils.buildDetailsEmbed(eventApiDto)).queue();
+			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto)).queue();
 			final List<String> slotList = eventApiDto.getSlotList();
 			//noinspection ConstantConditions SlotList can't be null here
 			eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
@@ -70,7 +71,6 @@ public class EventUpdateService {
 	public void rebuildCalendar(long eventId) {
 		//The action here must be scheduled, because the event must be saved before.
 		//Without saving the events for the guild can not be found, because it comes to a StackOverflow. Hibernate bug?
-		//This can be removed if guilds are database entities and eventCalendarService can exist without eventService dependency
 		schedulerService.schedule(() -> eventCalendarService.rebuildCalendars(eventId), 1);
 	}
 
