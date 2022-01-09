@@ -239,7 +239,7 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	public boolean canRevokeShareable() {
-		return getDiscordInformation().stream().noneMatch(information -> information.getGuild().equals(getOwnerGuild()));
+		return getDiscordInformation().stream().allMatch(information -> information.getGuild().equals(getOwnerGuild()));
 	}
 
 	/**
