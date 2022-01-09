@@ -3,7 +3,6 @@ package de.webalf.slotbot.util.permissions;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +26,12 @@ public class PermissionChecker {
 		return PermissionHelper.hasEventManagePermission(guildService.getCurrentGuildId());
 	}
 
+	public boolean hasEventManagePermission(String guildId) {
+		return PermissionHelper.hasEventManagePermission(guildService.getOwnerGuild(guildId).getId());
+	}
+
 	public void assertEventManagePermission(@NonNull Guild guild) {
-		assertEventManagePermission(guild.getId());
-	}
-
-	public void assertEventManagePermission(String guildId) {
-		assertEventManagePermission(LongUtils.parseLongWrapper(guildId));
-	}
-
-	public void assertEventManagePermissionInCurrentOwnerGuild() {
-		assertEventManagePermission(guildService.getCurrentGuildId());
-	}
-
-	private void assertEventManagePermission(Long guildId) {
-		assertPermissionInGuild(EVENT_MANAGE, guildId);
+		assertPermissionInGuild(EVENT_MANAGE, guild.getId());
 	}
 
 	/**

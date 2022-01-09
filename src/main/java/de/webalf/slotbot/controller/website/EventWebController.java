@@ -61,7 +61,7 @@ public class EventWebController {
 	}
 
 	@GetMapping("/new")
-	@PreAuthorize("@permissionChecker.assertEventManagePermissionInCurrentOwnerGuild()")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
 	public ModelAndView getWizardHtml(@RequestParam(required = false) String date, @RequestParam(required = false) String copyEvent) {
 		ModelAndView mav = new ModelAndView("eventWizard");
 

@@ -30,6 +30,7 @@ public class Guild extends AbstractDiscordIdEntity {
 
 	@Column(name = "discord_guild_url_pattern")
 	@Convert(converter = PatternPersistenceConverter.class)
+	//Always set groupIdentifier when url pattern is defined!
 	private Pattern urlPattern;
 
 	@Column(name = "discord_guild_base_url", length = TEXT_DB)

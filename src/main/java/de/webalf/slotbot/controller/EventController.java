@@ -44,7 +44,7 @@ public class EventController {
 	}
 
 	@PostMapping
-	@PreAuthorize("@permissionChecker.assertEventManagePermission(#event.getOwnerGuild())")
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#event.getOwnerGuild())")
 	public EventReferencelessDto postEvent(@Valid @RequestBody EventDto event) {
 		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}

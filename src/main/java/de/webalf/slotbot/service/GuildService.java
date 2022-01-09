@@ -36,12 +36,16 @@ public class GuildService {
 		return guildRepository.findAll();
 	}
 
+	public List<Guild> findAllWithUrlPattern() {
+		return guildRepository.findByUrlPatternIsNotNull();
+	}
+
 	private static final Set<String> UNKNOWN_GROUPS = new HashSet<>();
 
 	public Guild findCurrentGuild() {
 		final String currentUri = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
 
-		for (Guild guild : findAll()) {
+		for (Guild guild : findAllWithUrlPattern()) {
 			if (guild.getUrlPattern().matcher(currentUri).matches()) {
 				return guild;
 			}
@@ -56,6 +60,16 @@ public class GuildService {
 
 	public Guild findCurrentNonNullGuild() {
 		return guildRepository.findById(getCurrentGuildId()).orElseThrow(IllegalStateException::new);
+	}
+
+	/**
+	 * Returns the {@link #findCurrentGuild() current guild} or {@link #getAMB() AMB guild} as a fallback
+	 *
+	 * @return current guild
+	 */
+	public Guild findCurrentGuildWithFallback() {
+		final Guild currentGuild = findCurrentGuild();
+		return currentGuild != null ? currentGuild : getAMB();
 	}
 
 	public String getCurrentGroupIdentifier() {
@@ -84,14 +98,18 @@ public class GuildService {
 	/**
 	 * If {@link #findCurrentGuild()} can determine a guild, this one is always taken. Otherwise, the given {@link AbstractEventDto#getOwnerGuild()} is used
 	 *
-	 * @param event to get owner guild of
+	 * @param ownerGuild owner guild of the event
 	 * @return evaluated owner guild
 	 */
-	public Guild getOwnerGuild(@NonNull AbstractEventDto event) {
+	public Guild getOwnerGuild(String ownerGuild) {
 		final Guild currentGuild = findCurrentGuild();
 		return currentGuild.getId() != GUILD_PLACEHOLDER
 				? currentGuild
-				: find(LongUtils.parseLong(event.getOwnerGuild(), GUILD_PLACEHOLDER));
+				: find(LongUtils.parseLong(ownerGuild, GUILD_PLACEHOLDER));
+	}
+
+	public Guild getOwnerGuild(@NonNull AbstractEventDto event) {
+		return getOwnerGuild(event.getOwnerGuild());
 	}
 
 	public Guild getOwnerGuild(@NonNull Event event) {
@@ -102,6 +120,7 @@ public class GuildService {
 	private static final String SLOTBOT_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899740543603589130/AM-name-slotbot-small.png";
 	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
 	private static final String DAA_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899747640634376272/DAA_transparent.gif";
+
 	public static String getLogo(long guildId) {
 		if (GuildService.isAMB(guildId)) {
 			return AMB_LOGO;
@@ -148,5 +167,9 @@ public class GuildService {
 
 	public boolean isDAA() {
 		return is(DAA);
+	}
+
+	private Guild getAMB() {
+		return guildRepository.findById(AMB).orElseThrow(IllegalStateException::new);
 	}
 }
