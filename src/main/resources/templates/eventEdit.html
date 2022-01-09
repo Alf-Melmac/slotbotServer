@@ -272,7 +272,7 @@
 <div th:if="${canUploadSlotlist}" th:replace="fragments/modals.html :: uploadSlotlistModal"></div>
 <div th:replace="fragments/toasts.html"></div>
 
-<footer th:insert="fragments/general.html :: footer"></footer>
+<footer th:replace="fragments/general.html :: footer(false)"></footer>
 
 <script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
 <script th:replace="fragments/scripts.html :: jqueryuiANDmomentANDtempusdominusANDcolorpicker"></script>

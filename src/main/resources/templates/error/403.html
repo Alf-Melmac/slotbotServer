@@ -1,43 +1,15 @@
 <!DOCTYPE html>
 <html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-	<title>403 - Nicht erlaubt</title>
-
+	<meta th:replace="fragments/general.html :: head('403 - Nicht erlaubt')"/>
 	<meta property="og:image" content="/assets/img/amb-logo.jpg">
-	<meta property="og:type" content="website">
 
-	<link rel="apple-touch-icon" sizes="60x60" th:href="@{/assets/img/favicon/amb/apple-touch-icon-60x60.png}">
-	<link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/favicon/amb/apple-touch-icon-76x76.png}">
-	<link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/amb/apple-touch-icon-120x120.png}">
-	<link rel="apple-touch-icon" sizes="152x152" th:href="@{/assets/img/favicon/amb/apple-touch-icon-152x152.png}">
-	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/img/favicon/amb/apple-touch-icon-180x180.png}">
-	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/amb/favicon-32x32.png}">
-	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/amb/favicon-16x16.png}">
-	<link rel="manifest" th:href="@{/assets/img/favicon/amb/site.webmanifest}">
-	<link rel="mask-icon" th:href="@{/assets/img/favicon/amb/safari-pinned-tab.svg}" color="#5bbad5">
-	<link rel="shortcut icon" th:href="@{/assets/img/favicon/amb/favicon.ico}">
-	<meta name="msapplication-TileColor" content="#2b5797">
-	<meta name="msapplication-config" th:attrappend="content=@{/assets/img/favicon/amb/browserconfig.xml}">
-
-	<link rel="stylesheet" th:href="@{/assets/3rd/bootstrap/css/bootstrap.min.css}">
-	<link rel="stylesheet" th:href="@{/assets/css/globalStyles.css}">
 	<link rel="stylesheet" th:href="@{/assets/css/error/403.css}">
 </head>
 <body>
-<nav class="navbar navbar-light" id="mainNav">
-	<div class="container">
-		<div>
-			<a href="/">
-				<img class="navbar-logo" th:attr="src=@{/assets/img/amb-logo.jpg}" alt="AMB">
-				<a class="navbar-brand" href="/">Arma macht Bock</a>
-			</a>
-		</div>
-	</div>
-</nav>
+<nav th:replace="fragments/navbar.html :: default(false)"></nav>
 
-<div class="container">
+<div id="art" class="container">
 	<!-- Original: https://codepen.io/marianab-->
 	<svg xmlns="http://www.w3.org/2000/svg" id="robot-error" viewBox="0 0 260 118.9">
 		<defs>
@@ -65,6 +37,9 @@
 	<h1>Hier darfst du leider nicht hin</h1>
 	<h2>Zurück zur <a href="/">Startseite</a>!</h2>
 </div>
+
+<footer th:replace="fragments/general.html :: footer(true)"></footer>
+
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:src="@{/assets/js/error/403.js}"></script>
 </body>

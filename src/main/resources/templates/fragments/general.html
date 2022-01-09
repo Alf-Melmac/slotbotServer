@@ -4,7 +4,8 @@
 <head th:fragment="head (title)" th:with="groupLowercase=${#strings.toLowerCase(group)}">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-	<title th:text="${#strings.equals(title, 'Arma macht Bock') || #strings.equals(title, 'Deutsche Arma Allianz')} ? ${title} : ${group + ' - ' + title}"></title>
+	<meta name="slotbot-group" th:content="'Group: ' + ${groupLowercase}">
+	<title th:text="${#strings.equals(title, 'Arma macht Bock') || #strings.equals(title, 'Deutsche Arma Allianz') || #strings.contains(title, '-')} ? ${title} : ${group + ' - ' + title}"></title>
 
 	<meta property="og:locale" content="de_DE"/>
 	<meta property="og:locale:alternate" content="en_GB"/>
@@ -57,7 +58,7 @@
 
 <body>
 
-<div th:fragment="footer" id="footer">
+<footer th:fragment="footer (fixed)" th:classappend="${fixed} ? 'fixed-bottom'" id="footer">
 	<div class="container">
 		<div class="row">
 			<th:block th:if="${@guildService.isSlotbot()}">
@@ -151,6 +152,6 @@
 			</div>
 		</div>
 	</div>
-</div>
+</footer>
 </body>
 </html>

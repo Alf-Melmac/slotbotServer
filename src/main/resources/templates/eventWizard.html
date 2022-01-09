@@ -215,7 +215,7 @@
 <div th:replace="fragments/modals.html :: addDefaultFieldsWarning"></div>
 <div th:replace="fragments/modals.html :: uploadSlotlistModal"></div>
 
-<footer th:insert="fragments/general.html :: footer"></footer>
+<footer th:replace="fragments/general.html :: footer(false)"></footer>
 
 <script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
 <script th:replace="fragments/scripts.html :: jqueryuiANDmomentANDtempusdominusANDcolorpicker"></script>

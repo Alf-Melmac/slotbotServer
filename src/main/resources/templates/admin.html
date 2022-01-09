@@ -35,7 +35,7 @@
 	</div>
 </section>
 
-<footer th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
+<footer th:replace="fragments/general.html :: footer(true)"></footer>
 
 <script th:replace="fragments/scripts.html :: jqueryANDbootstrap"></script>
 <script th:inline="javascript">

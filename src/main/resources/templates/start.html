@@ -113,7 +113,7 @@
 	</div>
 </section>
 
-<footer th:insert="fragments/general.html :: footer"></footer>
+<footer th:replace="fragments/general.html :: footer(false)"></footer>
 
 <script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
 <script th:replace="fragments/scripts.html :: jqueryeasing"></script>
