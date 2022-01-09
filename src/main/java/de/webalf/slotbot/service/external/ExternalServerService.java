@@ -47,6 +47,12 @@ public class ExternalServerService {
 	 * Fills the ipUrlMap "cache" with the mappings from the server manager
 	 */
 	public void fillIpServerMap() {
+		final HttpStatus ping = ping();
+		if (ping == null || ping.isError()) {
+			log.warn("Can't fill ipUrlMap from {} because ping failed", serverManagerProperties.getUrl());
+			return;
+		}
+
 		log.info("Filling ipUrlMap from " + serverManagerProperties.getUrl());
 		ipServerMap = buildWebClient().get().uri("/status/mappings").retrieve()
 				.bodyToMono(new ParameterizedTypeReference<Map<String, String>>() {})
