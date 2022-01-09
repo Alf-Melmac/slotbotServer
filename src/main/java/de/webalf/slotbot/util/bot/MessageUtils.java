@@ -80,19 +80,20 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Deletes the latest message from the given channel if {@link MessageType#CHANNEL_PINNED_ADD}
+	 * Checks the last {@code 4} messages and deletes them from the given channel if {@link MessageType#CHANNEL_PINNED_ADD}
 	 *
-	 * @param channel in which the latest message should be deleted
+	 * @param channel in which the latest messages should be deleted
 	 */
-	public static void deleteLatestMessageIfTypePinAdd(@NonNull MessageChannel channel) {
-		channel.getHistory().retrievePast(1).queue(messages -> {
+	public static void deletePinAddedMessages(@NonNull MessageChannel channel) {
+		channel.getHistory().retrievePast(4).queue(messages -> {
 			if (ListUtils.isEmpty(messages)) {
 				return;
 			}
-			final Message message = messages.get(0);
-			if (MessageType.CHANNEL_PINNED_ADD == message.getType()) {
-				deleteMessagesInstant(channel, message.getIdLong());
-			}
+			messages.forEach(message -> {
+				if (MessageType.CHANNEL_PINNED_ADD == message.getType()) {
+					deleteMessagesInstant(channel, message.getIdLong());
+				}
+			});
 		});
 	}
 

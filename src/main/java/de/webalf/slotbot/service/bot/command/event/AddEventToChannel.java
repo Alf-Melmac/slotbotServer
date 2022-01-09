@@ -203,7 +203,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 		return slotListMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartOne(slotListMsg.getId()));
 
-			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
+			slotListMsg.pin().queue();
 
 			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)),
 					slotListMsgLastConsumer(channel, eventApiDto, guildId));
@@ -217,7 +217,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 		return slotListMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartTwo(slotListMsg.getId()));
 
-			slotListMsg.pin().queue(unused -> deleteLatestMessageIfTypePinAdd(channel));
+			slotListMsg.pin().queue(unused -> deletePinAddedMessages(channel));
 
 			eventBotService.updateEvent(eventApiDto);
 		};
