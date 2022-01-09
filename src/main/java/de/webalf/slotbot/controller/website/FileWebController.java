@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Optional;
 
 import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
@@ -52,9 +53,9 @@ public class FileWebController {
 
 	@GetMapping("/calendar/{filename:.+}")
 	public ResponseEntity<Resource> getCalendar(@PathVariable String filename) {
-		final Guild guild = guildService.findByName(filename);
-		if (guild != null) {
-			filename = guild.getId() + ICS_FILE_EXTENSION;
+		final Optional<Guild> guild = guildService.findByName(filename);
+		if (guild.isPresent()) {
+			filename = guild.get().getId() + ICS_FILE_EXTENSION;
 		}
 
 		final Resource file = fileService.loadIcsAsResource(filename);

@@ -19,7 +19,7 @@ public class StartWebController {
 	@GetMapping
 	public ModelAndView getStart() {
 		if (!guildService.isAMB()) {
-			return new ModelAndView("redirect:" + guildService.findCurrentGuildWithFallback().getBaseRedirectUrl());
+			return new ModelAndView("redirect:" + guildService.findCurrentNonNullGuild().getBaseRedirectUrl());
 		}
 
 		return new ModelAndView("start");

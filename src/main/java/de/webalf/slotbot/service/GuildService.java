@@ -36,13 +36,18 @@ public class GuildService {
 		return guildRepository.findAll();
 	}
 
-	public List<Guild> findAllWithUrlPattern() {
+	private List<Guild> findAllWithUrlPattern() {
 		return guildRepository.findByUrlPatternIsNotNull();
 	}
 
 	private static final Set<String> UNKNOWN_GROUPS = new HashSet<>();
 
-	public Guild findCurrentGuild() {
+	/**
+	 * Finds the current guild matching the current context path
+	 *
+	 * @return guild or null
+	 */
+	private Guild findCurrentGuild() {
 		final String currentUri = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
 
 		for (Guild guild : findAllWithUrlPattern()) {
@@ -58,16 +63,12 @@ public class GuildService {
 		return null;
 	}
 
-	public Guild findCurrentNonNullGuild() {
-		return guildRepository.findById(getCurrentGuildId()).orElseThrow(IllegalStateException::new);
-	}
-
 	/**
-	 * Returns the {@link #findCurrentGuild() current guild} or {@link #getAMB() AMB guild} as a fallback
+	 * Finds the {@link #findCurrentGuild() current guild} or {@link #getAMB() AMB guild} as a fallback
 	 *
 	 * @return current guild
 	 */
-	public Guild findCurrentGuildWithFallback() {
+	public Guild findCurrentNonNullGuild() {
 		final Guild currentGuild = findCurrentGuild();
 		return currentGuild != null ? currentGuild : getAMB();
 	}
@@ -91,8 +92,8 @@ public class GuildService {
 		return guildRepository.findById(discordGuild).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	public Guild findByName(String name) {
-		return guildRepository.findByGroupIdentifier(name).orElse(null);
+	public Optional<Guild> findByName(String name) {
+		return guildRepository.findByGroupIdentifier(name);
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class GuildService {
 	 * @return evaluated owner guild
 	 */
 	public Guild getOwnerGuild(String ownerGuild) {
-		final Guild currentGuild = findCurrentGuild();
+		final Guild currentGuild = findCurrentNonNullGuild();
 		return currentGuild.getId() != GUILD_PLACEHOLDER
 				? currentGuild
 				: find(LongUtils.parseLong(ownerGuild, GUILD_PLACEHOLDER));

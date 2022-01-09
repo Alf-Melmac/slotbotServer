@@ -4,7 +4,7 @@ import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.util.permissions.EventPermissionHelper;
+import de.webalf.slotbot.util.permissions.ApiPermissionChecker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTI
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventApiController {
 	private final EventService eventService;
-	private final EventPermissionHelper eventPermissionHelper;
+	private final ApiPermissionChecker apiPermissionChecker;
 
 	@GetMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
@@ -37,7 +37,7 @@ public class EventApiController {
 	}
 
 	@PostMapping
-	@PreAuthorize("@eventPermissionHelper.assertApiWriteAccess(#event)")
+	@PreAuthorize("@apiPermissionChecker.assertApiWriteAccess(#event)")
 	public EventApiDto postEvent(@Valid @RequestBody EventDto event) {
 		log.trace("postEvent: " + event.getName());
 		return EventApiAssembler.toDto(eventService.createEvent(event));
@@ -48,7 +48,7 @@ public class EventApiController {
 	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		log.trace("updateEvent: " + event.getName());
 		event.setId(eventId);
-		eventPermissionHelper.assertApiWriteAccess(eventService.findById(eventId));
+		apiPermissionChecker.assertApiWriteAccess(eventService.findById(eventId));
 		return EventApiAssembler.toDto(eventService.updateEvent(event));
 	}
 }

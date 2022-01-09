@@ -16,7 +16,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasWritePer
  */
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class EventPermissionHelper {
+public class ApiPermissionChecker {
 	private final GuildService guildService;
 
 	/**
