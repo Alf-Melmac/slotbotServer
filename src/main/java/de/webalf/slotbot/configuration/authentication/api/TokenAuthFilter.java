@@ -2,6 +2,7 @@ package de.webalf.slotbot.configuration.authentication.api;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.authentication.ApiToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.buildGuildAuth
  * @since 23.09.2020
  */
 @Component
+@Slf4j
 public class TokenAuthFilter extends OncePerRequestFilter {
 	@Value("${slotbot.auth.token.name:slotbot-auth-token}")
 	private String tokenName;
@@ -48,6 +50,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
 		// check if header contains auth token
 		final String authToken = request.getHeader(tokenName);
+		log.info("API request to '{}' with token '{}' from: {}", request.getRequestURL(), authToken, request.getHeader("user-agent"));
 
 		// if there is an auth token, create an Authentication object
 		if (authToken != null) {
