@@ -25,7 +25,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @EventFieldDefault(eventTypeName = "Arma 3")
 @Slf4j
 public final class Arma3FieldUtils {
-	private static final List<String> MOD_SETS = List.of("2103_ArmaMachtBock", "2104_ArmaMachtBock_GM", "2105_ArmaMachtBock_VN");
+	private static final List<String> MOD_SETS = List.of("2201_ArmaMachtBock", "2201_ArmaMachtBock_GM", "2201_ArmaMachtBock_VN");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
 			"Ba Long, Quang Tri province, Vietnam", "Beketow", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
