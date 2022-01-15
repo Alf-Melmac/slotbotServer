@@ -28,17 +28,18 @@ public final class Arma3FieldUtils {
 	private static final List<String> MOD_SETS = List.of("2201_ArmaMachtBock", "2201_ArmaMachtBock_GM", "2201_ArmaMachtBock_VN");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
-			"Ba Long, Quang Tri province, Vietnam", "Beketow", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
-			"Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Chernarus 2020", "Chongo, Angola v1.30",
-			"CLA Clafghan", "Da Krong, Quang Trie Vietnam", "Dak Pek, Kon Tum province, Vietnam", "Desert Island", "Ðông Hà",
-			"Doung Island, Rung Sat Vietnam", "Quang Tri, Vietnam", "Die Wüste", "Everon", "Hebontes", "Hellanmaa",
-			"Hellanmaa winter", "Ia Drâng, Gia Lai, Vietnam", "Khe Sanh, Quang Tri, Vietnam (WIP)", "Khoramshahr",
-			"Kolgujev", "Livonia", "Lowlands, Quang Ngai, Vietnam", "Malden", "Malden 2035", "Nogova", "Phu Bai, Hue, Vietnam",
-			"Phuoc Tuy Province, Vietnam", "Plei Trap, Kon Tum, Vietnam", "Porto", "Prei Khmaoch Luong", "Proving Grounds",
-			"Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani", "SE Angola 1974 v1.30", "SEA, Lam Dong, Vietnam",
-			"Shapur", "Song Bin Tanh, Mekong Delta, Vietnam", "Song Cu, Dong Nai Vietnam", "Southern Sahrani", "Stratis",
-			"Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa", "United Sahrani", "Utes", "Vinjesvingen",
-			"Virolahti", "Virtuelle Realität", "Werferlingen", "Zargabad");
+			"Ba Long, Quang Tri province, Vietnam", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
+			"Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Da Krong, Quang Trie Vietnam",
+			"Dak Pek, Kon Tum province, Vietnam", "Ðông Hà, Quang Tri, Vietnam", "Doung Island, Rung Sat Vietnam",
+			"Die Wüste", "Fapovo v1.8", "Hebontes", "Hellanmaa", "Hellanmaa winter", "Ia Drâng, Gia Lai, Vietnam",
+			"Khe Sanh", "Khe Sanh, Quang Tri, Vietnam (WIP)", "Khoramshahr", "Livonia", "Lowlands, Quang Ngai, Vietnam",
+			"Malden 2035", "Napf Island A3", "NapfWinter Island A3", "Panthera (Winter) v3.9", "Panthera v3.91",
+			"Phu Bai, Hue, Vietnam", "Phuoc Tuy Province, Vietnam", "Plei Trap, Kon Tum, Vietnam", "Porto",
+			"Proving Grounds", "Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani", "SEA, Lam Dong, Vietnam",
+			"Shapur", "Southern Sahrani", "Stratis", "Song Bin Tanh, Mekong Delta, Vietnam",
+			"Song Cu, Dong Nai Vietnam", "Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa",
+			"United Sahrani", "Utes", "Vinjesvingen", "Virolahti", "Virtuelle Realität", "Weferlingen",
+			"Weferlingen (Winter)", "Zargabad");
 
 	@SuppressWarnings("unused") //EventFieldUtils#eventTypeNameToFieldDefaults
 	static final List<EventFieldDefaultDto> FIELDS = List.of(
