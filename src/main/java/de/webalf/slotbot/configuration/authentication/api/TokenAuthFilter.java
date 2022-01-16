@@ -50,10 +50,10 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
 		// check if header contains auth token
 		final String authToken = request.getHeader(tokenName);
-		log.info("API request to '{}' with token '{}' from: {}", request.getRequestURL(), authToken, request.getHeader("user-agent"));
 
 		// if there is an auth token, create an Authentication object
 		if (authToken != null) {
+			log.info("API request to '{}' with token '{}' from: {}", request.getRequestURL(), authToken, request.getHeader("user-agent"));
 			Set<GrantedAuthority> grantedAuthorities;
 			try {
 				grantedAuthorities = mapAuthorities(authToken);
@@ -61,6 +61,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 				resolver.resolveException(request, response, null, ex);
 				return;
 			}
+			log.debug("Token '{}' granted {}", authToken, grantedAuthorities);
 			final Authentication auth = new SlotbotAuthentication(authToken, grantedAuthorities);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 		}

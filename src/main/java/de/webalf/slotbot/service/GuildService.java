@@ -64,13 +64,13 @@ public class GuildService {
 	}
 
 	/**
-	 * Finds the {@link #findCurrentGuild() current guild} or {@link #getAMB() AMB guild} as a fallback
+	 * Finds the {@link #findCurrentGuild() current guild} or {@link #getDefault() default guild with placeholder id}} as a fallback
 	 *
 	 * @return current guild
 	 */
 	public Guild findCurrentNonNullGuild() {
 		final Guild currentGuild = findCurrentGuild();
-		return currentGuild != null ? currentGuild : getAMB();
+		return currentGuild != null ? currentGuild : getDefault();
 	}
 
 	public String getCurrentGroupIdentifier() {
@@ -132,6 +132,10 @@ public class GuildService {
 	}
 
 	//Special snowflakes
+	private Guild getDefault() {
+		return guildRepository.findById(GUILD_PLACEHOLDER).orElseThrow(IllegalStateException::new);
+	}
+
 	private boolean is(long guildId) {
 		final Optional<Guild> guild = guildRepository.findById(guildId);
 		return guild.isPresent() && guild.get().is();
@@ -168,9 +172,5 @@ public class GuildService {
 
 	public boolean isDAA() {
 		return is(DAA);
-	}
-
-	private Guild getAMB() {
-		return guildRepository.findById(AMB).orElseThrow(IllegalStateException::new);
 	}
 }

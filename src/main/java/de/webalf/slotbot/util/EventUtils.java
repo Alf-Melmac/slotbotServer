@@ -40,6 +40,10 @@ public final class EventUtils {
 		return false;
 	}
 
+	static boolean apiReadAccessAllowed(boolean shareable, boolean hidden, Guild ownerGuild) {
+		return apiReadAccessAllowed(shareable, hidden, ownerGuild.getId());
+	}
+
 	/**
 	 * Checks if read permission is given for the given event.
 	 *
@@ -61,7 +65,7 @@ public final class EventUtils {
 	 * @see #apiReadAccessAllowed(boolean, boolean, long)
 	 */
 	public static void assertApiReadAccess(@NonNull Event event) throws ForbiddenException {
-		if (!apiReadAccessAllowed(event.isShareable(), event.isHidden(), event.getOwnerGuild().getId())) {
+		if (!apiReadAccessAllowed(event.isShareable(), event.isHidden(), event.getOwnerGuild())) {
 			throw new ForbiddenException("Not allowed to read here.");
 		}
 	}
@@ -98,7 +102,7 @@ public final class EventUtils {
 		//If an update is triggered by the website the url is an absolut URI
 		//I wasn't able to find a fix for this other than this workaround :(
 		if (!url.startsWith("http")) {
-			return ownerGuild.getBaseUrl() + url;
+			return ownerGuild.getBaseRedirectUrl() + url;
 		}
 		return url;
 	}

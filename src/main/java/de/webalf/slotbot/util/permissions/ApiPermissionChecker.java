@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class ApiPermissionChecker {
 	 * @param event to check owner guild write permission for
 	 */
 	public void assertApiWriteAccess(AbstractEventDto event) {
-		assertApiWriteAccessAllowed(guildService.getOwnerGuild(event).getId());
+		assertApiWriteAccessAllowed(guildService.getOwnerGuild(event));
 	}
 
 	/**
@@ -34,7 +35,7 @@ public class ApiPermissionChecker {
 	 * @param event to check owner guild write permission for
 	 */
 	public void assertApiWriteAccess(Event event) {
-		assertApiWriteAccessAllowed(guildService.getOwnerGuild(event).getId());
+		assertApiWriteAccessAllowed(guildService.getOwnerGuild(event));
 	}
 
 	/**
@@ -43,7 +44,7 @@ public class ApiPermissionChecker {
 	 * @param ownerGuild event owner guild
 	 * @throws ForbiddenException if write permission is not given
 	 */
-	private static void assertApiWriteAccessAllowed(long ownerGuild) throws ForbiddenException {
+	private static void assertApiWriteAccessAllowed(Guild ownerGuild) throws ForbiddenException {
 		if (!hasWritePermission(ownerGuild)) {
 			throw new ForbiddenException("Not allowed to write here.");
 		}

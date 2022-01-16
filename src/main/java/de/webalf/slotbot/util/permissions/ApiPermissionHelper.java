@@ -1,6 +1,7 @@
 package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.constant.AuthorizationCheckValues;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.authentication.ApiTokenType;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -41,7 +42,7 @@ public final class ApiPermissionHelper {
 	 * @param guild to check write permission for
 	 * @return true if permission is given
 	 */
-	public static boolean hasWritePermission(long guild) {
+	public static boolean hasWritePermission(Guild guild) {
 		return hasPermissionForGuild(ApiTokenType.WRITE, guild);
 	}
 
@@ -53,11 +54,22 @@ public final class ApiPermissionHelper {
 	 * @return true if permission is given
 	 */
 	private static boolean hasPermissionForGuild(@NonNull ApiTokenType apiTokenType, long guild) {
+		if (ApiTokenType.READ_PUBLIC == apiTokenType) { //Every token is allowed to read public data
+			return true;
+		}
+
 		final Set<String> authorizedRoles = apiTokenType.getAuthorizedTokenTypes().stream()
 				.map(tokenType -> PermissionHelper.buildGuildAuthenticationWithPrefix(tokenType.name(), guild))
 				.collect(Collectors.toUnmodifiableSet());
 		return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
 				.anyMatch(grantedAuthority -> authorizedRoles.contains(grantedAuthority.getAuthority()));
+	}
+
+	/**
+	 * @see #hasPermissionForGuild(ApiTokenType, long)
+	 */
+	private static boolean hasPermissionForGuild(@NonNull ApiTokenType apiTokenType, @NonNull Guild guild) {
+		return hasPermissionForGuild(apiTokenType, guild.getId());
 	}
 
 	/**

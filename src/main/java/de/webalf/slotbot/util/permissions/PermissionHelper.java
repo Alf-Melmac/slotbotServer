@@ -1,6 +1,7 @@
 package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.exception.ForbiddenException;
+import de.webalf.slotbot.model.Guild;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,6 +44,10 @@ public final class PermissionHelper {
 
 	public static String buildGuildAuthenticationWithPrefix(String roleName, long guildId) {
 		return ROLE_PREFIX + buildGuildAuthentication(roleName, guildId);
+	}
+
+	public static String buildGuildAuthenticationWithPrefix(String roleName, @NonNull Guild guild) {
+		return buildGuildAuthenticationWithPrefix(roleName, guild.getId());
 	}
 
 	/**

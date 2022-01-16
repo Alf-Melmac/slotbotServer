@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.authentication;
 
+import de.webalf.slotbot.model.Guild;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,9 @@ public class ApiToken {
 	@NotBlank
 	private ApiTokenType type;
 
-	@Column(name = "api_token_guild", nullable = false, updatable = false)
-	private long guild;
+	@ManyToOne(targetEntity = Guild.class, optional = false)
+	@JoinColumn(name = "api_token_guild")
+	private Guild guild;
 
 	@Column(name = "api_token_comment")
 	private String comment;
