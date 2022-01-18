@@ -34,6 +34,9 @@ public class User extends AbstractDiscordIdEntity {
 	@OneToMany(mappedBy = "user")
 	private Set<Slot> slots = new HashSet<>();
 
+	@OneToMany(mappedBy = "user")
+	private Set<GuildUsers> guilds = new HashSet<>();
+
 	public static final long DEFAULT_USER_ID = 11111;
 
 	@Builder
@@ -60,5 +63,9 @@ public class User extends AbstractDiscordIdEntity {
 
 	public List<Event> getSlottedEvents() {
 		return getSlots().stream().map(Slot::getEvent).collect(Collectors.toUnmodifiableList());
+	}
+
+	public Set<Guild> getGuilds() {
+		return guilds.stream().map(GuildUsers::getGuild).collect(Collectors.toUnmodifiableSet());
 	}
 }

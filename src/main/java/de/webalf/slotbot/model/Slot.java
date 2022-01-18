@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
@@ -20,9 +21,10 @@ import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
 @Table(name = "slot", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
 @Setter
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Slot extends AbstractIdEntity {
+@SuperBuilder
+@Slf4j
+public class Slot extends AbstractSuperIdEntity {
 	@Column(name = "slot_name", length = TEXT_DB)
 	@NotBlank
 	@Size(max = TEXT)
@@ -36,6 +38,10 @@ public class Slot extends AbstractIdEntity {
 	@JsonBackReference
 	private Squad squad;
 
+	@ManyToOne(targetEntity = Guild.class)
+	@JoinColumn(name = "slot_reserved_for")
+	private Guild reservedFor;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -43,16 +49,6 @@ public class Slot extends AbstractIdEntity {
 	@Column(name = "slot_replacement", length = TEXT_DB)
 	@Size(max = TEXT)
 	private String replacementText;
-
-	@Builder
-	public Slot(long id, String name, int number, Squad squad, User user, String replacementText) {
-		this.id = id;
-		this.name = name;
-		this.number = number;
-		this.squad = squad;
-		this.user = user;
-		this.replacementText = replacementText;
-	}
 
 	// Getter
 
@@ -95,6 +91,10 @@ public class Slot extends AbstractIdEntity {
 		return isNotEmpty() && getUser().isDefaultUser();
 	}
 
+	public Guild getEffectiveReservedFor() {
+		return reservedFor != null ? reservedFor : getSquad().getReservedFor();
+	}
+
 	// Setter
 
 	/**
@@ -116,12 +116,14 @@ public class Slot extends AbstractIdEntity {
 	void slotWithoutUpdate(@NonNull User user) {
 		if (isSlotWithSlottedUser(user)) {
 			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
-		} else if (isEmpty()) {
+		} else if (!isEmpty()) {
+			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
+		} else if (getEffectiveReservedFor() != null && user.getGuilds().stream().noneMatch(guild -> guild.equals(getEffectiveReservedFor()))) {
+			throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
+		} else {
 			//Remove the user from any other slot in the Event
 			getEvent().findSlotOfUser(user).ifPresent(slot -> slot.unslotWithoutUpdate(user));
 			setUser(user);
-		} else {
-			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		}
 	}
 

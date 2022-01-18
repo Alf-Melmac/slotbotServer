@@ -50,7 +50,7 @@ public class EventUpdateService {
 
 			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
 			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto)).queue();
-			final List<String> slotList = eventApiDto.getSlotList();
+			final List<String> slotList = eventApiDto.getSlotList(discordInformation.getGuild().getId());
 			//noinspection ConstantConditions SlotList can't be null here
 			eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
 			eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();

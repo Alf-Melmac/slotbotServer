@@ -186,7 +186,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 			}
 			sendMessage(channel, spacer);
 
-			final List<String> slotListMessages = eventApiDto.getSlotList();
+			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId));
 			if (slotListMessages.size() > 2) {
 				throw BusinessRuntimeException.builder().title("Aktuell sind nur maximal zwei Slotlist-Nachrichten mit jeweils " + Message.MAX_CONTENT_LENGTH + " Zeichen möglich.").build();
 			}

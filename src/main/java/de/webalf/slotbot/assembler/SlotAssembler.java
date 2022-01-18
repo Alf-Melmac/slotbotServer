@@ -26,6 +26,7 @@ public final class SlotAssembler {
 				.name(slotDto.getName().trim())
 				.number(slotDto.getNumber())
 				.squad(SquadAssembler.fromDto(slotDto.getSquad()))
+				.reservedFor(GuildAssembler.fromDto(slotDto.getReservedFor()))
 				.user(UserAssembler.fromDto(slotDto.getUser()))
 				.replacementText(slotDto.getReplacementText())
 				.build();
@@ -50,6 +51,7 @@ public final class SlotAssembler {
 				.name(slot.getName())
 				.number(slot.getNumber())
 				.squad(SquadAssembler.toDto(slot.getSquad()))
+				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
 				.user(UserAssembler.toDto(slot.getUser()))
 				.replacementText(slot.getReplacementText())
 				.build();
@@ -70,6 +72,7 @@ public final class SlotAssembler {
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
+				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
 				.user(UserAssembler.toDto(slot.getUser()))
 				.replacementText(slot.getReplacementText())
 				.build();

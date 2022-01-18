@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @since 23.06.2020
  */
 @Repository
-public interface SlotRepository extends IdEntityJpaRepository<Slot> {
+public interface SlotRepository extends SuperIdEntityJpaRepository<Slot> {
 }

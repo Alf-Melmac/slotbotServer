@@ -3,7 +3,11 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.exception.ForbiddenException;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -25,7 +29,8 @@ import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Squad extends AbstractIdEntity {
+@SuperBuilder
+public class Squad extends AbstractSuperIdEntity {
 	@Column(name = "squad_name", length = TEXT_DB)
 	@NotBlank
 	@Size(max = TEXT)
@@ -37,18 +42,14 @@ public class Squad extends AbstractIdEntity {
 	@JsonManagedReference
 	private List<Slot> slotList;
 
+	@ManyToOne(targetEntity = Guild.class)
+	@JoinColumn(name = "squad_reserved_for")
+	private Guild reservedFor;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")
 	@JsonBackReference
 	private Event event;
-
-	@Builder
-	public Squad(long id, String name, List<Slot> slotList, Event event) {
-		this.id = id;
-		this.name = name;
-		this.slotList = slotList;
-		this.event = event;
-	}
 
 	public static final String RESERVE_NAME = "Reserve";
 

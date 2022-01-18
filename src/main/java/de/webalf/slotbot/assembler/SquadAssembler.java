@@ -25,6 +25,7 @@ public final class SquadAssembler {
 				.id(squadDto.getId())
 				.name(squadDto.getName().trim())
 				.slotList(SlotAssembler.fromDtoList(squadDto.getSlotList()))
+				.reservedFor(GuildAssembler.fromDto(squadDto.getReservedFor()))
 				.build();
 	}
 
@@ -46,6 +47,7 @@ public final class SquadAssembler {
 				.id(squad.getId())
 				.name(squad.getName())
 				.slotList(SlotAssembler.toReferencelessDtoList(squad.getSlotList()))
+				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
 				.build();
 	}
 
@@ -62,6 +64,7 @@ public final class SquadAssembler {
 		return SquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
+				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
 				.event(EventAssembler.toAbstractDto(squad.getEvent()))
 				.build();
 	}

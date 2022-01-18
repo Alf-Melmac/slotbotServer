@@ -25,16 +25,16 @@ public class EventReferencelessDto extends AbstractEventDto {
 	private List<? extends SquadReferencelessDto> squadList;
 
 	/**
-	 * Returns the slotlist as content of a Discord message
+	 * Returns the slotlist for the given guild as content of a Discord message
 	 * The list includes messages that do not exceed the discord message size limit
 	 *
 	 * @return slotlist
 	 */
-	public List<String> getSlotList() {
+	public List<String> getSlotList(long guildId) {
 		StringBuilder slotListText = new StringBuilder("__**Teilnahmeplatzaufzählung**__");
 		List<String> messages = new ArrayList<>();
 		for (SquadReferencelessDto squad : getSquadList()) {
-			final StringBuilder squadText = squad.toSlotList();
+			final StringBuilder squadText = squad.toSlotList(guildId);
 			//Existing message size + 2 new line + new line may not exceed maximum discord message size
 			if ((slotListText.length() + 2 + squadText.length() > Message.MAX_CONTENT_LENGTH) && slotListText.length() + 2 <= Message.MAX_CONTENT_LENGTH) {
 				slotListText.append("\n"); //New squad

@@ -1,5 +1,6 @@
 package de.webalf.slotbot.assembler.api;
 
+import de.webalf.slotbot.assembler.GuildAssembler;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.api.SquadApiDto;
 import de.webalf.slotbot.model.dtos.api.SquadApiViewDto;
@@ -25,6 +26,7 @@ public class SquadApiAssembler {
 				.id(squad.getId())
 				.name(squad.getName())
 				.slotList(SlotApiAssembler.toDtoList(squad.getSlotList()))
+				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
 				.build();
 	}
 

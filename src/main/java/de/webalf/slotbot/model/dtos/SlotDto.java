@@ -26,6 +26,8 @@ public class SlotDto extends AbstractIdEntityDto {
 
 	private final SquadDto squad;
 
+	private final GuildDto reservedFor;
+
 	private UserDto user;
 
 	@Size(max = TEXT)

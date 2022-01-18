@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
 import static de.webalf.slotbot.model.SquadTest.buildReserveSquad;
@@ -99,7 +100,7 @@ class SlotTest {
 				.build()
 				.setChilds();
 
-		sut.slot(userToSlot);
+		sut.slotWithoutUpdate(userToSlot);
 
 		assertNull(slot1.getUser()); //Removed from old slot
 		assertEquals(userToSlot, sut.getUser()); //Slotted in new slot
@@ -114,6 +115,62 @@ class SlotTest {
 
 		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.slotWithoutUpdate(userToSlot));
 		assertMessageEquals("Auf dem Slot befindet sich eine andere Person", exception);
+	}
+
+	@Test
+	void slotAllowsSlottingOnReservedSlot() {
+		final User userToSlot = User.builder().build();
+		final Guild guild = Guild.builder().id(1L).build();
+		userToSlot.setGuilds(Set.of(GuildUsers.builder().guild(guild).user(userToSlot).build()));
+
+		final Slot sut = Slot.builder()
+				.reservedFor(guild)
+				.squad(Squad.builder()
+						.event(Event.builder().squadList(Collections.emptyList()).build())
+						.build())
+				.build();
+
+		assertNull(sut.getUser());
+		sut.slotWithoutUpdate(userToSlot);
+		assertEquals(userToSlot, sut.getUser());
+	}
+
+	@Test
+	void slotAllowsSlottingInReservedSquad() {
+		final User userToSlot = User.builder().build();
+		final Guild guild = Guild.builder().id(1L).build();
+		userToSlot.setGuilds(Set.of(GuildUsers.builder().guild(guild).user(userToSlot).build()));
+
+		final Slot sut = Slot.builder()
+				.squad(Squad.builder()
+						.reservedFor(guild)
+						.event(Event.builder().squadList(Collections.emptyList()).build())
+						.build())
+				.build();
+
+		assertNull(sut.getUser());
+		sut.slotWithoutUpdate(userToSlot);
+		assertEquals(userToSlot, sut.getUser());
+	}
+
+	@Test
+	void slotPreventsSlottingOnReservedSlot() {
+		final User userToSlot = User.builder().build();
+
+		final Slot sut = Slot.builder().reservedFor(Guild.builder().build()).build();
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.slotWithoutUpdate(userToSlot));
+		assertMessageEquals("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert", exception);
+	}
+
+	@Test
+	void slotPreventsSlottingInReservedSquad() {
+		final User userToSlot = User.builder().build();
+
+		final Slot sut = Slot.builder().squad(Squad.builder().reservedFor(Guild.builder().build()).build()).build();
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.slotWithoutUpdate(userToSlot));
+		assertMessageEquals("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert", exception);
 	}
 
 	//unslotWithoutUpdate

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * @since 23.06.2020
  */
 @Repository
-public interface SquadRepository extends IdEntityJpaRepository<Squad> {
+public interface SquadRepository extends SuperIdEntityJpaRepository<Squad> {
 }
