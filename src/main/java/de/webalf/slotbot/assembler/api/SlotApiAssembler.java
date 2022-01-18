@@ -1,5 +1,6 @@
 package de.webalf.slotbot.assembler.api;
 
+import de.webalf.slotbot.assembler.GuildAssembler;
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.api.SlotApiDto;
@@ -27,6 +28,7 @@ public class SlotApiAssembler {
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
+				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
 				.user(UserAssembler.toDto(slot.getUser()))
 				.replacementText(slot.getReplacementText())
 				.build();
