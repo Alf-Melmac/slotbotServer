@@ -146,8 +146,7 @@
 	</div>
 </section>
 
-<footer th:if="${ownProfile}" th:insert="fragments/general.html :: footer"></footer>
-<footer th:unless="${ownProfile}" th:insert="fragments/general.html :: footer" class="fixed-bottom"></footer>
+<footer th:insert="fragments/general.html :: footer(${ownProfile})"></footer>
 
 <th:block th:if="${ownProfile}">
 	<div th:replace="fragments/toasts.html"></div>
