@@ -172,7 +172,18 @@
 													<p class="mb-1" th:text="${slot.number}"></p>
 												</div>
 												<div class="col-md-5">
-													<p class="mb-1" th:text="${slot.name}"></p>
+													<p class="mb-1">
+														<span th:text="${slot.name}"></span>
+														<th:block th:if="${slot.reservedFor != null}"
+														          th:with="reservedFor=${slot.reservedFor}">
+															<img th:unless="${#strings.isEmpty(reservedFor.emojiUrl)}"
+															     class="square-em-1" th:src="${reservedFor.emojiUrl}"
+															     th:title="${reservedFor.groupIdentifier}"
+															     th:alt="${reservedFor.groupIdentifier}">
+															<span th:if="${#strings.isEmpty(reservedFor.emojiUrl)}"
+															      th:text="${'[' + reservedFor.groupIdentifier + ']'}"></span>
+														</th:block>
+													</p>
 												</div>
 												<div th:if="${#strings.isEmpty(slot.text)}">
 													<p class="mb-1 font-weight-bold">Freier Slot</p>
