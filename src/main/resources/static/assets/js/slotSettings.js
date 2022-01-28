@@ -1,8 +1,6 @@
 $(function ($) {
 	"use strict";
 
-	const $squads = $('#squads');
-
 	const $slotSettings = $('#slotSettings');
 	const slotSettingsModal = $slotSettings.find('.modal-body').prop('outerHTML');
 
@@ -10,7 +8,7 @@ $(function ($) {
 		const $dropdownEl = $(e.relatedTarget);
 		$dropdownEl.addClass('js-active-modal');
 		const $modal = $(e.currentTarget);
-		$modal.find('#slotSettingsModalLabel').text(getHeaderForModal($dropdownEl.parents('.form-row')));
+		$modal.find('#slotSettingsModalLabel').text(getHeaderForSlotModal($dropdownEl.parents('.form-row')));
 
 		//Strangely JQuery doesn't update data fields, therefor using attr
 		const reservedFor = $dropdownEl.attr('data-reservedfor');
@@ -44,29 +42,20 @@ $(function ($) {
 		});
 		$dropdownEl.attr('data-blocked', $modalContent.find('#slotSettingBlocked').find('.fa-lock').length !== 0);
 		$slotSettings.modal('hide');
-	})
+	});
 
 	$slotSettings.on('hidden.bs.modal', function (e) {
 		$('.js-active-modal').removeClass('js-active-modal');
 		$slotSettings.find('.modal-body').replaceWith(slotSettingsModal);
-	})
+	});
 
 	$slotSettings.on('click', '#slotSettingBlocked', /*':not(.js-blocked, .btn-denied)',*/ function() {
 		$(this).find('.fas').toggleClass('fa-lock-open fa-lock');
 		$slotSettings.find('#slotReplacementText').toggle($(this).find('.fa-lock').length !== 0);
 	});
-
-	$squads.on('click', '.js-trash', function () {
-		const $row = $(this).parents('.form-row');
-		if ($row.hasClass('js-squad')) {
-			$row.parent('.js-complete-squad').remove();
-		} else {
-			$row.remove();
-		}
-	});
 });
 
-function getHeaderForModal($row) {
+function getHeaderForSlotModal($row) {
 	let header = 'Regeln für';
 	const slotNumber = $row.find('.js-slot-number').val();
 	if (!isNaN(slotNumber)) {

@@ -108,6 +108,7 @@ public class EventDetailsAssembler {
 		return EventDetailsSquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
+				.reservedFor(squad.getReservedFor() != null ? squad.getReservedFor().getId() : null)
 				.slotList(slotList)
 				.notEmpty(slotList.stream().anyMatch(EventDetailsSlotDto::isOccupied))
 				.build();

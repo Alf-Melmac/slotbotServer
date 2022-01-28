@@ -129,6 +129,13 @@ function getSquads(update = false) {
             name: $completeSquad.find('.js-squad-name').val().trim(),
             slotList: []
         };
+        const $squadSettings = $completeSquad.find('.js-settings');
+        const squadReservedFor = $squadSettings.attr('data-reservedfor');
+        if (squadReservedFor) {
+            squad.reservedFor = {
+                id: squadReservedFor
+            };
+        }
         if (update) {
             squad.id = $completeSquad.data('squadid');
         }
@@ -140,7 +147,12 @@ function getSquads(update = false) {
                 number: $slot.find('.js-slot-number').val()
             };
             const $slotSettings = $slot.find('.js-settings');
-            slot.reservedFor = $slotSettings.attr('data-reservedfor');
+            const slotReservedFor = $slotSettings.attr('data-reservedfor');
+            if (slotReservedFor) {
+                slot.reservedFor = {
+                    id: slotReservedFor
+                };
+            }
             const blocked = $slotSettings.attr('data-blocked') === "true";
             slot.blocked = blocked;
             if (blocked) {
