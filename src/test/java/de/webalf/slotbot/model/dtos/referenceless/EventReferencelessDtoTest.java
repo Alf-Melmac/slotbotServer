@@ -29,7 +29,7 @@ class EventReferencelessDtoTest {
 				.build();
 
 		final List<String> slotList = sut.getSlotList(1L);
-		assertThat(slotList.size()).isEqualTo(1);
+		assertThat(slotList).hasSize(1);
 		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad**\n1 Slot: <@1234>");
 	}
 
@@ -42,46 +42,47 @@ class EventReferencelessDtoTest {
 								.number(1)
 								.name("Slot")
 								.user(UserDto.builder().id(Long.toString(User.DEFAULT_USER_ID)).build())
+								.replacementText("Replacement")
 								.build()
 						))
 						.build()))
 				.build();
 
 		final List<String> slotList = sut.getSlotList(1L);
-		assertThat(slotList.size()).isEqualTo(1);
-		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad**\n1 Slot: <@1234>");
+		assertThat(slotList).hasSize(1);
+		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad**\n1 Slot: *Replacement*");
 	}
 
 	@Test
 	void getSlotListMarksReservationsForOneGuild() {
 		final long g1 = 1L;
-		final EventReferencelessDto sut = buildEvent(g1, 2L);
+		final EventReferencelessDto sut = buildEvent(Long.toString(g1), "2");
 
 		final List<String> slotList = sut.getSlotList(g1);
-		assertThat(slotList.size()).isEqualTo(1);
+		assertThat(slotList).hasSize(1);
 		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1**:\n3 Slot g2:\n\n**Squad g1**\n**4 Slot free**:\n**5 Slot g1**:\n6 Slot g2:\n\n**Squad g2**\n7 Slot free:\n**8 Slot g1**:\n9 Slot g2:");
 	}
 
 	@Test
 	void getSlotListMarksReservationsForOtherGuild() {
 		final long g2 = 2L;
-		final EventReferencelessDto sut = buildEvent(1L, g2);
+		final EventReferencelessDto sut = buildEvent("1", Long.toString(g2));
 
 		final List<String> slotList = sut.getSlotList(g2);
-		assertThat(slotList.size()).isEqualTo(1);
+		assertThat(slotList).hasSize(1);
 		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1:\n**3 Slot g2**:\n\n**Squad g1**\n4 Slot free:\n5 Slot g1:\n**6 Slot g2**:\n\n**Squad g2**\n**7 Slot free**:\n8 Slot g1:\n**9 Slot g2**:");
 	}
 
 	@Test
 	void getSlotListMarksReservationsForForeignGuild() {
-		final EventReferencelessDto sut = buildEvent(1L, 2L);
+		final EventReferencelessDto sut = buildEvent("1", "2");
 
 		final List<String> slotList = sut.getSlotList(3L);
-		assertThat(slotList.size()).isEqualTo(1);
+		assertThat(slotList).hasSize(1);
 		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1:\n3 Slot g2:\n\n**Squad g1**\n4 Slot free:\n5 Slot g1:\n6 Slot g2:\n\n**Squad g2**\n7 Slot free:\n8 Slot g1:\n9 Slot g2:");
 	}
 
-	private EventReferencelessDto buildEvent(long guild1, long guild2) {
+	private EventReferencelessDto buildEvent(String guild1, String guild2) {
 		final GuildDto g1 = GuildDto.builder().id(guild1).build();
 		final GuildDto g2 = GuildDto.builder().id(guild2).build();
 

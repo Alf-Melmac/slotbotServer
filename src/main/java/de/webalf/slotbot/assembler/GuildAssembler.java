@@ -2,12 +2,15 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.GuildDto;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 
 /**
  * @author Alf
@@ -21,7 +24,7 @@ public final class GuildAssembler {
 		}
 
 		return Guild.builder()
-				.id(guildDto.getId())
+				.id(LongUtils.parseLong(guildDto.getId(), GUILD_PLACEHOLDER))
 				.build();
 	}
 
@@ -31,7 +34,7 @@ public final class GuildAssembler {
 		}
 
 		return GuildDto.builder()
-				.id(guild.getId())
+				.id(Long.toString(guild.getId()))
 				.groupIdentifier(guild.getGroupIdentifier())
 				.emojiUrl(buildEmojiUrl(guild))
 				.build();

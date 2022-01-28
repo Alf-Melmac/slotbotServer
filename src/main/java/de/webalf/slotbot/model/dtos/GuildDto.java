@@ -2,7 +2,6 @@ package de.webalf.slotbot.model.dtos;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,11 +13,13 @@ import static de.webalf.slotbot.util.MaxLength.TEXT;
  * @author Alf
  * @since 16.01.2022
  */
-@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @SuperBuilder
-public class GuildDto extends AbstractIdEntityDto {
+public class GuildDto {
+	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.
+	private String id;
+
 	@Size(max = TEXT)
 	private String groupIdentifier;
 

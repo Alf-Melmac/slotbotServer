@@ -73,7 +73,7 @@ public class EventWebController {
 		mav.addObject("date", date);
 		if (StringUtils.isNotEmpty(copyEvent) && StringUtils.onlyNumbers(copyEvent)) {
 			eventService.findOptionalById(Integer.parseInt(copyEvent))
-					.ifPresent(event -> mav.addObject("copyEvent", eventDetailsAssembler.toDto(event)));
+					.ifPresent(event -> mav.addObject("copyEvent", eventDetailsAssembler.toDto(event, false)));
 		}
 		mav.addObject("eventTypes", eventTypeService.findAll());
 		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());

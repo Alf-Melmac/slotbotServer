@@ -146,22 +146,31 @@ function addSlotList(slotList) {
 	}
 }
 
-function fillSquad($squad, squad) {
+function fillSquad($completeSquad, squad) {
+	const $squad = $completeSquad.find('.js-squad');
 	$squad.find('.js-squad-name').val(squad.name);
+	const reservedFor = squad.reservedFor;
+	if (reservedFor) {
+		const $squadSettings = $squad.find('.js-settings');
+		$squadSettings.attr('data-reservedfor', reservedFor.id);
+	}
 	let first = true;
 	for (const slot of squad.slotList) {
 		if (!first) {
-			$squad.find('.js-add-slot').trigger('click');
+			$completeSquad.find('.js-add-slot').trigger('click');
 		} else {
 			first = false;
 		}
-		const $slot = $squad.find('.js-slot').last();
+		const $slot = $completeSquad.find('.js-slot').last();
 		if (slot.number !== 0) {
 			$slot.find('.js-slot-number').val(slot.number);
 		}
 		$slot.find('.js-slot-name').val(slot.name);
-		const $slotSettings = $slot.find('.js-setting');
-		$slotSettings.attr('data-reservedfor', slot.reservedFor);
+		const $slotSettings = $slot.find('.js-settings');
+		const reservedFor = slot.reservedFor;
+		if (reservedFor) {
+			$slotSettings.attr('data-reservedfor', reservedFor.id);
+		}
 		const blocked = slot.blocked;
 		$slotSettings.attr('data-blocked', blocked);
 		if (blocked) {

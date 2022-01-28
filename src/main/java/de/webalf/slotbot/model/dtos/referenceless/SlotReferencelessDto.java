@@ -46,9 +46,9 @@ public class SlotReferencelessDto extends AbstractIdEntityDto {
 
 		boolean notReservedForOthers;
 		if (reservedFor != null) { //Slot is reserved
-			notReservedForOthers = reservedFor.getId() == guildId;
+			notReservedForOthers =  Long.toString(guildId).equals(reservedFor.getId());
 		} else { //Use reservedFor of Squad
-			notReservedForOthers = squadReservedFor == null || squadReservedFor.getId() == guildId;
+			notReservedForOthers = squadReservedFor == null || Long.toString(guildId).equals(squadReservedFor.getId());
 		}
 
 		final boolean isEmpty = getUser() == null;

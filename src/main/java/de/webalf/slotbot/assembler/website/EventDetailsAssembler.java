@@ -32,6 +32,10 @@ public class EventDetailsAssembler {
 	private final DiscordApiService discordApiService;
 
 	public EventDetailsDto toDto(@NonNull Event event) {
+		return toDto(event, true);
+	}
+
+	public EventDetailsDto toDto(@NonNull Event event, boolean optimizeReservedFor) {
 		final LocalDateTime dateTime = event.getDateTime();
 
 		return EventDetailsDto.builder()
@@ -49,7 +53,7 @@ public class EventDetailsAssembler {
 				.missionLength(event.getMissionLength())
 				.pictureUrl(event.getPictureUrl())
 				.details(getDetails(event.getDetails()))
-				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.squadList(toEventDetailsDtoList(event.getSquadList(), optimizeReservedFor))
 				.reserveParticipating(event.getReserveParticipating())
 				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
@@ -72,7 +76,7 @@ public class EventDetailsAssembler {
 				.missionLength(event.getMissionLength())
 				.pictureUrl(event.getPictureUrl())
 				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
-				.squadList(toEventDetailsDtoList(event.getSquadList()))
+				.squadList(toEventDetailsDtoList(event.getSquadList(), false))
 				.reserveParticipating(event.getReserveParticipating())
 				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
@@ -98,14 +102,14 @@ public class EventDetailsAssembler {
 		return detailDtos;
 	}
 
-	private List<EventDetailsSquadDto> toEventDetailsDtoList(@NonNull Iterable<? extends Squad> squadList) {
+	private List<EventDetailsSquadDto> toEventDetailsDtoList(@NonNull Iterable<? extends Squad> squadList, boolean optimizeReservedFor) {
 		return StreamSupport.stream(squadList.spliterator(), false)
-				.map(this::toEventDetailsDto)
+				.map(squad -> toEventDetailsDto(squad, optimizeReservedFor))
 				.collect(Collectors.toList());
 	}
 
-	private EventDetailsSquadDto toEventDetailsDto(@NonNull Squad squad) {
-		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotList());
+	private EventDetailsSquadDto toEventDetailsDto(@NonNull Squad squad, boolean optimizeReservedFor) {
+		final List<EventDetailsSlotDto> slotList = toEventDetailsSlotDtoList(squad.getSlotList(), optimizeReservedFor);
 		return EventDetailsSquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
@@ -115,13 +119,13 @@ public class EventDetailsAssembler {
 				.build();
 	}
 
-	private List<EventDetailsSlotDto> toEventDetailsSlotDtoList(@NonNull Iterable<? extends Slot> slotList) {
+	private List<EventDetailsSlotDto> toEventDetailsSlotDtoList(@NonNull Iterable<? extends Slot> slotList, boolean optimizeReservedFor) {
 		return StreamSupport.stream(slotList.spliterator(), false)
-				.map(this::toEventDetailsSlotDto)
+				.map(slot -> toEventDetailsSlotDto(slot, optimizeReservedFor))
 				.collect(Collectors.toList());
 	}
 
-	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot) {
+	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot, boolean optimizeReservedFor) {
 		String text = null;
 		boolean blocked = false;
 		if (slot.getUser() != null) {
@@ -140,7 +144,7 @@ public class EventDetailsAssembler {
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
-				.reservedFor(GuildAssembler.toDto(slot.getEffectiveReservedForDisplay()))
+				.reservedFor(GuildAssembler.toDto(optimizeReservedFor ? slot.getEffectiveReservedForDisplay() : slot.getReservedFor()))
 				.text(text)
 				.occupied(!(slot.getUser() == null || slot.getUser().isDefaultUser()))
 				.blocked(blocked)
