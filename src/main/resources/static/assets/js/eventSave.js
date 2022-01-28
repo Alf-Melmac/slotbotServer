@@ -139,11 +139,16 @@ function getSquads(update = false) {
                 name: $slot.find('.js-slot-name').val().trim(),
                 number: $slot.find('.js-slot-number').val()
             };
-            if ($slot.find('.fa-lock').length !== 0) {
+            const $slotSettings = $slot.find('.js-settings');
+            slot.reservedFor = $slotSettings.attr('data-reservedfor');
+            const blocked = $slotSettings.attr('data-blocked') === "true";
+            slot.blocked = blocked;
+            if (blocked) {
                 slot.user = {
                     id: defaultUserId
                 }
             }
+            slot.replacementText = $slotSettings.attr('data-replacementtext');
             if (update) {
                 slot.id = $slot.data('slotid');
             }

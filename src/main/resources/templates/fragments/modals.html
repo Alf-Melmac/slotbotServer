@@ -46,5 +46,41 @@
 		</div>
 	</div>
 </div>
+
+<div th:fragment="slotSettings" id="slotSettings" class="modal fade" tabindex="-1"
+     aria-labelledby="slotSettingsModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 id="slotSettingsModalLabel" class="modal-title">Placeholder should be removed</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h6 class="mb-3">Reservierung</h6>
+				<select id="slotSettingReservation" class="custom-select js-slot-ignoredForSave" data-key="reservedfor">
+					<option selected value="-1">Nicht reserviert</option>
+					<option th:each="guild : ${guilds}" th:text="${guild.getGroupIdentifier()}"
+					        th:value="${guild.getId()}"></option>
+				</select>
+				<hr>
+				<h6 class="mb-2">Blockierung</h6>
+				<div class="d-flex align-items-center">
+					<div id="slotSettingBlocked" class="btn btn-xl btn-lock p-0 pr-2" type="button" title="Blockierung">
+						<em class="fas fa-lock-open"></em>
+					</div>
+					<input id="slotReplacementText" class="form-control js-slot-ignoredForSave" type="text" placeholder="Ersatztext"
+					       th:maxlength="${T(de.webalf.slotbot.util.MaxLength).TEXT}" style="display: none;"
+					       data-key="replacementtext">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+				<button id="saveSlotSettings" type="button" class="btn btn-primary">Speichern</button>
+			</div>
+		</div>
+	</div>
+</div>
 </body>
 </html>

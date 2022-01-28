@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.Size;
+
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+
 /**
  * @author Alf
  * @since 16.01.2022
@@ -15,4 +19,6 @@ import lombok.experimental.SuperBuilder;
 @Value
 @SuperBuilder
 public class GuildDto extends AbstractIdEntityDto {
+	@Size(max = TEXT)
+	String groupIdentifier;
 }

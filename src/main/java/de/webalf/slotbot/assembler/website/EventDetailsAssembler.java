@@ -138,6 +138,7 @@ public class EventDetailsAssembler {
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
+				.reservedFor(slot.getReservedFor() != null ? slot.getReservedFor().getId() : null)
 				.text(text)
 				.occupied(!(slot.getUser() == null || slot.getUser().isDefaultUser()))
 				.blocked(blocked)

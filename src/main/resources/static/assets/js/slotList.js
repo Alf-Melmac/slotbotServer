@@ -16,20 +16,41 @@ $(function () {
 
     const newSlot =
         `<div class="form-row align-items-center js-slot">
-           <div class="col-md-1">
-              <input class="form-control js-slot-number" type="number" min="1" value="{defaultSlotValue}" required>
-           </div>
-           <div class="col-md-10">
-              <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>
-           </div>
-           <div class="col-md-1 d-flex">
-                <div class="btn btn-xl btn-lock p-0 pr-1 js-lock" type="button" title="Blockierung">
-                    <em class="fas fa-lock-open"></em>
+            <div class="col-md-1">
+                <input class="form-control js-slot-number" type="number" min="1" value="{defaultSlotValue}" required>
+            </div>
+            <div class="col-md-10">
+                <input class="form-control js-slot-name" type="text" placeholder="Slot Name" required>
+            </div>
+            <div class="col-md-1">
+                <div class="dropdown">
+                    <div class="btn btn-xl btn-wht p-0 pr-1" type="button" data-toggle="dropdown" aria-expanded="false">
+                        <em class="fas fa-ellipsis-h"></em>
+                    </div>
+                    <div class="dropdown-menu">
+                        <button class="dropdown-item js-settings" type="button" data-toggle="modal" data-target="#slotSettings">
+                            <div class="row">
+                                <div class="col-3">
+                                    <em class="fas fa-user-cog"></em>
+                                </div>
+                                <div class="col-9">
+                                    <span>Regeln</span>
+                                </div>
+                            </div>
+                        </button>
+                        <button class="dropdown-item js-trash" type="button">
+                            <div class="row">
+                                <div class="col-3">
+                                    <em class="far fa-trash-alt"></em>
+                                </div>
+                                <div class="col-9">
+                                    <span>Löschen</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
                 </div>
-                <div class="btn btn-xl btn-wht p-0 js-trash" type="button">
-                    <em class="far fa-trash-alt"></em>
-                </div>
-           </div>
+            </div>
         </div>`;
 
     const newSquad =
@@ -64,19 +85,6 @@ $(function () {
         const $slots = $this.parent('.js-slots');
         $slots.append(newSlot.replace('{defaultSlotValue}', findFirstUnusedSlotNumber()));
         $this.appendTo($slots);
-    });
-
-    $squads.on('click', '.js-lock:not(.js-blocked, .btn-denied)', function () {
-        $(this).find('.fas').toggleClass('fa-lock-open fa-lock');
-    });
-
-    $squads.on('click', '.js-trash', function () {
-        const $row = $(this).parents('.form-row');
-        if ($row.hasClass('js-squad')) {
-            $row.parent('.js-complete-squad').remove();
-        } else {
-            $row.remove();
-        }
     });
 
     function findFirstUnusedSlotNumber() {
@@ -135,9 +143,13 @@ function fillSquad($squad, squad) {
         if (slot.number !== 0) {
             $slot.find('.js-slot-number').val(slot.number);
         }
-        if (slot.blocked) {
-            $slot.find('.js-lock').trigger('click');
-        }
         $slot.find('.js-slot-name').val(slot.name);
+        const $slotSettings = $slot.find('.js-setting');
+        $slotSettings.attr('data-reservedfor', slot.reservedFor);
+        const blocked = slot.blocked;
+        $slotSettings.attr('data-blocked', blocked);
+        if (blocked) {
+            $slotSettings.attr('data-replacementtext', slot.text);
+        }
     }
 }

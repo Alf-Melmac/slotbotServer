@@ -4,6 +4,10 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.GuildDto;
 import lombok.experimental.UtilityClass;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 /**
  * @author Alf
  * @since 16.01.2022
@@ -27,6 +31,13 @@ public final class GuildAssembler {
 
 		return GuildDto.builder()
 				.id(guild.getId())
+				.groupIdentifier(guild.getGroupIdentifier())
 				.build();
+	}
+
+	public static List<GuildDto> toDtoList(Iterable<? extends Guild> guilds) {
+		return StreamSupport.stream(guilds.spliterator(), false)
+				.map(GuildAssembler::toDto)
+				.collect(Collectors.toList());
 	}
 }

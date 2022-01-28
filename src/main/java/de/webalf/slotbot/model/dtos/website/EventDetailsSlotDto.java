@@ -24,6 +24,8 @@ public class EventDetailsSlotDto extends AbstractIdEntityDto {
 
 	int number;
 
+	Long reservedFor;
+
 	String text;
 
 	boolean occupied;

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 
@@ -34,6 +35,10 @@ public class GuildService {
 
 	public List<Guild> findAll() {
 		return guildRepository.findAll();
+	}
+
+	public List<Guild> findAllExceptDefault() {
+		return findAll().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).collect(Collectors.toUnmodifiableList());
 	}
 
 	private List<Guild> findAllWithUrlPattern() {

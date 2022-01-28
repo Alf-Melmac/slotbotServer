@@ -24,6 +24,8 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	String name;
 
+	Long reservedFor;
+
 	List<EventDetailsSlotDto> slotList;
 
 	boolean notEmpty;

@@ -20,6 +20,7 @@ import org.thymeleaf.util.ListUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventManageRole;
@@ -58,10 +59,29 @@ public class EventService {
 		Event event = eventAssembler.fromDto(eventDto);
 		event.setEventType(eventTypeService.find(eventDto.getEventType()));
 		event.setOwnerGuild(guildService.getOwnerGuild(eventDto));
+		setReservedFor(event);
 
 		event.validate();
 
 		return eventRepository.save(event);
+	}
+
+	private void setReservedFor(@NonNull Event event) {
+		event.getSquadList().forEach(squad -> {
+			evaluateReservedFor(squad.getReservedFor(), squad::setReservedFor);
+			squad.getSlotList().forEach(slot ->
+					evaluateReservedFor(slot.getReservedFor(), slot::setReservedFor));
+		});
+	}
+
+	private void evaluateReservedFor(Guild reservedFor, Consumer<Guild> consumer) {
+		if (reservedFor != null) {
+			if (reservedFor.getId() != GUILD_PLACEHOLDER) {
+				consumer.accept(guildService.find(reservedFor.getId()));
+			} else {
+				consumer.accept(null);
+			}
+		}
 	}
 
 	/**
