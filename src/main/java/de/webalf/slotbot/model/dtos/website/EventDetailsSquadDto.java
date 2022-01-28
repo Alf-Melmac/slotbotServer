@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model.dtos.website;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
+import de.webalf.slotbot.model.dtos.GuildDto;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
@@ -24,7 +25,7 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	String name;
 
-	Long reservedFor;
+	GuildDto reservedFor;
 
 	List<EventDetailsSlotDto> slotList;
 

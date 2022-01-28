@@ -21,4 +21,6 @@ import static de.webalf.slotbot.util.MaxLength.TEXT;
 public class GuildDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String groupIdentifier;
+
+	private String emojiUrl;
 }

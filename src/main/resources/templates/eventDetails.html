@@ -48,8 +48,12 @@
 					</div>
 					<div class="col-md-2" th:if="${hasEventManageRole}">
 						<div class="row">
-							<div id="eventCopy" class="col-auto btn btn-xl btn-wht" type="button"><em class="far fa-clone"></em></div>
-							<div id="eventEdit" class="col-auto btn btn-xl btn-wht" type="button"><em class="far fa-edit"></em></div>
+							<div id="eventCopy" class="col-auto btn btn-xl btn-wht" type="button">
+								<em class="far fa-clone"></em>
+							</div>
+							<div id="eventEdit" class="col-auto btn btn-xl btn-wht" type="button">
+								<em class="far fa-edit"></em>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -145,7 +149,18 @@
 								<div class="form-group complete-squad">
 									<div class="form-row align-items-center js-squad ">
 										<div class="col-md-12">
-											<p class="mb-1" th:text="${squad.name}"></p>
+											<p class="mb-1">
+												<span th:text="${squad.name}"></span>
+												<th:block th:if="${squad.reservedFor != null}"
+												          th:with="reservedFor=${squad.reservedFor}">
+													<img th:unless="${#strings.isEmpty(reservedFor.emojiUrl)}"
+													     class="square-em-1" th:src="${reservedFor.emojiUrl}"
+													     th:title="${reservedFor.groupIdentifier}"
+													     th:alt="${reservedFor.groupIdentifier}">
+													<span th:if="${#strings.isEmpty(reservedFor.emojiUrl)}"
+													      th:text="${'[' + reservedFor.groupIdentifier + ']'}"></span>
+												</th:block>
+											</p>
 										</div>
 									</div>
 

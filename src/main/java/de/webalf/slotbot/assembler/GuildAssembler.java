@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.GuildDto;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public final class GuildAssembler {
 		return GuildDto.builder()
 				.id(guild.getId())
 				.groupIdentifier(guild.getGroupIdentifier())
+				.emojiUrl(buildEmojiUrl(guild))
 				.build();
 	}
 
@@ -39,5 +41,10 @@ public final class GuildAssembler {
 		return StreamSupport.stream(guilds.spliterator(), false)
 				.map(GuildAssembler::toDto)
 				.collect(Collectors.toList());
+	}
+
+	private static String buildEmojiUrl(@NonNull Guild guild) {
+		final Long emoji = guild.getEmoji();
+		return emoji != null ? "https://cdn.discordapp.com/emojis/" + emoji + ".webp" : null;
 	}
 }

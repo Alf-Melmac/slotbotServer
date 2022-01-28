@@ -41,6 +41,9 @@ public class Guild extends AbstractDiscordIdEntity {
 	@Size(max = TEXT)
 	private String groupIdentifier;
 
+	@Column(name = "discord_guild_emoji")
+	private Long emoji;
+
 	public static final long GUILD_PLACEHOLDER = -1L;
 
 	public boolean is() {

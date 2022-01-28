@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.assembler.EventFieldAssembler;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
+import de.webalf.slotbot.assembler.GuildAssembler;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
@@ -108,7 +109,7 @@ public class EventDetailsAssembler {
 		return EventDetailsSquadDto.builder()
 				.id(squad.getId())
 				.name(squad.getName())
-				.reservedFor(squad.getReservedFor() != null ? squad.getReservedFor().getId() : null)
+				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
 				.slotList(slotList)
 				.notEmpty(slotList.stream().anyMatch(EventDetailsSlotDto::isOccupied))
 				.build();
@@ -139,7 +140,7 @@ public class EventDetailsAssembler {
 				.id(slot.getId())
 				.name(slot.getName())
 				.number(slot.getNumber())
-				.reservedFor(slot.getReservedFor() != null ? slot.getReservedFor().getId() : null)
+				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
 				.text(text)
 				.occupied(!(slot.getUser() == null || slot.getUser().isDefaultUser()))
 				.blocked(blocked)
