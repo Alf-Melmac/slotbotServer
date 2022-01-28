@@ -1,6 +1,5 @@
 $(function () {
     "use strict";
-    $('progress').hide();
     $('input[type="file"]').on('change', function () {
         $('progress').show()
         const formData = new FormData();
