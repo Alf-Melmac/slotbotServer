@@ -69,16 +69,14 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
 		addCalendarSubPageObjects(mav);
+		addEventManageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("date", date);
 		if (StringUtils.isNotEmpty(copyEvent) && StringUtils.onlyNumbers(copyEvent)) {
 			eventService.findOptionalById(Integer.parseInt(copyEvent))
 					.ifPresent(event -> mav.addObject("copyEvent", eventDetailsAssembler.toDto(event, false)));
 		}
-		mav.addObject("eventTypes", eventTypeService.findAll());
-		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
-		mav.addObject("guilds", GuildAssembler.toDtoList(guildService.findAllExceptDefault()));
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
 				.getEventDetailsHtml(Long.MIN_VALUE))
@@ -111,11 +109,10 @@ public class EventWebController {
 		ModelAndView mav = new ModelAndView("eventEdit");
 
 		addCalendarSubPageObjects(mav);
+		addEventManageObjects(mav);
 		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
 		mav.addObject("event", eventDetailsAssembler.toEditDto(event));
 		mav.addObject("canRevokeShareable", event.canRevokeShareable());
-		mav.addObject("eventTypes", eventTypeService.findAll());
-		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
 		final boolean canUploadSlotlist = event.isEmpty();
 		mav.addObject("canUploadSlotlist", canUploadSlotlist);
 		if (canUploadSlotlist) {
@@ -135,5 +132,11 @@ public class EventWebController {
 			mav.addObject("avatarUrl", DiscordUserUtils.getAvatarUrl(oAuth2User.getAttribute("id"), oAuth2User.getAttribute("avatar"), oAuth2User.getAttribute("discriminator")));
 			mav.addObject("profileUrl", linkTo(methodOn(ProfileWebController.class).getProfile(oAuth2User.getAttribute("id"))).toUri().toString());
 		}
+	}
+
+	private void addEventManageObjects(@NonNull ModelAndView mav) {
+		mav.addObject("eventTypes", eventTypeService.findAll());
+		mav.addObject("eventFieldDefaultsUrl", linkTo(methodOn(EventController.class).getEventFieldDefaults(null)).toUri().toString());
+		mav.addObject("guilds", GuildAssembler.toDtoList(guildService.findAllExceptDefault()));
 	}
 }

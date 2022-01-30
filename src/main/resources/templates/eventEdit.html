@@ -169,7 +169,7 @@
 				<button id="uploadSlotlist" class="btn btn-secondary mr-2" type="button"
 				        th:classappend="${!canUploadSlotlist} ? 'btn-denied'" th:disabled="${!canUploadSlotlist}"
 				        th:title="${!canUploadSlotlist} ? 'Zum Hochladen einer Slotliste muss das Event leer sein'"
-				     data-toggle="modal" data-target="#uploadSlotlistModal">Slotliste hochladen
+				        data-toggle="modal" data-target="#uploadSlotlistModal">Slotliste hochladen
 				</button>
 				<div id="renumber" class="btn btn-secondary" type="button">Neu nummerieren</div>
 			</div>
@@ -185,7 +185,8 @@
 							<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 							       required th:value="${squad.name}" th:disabled="${squad.isReserve()}">
 						</div>
-						<div th:unless="${squad.isNotEmpty() || squad.isReserve()}" class="d-flex btn btn-xl btn-wht js-trash" type="button">
+						<div th:unless="${squad.isNotEmpty() || squad.isReserve()}" type="button"
+						     class="d-flex btn btn-xl btn-wht js-trash">
 							<em class="far fa-trash-alt"></em>
 						</div>
 						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied"
@@ -207,25 +208,38 @@
 								<input class="form-control js-slot-name" type="text" placeholder="Slot Name"
 								       required th:value="${slot.name}" th:disabled="${squad.isReserve()}">
 							</div>
-							<div th:unless="${squad.isReserve()}" class="col-md-1 d-flex">
-								<button th:unless="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock"
-								     th:classappend="${slot.isOccupied()} ? 'btn-denied' : 'btn-lock'"
-								     th:disabled="${slot.isOccupied()}"
-								     type="button" title="Blockierung">
-									<em class="fas fa-lock-open"></em>
-								</button>
-								<div th:if="${slot.isBlocked()}" class="btn btn-xl p-0 pr-1 js-lock js-blocked btn-lock"
-								     th:disabled="${slot.isOccupied()}"
-								     type="button" title="Blockierung">
-									<em class="fas fa-lock"></em>
+
+							<div class="dropdown">
+								<div class="btn btn-xl btn-wht p-0 pr-1" type="button" data-toggle="dropdown"
+								     aria-expanded="false">
+									<em class="fas fa-ellipsis-h"></em>
 								</div>
-								<div th:unless="${slot.isOccupied()}" class="btn btn-xl btn-wht p-0 js-trash"
-								     type="button">
-									<em class="far fa-trash-alt"></em>
-								</div>
-								<div th:if="${slot.isOccupied()}" class="btn btn-xl btn-denied p-0"
-								     title="Dieser Slot ist belegt">
-									<em class="far fa-trash-alt"></em>
+								<div class="dropdown-menu">
+									<button class="dropdown-item js-settings" type="button" data-toggle="modal"
+									        data-target="#slotSettings"
+									        th:data-reservedfor="${slot.reservedFor != null ? slot.reservedFor.id : '-1'}"
+									        th:data-blocked="${slot.blocked}"
+									        th:data-replacementtext="${slot.isBlocked() ? slot.text : ''}">
+										<div class="row">
+											<div class="col-3">
+												<em class="fas fa-user-cog"></em>
+											</div>
+											<div class="col-9">
+												<span>Regeln</span>
+											</div>
+										</div>
+									</button>
+									<button class="dropdown-item js-trash" th:disabled="${slot.isOccupied()}"
+									        type="button" th:title="${slot.isOccupied()} ? 'Dieser Slot ist belegt'">
+										<div class="row">
+											<div class="col-3">
+												<em class="far fa-trash-alt"></em>
+											</div>
+											<div class="col-9">
+												<span>Löschen</span>
+											</div>
+										</div>
+									</button>
 								</div>
 							</div>
 						</div>
@@ -267,17 +281,9 @@
 	</div>
 </section>
 
-<!--Add default fields warning-->
-<div th:replace="fragments/modals.html :: addDefaultFieldsWarning"></div>
 <div th:if="${canUploadSlotlist}" th:replace="fragments/modals.html :: uploadSlotlistModal"></div>
 <div th:replace="fragments/toasts.html"></div>
 
-<footer th:replace="fragments/general.html :: footer(false)"></footer>
-
-<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
-<script th:replace="fragments/scripts.html :: jqueryuiANDmomentANDtempusdominusANDcolorpicker"></script>
-<script th:src="@{/assets/js/colorpicker.js}"></script>
-<script th:replace="fragments/scripts.html :: xeditable"></script>
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const eventsUrl = /*[[${eventsUrl}]]*/ '';
@@ -291,9 +297,8 @@
 	const defaultUserId = /*[[${T(de.webalf.slotbot.model.User).DEFAULT_USER_ID}]]*/ '';
 	/*]]>*/
 </script>
-<script th:src="@{/assets/js/eventSave.js}"></script>
-<script th:src="@{/assets/js/eventFields.js}"></script>
-<script th:src="@{/assets/js/slotList.js}"></script>
+<div th:replace="fragments/scripts.html :: eventManage"></div>
+<script th:replace="fragments/scripts.html :: xeditable"></script>
 <script th:if="${canUploadSlotlist}" th:src="@{/assets/js/uploadSqmFile.js}"></script>
 <script th:src="@{/assets/js/eventEdit.js}"></script>
 </body>

@@ -211,18 +211,8 @@
 	</div>
 </section>
 
-<!--Add modals-->
-<div th:replace="fragments/modals.html :: addDefaultFieldsWarning"></div>
 <div th:replace="fragments/modals.html :: uploadSlotlistModal"></div>
-<div th:replace="fragments/modals.html :: squadSettings"></div>
-<div th:replace="fragments/modals.html :: slotSettings"></div>
 
-<footer th:replace="fragments/general.html :: footer(false)"></footer>
-
-<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
-<script th:replace="fragments/scripts.html :: jqueryuiANDmomentANDtempusdominusANDcolorpicker"></script>
-<script th:replace="fragments/scripts.html :: smartwizard"></script>
-<script th:replace="fragments/scripts.html :: maxlength"></script>
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	const eventsUrl = /*[[${eventsUrl}]]*/ '';
@@ -236,14 +226,10 @@
 	const defaultUserId = /*[[${T(de.webalf.slotbot.model.User).DEFAULT_USER_ID}]]*/ '';
 	/*]]>*/
 </script>
-<script th:src="@{/assets/js/eventSave.js}"></script>
-<script th:src="@{/assets/js/eventFields.js}"></script>
-<script th:src="@{/assets/js/slotList.js}"></script>
+<div th:replace="fragments/scripts.html :: eventManage"></div>
+<script th:replace="fragments/scripts.html :: smartwizard"></script>
+<script th:replace="fragments/scripts.html :: maxlength"></script>
 <script th:src="@{/assets/js/uploadSqmFile.js}"></script>
-<script th:src="@{/assets/js/squadSettings.js}"></script>
-<script th:src="@{/assets/js/slotSettings.js}"></script>
 <script th:src="@{/assets/js/eventWizard.js}"></script>
-
-<script th:src="@{/assets/js/colorpicker.js}"></script>
 </body>
 </html>

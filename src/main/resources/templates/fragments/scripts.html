@@ -71,6 +71,26 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap-colorpicker@3.4.0/dist/js/bootstrap-colorpicker.min.js"
 	        integrity="sha256-kTyi7A0zgSvvcDhCVK4EZQG54MT2m3IzHSU7cQMr6vU=" crossorigin="anonymous"></script>
+	<script th:src="@{/assets/js/colorpicker.js}"></script>
+</div>
+
+<div th:fragment="eventManage">
+	<!--Modals-->
+	<div th:replace="fragments/modals.html :: addDefaultFieldsWarning"></div>
+	<div th:replace="fragments/modals.html :: squadSettings"></div>
+	<div th:replace="fragments/modals.html :: slotSettings"></div>
+
+	<footer th:replace="fragments/general.html :: footer(false)"></footer>
+
+	<!--Scripts-->
+	<script th:replace="fragments/scripts.html :: jqueryANDpopperANDbootstrap"></script>
+	<script th:replace="fragments/scripts.html :: jqueryuiANDmomentANDtempusdominusANDcolorpicker"></script>
+
+	<script th:src="@{/assets/js/eventSave.js}"></script>
+	<script th:src="@{/assets/js/eventFields.js}"></script>
+	<script th:src="@{/assets/js/slotList.js}"></script>
+	<script th:src="@{/assets/js/squadSettings.js}"></script>
+	<script th:src="@{/assets/js/slotSettings.js}"></script>
 </div>
 </body>
 </html>
