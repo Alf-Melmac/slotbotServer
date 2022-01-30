@@ -185,13 +185,38 @@
 							<input class="form-control js-squad-name" type="text" placeholder="Squad Name"
 							       required th:value="${squad.name}" th:disabled="${squad.isReserve()}">
 						</div>
-						<div th:unless="${squad.isNotEmpty() || squad.isReserve()}" type="button"
-						     class="d-flex btn btn-xl btn-wht js-trash">
-							<em class="far fa-trash-alt"></em>
-						</div>
-						<div th:if="${squad.isNotEmpty()}" class="d-flex btn btn-xl btn-denied"
-						     title="Squad enthält nicht leere Slots">
-							<em class="far fa-trash-alt"></em>
+
+						<div th:unless="${squad.isReserve()}" class="dropdown">
+							<div class="btn btn-xl btn-wht p-0 pr-1" type="button" data-toggle="dropdown"
+							     aria-expanded="false">
+								<em class="fas fa-ellipsis-h"></em>
+							</div>
+							<div class="dropdown-menu">
+								<button class="dropdown-item js-settings" type="button" data-toggle="modal"
+								        data-target="#squadSettings"
+								        th:data-reservedfor="${squad.reservedFor != null ? squad.reservedFor.id : '-1'}">
+									<div class="row">
+										<div class="col-3">
+											<em class="fas fa-user-cog"></em>
+										</div>
+										<div class="col-9">
+											<span>Regeln</span>
+										</div>
+									</div>
+								</button>
+								<button class="dropdown-item js-trash"
+								        th:disabled="${squad.isNotEmpty()}"
+								        type="button">
+									<div class="row">
+										<div class="col-3">
+											<em class="far fa-trash-alt"></em>
+										</div>
+										<div class="col-9">
+											<span>Löschen</span>
+										</div>
+									</div>
+								</button>
+							</div>
 						</div>
 					</div>
 
