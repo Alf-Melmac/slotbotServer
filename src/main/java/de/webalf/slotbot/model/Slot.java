@@ -123,23 +123,29 @@ public class Slot extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * @see Slot#slot(User)
-	 * Doesn't trigger the slotUpdate
-	 *
-	 * @throws BusinessRuntimeException if the user is already slotted on this slot or the slot is already occupied
+	 * @throws BusinessRuntimeException if the given user can't be slotted to the slot
 	 */
-	void slotWithoutUpdate(@NonNull User user) {
+	public void assertSlotIsPossible(@NonNull User user) {
 		if (isSlotWithSlottedUser(user)) {
 			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
 		} else if (!isEmpty()) {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		} else if (getEffectiveReservedFor() != null && user.getGuilds().stream().noneMatch(guild -> guild.equals(getEffectiveReservedFor()))) {
 			throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
-		} else {
-			//Remove the user from any other slot in the Event
-			getEvent().findSlotOfUser(user).ifPresent(slot -> slot.unslotWithoutUpdate(user));
-			setUser(user);
 		}
+	}
+
+	/**
+	 * @see Slot#slot(User)
+	 * Doesn't trigger the slotUpdate
+	 *
+	 * @throws BusinessRuntimeException if the user is already slotted on this slot or the slot is already occupied
+	 */
+	void slotWithoutUpdate(@NonNull User user) {
+		assertSlotIsPossible(user);
+		//Remove the user from any other slot in the Event
+		getEvent().findSlotOfUser(user).ifPresent(slot -> slot.unslotWithoutUpdate(user));
+		setUser(user);
 	}
 
 	/**

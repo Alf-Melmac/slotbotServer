@@ -296,6 +296,8 @@ public class EventService {
 	public Event slot(@NonNull Event event, int slotNumber, UserDto userDto) {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		User user = userService.find(userDto);
+
+		slot.assertSlotIsPossible(user);
 		event.unslotIfAlreadySlotted(user);
 		eventRepository.saveAndFlush(event);
 		slotService.slot(slot, user);
