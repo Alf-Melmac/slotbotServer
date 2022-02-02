@@ -363,8 +363,8 @@ public class EventService {
 	 */
 	public Event randomSlot(long channel, UserDto userDto) {
 		Event event = findByChannel(channel);
-		Slot slot = event.randomSlot();
 		User user = userService.find(userDto);
+		Slot slot = event.randomSlot(user);
 		slotService.slot(slot, user);
 		return event;
 	}

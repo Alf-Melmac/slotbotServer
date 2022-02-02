@@ -123,6 +123,31 @@ public class Slot extends AbstractSuperIdEntity {
 	}
 
 	/**
+	 * Checks if the given user is allowed to slot
+	 *
+	 * @param user to be slotted
+	 * @return true if slot is possible
+	 */
+	public boolean slotIsPossible(@NonNull User user) {
+		return !isSlotWithSlottedUser(user) &&
+				isEmpty() &&
+				allowedByReservation(user);
+	}
+
+	/**
+	 * Checks if the reservation of the current slots allows the given user to be slotted
+	 *
+	 * @param user to be slotted
+	 * @return true if user is allowed on this slot
+	 */
+	private boolean allowedByReservation(@NonNull User user) {
+		if (getEffectiveReservedFor() == null) {
+			return true;
+		}
+		return user.getGuilds().contains(getEffectiveReservedFor());
+	}
+
+	/**
 	 * @throws BusinessRuntimeException if the given user can't be slotted to the slot
 	 */
 	public void assertSlotIsPossible(@NonNull User user) {
@@ -130,7 +155,7 @@ public class Slot extends AbstractSuperIdEntity {
 			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
 		} else if (!isEmpty()) {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
-		} else if (getEffectiveReservedFor() != null && user.getGuilds().stream().noneMatch(guild -> guild.equals(getEffectiveReservedFor()))) {
+		} else if (!allowedByReservation(user)) {
 			throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
 		}
 	}
