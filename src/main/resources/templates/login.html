@@ -22,7 +22,8 @@
 			<a th:href="@{/oauth2/authorization/discord}" class="button text-uppercase">Login mit Discord</a>
 		</div>
 
-		<p th:utext="${#authentication}" style="display: none;">Utext</p>
+		<!--May be re-enabled with thymeleaf-extras-springsecurity5 version >=3.0.5 (https://github.com/thymeleaf/thymeleaf-extras-springsecurity/pull/75)-->
+		<!--<p th:utext="${#authentication}" style="display: none;">Utext</p>-->
 	</div>
 </section>
 
