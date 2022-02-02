@@ -22,24 +22,9 @@ $(function ($) {
 	});
 
 	$slotSettings.on('click', '#saveSlotSettings', function (e) {
-		const $modalContent = $(e.currentTarget).parents('.modal-content');
+		saveSettings($, e);
 		const $dropdownEl = $('.js-active-modal');
-		$modalContent.find('select,input').each(function (index, element) {
-			const $el = $(element);
-			const key = $el.data('key');
-
-			if (!key || key === '') {
-				console.error('empty key');
-				console.log($el);
-				return;
-			}
-
-			let value = $el.val();
-			if (typeof value == 'string') {
-				value = value.trim();
-			}
-			$dropdownEl.attr(`data-${key}`, value);
-		});
+		const $modalContent = $(e.currentTarget).parents('.modal-content');
 		$dropdownEl.attr('data-blocked', $modalContent.find('#slotSettingBlocked').find('.fa-lock').length !== 0);
 		$slotSettings.modal('hide');
 	});

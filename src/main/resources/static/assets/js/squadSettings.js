@@ -18,24 +18,7 @@ $(function ($) {
 	});
 
 	$squadSettings.on('click', '#saveSquadSettings', function (e) {
-		const $modalContent = $(e.currentTarget).parents('.modal-content');
-		const $dropdownEl = $('.js-active-modal');
-		$modalContent.find('select').each(function (index, element) {
-			const $el = $(element);
-			const key = $el.data('key');
-
-			if (!key || key === '') {
-				console.error('empty key');
-				console.log($el);
-				return;
-			}
-
-			let value = $el.val();
-			if (typeof value == 'string') {
-				value = value.trim();
-			}
-			$dropdownEl.attr(`data-${key}`, value);
-		});
+		saveSettings($, e);
 		$squadSettings.modal('hide');
 	});
 
@@ -44,6 +27,27 @@ $(function ($) {
 		$squadSettings.find('.modal-body').replaceWith(squadSettingsModal);
 	});
 });
+
+function saveSettings($, e) {
+	const $modalContent = $(e.currentTarget).parents('.modal-content');
+	const $dropdownEl = $('.js-active-modal');
+	$modalContent.find('select,input').each(function (index, element) {
+		const $el = $(element);
+		const key = $el.data('key');
+
+		if (!key || key === '') {
+			console.error('empty key');
+			console.log($el);
+			return;
+		}
+
+		let value = $el.val();
+		if (typeof value == 'string') {
+			value = value.trim();
+		}
+		$dropdownEl.attr(`data-${key}`, value);
+	});
+}
 
 function getHeaderForSquadModal($row) {
 	let header = 'Regeln für';
