@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static de.webalf.slotbot.service.GuildService.isAMB;
 import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
@@ -75,6 +76,9 @@ public class EventUpdateService {
 	}
 
 	public void informAboutSlotChange(@NonNull Event event, @NonNull Slot slot, User currentUser, User previousUser) {
+		if (Objects.equals(currentUser, previousUser)) {
+			return;
+		}
 		final String eventDate = DATE_FORMATTER.format(event.getDateTime().toLocalDate());
 		if (previousUser != null && !previousUser.isDefaultUser()) {
 			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
