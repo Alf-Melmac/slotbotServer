@@ -58,6 +58,14 @@ public class EventController {
 		return EventAssembler.toReferencelessDto(eventService.updateEvent(event));
 	}
 
+	@PutMapping("/{id}/slotlist")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	public EventReferencelessDto updateSlotList(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
+
+		return EventAssembler.toReferencelessDto(eventService.updateSquadList(eventId, event));
+	}
+
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {

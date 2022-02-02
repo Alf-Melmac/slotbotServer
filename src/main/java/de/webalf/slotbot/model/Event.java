@@ -20,8 +20,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 import static de.webalf.slotbot.util.MaxLength.*;
 
@@ -347,6 +349,20 @@ public class Event extends AbstractSuperIdEntity {
 
 		if (getDiscordInformation() != null) {
 			getDiscordInformation().forEach(information -> information.setEvent(this));
+		}
+	}
+
+	public void removeReservedForDefaultGuild() {
+		getSquadList().forEach(squad -> {
+			removeDefaultGuild(squad.getReservedFor(), squad::setReservedFor);
+			squad.getSlotList().forEach(slot ->
+					removeDefaultGuild(slot.getReservedFor(), slot::setReservedFor));
+		});
+	}
+
+	private void removeDefaultGuild(Guild reservedFor, Consumer<Guild> consumer) {
+		if (reservedFor != null && reservedFor.getId() == GUILD_PLACEHOLDER) {
+			consumer.accept(null);
 		}
 	}
 

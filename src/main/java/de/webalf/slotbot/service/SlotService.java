@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.SlotRepository;
@@ -33,6 +34,7 @@ import static de.webalf.slotbot.util.StringUtils.getFirstNotEmpty;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class SlotService {
 	private final SlotRepository slotRepository;
+	private final GuildService guildService;
 	private final UserService userService;
 	private final ActionLogService actionLogService;
 
@@ -80,7 +82,17 @@ public class SlotService {
 
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
-		DtoUtils.ifPresent(dto.getUser(), slot::setUser);
+		final GuildDto reservedFor = dto.getReservedFor();
+		if (reservedFor != null) {
+			slot.setReservedFor(guildService.findByDiscordGuild(Long.parseLong(reservedFor.getId())));
+		} else {
+			slot.setReservedFor(null);
+		}
+		if (slot.isBlocked() && dto.getUser() == null) {
+			slot.setUser(null);
+		} else {
+			DtoUtils.ifPresent(dto.getUser(), slot::setUser);
+		}
 		if (slot.isBlocked()) {
 			slot.setReplacementText(getFirstNotEmpty("Gesperrt", dto.getReplacementText(), slot.getReplacementText()));
 		}

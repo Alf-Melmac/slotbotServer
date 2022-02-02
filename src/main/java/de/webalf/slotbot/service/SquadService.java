@@ -2,6 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.SquadDto;
 import de.webalf.slotbot.repository.SquadRepository;
 import de.webalf.slotbot.util.DtoUtils;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class SquadService {
 	private final SquadRepository squadRepository;
+	private final GuildService guildService;
 	private final SlotService slotService;
 
 	/**
@@ -61,6 +63,12 @@ public class SquadService {
 		Squad squad = squadRepository.findById(dto.getId()).orElseGet(() -> Squad.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getName(), squad::setName);
+		final GuildDto reservedFor = dto.getReservedFor();
+		if (reservedFor != null) {
+			squad.setReservedFor(guildService.findByDiscordGuild(Long.parseLong(reservedFor.getId())));
+		} else {
+			squad.setReservedFor(null);
+		}
 
 		if (dto.getSlotList() != null) {
 			slotService.updateSlotList(dto.getSlotList(), squad);

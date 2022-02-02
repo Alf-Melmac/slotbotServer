@@ -252,8 +252,17 @@ public class EventService {
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = updateEvent((AbstractEventDto) dto);
 
-		DtoUtils.ifPresent(dto.getSquadList(), squadList -> squadService.updateSquadList(squadList, event));
+//		DtoUtils.ifPresent(dto.getSquadList(), squadList -> squadService.updateSquadList(squadList, event));
 		DtoUtils.ifPresent(dto.getDetails(), details -> eventFieldService.updateEventDetails(details, event));
+
+		return event;
+	}
+
+	public Event updateSquadList(long eventId, EventDto dto) {
+		Event event = findById(eventId);
+
+		squadService.updateSquadList(dto.getSquadList(), event);
+		event.removeReservedForDefaultGuild();
 
 		return event;
 	}

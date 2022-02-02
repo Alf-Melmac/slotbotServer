@@ -121,6 +121,7 @@ public class EventWebController {
 		mav.addObject("putEventEditableUrl", linkTo(methodOn(EventController.class).updateEventEditable(eventId, null, null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
 		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
+		mav.addObject("putSlotListUrl", linkTo(methodOn(EventController.class).updateSlotList(eventId, null)).toUri().toString());
 		return mav;
 	}
 

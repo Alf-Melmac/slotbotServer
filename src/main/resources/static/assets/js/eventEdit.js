@@ -118,7 +118,7 @@ $(function () {
             return;
         }
 
-        putUpdate({squadList: getSquads(true)}, showSavedToast);
+        putSlotList({squadList: getSquads(true)}, showSavedToast);
     });
 });
 
@@ -135,8 +135,8 @@ function requiredField(value) {
     }
 }
 
-function putUpdate(data, callback) {
-    $.ajax(putEventUrl, {
+function putUpdate(data, callback, url = putEventUrl) {
+    $.ajax(url, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -145,4 +145,8 @@ function putUpdate(data, callback) {
     })
         .done(callback)
         .fail(showErrorToast);
+}
+
+function putSlotList(data, callback) {
+    putUpdate(data, callback, putSlotListUrl);
 }
