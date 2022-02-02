@@ -123,13 +123,15 @@ public final class EventUtils {
 	}
 
 	public static String buildArchiveMessage(@NonNull Event event) {
-		String message = "**__" + event.getName() + "__** " +
-				DATE_TIME_SHORT.format(DateUtils.getDateTimeZoned(event.getDateTime())) +
-				" " + event.getEventType().getName() + " ";
+		String message = "**__" + event.getName() + "__** " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}
 		message += "von " + event.getCreator() + "; " + event.getShortInformation().getSlotCount() + " verfügbare Slots";
 		return message;
+	}
+
+	public static String getDateTimeInDiscordFormat(@NonNull Event event) {
+		return DATE_TIME_SHORT.format(DateUtils.getDateTimeZoned(event.getDateTime()));
 	}
 }

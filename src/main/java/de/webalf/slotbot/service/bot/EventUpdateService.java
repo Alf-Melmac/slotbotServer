@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.util.EventHelper;
+import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.NonNull;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static de.webalf.slotbot.service.GuildService.isAMB;
-import static de.webalf.slotbot.util.DateUtils.DATE_FORMATTER;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 
 /**
@@ -79,13 +79,12 @@ public class EventUpdateService {
 		if (Objects.equals(currentUser, previousUser)) {
 			return;
 		}
-		final String eventDate = DATE_FORMATTER.format(event.getDateTime().toLocalDate());
 		if (previousUser != null && !previousUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + eventDate + " ausgetragen.");
+			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + EventUtils.getDateTimeInDiscordFormat(event) + " ausgetragen.");
 			EventNotificationService.removeNotifications(event, previousUser);
 			eventCalendarService.rebuildCalendar(previousUser);
 		} else if (currentUser != null && !currentUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + eventDate + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
+			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + EventUtils.getDateTimeInDiscordFormat(event) + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
 			if (isAMB(event.getOwnerGuild())) {
 				longTimeNoSee(currentUser);
 			}
