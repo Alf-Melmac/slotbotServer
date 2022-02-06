@@ -181,7 +181,7 @@ public class EventService {
 	 * @return all events in the future that have no channel
 	 */
 	public List<Event> findAllNotAssignedInFuture(long guildId) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class EventService {
 	 * @return all events in the future that have no channel
 	 */
 	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
-		return eventRepository.findAllByDateTimeIsAfterAndShareableTrueAndNotOwnerGuildAndNotScheduledAndOrderByDateTime(LocalDateTime.now(), guildId);
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
 	}
 
 	/**

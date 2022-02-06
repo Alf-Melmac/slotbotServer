@@ -3,9 +3,7 @@ package de.webalf.slotbot.model;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
 import static de.webalf.slotbot.model.SquadTest.buildReserveSquad;
@@ -63,6 +61,84 @@ class SlotTest {
 		final Slot sut = Slot.builder().user(User.builder().id(User.DEFAULT_USER_ID).build()).build();
 
 		assertTrue(sut.isBlocked());
+	}
+
+	//getEffectiveReservedForDisplay
+	@Test
+	void reservedForDisplayWithNoReservation() {
+		final Slot sut = Slot.builder().squad(Squad.builder().build()).build();
+
+		assertNull(sut.getEffectiveReservedForDisplay());
+	}
+
+	@Test
+	void reservedForDisplayWithSlotReserved() {
+		final Guild guild = Guild.builder().build();
+		final Slot sut = Slot.builder().reservedFor(guild).squad(Squad.builder().build()).build();
+
+		assertEquals(guild, sut.getEffectiveReservedForDisplay());
+	}
+
+	@Test
+	void reservedForDisplayWithSquadReservedOptimized() {
+		final Guild guild = Guild.builder().build();
+		final Slot sut = prepareSlot(Slot.builder().build(), Squad.builder().reservedFor(guild).build());
+
+		assertNull(sut.getEffectiveReservedForDisplay());
+	}
+
+	@Test
+	void reservedForDisplayWithSquadReservedNotOptimized() {
+		final Guild oneGuild = Guild.builder().id(1L).build();
+		final Guild otherGuild = Guild.builder().id(2L).build();
+		final Slot sut = prepareSlot(
+				Slot.builder().build(),
+				Squad.builder().reservedFor(oneGuild).build(),
+				Slot.builder().reservedFor(otherGuild).build());
+
+		assertEquals(oneGuild, sut.getEffectiveReservedForDisplay());
+	}
+
+	@Test
+	void reservedForDisplayWithSlotReservedAndSquadWithOtherReserved() {
+		final Guild oneGuild = Guild.builder().id(1L).build();
+		final Guild otherGuild = Guild.builder().id(2L).build();
+		final Slot sut = prepareSlot(Slot.builder().reservedFor(oneGuild).build(), Squad.builder().reservedFor(otherGuild).build());
+
+		assertEquals(oneGuild, sut.getEffectiveReservedForDisplay());
+	}
+
+	@Test
+	void reservedForDisplayWithSlotAndSquadReservedOptimized() {
+		final Guild oneGuild = Guild.builder().build();
+		final Slot sut = prepareSlot(Slot.builder().reservedFor(oneGuild).build(), Squad.builder().reservedFor(oneGuild).build());
+
+		assertNull(sut.getEffectiveReservedForDisplay());
+	}
+
+	@Test
+	void reservedForDisplayWithSlotAndSquadReservedNotOptimized() {
+		final Guild oneGuild = Guild.builder().id(1L).build();
+		final Guild otherGuild = Guild.builder().id(2L).build();
+		final Slot sut = prepareSlot(
+				Slot.builder().reservedFor(oneGuild).build(),
+				Squad.builder().reservedFor(oneGuild).build(),
+				Slot.builder().reservedFor(otherGuild).build());
+
+		assertEquals(oneGuild, sut.getEffectiveReservedForDisplay());
+	}
+
+	private Slot prepareSlot(Slot slot, Squad squad, Slot... otherSlots) {
+		List<Slot> slots;
+		if (otherSlots.length > 0) {
+			slots = new ArrayList<>(Arrays.asList(otherSlots));
+			slots.add(slot);
+		} else {
+			slots = List.of(slot);
+		}
+		squad.setSlotList(slots);
+		slot.setSquad(squad);
+		return slot;
 	}
 
 	//slotWithoutUpdate

@@ -97,14 +97,14 @@ public class Slot extends AbstractSuperIdEntity {
 
 	/**
 	 * Same as {@link #getEffectiveReservedFor()} but doesn't return {@link #reservedFor} if the whole squad is reserved
-	 * for this {@link Guild}
+	 * for the {@link Guild} the squad is reserved for
 	 *
 	 * @see #getEffectiveReservedFor()
 	 */
 	public Guild getEffectiveReservedForDisplay() {
 		final Guild effectiveReservedFor = getEffectiveReservedFor();
-		if (effectiveReservedFor != null &&
-				getSquad().getSlotList().stream().allMatch(slot -> effectiveReservedFor.equals(slot.getReservedFor()))) {
+		if (getSquad().getReservedFor() != null && getSquad().getReservedFor().equals(effectiveReservedFor) &&
+				getSquad().getSlotList().stream().allMatch(slot -> effectiveReservedFor.equals(slot.getEffectiveReservedFor()))) {
 			return null;
 		}
 		return effectiveReservedFor;
