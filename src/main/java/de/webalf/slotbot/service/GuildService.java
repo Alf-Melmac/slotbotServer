@@ -154,10 +154,8 @@ public class GuildService {
 		return !isAMB() && !isDAA();
 	}
 
-	//TODO Replace with 706254758721224707L
-	private static final long AMB = 701094826657054752L;
-	//TODO Replace with 874650742089203792L
-	private static final long DAA = 889250639551528980L;
+	private static final long AMB = 706254758721224707L;
+	private static final long DAA = 874650742089203792L;
 
 	public static boolean isAMB(@NonNull Guild guild) {
 		return isAMB(guild.getId());
