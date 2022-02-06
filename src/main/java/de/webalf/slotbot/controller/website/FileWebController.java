@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Optional;
 
 import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
@@ -69,8 +67,7 @@ public class FileWebController {
 	@ResponseBody
 	public String getRobotsTxt() {
 		try {
-			File robotsTxt = new ClassPathResource("static/assets/robots.txt").getFile();
-			return new String(Files.readAllBytes(robotsTxt.toPath()));
+			return new String(new ClassPathResource("static/assets/robots.txt").getInputStream().readAllBytes());
 		} catch (IOException e) {
 			log.error("Failed to get robots.txt", e);
 			return "";
