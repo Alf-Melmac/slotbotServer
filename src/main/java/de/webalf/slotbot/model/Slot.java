@@ -2,6 +2,7 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.util.SlotUtils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -96,18 +97,10 @@ public class Slot extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * Same as {@link #getEffectiveReservedFor()} but doesn't return {@link #reservedFor} if the whole squad is reserved
-	 * for the {@link Guild} the squad is reserved for
-	 *
-	 * @see #getEffectiveReservedFor()
+	 * @see SlotUtils#getEffectiveReservedForDisplay(Guild, Squad)
 	 */
 	public Guild getEffectiveReservedForDisplay() {
-		final Guild effectiveReservedFor = getEffectiveReservedFor();
-		if (getSquad().getReservedFor() != null && getSquad().getReservedFor().equals(effectiveReservedFor) &&
-				getSquad().getSlotList().stream().allMatch(slot -> effectiveReservedFor.equals(slot.getEffectiveReservedFor()))) {
-			return null;
-		}
-		return effectiveReservedFor;
+		return SlotUtils.getEffectiveReservedForDisplay(getReservedFor(), getSquad());
 	}
 
 	// Setter

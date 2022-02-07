@@ -33,9 +33,14 @@ public class SquadReferencelessDto extends AbstractIdEntityDto {
 	 * @return squad in discord message format
 	 */
 	public StringBuilder toSlotList(long guildId) {
-		StringBuilder squadText = new StringBuilder("**").append(getName()).append("**");
+		StringBuilder squadText = new StringBuilder("**").append(getName());
+		if (reservedFor != null) {
+			squadText.append(" [").append(reservedFor.getGroupIdentifier()).append("]");
+		}
+		squadText.append("**");
+
 		for (SlotReferencelessDto slot : getSlotList()) {
-			squadText.append("\n").append(slot.toSlotList(guildId, reservedFor));
+			squadText.append("\n").append(slot.toSlotList(guildId, reservedFor, slotList));
 		}
 		return squadText;
 	}

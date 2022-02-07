@@ -5,12 +5,14 @@ import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.SlotUtils;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Size;
+import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;
 
@@ -39,14 +41,15 @@ public class SlotReferencelessDto extends AbstractIdEntityDto {
 	 *
 	 * @param guildId          in which the slotlist will be printed
 	 * @param squadReservedFor fallback if slot is not reserved
+	 * @param slotList         of the squad containing this slot
 	 * @return slot in discord message format
 	 */
-	StringBuilder toSlotList(long guildId, GuildDto squadReservedFor) {
+	StringBuilder toSlotList(long guildId, GuildDto squadReservedFor, List<? extends SlotReferencelessDto> slotList) {
 		StringBuilder slotText = new StringBuilder();
 
 		boolean notReservedForOthers;
 		if (reservedFor != null) { //Slot is reserved
-			notReservedForOthers =  Long.toString(guildId).equals(reservedFor.getId());
+			notReservedForOthers = Long.toString(guildId).equals(reservedFor.getId());
 		} else { //Use reservedFor of Squad
 			notReservedForOthers = squadReservedFor == null || Long.toString(guildId).equals(squadReservedFor.getId());
 		}
@@ -59,6 +62,11 @@ public class SlotReferencelessDto extends AbstractIdEntityDto {
 		slotText.append(getNumber()).append(" ").append(getName());
 		if (isFree) {
 			slotText.append("**");
+		}
+
+		final GuildDto reservedForDisplay = SlotUtils.getEffectiveReservedForDisplay(reservedFor, squadReservedFor, slotList);
+		if (reservedForDisplay != null) {
+			slotText.append(" [").append(reservedForDisplay.getGroupIdentifier()).append("]");
 		}
 
 		slotText.append(":");
