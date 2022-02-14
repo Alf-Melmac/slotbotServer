@@ -61,10 +61,8 @@ public class GuildService {
 			}
 		}
 
-		if (!UNKNOWN_GROUPS.contains(currentUri)) {
-			log.warn("Searched for unknown group with uri '{}'", currentUri);
-			UNKNOWN_GROUPS.add(currentUri);
-		}
+		log.warn("Searched for unknown group with uri '{}'", currentUri);
+		UNKNOWN_GROUPS.add(currentUri);
 		return null;
 	}
 
