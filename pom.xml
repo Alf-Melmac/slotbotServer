@@ -41,7 +41,7 @@
 		<!--https://in.relation.to/hibernate-orm/index.html -->
 		<hibernate.version>5.6.5.Final</hibernate.version>
 		<!--https://jdbc.postgresql.org/documentation/changelog.html -->
-		<postgresql.version>42.3.2</postgresql.version>
+		<postgresql.version>42.3.3</postgresql.version>
 		<!--https://projectlombok.org/changelog -->
 		<lombok.version>1.18.22</lombok.version>
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
