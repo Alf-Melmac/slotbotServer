@@ -35,8 +35,15 @@ public class EventReferencelessDto extends AbstractEventDto {
 		List<String> messages = new ArrayList<>();
 		for (SquadReferencelessDto squad : getSquadList()) {
 			final StringBuilder squadText = squad.toSlotList(guildId);
+
+			//Message can't fit new lines for new squad must start new message
+			if (slotListText.length() + 2 > Message.MAX_CONTENT_LENGTH) {
+				messages.add(slotListText.toString());
+				slotListText = new StringBuilder();
+			}
+
 			//Existing message size + 2 new line + new line may not exceed maximum discord message size
-			if ((slotListText.length() + 2 + squadText.length() > Message.MAX_CONTENT_LENGTH) && slotListText.length() + 2 <= Message.MAX_CONTENT_LENGTH) {
+			if (slotListText.length() + 2 + squadText.length() > Message.MAX_CONTENT_LENGTH) {
 				slotListText.append("\n"); //New squad
 
 				final List<String> splitSquadText = new ArrayList<>(Arrays.asList(squadText.toString().split("\\n"))); //Split squad text on every slot
