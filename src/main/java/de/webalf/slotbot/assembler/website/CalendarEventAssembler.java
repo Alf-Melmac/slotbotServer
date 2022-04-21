@@ -2,9 +2,7 @@ package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.controller.website.EventWebController;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
-import de.webalf.slotbot.util.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,7 +23,7 @@ public final class CalendarEventAssembler {
 				.title(event.getName())
 				.start(event.getDateTime())
 				.color(event.getEventType().getColor())
-				.description(convertShortInformation(event.getShortInformation(), event.getName()))
+				.shortInformation(ShortEventInformationAssembler.toDto(event))
 				.url(linkTo(methodOn(EventWebController.class).getEventDetailsHtml(event.getId())).toUri().toString())
 				.build();
 	}
@@ -34,50 +32,5 @@ public final class CalendarEventAssembler {
 		return StreamSupport.stream(content.spliterator(), false)
 				.map(CalendarEventAssembler::toDto)
 				.collect(Collectors.toList());
-	}
-
-	private static final String BOLD = "<b>";
-	private static final String BOLD_CLOSE = "</b>";
-	private static final String BREAK = "<br>";
-
-	/**
-	 * Converts a {@link ShortEventInformationDto} to a displayable html text
-	 *
-	 * @param shortInformation to display
-	 * @return html formatted text to display
-	 */
-	private static String convertShortInformation(ShortEventInformationDto shortInformation, String eventName) {
-		final int emptySlotsCount = shortInformation.getEmptySlotsCount();
-
-		StringBuilder s = new StringBuilder(BOLD).append(eventName).append(BOLD_CLOSE).append(BREAK);
-
-		if (emptySlotsCount > 0) {
-			s.append(BOLD);
-		}
-		s.append(emptySlotsCount)
-				.append("/")
-				.append(shortInformation.getSlotCount());
-		if (emptySlotsCount > 0) {
-			s.append(BOLD_CLOSE);
-		}
-		s.append(" Slots frei");
-
-		if (shortInformation.getEmptyReserveSlotsCount() > 0) {
-			s.append(BREAK)
-					.append(BOLD)
-					.append(shortInformation.getEmptyReserveSlotsCount())
-					.append(BOLD_CLOSE)
-					.append(" Reservistenplätze frei");
-		}
-
-		if (StringUtils.isNotEmpty(shortInformation.getMissionLength())) {
-			s.append(BREAK)
-					.append(BOLD)
-					.append("Dauer: ")
-					.append(BOLD_CLOSE)
-					.append(shortInformation.getMissionLength());
-		}
-
-		return s.toString();
 	}
 }

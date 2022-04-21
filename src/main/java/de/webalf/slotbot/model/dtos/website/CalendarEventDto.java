@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.website;
 
+import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
 import lombok.Builder;
 import lombok.Value;
 
@@ -27,7 +28,7 @@ public class CalendarEventDto {
 	@Size(max = COLOR_RGB)
 	String color;
 
-	String description;
+	ShortEventInformationDto shortInformation;
 
 	String url;
 }
