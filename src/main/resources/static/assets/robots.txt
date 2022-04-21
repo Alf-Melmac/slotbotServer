@@ -6,14 +6,15 @@
 
 ### Version Information #
 ###################################################
-### Version: V4.2022.02.2916
-### Updated: Sun Feb 13 22:01:28 UTC 2022
-### Bad Bot Count: 636
+### Version: V4.2022.04.3053
+### Updated: Tue Apr 19 10:03:34 UTC 2022
+### Bad Bot Count: 637
 ###################################################
 ### Version Information ##
 
 User-agent: *
 Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
 User-agent: 01h4x.com
 Disallow:/
 User-agent: 360Spider
@@ -458,6 +459,8 @@ User-agent: Jyxobot
 Disallow:/
 User-agent: Kenjin Spider
 Disallow:/
+User-agent: Keybot Translation-Search-Machine
+Disallow:/
 User-agent: Keyword Density
 Disallow:/
 User-agent: Kinza
@@ -497,8 +500,6 @@ Disallow:/
 User-agent: LinkWalker
 Disallow:/
 User-agent: Linkbot
-Disallow:/
-User-agent: Linkdexbot
 Disallow:/
 User-agent: LinkextractorPro
 Disallow:/
@@ -1160,7 +1161,7 @@ User-agent: check1.exe
 Disallow:/
 User-agent: clark-crawler
 Disallow:/
-User-agent: coccocbot-web
+User-agent: coccocbot
 Disallow:/
 User-agent: cognitiveseo
 Disallow:/
@@ -1197,6 +1198,8 @@ Disallow:/
 User-agent: isitwp.com
 Disallow:/
 User-agent: iubenda-radar
+Disallow:/
+User-agent: linkdexbot
 Disallow:/
 User-agent: lwp-request
 Disallow:/
