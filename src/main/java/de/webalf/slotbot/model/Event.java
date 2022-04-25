@@ -197,15 +197,23 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	/**
+	 * @return slot count excluding reserve
+	 */
+	public int getSlotCountWithoutReserve() {
+		int slotCount = 0;
+		for (Squad squad : getSquadsExceptReserve()) {
+			slotCount += squad.getSlotList().size();
+		}
+		return slotCount;
+	}
+
+	/**
 	 * Returns 25% of the slot counts but at least one
 	 *
 	 * @return how big the reserve squad should be
 	 */
 	private int getDesiredReserveSize() {
-		int slotCount = 0;
-		for (Squad squad : getSquadsExceptReserve()) {
-			slotCount += squad.getSlotList().size();
-		}
+		int slotCount = getSlotCountWithoutReserve();
 		return slotCount < 4 ? 1 : (int) Math.ceil(slotCount / 4.);
 	}
 

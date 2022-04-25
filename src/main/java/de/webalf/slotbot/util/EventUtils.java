@@ -127,7 +127,7 @@ public final class EventUtils {
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}
-		message += "von " + event.getCreator() + "; " + event.getShortInformation().getSlotCount() + " verfügbare Slots";
+		message += "von " + event.getCreator() + "; " + event.getSlotCountWithoutReserve() + " verfügbare Slots";
 		return message;
 	}
 
