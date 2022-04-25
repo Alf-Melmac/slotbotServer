@@ -1,8 +1,10 @@
 package de.webalf.slotbot.model.dtos.website;
 
+import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -15,20 +17,19 @@ import static de.webalf.slotbot.util.MaxLength.TEXT;
  * @author Alf
  * @since 24.10.2020
  */
-@Builder
-@Value
-public class CalendarEventDto {
+@EqualsAndHashCode(callSuper = true)
+@Data
+@SuperBuilder
+public class CalendarEventDto extends AbstractIdEntityDto {
 	@NotBlank
 	@Size(max = TEXT)
-	String title;
+	private String title;
 
-	LocalDateTime start;
+	private LocalDateTime start;
 
 	@NotBlank
 	@Size(max = COLOR_RGB)
-	String color;
+	private String color;
 
-	ShortEventInformationDto shortInformation;
-
-	String url;
+	private ShortEventInformationDto shortInformation;
 }
