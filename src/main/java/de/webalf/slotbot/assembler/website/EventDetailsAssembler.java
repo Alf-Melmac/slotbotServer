@@ -52,7 +52,7 @@ public class EventDetailsAssembler {
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.pictureUrl(event.getPictureUrl())
-				.details(getDetails(event.getDetails()))
+				.details(getDetails(event.getDetails(), event.getReserveParticipating()))
 				.squadList(toEventDetailsDtoList(event.getSquadList(), optimizeReservedFor))
 				.reserveParticipating(event.getReserveParticipating())
 				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
@@ -89,8 +89,11 @@ public class EventDetailsAssembler {
 				.orElse(null);
 	}
 
-	private List<EventFieldReferencelessDto> getDetails(List<EventField> details) {
+	private List<EventFieldReferencelessDto> getDetails(List<EventField> details, Boolean reserveParticipating) {
 		final List<EventFieldReferencelessDto> detailDtos = EventFieldAssembler.toReferencelessDtoList(details);
+		if (reserveParticipating != null) {
+			detailDtos.add(EventFieldReferencelessDto.builder().title("Kann die Reserve mitspielen?").text(reserveParticipating.toString()).build());
+		}
 		detailDtos.forEach(detailDto -> {
 			final String detailText = detailDto.getText();
 			if (detailText.equals("true")) {

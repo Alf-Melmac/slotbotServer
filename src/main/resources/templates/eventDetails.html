@@ -201,14 +201,6 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
-						<div class="row" th:if="${event.reserveParticipating != null}">
-							<div class="col-md-4">
-								<label>Kann die Reserve mitspielen?</label>
-							</div>
-							<div class="col-md-8">
-								<p class="mb-0" th:text="${event.reserveParticipating ? 'Ja' : 'Nein'}">Ja</p>
-							</div>
-						</div>
 						<div class="row" th:each="field : ${event.details}">
 							<div class="col-md-4">
 								<label th:text="${field.title}">Field Name</label>
