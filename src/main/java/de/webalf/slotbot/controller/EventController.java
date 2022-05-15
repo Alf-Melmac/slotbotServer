@@ -2,11 +2,13 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
+import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
+import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.permissions.PermissionChecker;
@@ -36,11 +38,17 @@ public class EventController {
 	private final PermissionChecker permissionChecker;
 	private final GuildService guildService;
 	private final EventService eventService;
+	private final EventDetailsAssembler eventDetailsAssembler;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
 											 @RequestParam LocalDateTime end) {
 		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.findCurrentNonNullGuild()));
+	}
+
+	@GetMapping("/{id}/details")
+	public EventDetailsDto getEventDetails(@PathVariable(value = "id") long eventId) {
+		return eventDetailsAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@PostMapping
