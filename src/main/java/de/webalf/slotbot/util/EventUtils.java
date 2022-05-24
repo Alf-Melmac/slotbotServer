@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util;
 
-import de.webalf.slotbot.controller.website.EventWebController;
+import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
@@ -77,7 +77,7 @@ public final class EventUtils {
 	 * @return uri to event details
 	 */
 	public static String buildUrl(long eventId) {
-		return linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString();
+		return linkTo(methodOn(EventController.class).getEventDetails(eventId)).toUri().toString();
 	}
 
 	/**

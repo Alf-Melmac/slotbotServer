@@ -125,6 +125,10 @@ public class GuildService {
 	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
 	private static final String DAA_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899747640634376272/DAA_transparent.gif";
 
+	public static String getLogo(@NonNull Guild guild) {
+		return getLogo(guild.getId());
+	}
+
 	public static String getLogo(long guildId) {
 		if (GuildService.isAMB(guildId)) {
 			return AMB_LOGO;

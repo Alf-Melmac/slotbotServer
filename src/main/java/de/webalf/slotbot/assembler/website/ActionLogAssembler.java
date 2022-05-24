@@ -1,6 +1,6 @@
 package de.webalf.slotbot.assembler.website;
 
-import de.webalf.slotbot.controller.website.EventWebController;
+import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.model.ActionLog;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.ActionLogDto;
@@ -44,6 +44,6 @@ public class ActionLogAssembler implements RepresentationModelAssembler<ActionLo
 	private void setEventAttributes(ActionLogDto logDto, long eventId) {
 		final Event event = eventService.findById(eventId);
 		logDto.setObjectName(event.getName());
-		logDto.setObjectUrl(linkTo(methodOn(EventWebController.class).getEventDetailsHtml(event.getId())).toUri().toString());
+		logDto.setObjectUrl(linkTo(methodOn(EventController.class).getEventDetails(event.getId())).toUri().toString());
 	}
 }

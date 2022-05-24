@@ -1,12 +1,20 @@
 package de.webalf.slotbot.model.dtos.website;
 
-import de.webalf.slotbot.model.dtos.AbstractEventDto;
+import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
+import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.ZonedDateTime;
 import java.util.List;
+
+import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.MaxLength.URL;
 
 /**
  * @author Alf
@@ -15,10 +23,32 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Value
 @SuperBuilder
-public class EventDetailsDto extends AbstractEventDto {
-	String channelUrl;
+public class EventDetailsDto extends AbstractIdEntityDto {
+	@Size(max = TEXT)
+	String missionType;
 
-	List<EventFieldReferencelessDto> details;
+	@NotNull
+	EventTypeDto eventType;
+
+	@Size(max = URL)
+	String pictureUrl;
+
+	@NotBlank
+	@Size(max = TEXT)
+	String name;
+
+	@Size(max = TEXT)
+	String missionLength;
+
+	ZonedDateTime dateTimeZoned;
+
+	String descriptionAsHtml;
+
+	@NotBlank
+	@Size(max = TEXT)
+	String creator;
 
 	List<EventDetailsSquadDto> squadList;
+
+	List<EventFieldReferencelessDto> details;
 }

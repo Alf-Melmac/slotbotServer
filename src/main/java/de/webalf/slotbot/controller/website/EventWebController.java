@@ -5,11 +5,9 @@ import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.controller.FileController;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.bot.DiscordUserUtils;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -47,21 +44,7 @@ public class EventWebController {
 	private final GuildService guildService;
 
 	private static final String EVENTS_URL_STRING = "eventsUrl";
-	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getEventsHtml()).toUri().toString();
-
-	@GetMapping
-	public ModelAndView getEventsHtml() {
-		ModelAndView mav = new ModelAndView("events");
-
-		mav.addObject("getEventsUrl", linkTo(methodOn(EventController.class).getBetween(null, null))
-				.toUri().toString()
-				//Remove parameters, because the calendar adds them by itself
-				.split("\\?")[0]);
-		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, null)).toUri().toString());
-		mav.addObject("canManageEvents", permissionChecker.hasEventManagePermissionInCurrentOwnerGuild());
-
-		return mav;
-	}
+	private static final String EVENTS_URL = linkTo(methodOn(EventWebController.class).getWizardHtml(null, null)).toUri().toString();
 
 	@GetMapping("/new")
 	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
@@ -78,25 +61,10 @@ public class EventWebController {
 		}
 		mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
 		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
-		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class)
-				.getEventDetailsHtml(Long.MIN_VALUE))
+		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventController.class)
+				.getEventDetails(Long.MIN_VALUE))
 				.toUri().toString()
 				.replace(LongUtils.toString(Long.MIN_VALUE), "{eventId}"));
-		return mav;
-	}
-
-	@GetMapping("/{id}")
-	public ModelAndView getEventDetailsHtml(@PathVariable(value = "id") long eventId) {
-		ModelAndView mav = new ModelAndView("eventDetails");
-
-		addCalendarSubPageObjects(mav);
-		mav.addObject(EVENTS_URL_STRING, EVENTS_URL);
-		final EventDetailsDto detailsDto = eventDetailsAssembler.toDto(eventService.findById(eventId));
-		mav.addObject("event", detailsDto);
-		mav.addObject("eventDescriptionHtml", DiscordMarkdown.toHtml(detailsDto.getDescription()));
-		mav.addObject("createEventUrl", linkTo(methodOn(EventWebController.class).getWizardHtml(null, Long.toString(eventId))).toUri().toString());
-		mav.addObject("eventEditUrl", linkTo(methodOn(EventWebController.class).getEventEditHtml(eventId)).toUri().toString());
-		mav.addObject("hasEventManageRole", hasEventManagePermission(Long.parseLong(detailsDto.getOwnerGuild())));
 		return mav;
 	}
 
@@ -119,7 +87,7 @@ public class EventWebController {
 			mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
 		}
 		mav.addObject("putEventEditableUrl", linkTo(methodOn(EventController.class).updateEventEditable(eventId, null, null)).toUri().toString());
-		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventWebController.class).getEventDetailsHtml(eventId)).toUri().toString());
+		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventController.class).getEventDetails(eventId)).toUri().toString());
 		mav.addObject("putEventUrl", linkTo(methodOn(EventController.class).updateEvent(eventId, null)).toUri().toString());
 		mav.addObject("putSlotListUrl", linkTo(methodOn(EventController.class).updateSlotList(eventId, null)).toUri().toString());
 		return mav;

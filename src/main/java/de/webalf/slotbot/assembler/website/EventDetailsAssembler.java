@@ -10,6 +10,8 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.model.dtos.website.EventEditDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.util.DateUtils;
+import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static de.webalf.slotbot.service.GuildService.getLogo;
 
 /**
  * @author Alf
@@ -36,26 +40,20 @@ public class EventDetailsAssembler {
 	}
 
 	public EventDetailsDto toDto(@NonNull Event event, boolean optimizeReservedFor) {
-		final LocalDateTime dateTime = event.getDateTime();
+		final String pictureUrl = event.getPictureUrl();
 
 		return EventDetailsDto.builder()
-				.channelUrl(getChannelUrl(event))
 				.id(event.getId())
-				.hidden(event.isHidden())
-				.shareable(event.isShareable())
-				.name(event.getName())
-				.date(dateTime.toLocalDate())
-				.startTime(dateTime.toLocalTime())
-				.creator(event.getCreator())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
-				.description(event.getDescription())
 				.missionType(event.getMissionType())
+				.eventType(EventTypeAssembler.toDto(event.getEventType()))
+				.pictureUrl(StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : getLogo(event.getOwnerGuild()))
+				.name(event.getName())
+				.dateTimeZoned(DateUtils.getDateTimeZoned(event.getDateTime()))
 				.missionLength(event.getMissionLength())
-				.pictureUrl(event.getPictureUrl())
-				.details(getDetails(event.getDetails(), event.getReserveParticipating()))
+				.descriptionAsHtml(DiscordMarkdown.toHtml(event.getDescription()))
+				.creator(event.getCreator())
 				.squadList(toEventDetailsDtoList(event.getSquadList(), optimizeReservedFor))
-				.reserveParticipating(event.getReserveParticipating())
-				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
+				.details(getDetails(event.getDetails(), event.getReserveParticipating()))
 				.build();
 	}
 
