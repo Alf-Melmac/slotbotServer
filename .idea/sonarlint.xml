@@ -4,7 +4,10 @@
     <option name="bindingEnabled" value="true" />
     <option name="fileExclusions">
       <list>
-        <option value="DIRECTORY:src/main/resources/static/assets/download" />
+        <option value="DIRECTORY:img" />
+        <option value="DIRECTORY:download" />
+        <option value="DIRECTORY:calendar" />
+        <option value="DIRECTORY:target" />
       </list>
     </option>
     <option name="projectKey" value="Alf-Melmac_slotbotServer" />
