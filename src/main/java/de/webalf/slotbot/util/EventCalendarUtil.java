@@ -6,7 +6,11 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Name;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 
@@ -27,8 +31,8 @@ public final class EventCalendarUtil {
 		// Create a calendar
 		Calendar icsCalendar = new Calendar();
 		icsCalendar.add(new ProdId("-//Alf//Slotbot Calendar//DE"));
-		icsCalendar.add(Version.VERSION_2_0);
-		icsCalendar.add(CalScale.GREGORIAN);
+		icsCalendar.add(ImmutableVersion.VERSION_2_0);
+		icsCalendar.add(ImmutableCalScale.GREGORIAN);
 		icsCalendar.add(new Name("Slotbot Kalender"));
 
 		eventList.forEach(event -> addCalendarEvent(icsCalendar, event));
