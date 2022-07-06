@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -37,19 +38,19 @@ public class EventType extends AbstractSuperIdEntity {
 
 	@Column(name = "event_color", length = COLOR_RGB_DB)
 	@NotBlank
-	@Size(max = COLOR_RGB) //Expected format: #RRGGBB
+	@Size(max = COLOR_RGB) //Expected format: #rrggbb
 	private String color;
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;
 
-	public void setColor(String color) {
-		if (!HEX_COLOR.matcher(color).matches()) {
-			throw BusinessRuntimeException.builder().title(color + " is not a valid upper case hex color.").build();
+	public void setColor(@NotNull String color) {
+		String parsedColor = (color.startsWith("#") ? color : "#" + color).toLowerCase();
+		if (!HEX_COLOR.matcher(parsedColor).matches()) {
+			throw BusinessRuntimeException.builder().title(parsedColor + " is not a valid hex color.").build();
 		}
-
-		this.color = color.startsWith("#") ? color : "#" + color;
+		this.color = parsedColor;
 	}
 
-	private static final Pattern HEX_COLOR = Pattern.compile("^#?([A-F0-9]{6}|[A-F0-9]{3})$");
+	private static final Pattern HEX_COLOR = Pattern.compile("^#([a-f0-9]{6}|[a-f0-9]{3})$");
 }
