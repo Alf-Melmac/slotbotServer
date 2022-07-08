@@ -52,5 +52,5 @@ public class EventType extends AbstractSuperIdEntity {
 		this.color = parsedColor;
 	}
 
-	private static final Pattern HEX_COLOR = Pattern.compile("^#([a-f0-9]{6}|[a-f0-9]{3})$");
+	private static final Pattern HEX_COLOR = Pattern.compile("^#([a-f\\d]{6}|[a-f\\d]{3})$");
 }
