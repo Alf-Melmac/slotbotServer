@@ -38,7 +38,7 @@ public class GuildService {
 	}
 
 	public List<Guild> findAllExceptDefault() {
-		return findAll().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).collect(Collectors.toUnmodifiableList());
+		return guildRepository.findAllByOrderByGroupIdentifier().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).collect(Collectors.toUnmodifiableList());
 	}
 
 	private List<Guild> findAllWithUrlPattern() {

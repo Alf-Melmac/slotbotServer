@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface GuildRepository extends DiscordIdEntityJpaRepository<Guild> {
 	Optional<Guild> findByGroupIdentifier(String name);
 
+	List<Guild> findAllByOrderByGroupIdentifier();
+
 	List<Guild> findByUrlPatternIsNotNull();
 }
