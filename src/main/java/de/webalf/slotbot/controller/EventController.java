@@ -9,6 +9,8 @@ import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
+import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
+import de.webalf.slotbot.service.EventCreationService;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.permissions.PermissionChecker;
@@ -38,12 +40,13 @@ public class EventController {
 	private final PermissionChecker permissionChecker;
 	private final GuildService guildService;
 	private final EventService eventService;
+	private final EventCreationService eventCreationService;
 	private final EventDetailsAssembler eventDetailsAssembler;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
 											 @RequestParam LocalDateTime end) {
-		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.findCurrentNonNullGuild()));
+		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.find(706254758721224707L)));
 	}
 
 	@GetMapping("/{id}/details")
@@ -51,9 +54,21 @@ public class EventController {
 		return eventDetailsAssembler.toDto(eventService.findById(eventId));
 	}
 
+	@GetMapping("/test")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	public EventDetailsDto getTestAuthentication() {
+		return eventDetailsAssembler.toDto(eventService.findById(13910));
+	}
+
 	@PostMapping
+//	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
+	public long postEvent(@Valid @RequestBody EventPostDto event) {
+		return eventCreationService.createEvent(event).getId();
+	}
+
+	@PostMapping("/old")
 	@PreAuthorize("@permissionChecker.hasEventManagePermission(#event.getOwnerGuild())")
-	public EventReferencelessDto postEvent(@Valid @RequestBody EventDto event) {
+	public EventReferencelessDto oldPostEvent(@Valid @RequestBody EventDto event) {
 		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}
 

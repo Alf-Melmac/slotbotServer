@@ -174,7 +174,7 @@ class SlotTest {
 				.squadList(List.of(Squad.builder().name("Squad").slotList(List.of(slot1, sut)).build()))
 				.details(Collections.emptyList())
 				.build()
-				.setChilds();
+				.setBackReferences();
 
 		sut.slotWithoutUpdate(userToSlot);
 

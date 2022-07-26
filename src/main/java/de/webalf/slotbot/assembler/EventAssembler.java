@@ -48,7 +48,7 @@ public class EventAssembler {
 				.discordInformation(discordInformationAssembler.fromDtoIterable(dto.getDiscordInformation()))
 				.ownerGuild(guildService.find(LongUtils.parseLong(dto.getOwnerGuild(), GUILD_PLACEHOLDER)))
 				.build();
-		event.setChilds();
+		event.setBackReferences();
 		return event;
 	}
 

@@ -63,6 +63,7 @@ public class Event extends AbstractSuperIdEntity {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "event_type")
+	@NotNull
 	private EventType eventType;
 
 	@Column(name = "event_description", length = EMBEDDABLE_DESCRIPTION_DB)
@@ -273,6 +274,8 @@ public class Event extends AbstractSuperIdEntity {
 
 	/**
 	 * Validates the event. If the validation fails, an exception is thrown
+	 *
+	 * @throws BusinessRuntimeException If the validation failed
 	 */
 	public void validate() {
 		if (hasDuplicatedSlotNumber()) {
@@ -281,10 +284,6 @@ public class Event extends AbstractSuperIdEntity {
 
 		if (getDetails().size() > 23) { //Discord only allows 25 fields. Time plan, mission type and reserveParticipating each block one field
 			throw BusinessRuntimeException.builder().title("Es dürfen nur 23 Detailfelder angegeben werden.").build();
-		}
-
-		if (eventType == null) {
-			throw BusinessRuntimeException.builder().title("eventType ist ein Pflichtfeld.").build();
 		}
 	}
 
@@ -311,7 +310,7 @@ public class Event extends AbstractSuperIdEntity {
 	/**
 	 * Set parents in child objects
 	 */
-	public void setChilds() {
+	public void setBackReferences() {
 		for (Squad squad : getSquadList()) {
 			squad.setEvent(this);
 			for (Slot slot : squad.getSlotList()) {

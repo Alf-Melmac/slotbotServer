@@ -48,6 +48,7 @@ public class EventWebController {
 
 	@GetMapping("/new")
 	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
+	@Deprecated
 	public ModelAndView getWizardHtml(@RequestParam(required = false) String date, @RequestParam(required = false) String copyEvent) {
 		ModelAndView mav = new ModelAndView("eventWizard");
 
@@ -60,7 +61,7 @@ public class EventWebController {
 					.ifPresent(event -> mav.addObject("copyEvent", eventDetailsAssembler.toDto(event, false)));
 		}
 		mav.addObject("uploadSqmFileUrl", linkTo(methodOn(FileController.class).postSqmFile(null)).toUri().toString());
-		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).postEvent(null)).toUri().toString());
+		mav.addObject("postEventUrl", linkTo(methodOn(EventController.class).oldPostEvent(null)).toUri().toString());
 		mav.addObject("eventDetailsUrl", linkTo(methodOn(EventController.class)
 				.getEventDetails(Long.MIN_VALUE))
 				.toUri().toString()

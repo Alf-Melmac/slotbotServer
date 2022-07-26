@@ -36,6 +36,10 @@ public class UserService {
 		return userServiceImpl.find(id);
 	}
 
+	public User getDefaultUser() {
+		return find(User.DEFAULT_USER_ID);
+	}
+
 	public UserNameDto toUserNameDto(User user) {
 		if (user == null || user.isDefaultUser()) {
 			return null;
