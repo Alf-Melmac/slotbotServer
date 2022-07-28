@@ -42,6 +42,8 @@
 		<jsoup.version>1.15.2</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
 		<ical4j.version>4.0.0-beta1</ical4j.version>
+		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
+		<typescript-generator.version>2.36.1070 </typescript-generator.version>
 	</properties>
 
 	<dependencies>
@@ -230,6 +232,29 @@
 							<version>${project.parent.version}</version>
 						</dependency>
 					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>cz.habarta.typescript-generator</groupId>
+				<artifactId>typescript-generator-maven-plugin</artifactId>
+				<version>${typescript-generator.version}</version>
+				<executions>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<jsonLibrary>jackson2</jsonLibrary>
+					<classPatterns>
+						<pattern>de.webalf.slotbot.model.dtos.*</pattern>
+						<pattern>de.webalf.slotbot.model.dtos.website.*</pattern>
+					</classPatterns>
+					<outputKind>global</outputKind>
 				</configuration>
 			</plugin>
 		</plugins>
