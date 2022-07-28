@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 final class MinimalSquadAssembler {
-	private MinimalSlotAssembler slotAssembler;
+	private final MinimalSlotAssembler slotAssembler;
 
 	private Squad fromDto(MinimalSquadDto squadDto) {
 		if (squadDto == null) {

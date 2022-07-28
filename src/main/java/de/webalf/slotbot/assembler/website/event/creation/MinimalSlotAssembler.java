@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSlotDto;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.UserService;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,6 @@ final class MinimalSlotAssembler {
 	}
 
 	Guild evaluateReservedFor(String reservedFor) {
-		return reservedFor != null ? guildService.find(Long.parseLong(reservedFor)) : null;
+		return StringUtils.isNotEmpty(reservedFor) ? guildService.find(Long.parseLong(reservedFor)) : null;
 	}
 }
