@@ -18,12 +18,12 @@ import org.springframework.web.servlet.view.RedirectView;
 public class RedirectController {
 	private final RedirectRepository redirectRepository;
 
-	private static final Redirect redirect404 = Redirect.builder().link("/error/404").build();
-
 	@GetMapping("/{link}")
 	public RedirectView redirectToLink(@PathVariable(value = "link") String link) {
 		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl(redirectRepository.findByEndpoint(link).orElse(redirect404).getLink());
+		redirectView.setUrl(redirectRepository.findByEndpoint(link)
+				.orElse(Redirect.builder().link("http://localhost:3000/" + link).build()) //TODO Remove localhost
+				.getLink());
 		return redirectView;
 	}
 }

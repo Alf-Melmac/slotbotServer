@@ -21,6 +21,7 @@ import javax.validation.constraints.NotBlank;
 @Immutable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Redirect extends AbstractIdEntity {
+	@SuppressWarnings("unused") //Used in RedirectRepository
 	@Column(name = "endpoint")
 	private String endpoint;
 
