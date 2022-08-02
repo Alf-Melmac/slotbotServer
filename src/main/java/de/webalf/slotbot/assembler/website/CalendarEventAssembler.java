@@ -2,7 +2,7 @@ package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import java.util.stream.StreamSupport;
  * @author Alf
  * @since 24.10.2020
  */
-@Component
+@UtilityClass
 public final class CalendarEventAssembler {
 	private static CalendarEventDto toDto(Event event) {
 		return CalendarEventDto.builder()
