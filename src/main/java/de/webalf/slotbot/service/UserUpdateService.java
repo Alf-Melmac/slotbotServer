@@ -32,4 +32,8 @@ public class UserUpdateService {
 
 		return user;
 	}
+
+	public User find(long id) {
+		return userService.find(id);
+	}
 }

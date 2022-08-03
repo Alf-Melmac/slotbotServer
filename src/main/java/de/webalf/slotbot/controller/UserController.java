@@ -1,9 +1,16 @@
 package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.UserAssembler;
+import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
+import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
 import de.webalf.slotbot.service.UserUpdateService;
+import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordAuthenticationService;
+import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.assertIsLoggedInUser;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.*;
 
 /**
  * @author Alf
@@ -26,7 +33,27 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUse
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class UserController {
+	private final DiscordApiService discordApiService;
+	private final DiscordAuthenticationService discordAuthenticationService;
 	private final UserUpdateService userService;
+
+	@GetMapping("{userId}")
+	public UserProfileDto getProfileInfos(@PathVariable long userId) {
+		final DiscordApiService.User discordUser = discordApiService.getUser(Long.toString(userId));
+		if (isUnknownUser(discordUser)) {
+			throw new ResourceNotFoundException("Unknown discord user " + userId);
+		}
+
+		final User user = userService.find(userId);
+		final boolean ownProfile = isLoggedInUser(Long.toString(userId));
+		return UserProfileDto.builder()
+				.user(DiscordUserAssembler.toDto(discordUser))
+				.roles("@" + String.join(", @", discordAuthenticationService.getRoles(userId)))
+				.participatedEventsCount(user.countParticipatedEvents())
+				.ownProfile(ownProfile)
+				.steamId64(ownProfile ? LongUtils.toString(user.getSteamId64()) : "")
+				.build();
+	}
 
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_ROLE_EVERYONE)

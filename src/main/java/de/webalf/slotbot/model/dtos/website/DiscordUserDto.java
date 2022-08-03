@@ -9,7 +9,7 @@ import lombok.Value;
  */
 @Value
 @Builder
-public class AuthenticatedUserDto {
+public class DiscordUserDto {
 	String id;
 	String name;
 	String avatarUrl;
