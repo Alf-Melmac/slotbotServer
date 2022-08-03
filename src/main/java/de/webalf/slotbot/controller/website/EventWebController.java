@@ -95,7 +95,7 @@ public class EventWebController {
 	}
 
 	private void addCalendarSubPageObjects(@NonNull ModelAndView mav) {
-		mav.addObject("loginUrl", linkTo(methodOn(LoginWebController.class).getLogin()).toUri().toString());
+		mav.addObject("loginUrl", "/oauth2/authorization/discord");
 		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof OAuth2User) {
 			OAuth2User oAuth2User = (OAuth2User) principal;

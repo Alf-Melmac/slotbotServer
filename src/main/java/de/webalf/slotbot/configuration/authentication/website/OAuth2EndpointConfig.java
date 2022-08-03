@@ -38,8 +38,9 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				//FIXME: This needs to be changed in future. Currently this allows the frontend to use backend endpoints
 				.csrf().disable()
 
+				.logout().logoutSuccessUrl("/events").and()
+
 				.oauth2Login()
-				.loginPage("/login")
 				.defaultSuccessUrl("/events")
 				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
 				.and()
