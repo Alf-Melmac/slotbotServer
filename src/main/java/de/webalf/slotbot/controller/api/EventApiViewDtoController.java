@@ -30,7 +30,7 @@ public class EventApiViewDtoController {
 	@GetMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
 	public EventApiViewDto getEventView(@PathVariable(value = "id") long eventId) {
-		log.trace("getEventView: " + eventId);
+		log.trace("getEventView: {}", eventId);
 		return eventApiAssembler.toViewDto(eventService.findByIdForApi(eventId));
 	}
 }

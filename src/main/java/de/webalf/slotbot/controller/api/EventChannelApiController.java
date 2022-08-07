@@ -40,7 +40,7 @@ public class EventChannelApiController {
 	@GetMapping
 	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
 	public EventApiDto getEventByChannelId(@PathVariable(value = "channelId") long channel) {
-		log.trace("getEventByChannelId: " + channel);
+		log.trace("getEventByChannelId: {}", channel);
 		final EventApiDto eventApiDto = EventApiAssembler.toDto(eventService.findByChannel(channel));
 		assertApiReadAccess(eventApiDto);
 		return eventApiDto;
@@ -49,7 +49,7 @@ public class EventChannelApiController {
 	@DeleteMapping
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public void deleteEventByChannelId(@PathVariable(value = "channelId") long channel) {
-		log.trace("deleteEventByChannelId: " + channel);
+		log.trace("deleteEventByChannelId: {}", channel);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		eventService.deleteEvent(event);
@@ -60,7 +60,7 @@ public class EventChannelApiController {
 	public EventApiDto postSlot(@PathVariable(value = "channelId") long channel,
 								@PathVariable(value = "slotNumber") int slotNumber,
 								@RequestBody UserDto userDto) {
-		log.trace("postSlot: " + channel + " " + slotNumber + " " + userDto.getId());
+		log.trace("postSlot: {} {} {}", channel, slotNumber, userDto.getId());
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.slot(event, slotNumber, userDto));
@@ -70,7 +70,7 @@ public class EventChannelApiController {
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto postUnslot(@PathVariable(value = "channelId") long channel,
 								  @RequestBody UserDto userDto) {
-		log.trace("postUnslot: " + channel + " " + userDto.getId());
+		log.trace("postUnslot: {} {}", channel, userDto.getId());
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.unslot(event, userDto));
@@ -80,7 +80,7 @@ public class EventChannelApiController {
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventRecipientApiDto postUnslotSlot(@PathVariable(value = "channelId") long channel,
 											   @PathVariable(value = "slotNumber") int slotNumber) {
-		log.trace("postUnslotSlot: " + channel + " " + slotNumber);
+		log.trace("postUnslotSlot: {} {}", channel, slotNumber);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return eventService.unslot(event, slotNumber);
@@ -90,7 +90,7 @@ public class EventChannelApiController {
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
 									  @RequestBody List<UserDto> userDtos) {
-		log.trace("getSwapSlots: " + channel);
+		log.trace("getSwapSlots: {}", channel);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return SlotAssembler.toDtoList(eventService.findSwapSlots(event, userDtos));
@@ -101,7 +101,7 @@ public class EventChannelApiController {
 	public List<SlotDto> getSwapSlots(@PathVariable(value = "channelId") long channel,
 									  @PathVariable(value = "slotNumber") int slotNumber,
 									  @RequestBody UserDto userDto) {
-		log.trace("getSwapSlots: " + channel + " SlotNumber: " + slotNumber + " user: " + userDto.getId());
+		log.trace("getSwapSlots: {} SlotNumber: {} user: {}", channel, slotNumber, userDto.getId());
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return SlotAssembler.toDtoList(eventService.findSwapSlots(event, slotNumber, userDto));
@@ -112,7 +112,7 @@ public class EventChannelApiController {
 	public EventApiDto putBlockSlot(@PathVariable(value = "channelId") long channel,
 									@PathVariable(value = "slotNumber") int slotNumber,
 									@RequestBody(required = false) String replacementName) {
-		log.trace("putBlockSlot: " + channel + " " + slotNumber + " " + replacementName);
+		log.trace("putBlockSlot: {} {} {}", channel, slotNumber, replacementName);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.blockSlot(event, slotNumber, replacementName));
@@ -123,7 +123,7 @@ public class EventChannelApiController {
 	public EventApiDto putRenameSquad(@PathVariable(value = "channelId") long channel,
 									  @PathVariable(value = "squadPosition") int squadPosition,
 									  @RequestBody SquadDto squadDto) {
-		log.trace("putRenameSquad: " + channel + " " + squadPosition);
+		log.trace("putRenameSquad: {} {}",channel, squadPosition);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.renameSquad(event, squadPosition, squadDto.getName()));
@@ -134,7 +134,7 @@ public class EventChannelApiController {
 	public EventApiDto postAddSlot(@PathVariable(value = "channelId") long channel,
 								   @PathVariable(value = "squadNumber") int squadNumber,
 								   @RequestBody SlotDto slotDto) {
-		log.trace("postAddSlot: " + channel + " " + squadNumber + " " + slotDto.getNumber());
+		log.trace("postAddSlot: {} {} {}", channel, squadNumber, slotDto.getNumber());
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.addSlot(event, squadNumber, slotDto));
@@ -144,7 +144,7 @@ public class EventChannelApiController {
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto deleteSlot(@PathVariable(value = "channelId") long channel,
 								  @PathVariable(value = "slotNumber") int slotNumber) {
-		log.trace("deleteSlot: " + channel + " " + slotNumber);
+		log.trace("deleteSlot: {} {}", channel, slotNumber);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.deleteSlot(event, slotNumber));
@@ -155,7 +155,7 @@ public class EventChannelApiController {
 	public EventApiDto putRenameSlot(@PathVariable(value = "channelId") long channel,
 									 @PathVariable(value = "slotNumber") int slotNumber,
 									 @RequestBody SlotDto slotDto) {
-		log.trace("putRenameSlot: " + channel + " " + slotNumber);
+		log.trace("putRenameSlot: {} {}",channel, slotNumber);
 		final Event event = eventService.findByChannel(channel);
 		apiPermissionChecker.assertApiWriteAccess(event);
 		return EventApiAssembler.toDto(eventService.renameSlot(channel, slotNumber, slotDto.getName()));

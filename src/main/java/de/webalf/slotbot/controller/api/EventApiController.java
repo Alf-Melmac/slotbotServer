@@ -32,21 +32,21 @@ public class EventApiController {
 	@GetMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIAL_READ_PUBLIC_PERMISSION)
 	public EventApiDto getEvent(@PathVariable(value = "id") long eventId) {
-		log.trace("getEvent: " + eventId);
+		log.trace("getEvent: {}", eventId);
 		return EventApiAssembler.toDto(eventService.findByIdForApi(eventId));
 	}
 
 	@PostMapping
 	@PreAuthorize("@apiPermissionChecker.assertApiWriteAccess(#event)")
 	public EventApiDto postEvent(@Valid @RequestBody EventDto event) {
-		log.trace("postEvent: " + event.getName());
+		log.trace("postEvent: {}", event.getName());
 		return EventApiAssembler.toDto(eventService.createEvent(event));
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		log.trace("updateEvent: " + event.getName());
+		log.trace("updateEvent: {}", event.getName());
 		event.setId(eventId);
 		apiPermissionChecker.assertApiWriteAccess(eventService.findById(eventId));
 		return EventApiAssembler.toDto(eventService.updateEvent(event));

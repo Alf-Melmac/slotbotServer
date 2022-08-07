@@ -43,7 +43,7 @@ $(function ($) {
 function getHeaderForSlotModal($row) {
 	let header = 'Regeln für';
 	const slotNumber = $row.find('.js-slot-number').val();
-	if (!isNaN(slotNumber)) {
+	if (!Number.isNaN(slotNumber)) {
 		header += ` (${slotNumber})`;
 	}
 	const slotName = $row.find('.js-slot-name').val().trim();
