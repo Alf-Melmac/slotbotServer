@@ -57,6 +57,7 @@ public class UserController {
 
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
+	@Deprecated
 	public UserDto updateUserEditable(long pk, String name, String value) {
 		final String userId = Long.toString(pk);
 		assertIsLoggedInUser(userId);
@@ -68,6 +69,14 @@ public class UserController {
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
 		}
 		return UserAssembler.toDto(userService.update(dto));
+	}
+
+	@PutMapping("/steamid/{steamId}")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public ResponseEntity<Void> updateSteamId(@PathVariable(name = "steamId") String steamId) {
+		final UserDto dto = UserDto.builder().id(getLoggedInUserId()).steamId64(steamId).build();
+		userService.update(dto);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@PutMapping("/externalcalendar/{integrationActive}")
