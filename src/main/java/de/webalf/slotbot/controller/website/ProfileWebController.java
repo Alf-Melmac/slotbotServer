@@ -68,7 +68,7 @@ public class ProfileWebController {
 			mav.addObject("putUserEditableUrl", linkTo(methodOn(UserController.class).updateUserEditable(user.getId(), null, null)).toUri().toString());
 			mav.addObject("notificationSettings", NotificationSettingAssembler.toReferencelessDtoList(notificationSettingsService.findSettings(user)));
 			mav.addObject("deleteAllByUserUrl", linkTo(methodOn(NotificationSettingsController.class).deleteAllByUser(userId)).toUri().toString());
-			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettings(userId, null)).toUri().toString());
+			mav.addObject("putNotificationSettingsUrl", linkTo(methodOn(NotificationSettingsController.class).updateNotificationSettingsOld(userId, null)).toUri().toString());
 			mav.addObject("externalCalendarIntegrationActive", user.isExternalCalendarIntegrationActive());
 			mav.addObject("putExternalCalendarIntegration", linkTo(methodOn(UserController.class).updateExternalCalendarIntegration(false)).toUri().toString()
 					.replace(Boolean.FALSE.toString(), "{integrationActive}"));

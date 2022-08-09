@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Guild;
+import de.webalf.slotbot.model.enums.DiscordUserObjectFields;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.EVENT_MANAGE;
 
 /**
@@ -32,8 +34,7 @@ public final class PermissionHelper {
 	public static String getLoggedInUserId() {
 		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof OAuth2User) {
-			OAuth2User oAuth2User = (OAuth2User) principal;
-			return oAuth2User.getAttribute("id");
+			return getAttribute((OAuth2User) principal, DiscordUserObjectFields.ID);
 		}
 		return "";
 	}
@@ -67,6 +68,13 @@ public final class PermissionHelper {
 	 */
 	public static boolean isLoggedInUser(@NonNull String userId) {
 		return userId.equals(getLoggedInUserId());
+	}
+
+	/**
+	 * @see #isLoggedInUser(String)
+	 */
+	public static boolean isLoggedInUser(long userId) {
+		return isLoggedInUser(Long.toString(userId));
 	}
 
 	/**

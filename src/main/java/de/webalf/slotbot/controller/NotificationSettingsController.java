@@ -16,6 +16,7 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.assertIsLoggedInUser;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 
 /**
  * @author Alf
@@ -28,17 +29,34 @@ public class NotificationSettingsController {
 	private final NotificationSettingsService notificationSettingsService;
 	private final UserService userService;
 
-	@DeleteMapping("/{userId}")
+	@DeleteMapping("/own")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public ResponseEntity<Void> deleteAllOwn() {
+		notificationSettingsService.deleteAllByUser(userService.find(Long.parseLong(getLoggedInUserId())));
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@PutMapping("/own")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public List<NotificationSettingsReferencelessDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
+		return NotificationSettingAssembler.toReferencelessDtoList(
+				notificationSettingsService.updateGlobalNotificationSettings(userService.find(Long.parseLong(getLoggedInUserId())), notificationSettings)
+		);
+	}
+
+	@DeleteMapping("/{userId}/old")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	@Deprecated
 	public ResponseEntity<Void> deleteAllByUser(@PathVariable(name = "userId") String userId) {
 		assertIsLoggedInUser(userId);
 		notificationSettingsService.deleteAllByUser(userService.find(Long.parseLong(userId)));
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@PutMapping("/{userId}")
+	@PutMapping("/{userId}/old")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public List<NotificationSettingsReferencelessDto> updateNotificationSettings(@PathVariable(name = "userId") String userId, @RequestBody List<NotificationSettingDto> notificationSettings) {
+	@Deprecated
+	public List<NotificationSettingsReferencelessDto> updateNotificationSettingsOld(@PathVariable(name = "userId") String userId, @RequestBody List<NotificationSettingDto> notificationSettings) {
 		assertIsLoggedInUser(userId);
 		return NotificationSettingAssembler.toReferencelessDtoList(
 				notificationSettingsService.updateGlobalNotificationSettings(userService.find(Long.parseLong(userId)), notificationSettings)

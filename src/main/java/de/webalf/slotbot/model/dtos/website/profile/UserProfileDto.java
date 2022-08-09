@@ -16,5 +16,4 @@ public class UserProfileDto {
 	long participatedEventsCount;
 
 	boolean ownProfile;
-	String steamId64;
 }

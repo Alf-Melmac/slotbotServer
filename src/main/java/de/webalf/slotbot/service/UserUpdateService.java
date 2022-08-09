@@ -36,4 +36,8 @@ public class UserUpdateService {
 	public User find(long id) {
 		return userService.find(id);
 	}
+
+	public User find(String id) {
+		return find(Long.parseLong(id));
+	}
 }
