@@ -34,6 +34,8 @@
 
 		<!--Versions-->
 		<java.version>11</java.version>
+		<!--Temporary security patch. Remove afterwards-->
+		<postgresql.version>42.4.1</postgresql.version>
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
