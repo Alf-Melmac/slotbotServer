@@ -89,6 +89,7 @@ public class NotificationSettingsService {
 	 *
 	 * @param user to deactivate notification for
 	 */
+	@Deprecated
 	public void deleteAllByUser(User user) {
 		notificationSettingRepository.deleteAllByUser(user);
 	}

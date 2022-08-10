@@ -29,13 +29,6 @@ public class NotificationSettingsController {
 	private final NotificationSettingsService notificationSettingsService;
 	private final UserService userService;
 
-	@DeleteMapping("/own")
-	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public ResponseEntity<Void> deleteAllOwn() {
-		notificationSettingsService.deleteAllByUser(userService.find(Long.parseLong(getLoggedInUserId())));
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-
 	@PutMapping("/own")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public List<NotificationSettingsReferencelessDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
