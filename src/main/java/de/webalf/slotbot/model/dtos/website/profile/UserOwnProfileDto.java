@@ -4,6 +4,7 @@ import de.webalf.slotbot.model.dtos.referenceless.NotificationSettingsReferencel
 import lombok.Builder;
 import lombok.Value;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -16,4 +17,6 @@ public class UserOwnProfileDto {
 	String steamId64;
 	List<NotificationSettingsReferencelessDto> notificationSettings;
 	boolean externalCalendarIntegrationActive;
+	@NotBlank
+	String icsCalendarUrl;
 }

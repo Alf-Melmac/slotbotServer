@@ -2,6 +2,7 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
+import de.webalf.slotbot.controller.website.FileWebController;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.User;
@@ -12,6 +13,7 @@ import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserUpdateService;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
+import de.webalf.slotbot.util.EventCalendarUtil;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,8 @@ import static de.webalf.slotbot.assembler.NotificationSettingAssembler.toReferen
 import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -67,6 +71,7 @@ public class UserController {
 				.steamId64(LongUtils.toString(user.getSteamId64()))
 				.notificationSettings(toReferencelessDtoList(notificationSettingsService.findSettings(user)))
 				.externalCalendarIntegrationActive(user.isExternalCalendarIntegrationActive())
+				.icsCalendarUrl(linkTo(methodOn(FileWebController.class).getCalendar(EventCalendarUtil.getCalendarName(user.getId()))).toUri().toString())
 				.build();
 	}
 
