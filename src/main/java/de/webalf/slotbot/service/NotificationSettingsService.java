@@ -83,14 +83,4 @@ public class NotificationSettingsService {
 
 		return notificationSettingRepository.save(notificationSetting);
 	}
-
-	/**
-	 * Removes all {@link NotificationSetting}s for the given user
-	 *
-	 * @param user to deactivate notification for
-	 */
-	@Deprecated
-	public void deleteAllByUser(User user) {
-		notificationSettingRepository.deleteAllByUser(user);
-	}
 }

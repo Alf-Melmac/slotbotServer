@@ -66,7 +66,7 @@ class EventTest {
 		final Optional<Squad> reserve = sut.getSquadList().stream().filter(Squad::isReserve).findAny();
 		assertTrue(reserve.isPresent());
 		final Squad reserveSquad = reserve.get();
-		assertThat(reserveSquad.getSlotList().size()).isEqualTo(1);
+		assertThat(reserveSquad.getSlotList()).hasSize(1);
 		assertThat(getSlotNumbers(reserveSquad)).containsExactly(103);
 	}
 
@@ -79,7 +79,7 @@ class EventTest {
 		final Optional<Squad> reserve = sut.getSquadList().stream().filter(Squad::isReserve).findAny();
 		assertTrue(reserve.isPresent());
 		final Squad reserveSquad = reserve.get();
-		assertThat(reserveSquad.getSlotList().size()).isEqualTo(2);
+		assertThat(reserveSquad.getSlotList()).hasSize(2);
 		assertThat(getSlotNumbers(reserveSquad)).containsExactly(108, 109);
 	}
 

@@ -3,7 +3,10 @@ package de.webalf.slotbot.assembler.website;
 import de.webalf.slotbot.assembler.EventFieldAssembler;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.assembler.GuildAssembler;
-import de.webalf.slotbot.model.*;
+import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.EventField;
+import de.webalf.slotbot.model.Slot;
+import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
@@ -78,13 +81,6 @@ public class EventDetailsAssembler {
 				.reserveParticipating(event.getReserveParticipating())
 				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
-	}
-
-	private String getChannelUrl(@NonNull Event event) {
-		final Guild ownerGuild = event.getOwnerGuild();
-		return event.getDiscordInformation(ownerGuild)
-				.map(eventDiscordInformation -> "discord://discordapp.com/channels/" + ownerGuild.getId() + "/" + LongUtils.toString(eventDiscordInformation.getChannel()))
-				.orElse(null);
 	}
 
 	private List<EventFieldReferencelessDto> getDetails(List<EventField> details, Boolean reserveParticipating) {

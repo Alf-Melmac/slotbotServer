@@ -55,7 +55,7 @@ public final class EventFieldUtils {
 	}
 
 	/**
-	 * Returns the default {@link EventFieldDefaultDto}s for the given {@link EventType#name}
+	 * Returns the default {@link EventFieldDefaultDto}s for the given {@link EventType#getName()}
 	 *
 	 * @param eventTypeName name of event type
 	 * @return matching default fields

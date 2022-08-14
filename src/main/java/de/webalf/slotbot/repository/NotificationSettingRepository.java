@@ -16,7 +16,4 @@ public interface NotificationSettingRepository extends SuperIdEntityJpaRepositor
 	List<NotificationSetting> findAllByUserAndEventIsNull(User user);
 
 	List<NotificationSetting> findAllByUserAndEvent(User user, Event event);
-
-	@Deprecated
-	void deleteAllByUser(User user);
 }

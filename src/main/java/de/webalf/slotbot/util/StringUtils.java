@@ -38,8 +38,8 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Checks if the given string only contains numbers
-	 * Fastet implementation according to https://stackoverflow.com/questions/10575624/java-string-see-if-a-string-contains-only-numbers-and-not-letters
+	 * Checks if the given string only contains numbers.
+	 * Fastest implementation according to <a href="https://stackoverflow.com/questions/10575624/java-string-see-if-a-string-contains-only-numbers-and-not-letters">StackOverflow</a>
 	 *
 	 * @param str to check
 	 * @return true if only number

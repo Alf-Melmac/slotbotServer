@@ -100,7 +100,7 @@ public class EventWebController {
 		if (principal instanceof OAuth2User) {
 			OAuth2User oAuth2User = (OAuth2User) principal;
 			mav.addObject("avatarUrl", DiscordUserUtils.getAvatarUrl(oAuth2User.getAttribute("id"), oAuth2User.getAttribute("avatar"), oAuth2User.getAttribute("discriminator")));
-			mav.addObject("profileUrl", linkTo(methodOn(ProfileWebController.class).getProfile(oAuth2User.getAttribute("id"))).toUri().toString());
+			mav.addObject("profileUrl", "/profile/" + oAuth2User.getAttribute("id"));
 		}
 	}
 
