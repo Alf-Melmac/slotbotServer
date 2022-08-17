@@ -41,7 +41,7 @@ public class AdminWebController {
 		ModelAndView mav = new ModelAndView("admin");
 
 		mav.addObject("logsUrl", linkTo(methodOn(LogWebController.class).getLogsHtml()).toUri().toString());
-		mav.addObject("utilsUrl", linkTo(methodOn(AdminUtilsWebController.class).getAdminUtilsHtml()).toUri().toString());
+		mav.addObject("utilsUrl", "/admin/utils");
 		mav.addObject("serverToggleUrl", linkTo(methodOn(AdminWebController.class).postServerRestart(null)).toUri().toString());
 
 		Set<Server> servers = battlemetricsApiService.getServers();
