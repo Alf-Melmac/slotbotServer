@@ -1,8 +1,8 @@
 package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSlotDto;
+import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +30,15 @@ import static de.webalf.slotbot.util.StringUtils.removeNonDigitCharacters;
 @Slf4j
 public final class SqmParser {
 
-	public static List<Squad> createSlotListFromFile(MultipartFile file) {
+	public static List<MinimalSquadDto> createSlotListFromFile(MultipartFile file) {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-			final List<Squad> read = read(reader);
-			for (Squad squad : read) {
-				squad.setSlotList(squad.getSlotList().stream().sorted(Comparator.comparingInt(Slot::getNumber)).collect(Collectors.toUnmodifiableList()));
+			final List<MinimalSquadDto> read = read(reader);
+			for (MinimalSquadDto squad : read) {
+				squad.setSlotList(
+						squad.getSlotList().stream()
+								.sorted(Comparator.comparingInt(MinimalSlotDto::getNumber))
+								.collect(Collectors.toUnmodifiableList())
+				);
 			}
 			return read;
 		} catch (IOException e) {
@@ -53,14 +57,14 @@ public final class SqmParser {
 	private static final String DESCRIPTION = "description=\"";
 	private static final String QUOTE_MARK = "\"";
 
-	private static List<Squad> read(BufferedReader reader) throws IOException {
+	private static List<MinimalSquadDto> read(BufferedReader reader) throws IOException {
 		int lineNumber = 0;
 
 		ReadStep step = NONE;
 		int braces = 0;
-		Squad nextSquad = null;
+		MinimalSquadDto nextSquad = null;
 
-		List<Squad> slotList = new ArrayList<>();
+		List<MinimalSquadDto> slotList = new ArrayList<>();
 
 		while (true) {
 			final String line = reader.readLine();
@@ -97,7 +101,7 @@ public final class SqmParser {
 							slotName = squadNameSplit[0];
 						}
 
-						nextSquad = Squad.builder().name(squadName).slotList(new ArrayList<>()).build();
+						nextSquad = MinimalSquadDto.builder().name(squadName).slotList(new ArrayList<>()).build();
 						log.trace("Created new Squad '{}'", nextSquad.getName());
 						readSlot(slotName, nextSquad);
 						step = step.next();
@@ -162,23 +166,23 @@ public final class SqmParser {
 	private static final Pattern END_OF_STRING_AND_LINE = Pattern.compile("\";$");
 
 	/**
-	 * Parses the {@link Slot} definition from the given string and adds it to the squad
+	 * Parses the {@link MinimalSlotDto} definition from the given string and adds it to the squad
 	 *
 	 * @param s     to parse slot from. Include number and name
 	 * @param squad to add slot to
 	 */
-	private void readSlot(String s, Squad squad) {
+	private void readSlot(String s, MinimalSquadDto squad) {
 		final Matcher matcher = DIGIT.matcher(s.trim());
 
-		Slot slot;
+		MinimalSlotDto slot;
 		if (matcher.find()) {
 			final String slotNumber = matcher.group();
 			final int end = END_OF_STRING_AND_LINE.matcher(s).find() ? s.indexOf("\";") : s.length();
 			final String slotName = s.substring(s.indexOf(slotNumber) + slotNumber.length(), end).trim();
 
-			slot = Slot.builder().number(Integer.parseInt(removeNonDigitCharacters(slotNumber))).name(slotName).squad(squad).build();
+			slot = MinimalSlotDto.builder().number(Integer.parseInt(removeNonDigitCharacters(slotNumber))).name(slotName).build();
 		} else {
-			slot = Slot.builder().name(s.trim()).squad(squad).build();
+			slot = MinimalSlotDto.builder().name(s.trim()).build();
 		}
 		log.trace("Added slot '{}'", slot.getName());
 		squad.getSlotList().add(slot);

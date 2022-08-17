@@ -1,6 +1,6 @@
 package de.webalf.slotbot.controller;
 
-import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
 import de.webalf.slotbot.util.SqmParser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/files")
 public class FileController {
 	@PostMapping("/uploadSqm")
-	public List<Squad> postSqmFile(@RequestParam(name = "file") MultipartFile file) {
+	public List<MinimalSquadDto> postSqmFile(@RequestParam(name = "file") MultipartFile file) {
 		return SqmParser.createSlotListFromFile(file);
 	}
 }
