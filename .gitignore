@@ -37,4 +37,6 @@ build/
 mvnw
 mvnw.cmd
 
+# Plugins
 .dcignore
+/.jpb/
