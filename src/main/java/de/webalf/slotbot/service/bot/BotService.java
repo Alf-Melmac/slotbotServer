@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PreDestroy;
 import javax.security.auth.login.LoginException;
 
+import static de.webalf.slotbot.util.StringUtils.stripPrefixIfExists;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
 
 /**
@@ -38,10 +39,7 @@ public class BotService {
 	private static final String TOKEN_PREFIX = "Bot ";
 
 	public void startUp() {
-		String token = discordProperties.getToken();
-		if (token.startsWith(TOKEN_PREFIX)) {
-			token = token.substring(TOKEN_PREFIX.length());
-		}
+		String token = stripPrefixIfExists(discordProperties.getToken(), TOKEN_PREFIX);
 
 		try {
 			jda = JDABuilder

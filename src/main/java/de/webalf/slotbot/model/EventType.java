@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.StringUtils.prependIfMissing;
 
 /**
  * @author Alf
@@ -45,7 +46,7 @@ public class EventType extends AbstractSuperIdEntity {
 	private List<Event> events;
 
 	public void setColor(@NotNull String color) {
-		String parsedColor = (color.startsWith("#") ? color : "#" + color).toLowerCase();
+		String parsedColor = prependIfMissing(color, "#").toLowerCase();
 		if (!HEX_COLOR.matcher(parsedColor).matches()) {
 			throw BusinessRuntimeException.builder().title(parsedColor + " is not a valid hex color.").build();
 		}

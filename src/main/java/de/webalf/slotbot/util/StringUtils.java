@@ -13,10 +13,25 @@ import java.util.regex.Pattern;
  */
 @UtilityClass
 public final class StringUtils {
+	/**
+	 * Checks whether the given string contains no text.
+	 *
+	 * @param term to check
+	 * @return true if the string contains no text
+	 * @see #isNotEmpty(String)
+	 */
 	public static boolean isEmpty(String term) {
 		return !isNotEmpty(term);
 	}
 
+	/**
+	 * Checks whether the given string contains text.
+	 *
+	 * @param term to check
+	 * @return true if the string contains text
+	 * @see org.springframework.util.StringUtils#hasText(String)
+	 * @see #isEmpty(String)
+	 */
 	public static boolean isNotEmpty(String term) {
 		return org.springframework.util.StringUtils.hasText(term);
 	}
@@ -77,7 +92,7 @@ public final class StringUtils {
 	 * Gets the first string that is not empty.
 	 *
 	 * @param fallback to use if all given strings are empty
-	 * @param strs strings that may be null or empty
+	 * @param strs     strings that may be null or empty
 	 * @return first found not empty string or the given fallback if non is not empty
 	 */
 	public static String getFirstNotEmpty(String fallback, String... strs) {
@@ -87,5 +102,34 @@ public final class StringUtils {
 			}
 		}
 		return fallback;
+	}
+
+	/**
+	 * Removes the prefix if the string starts with it.
+	 *
+	 * @param s      to check
+	 * @param prefix to remove
+	 * @return string without prefix
+	 */
+	public static String stripPrefixIfExists(String s, String prefix) {
+		if (s == null) {
+			return null;
+		}
+		if (s.startsWith(prefix)) {
+			return s.substring(prefix.length());
+		}
+		return s;
+	}
+
+	/**
+	 * Prepends the prefix to the start of the string if the string does not already start with the prefix.
+	 *
+	 * @param s      to check
+	 * @param prefix with which the string should start
+	 * @return prefixed string
+	 * @see org.apache.commons.lang3.StringUtils#prependIfMissing(String, CharSequence, CharSequence...)
+	 */
+	public static String prependIfMissing(String s, String prefix) {
+		return org.apache.commons.lang3.StringUtils.prependIfMissing(s, prefix);
 	}
 }
