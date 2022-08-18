@@ -3,7 +3,6 @@ package de.webalf.slotbot;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
-import de.webalf.slotbot.service.external.ExternalServerService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -40,8 +39,5 @@ public class SlotbotApplication {
 
 		//Create all notifications
 		applicationContext.getBean(EventNotificationService.class).rebuildAllNotifications();
-
-		//Initialize external server
-		applicationContext.getBean(ExternalServerService.class).fillIpServerMap();
 	}
 }

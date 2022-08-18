@@ -12,32 +12,6 @@
 	  "description": "The token of the discord bot. Found under https://discord.com/developers/applications."
 	},
 	{
-	  "name": "battlemetrics.apiAccessToken",
-	  "type": "java.lang.String",
-	  "description": "A Personal Access Tokens of the battlemetrics api. Can be acquired under https://www.battlemetrics.com/developers. Permissions needed: rcon:read."
-	},
-	{
-	  "name": "battlemetrics.serverIds",
-	  "type": "java.util.List<java.lang.Integer>",
-	  "description": "Server ids to check status for."
-	},
-	{
-	  "name": "servermanager.url",
-	  "type": "java.lang.String",
-	  "description": "URL via which the API of the server manager can be reached. Example: http://localhost/server-manager/api/v1."
-	},
-	{
-	  "name": "servermanager.tokenName",
-	  "type": "java.lang.String",
-	  "description": "Authentication token name of the server manager.",
-	  "defaultValue": "server-manager-auth-token"
-	},
-	{
-	  "name": "servermanager.token",
-	  "type": "java.lang.String",
-	  "description": "Authentication token of the server manager."
-	},
-	{
 	  "name": "storage.download",
 	  "type": "java.lang.String",
 	  "description": "Path from which the /download endpoint obtains files."

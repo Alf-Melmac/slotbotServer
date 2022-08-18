@@ -45,11 +45,6 @@
 	        integrity="sha256-aTkz/OvDuJYgw3/MNkGKLVhlXS4KFLtTuM3JeBjoIms=" crossorigin="anonymous"></script>
 </div>
 
-<div th:fragment="jqueryANDbootstrap">
-	<script th:replace="fragments/scripts.html :: jquery"></script>
-	<script th:replace="fragments/scripts.html :: bootstrap"></script>
-</div>
-
 <div th:fragment="jqueryANDpopperANDbootstrap">
 	<script th:replace="fragments/scripts.html :: jquery"></script>
 	<!--(!) Popper must be included after jQuery but before Bootstrap-->
