@@ -1,6 +1,7 @@
 package de.webalf.slotbot.controller.website;
 
 import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +19,8 @@ public class StartWebController {
 
 	@GetMapping
 	public ModelAndView getStart() {
-		if (!guildService.isAMB()) {
-			return new ModelAndView("redirect:" + guildService.findCurrentNonNullGuild().getBaseRedirectUrl());
-		}
-
-		return new ModelAndView("start");
+		String baseRedirectUrl = guildService.findCurrentNonNullGuild().getBaseRedirectUrl();
+		return new ModelAndView("redirect:" + (StringUtils.isNotEmpty(baseRedirectUrl) ? baseRedirectUrl : "http://localhost:3000"));
 	}
 
 	@GetMapping("/error/403")
