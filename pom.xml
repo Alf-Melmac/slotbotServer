@@ -40,7 +40,7 @@
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
 		<!--https://in.relation.to/hibernate-orm/index.html -->
 		<!--Match the version from spring-boot-starter-data-jpa-->
-		<hibernate.version>5.6.7.Final</hibernate.version>
+		<hibernate.version>5.6.10.Final</hibernate.version>
 		<!--https://jdbc.postgresql.org/documentation/changelog.html -->
 		<postgresql.version>42.4.1</postgresql.version>
 		<!--https://projectlombok.org/changelog -->
