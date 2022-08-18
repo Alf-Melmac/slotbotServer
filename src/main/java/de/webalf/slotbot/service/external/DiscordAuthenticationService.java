@@ -1,5 +1,7 @@
 package de.webalf.slotbot.service.external;
 
+import de.webalf.slotbot.constant.AuthorizationCheckValues;
+import de.webalf.slotbot.repository.GlobalRoleRepository;
 import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +28,13 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.buildGuildAuth
 @Slf4j
 public class DiscordAuthenticationService {
 	private static final String ROLE_PREFIX = "Slotbot_";
-	public static final String ROLE_SYS_ADMIN = ROLE_PREFIX + "Sys_Admin";
 	public static final String ROLE_ADMIN = ROLE_PREFIX + "Admin";
 	public static final String ROLE_EVENT_MANGE = ROLE_PREFIX + "Event_Manage";
 	public static final String ROLE_EVERYONE = "@everyone";
-	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_SYS_ADMIN, ROLE_ADMIN, ROLE_EVENT_MANGE, ROLE_EVERYONE);
+	public static final Set<String> KNOWN_ROLE_NAMES = Set.of(ROLE_ADMIN, ROLE_EVENT_MANGE, ROLE_EVERYONE);
 
 	private final BotService botService;
+	private final GlobalRoleRepository globalRoleRepository;
 
 	public Set<String> getRoles(long userId) {
 		Set<String> roles = new HashSet<>();
@@ -64,10 +66,10 @@ public class DiscordAuthenticationService {
 				}
 		);
 
-		return roles;
-	}
+		globalRoleRepository.findAllByUser_Id(userId).stream()
+				.map(globalRole -> AuthorizationCheckValues.ROLE_PREFIX + globalRole.getRole().getApplicationRole())
+				.forEachOrdered(roles::add);
 
-	public Set<String> getRoles(String userId) {
-		return getRoles(Long.parseLong(userId));
+		return roles;
 	}
 }

@@ -37,6 +37,9 @@ public class User extends AbstractDiscordIdEntity {
 	@OneToMany(mappedBy = "user")
 	private Set<GuildUsers> guilds = new HashSet<>();
 
+	@OneToMany(mappedBy = "user")
+	private Set<GlobalRole> globalRoles = new HashSet<>();
+
 	public static final long DEFAULT_USER_ID = 11111;
 
 	@Builder

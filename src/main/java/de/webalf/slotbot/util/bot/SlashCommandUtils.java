@@ -63,6 +63,7 @@ public final class SlashCommandUtils {
 	 * @return names of allowed discord roles
 	 */
 	private static Set<String> getAllowedRoles(@NonNull SlashCommand command) {
+		//TODO Consider GlobalRole
 		return Arrays.stream(command.authorization().getRoles()).map(ApplicationPermissionHelper.Role::getDiscordRole).collect(Collectors.toUnmodifiableSet());
 	}
 

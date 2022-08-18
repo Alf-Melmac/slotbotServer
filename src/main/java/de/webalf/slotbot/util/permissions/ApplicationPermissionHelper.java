@@ -1,5 +1,6 @@
 package de.webalf.slotbot.util.permissions;
 
+import de.webalf.slotbot.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
@@ -29,13 +30,12 @@ public final class ApplicationPermissionHelper {
 	@Getter
 	@AllArgsConstructor
 	public enum Role {
-		SERVER_ADMIN(ROLE_SYS_ADMIN, ApplicationRoles.SYS_ADMIN),
+		SYSTEM_ADMIN(null, ApplicationRoles.SYS_ADMIN),
 		ADMINISTRATOR(ROLE_ADMIN, ApplicationRoles.ADMIN),
 		EVENT_MANAGE(ROLE_EVENT_MANGE, ApplicationRoles.EVENT_MANAGE),
 		EVERYONE(ROLE_EVERYONE, ApplicationRoles.USER);
 
-		@NotBlank
-		private final String discordRole;
+		private final String discordRole; //If blank, then it is a GlobalRole
 		@NotBlank
 		private final String applicationRole;
 
@@ -52,7 +52,10 @@ public final class ApplicationPermissionHelper {
 		static {
 			Map<String, Role> discordRoleMap = new HashMap<>();
 			for (Role role : EnumSet.allOf(Role.class)) {
-				discordRoleMap.put(role.getDiscordRole(), role);
+				String currentRole = role.getDiscordRole();
+				if (StringUtils.isNotEmpty(currentRole)) {
+					discordRoleMap.put(currentRole, role);
+				}
 			}
 			DISCORD_ROLE_VALUES = Collections.unmodifiableMap(discordRoleMap);
 		}
