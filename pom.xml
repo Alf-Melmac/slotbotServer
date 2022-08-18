@@ -34,7 +34,7 @@
 		<!--Versions-->
 		<java.version>11</java.version>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<springframework.boot.version>2.6.6</springframework.boot.version>
+		<springframework.boot.version>2.7.3</springframework.boot.version>
 		<!--https://github.com/spring-projects/spring-security/releases -->
 		<springframework.security.version>5.6.3</springframework.security.version>
 		<thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
