@@ -48,16 +48,21 @@ public final class ApplicationPermissionHelper {
 		}
 
 		private static final Map<String, Role> DISCORD_ROLE_VALUES;
+		public static final Map<String, Role> APPLICATION_ROLE_VALUES;
 
 		static {
-			Map<String, Role> discordRoleMap = new HashMap<>();
+			final Map<String, Role> discordRoleMap = new HashMap<>();
+			final Map<String, Role> applicationRoleMap = new HashMap<>();
 			for (Role role : EnumSet.allOf(Role.class)) {
-				String currentRole = role.getDiscordRole();
-				if (StringUtils.isNotEmpty(currentRole)) {
-					discordRoleMap.put(currentRole, role);
+				final String currentDiscordRole = role.getDiscordRole();
+				if (StringUtils.isNotEmpty(currentDiscordRole)) {
+					discordRoleMap.put(currentDiscordRole, role);
 				}
+				applicationRoleMap.put(ROLE_PREFIX + role.getApplicationRole(), role);
+
 			}
 			DISCORD_ROLE_VALUES = Collections.unmodifiableMap(discordRoleMap);
+			APPLICATION_ROLE_VALUES = Collections.unmodifiableMap(applicationRoleMap);
 		}
 
 		/**
@@ -68,6 +73,16 @@ public final class ApplicationPermissionHelper {
 		 */
 		public static Role getByDiscordRole(String role) {
 			return DISCORD_ROLE_VALUES.get(role);
+		}
+
+		/**
+		 * Returns the {@link Role} matching the given application role
+		 *
+		 * @param role to search for
+		 * @return the matching role or null if not found
+		 */
+		public static Role getByApplicationRole(String role) {
+			return APPLICATION_ROLE_VALUES.get(role);
 		}
 
 		public Set<Role> getAuthorizedRoles() {

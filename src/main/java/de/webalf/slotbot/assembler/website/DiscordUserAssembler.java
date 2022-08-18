@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import static de.webalf.slotbot.model.enums.DiscordUserObjectFields.*;
 import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
 import static de.webalf.slotbot.util.bot.DiscordUserUtils.getAvatarUrl;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getAuthoritiesOfLoggedInUser;
 
 /**
  * @author Alf
@@ -24,6 +25,7 @@ public class DiscordUserAssembler {
 				.id(id)
 				.name(getAttribute(oAuth2User, USERNAME))
 				.avatarUrl(getAvatarUrl(id, getAttribute(oAuth2User, AVATAR), getAttribute(oAuth2User, DISCRIMINATOR)))
+				.authorities(getAuthoritiesOfLoggedInUser())
 				.build();
 	}
 

@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.APPLICATION_ROLE_VALUES;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.EVENT_MANAGE;
 
 /**
@@ -32,11 +34,27 @@ public final class PermissionHelper {
 	 * @return user id or empty string
 	 */
 	public static String getLoggedInUserId() {
+		final OAuth2User user = getLoggedIn();
+		if (user == null) {
+			return "";
+		}
+		return getAttribute(user, DiscordUserObjectFields.ID);
+	}
+
+	public static Set<String> getAuthoritiesOfLoggedInUser() {
+		OAuth2User user = getLoggedIn();
+		if (user == null) {
+			return Collections.emptySet();
+		}
+		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(APPLICATION_ROLE_VALUES.keySet()::contains).collect(Collectors.toSet());
+	}
+
+	private OAuth2User getLoggedIn() {
 		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof OAuth2User) {
-			return getAttribute((OAuth2User) principal, DiscordUserObjectFields.ID);
+			return (OAuth2User) principal;
 		}
-		return "";
+		return null;
 	}
 
 	public static String buildGuildAuthentication(String roleName, long guildId) {
