@@ -35,4 +35,17 @@ final class MinimalEventFieldAssembler {
 				.map(MinimalEventFieldAssembler::fromDto)
 				.collect(Collectors.toList());
 	}
+
+	private static MinimalEventFieldDto toDto(EventField eventField) {
+		return MinimalEventFieldDto.builder()
+				.title(eventField.getTitle())
+				.text(eventField.getText())
+				.build();
+	}
+
+	public static List<MinimalEventFieldDto> toDtoList(Iterable<? extends EventField> eventFields) {
+		return StreamSupport.stream(eventFields.spliterator(), false)
+				.map(MinimalEventFieldAssembler::toDto)
+				.collect(Collectors.toList());
+	}
 }

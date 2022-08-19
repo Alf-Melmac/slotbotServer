@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.website.event.creation;
 
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
+import de.webalf.slotbot.util.GuildUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,20 @@ final class MinimalSquadAssembler {
 
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(this::fromDto)
+				.collect(Collectors.toList());
+	}
+
+	private static MinimalSquadDto toDto(Squad squad) {
+		return MinimalSquadDto.builder()
+				.name(squad.getName())
+				.slotList(MinimalSlotAssembler.toDtoList(squad.getSlotList()))
+				.reservedFor(GuildUtils.getReservedFor(squad))
+				.build();
+	}
+
+	public static List<MinimalSquadDto> toDtoList(Iterable<? extends Squad> squads) {
+		return StreamSupport.stream(squads.spliterator(), false)
+				.map(MinimalSquadAssembler::toDto)
 				.collect(Collectors.toList());
 	}
 }

@@ -3,6 +3,7 @@ package de.webalf.slotbot.controller;
 import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
+import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
@@ -46,18 +47,13 @@ public class EventController {
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
 											 @RequestParam LocalDateTime end) {
+		//FIXME revert
 		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.find(706254758721224707L)));
 	}
 
 	@GetMapping("/{id}/details")
 	public EventDetailsDto getEventDetails(@PathVariable(value = "id") long eventId) {
 		return eventDetailsAssembler.toDto(eventService.findById(eventId));
-	}
-
-	@GetMapping("/test")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	public EventDetailsDto getTestAuthentication() {
-		return eventDetailsAssembler.toDto(eventService.findById(13910));
 	}
 
 	@PostMapping
@@ -68,8 +64,14 @@ public class EventController {
 
 	@PostMapping("/old")
 	@PreAuthorize("@permissionChecker.hasEventManagePermission(#event.getOwnerGuild())")
+	@Deprecated
 	public EventReferencelessDto oldPostEvent(@Valid @RequestBody EventDto event) {
 		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
+	}
+
+	@GetMapping("/{id}/copy")
+	public EventPostDto getEventForCopy(@PathVariable(value = "id") long eventId) {
+		return EventPostAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@PutMapping("/{id}")
