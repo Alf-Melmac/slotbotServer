@@ -9,6 +9,10 @@ import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;
 
+/**
+ * @author Alf
+ * @since 25.07.2022
+ */
 @Data
 @Builder
 public class MinimalSquadDto {

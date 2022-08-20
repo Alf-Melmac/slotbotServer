@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.EventAssembler;
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
+import de.webalf.slotbot.assembler.website.event.edit.EventEditAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
@@ -11,6 +12,7 @@ import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
 import de.webalf.slotbot.service.EventCreationService;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
@@ -75,6 +77,14 @@ public class EventController {
 		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
 
 		return EventPostAssembler.toDto(eventService.findById(eventId));
+	}
+
+	@GetMapping("/{id}/edit")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	public EventEditDto getEventForEdit(@PathVariable(value = "id") long eventId) {
+		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
+
+		return EventEditAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@PutMapping("/{id}")

@@ -1,6 +1,6 @@
 package de.webalf.slotbot.assembler.website.event.creation;
 
-import de.webalf.slotbot.assembler.EventTypeAssembler;
+import de.webalf.slotbot.assembler.website.event.EventActionAssembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.service.EventTypeService;
@@ -51,22 +51,11 @@ public class EventPostAssembler {
 	}
 
 	public static EventPostDto toDto(Event event) {
-		final LocalDateTime dateTime = event.getDateTime();
-		return EventPostDto.builder()
-				.hidden(event.isHidden())
-				.shareable(event.isShareable())
-				.name(event.getName())
-				.date(dateTime.toLocalDate())
-				.startTime(dateTime.toLocalTime())
-				.creator(event.getCreator())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
-				.description(event.getDescription())
-				.missionType(event.getMissionType())
-				.missionLength(event.getMissionLength())
-				.pictureUrl(event.getPictureUrl())
+		final EventPostDto.EventPostDtoBuilder<?, ?> builder = EventPostDto.builder();
+		EventActionAssembler.toDto(builder, event);
+		return builder
 				.details(MinimalEventFieldAssembler.toDtoList(event.getDetails()))
 				.squadList(MinimalSquadAssembler.toDtoList(event.getSquadList()))
-				.reserveParticipating(event.getReserveParticipating())
 				.build();
 	}
 }

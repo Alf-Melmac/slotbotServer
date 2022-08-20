@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.website.event.creation;
 
 import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalEventFieldDto;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
@@ -14,7 +15,7 @@ import java.util.stream.StreamSupport;
  * @since 25.07.2022
  */
 @UtilityClass
-final class MinimalEventFieldAssembler {
+public final class MinimalEventFieldAssembler {
 	private static EventField fromDto(MinimalEventFieldDto dto) {
 		if (dto == null) {
 			return null;
@@ -36,14 +37,18 @@ final class MinimalEventFieldAssembler {
 				.collect(Collectors.toList());
 	}
 
-	private static MinimalEventFieldDto toDto(EventField eventField) {
-		return MinimalEventFieldDto.builder()
+	public static <C extends MinimalEventFieldDto, B extends MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>> MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>
+	toDto(MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B> builder, @NonNull EventField eventField) {
+		return builder
 				.title(eventField.getTitle())
-				.text(eventField.getText())
-				.build();
+				.text(eventField.getText());
 	}
 
-	public static List<MinimalEventFieldDto> toDtoList(Iterable<? extends EventField> eventFields) {
+	private static MinimalEventFieldDto toDto(@NonNull EventField eventField) {
+		return toDto(MinimalEventFieldDto.builder(), eventField).build();
+	}
+
+	static List<MinimalEventFieldDto> toDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(MinimalEventFieldAssembler::toDto)
 				.collect(Collectors.toList());

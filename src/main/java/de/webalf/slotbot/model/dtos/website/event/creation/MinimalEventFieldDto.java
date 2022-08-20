@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -9,14 +9,18 @@ import javax.validation.constraints.Size;
 import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_TITLE;
 import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_VALUE;
 
-@Value
-@Builder
+/**
+ * @author Alf
+ * @since 25.07.2022
+ */
+@Data
+@SuperBuilder
 public class MinimalEventFieldDto {
 	@NotBlank
 	@Size(max = EMBEDDABLE_TITLE)
-	String title;
+	private final String title;
 
 	@NotBlank
 	@Size(max = EMBEDDABLE_VALUE)
-	String text;
+	private final String text;
 }

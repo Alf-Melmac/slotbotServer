@@ -7,6 +7,7 @@ import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.util.GuildUtils;
 import de.webalf.slotbot.util.StringUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import java.util.stream.StreamSupport;
  */
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-final class MinimalSlotAssembler {
+public final class MinimalSlotAssembler {
 	private final UserService userService;
 	private final GuildService guildService;
 
@@ -54,14 +55,18 @@ final class MinimalSlotAssembler {
 		return StringUtils.isNotEmpty(reservedFor) ? guildService.find(Long.parseLong(reservedFor)) : null;
 	}
 
-	private static MinimalSlotDto toDto(Slot slot) {
-		return MinimalSlotDto.builder()
+	public static <C extends MinimalSlotDto, B extends MinimalSlotDto.MinimalSlotDtoBuilder<C, B>> MinimalSlotDto.MinimalSlotDtoBuilder<C, B>
+	toDto(MinimalSlotDto.MinimalSlotDtoBuilder<C, B> builder, @NonNull Slot slot) {
+		return builder
 				.name(slot.getName())
 				.number(slot.getNumber())
 				.reservedFor(GuildUtils.getReservedFor(slot))
 				.blocked(slot.isBlocked())
-				.replacementText(slot.getReplacementText())
-				.build();
+				.replacementText(slot.getReplacementText());
+	}
+
+	private static MinimalSlotDto toDto(@NonNull Slot slot) {
+		return toDto(MinimalSlotDto.builder(), slot).build();
 	}
 
 	static List<MinimalSlotDto> toDtoList(Iterable<? extends Slot> slots) {

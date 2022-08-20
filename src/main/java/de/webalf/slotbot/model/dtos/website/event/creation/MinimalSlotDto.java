@@ -1,26 +1,30 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;
 
-@Value
-@Builder
+/**
+ * @author Alf
+ * @since 25.07.2022
+ */
+@Data
+@SuperBuilder
 public class MinimalSlotDto {
 	@NotBlank
 	@Size(max = TEXT)
-	String name;
+	private final String name;
 
-	int number;
+	private final int number;
 
-	String reservedFor;
+	private final String reservedFor;
 
-	boolean blocked;
+	private final boolean blocked;
 
 	@Size(max = TEXT)
-	String replacementText;
+	private final String replacementText;
 }

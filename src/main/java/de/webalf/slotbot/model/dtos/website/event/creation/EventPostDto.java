@@ -1,57 +1,24 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
-import de.webalf.slotbot.model.dtos.EventTypeDto;
-import lombok.Builder;
+import de.webalf.slotbot.model.dtos.website.event.EventActionDto;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
-import static de.webalf.slotbot.util.MaxLength.*;
-
+/**
+ * @author Alf
+ * @since 25.07.2022
+ */
+@EqualsAndHashCode(callSuper = true)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Value
-@Builder
-public class EventPostDto {
-	Boolean hidden;
-
-	Boolean shareable;
-
-	@NotBlank
-	@Size(max = TEXT)
-	String name;
-
-	@NotNull
-	LocalDate date;
-
-	@NotNull
-	LocalTime startTime;
-
-	@NotBlank
-	@Size(max = TEXT)
-	String creator;
-
-	@NotNull
-	EventTypeDto eventType;
-
-	@Size(max = EMBEDDABLE_DESCRIPTION)
-	String description;
-
-	@Size(max = TEXT)
-	String missionType;
-
-	@Size(max = TEXT)
-	String missionLength;
-
-	@Size(max = URL)
-	String pictureUrl;
-
+@SuperBuilder
+public class EventPostDto extends EventActionDto {
 	List<MinimalEventFieldDto> details;
 
 	List<MinimalSquadDto> squadList;
-
-	Boolean reserveParticipating;
 }
