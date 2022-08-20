@@ -253,8 +253,7 @@
 				<configuration>
 					<jsonLibrary>jackson2</jsonLibrary>
 					<classPatterns>
-						<pattern>de.webalf.slotbot.model.dtos.*</pattern>
-						<pattern>de.webalf.slotbot.model.dtos.website.*</pattern>
+						<pattern>de.webalf.slotbot.model.dtos.**</pattern>
 					</classPatterns>
 					<outputKind>global</outputKind>
 				</configuration>
