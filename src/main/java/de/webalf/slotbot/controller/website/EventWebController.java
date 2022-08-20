@@ -69,7 +69,7 @@ public class EventWebController {
 		return mav;
 	}
 
-	@GetMapping("/{id}/edit")
+	@GetMapping("/{id}/edit/old")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
 		final Event event = eventService.findById(eventId);

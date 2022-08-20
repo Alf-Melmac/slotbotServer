@@ -11,7 +11,7 @@ import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
-import de.webalf.slotbot.model.dtos.website.EventEditDto;
+import de.webalf.slotbot.model.dtos.website.OldEventEditDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DiscordMarkdown;
@@ -60,10 +60,10 @@ public class EventDetailsAssembler {
 				.build();
 	}
 
-	public EventEditDto toEditDto(@NonNull Event event) {
+	public OldEventEditDto toEditDto(@NonNull Event event) {
 		final LocalDateTime dateTime = event.getDateTime();
 
-		return EventEditDto.builder()
+		return OldEventEditDto.builder()
 				.id(event.getId())
 				.hidden(event.isHidden())
 				.shareable(event.isShareable())

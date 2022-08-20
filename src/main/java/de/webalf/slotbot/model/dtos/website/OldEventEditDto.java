@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Value
 @SuperBuilder
-public class EventEditDto extends AbstractEventDto {
+public class OldEventEditDto extends AbstractEventDto {
 	List<EventFieldDefaultDto> details;
 
 	List<EventDetailsSquadDto> squadList;
