@@ -18,4 +18,6 @@ public class EventEditDto extends EventActionDto {
 	List<MinimalEventFieldIdDto> details;
 
 	List<MinimalSquadIdDto> squadList;
+
+	boolean canRevokeShareable;
 }
