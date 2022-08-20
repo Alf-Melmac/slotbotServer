@@ -70,7 +70,10 @@ public class EventController {
 	}
 
 	@GetMapping("/{id}/copy")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public EventPostDto getEventForCopy(@PathVariable(value = "id") long eventId) {
+		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
+
 		return EventPostAssembler.toDto(eventService.findById(eventId));
 	}
 
