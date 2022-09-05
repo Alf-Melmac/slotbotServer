@@ -45,7 +45,7 @@
 		<!--https://github.com/ical4j/ical4j/tags -->
 		<ical4j.version>4.0.0-beta2</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
-		<typescript-generator.version>2.36.1070 </typescript-generator.version>
+		<typescript-generator.version>2.37.1128</typescript-generator.version>
 	</properties>
 
 	<dependencies>
