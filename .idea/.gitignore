@@ -16,3 +16,6 @@ sonarlint/
 
 #Discord Integration
 discord.xml
+
+#JPA Buddy
+jpa-buddy.xml
