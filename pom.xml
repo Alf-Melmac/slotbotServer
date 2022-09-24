@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>2.7.3</version>
+		<version>2.7.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -35,17 +35,17 @@
 		<!--Versions-->
 		<java.version>11</java.version>
 		<!--Temporary security patch. Remove afterwards-->
-		<postgresql.version>42.4.1</postgresql.version>
+		<postgresql.version>42.5.0</postgresql.version>
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.11</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
 		<jda.version>4.4.0_352</jda.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.15.2</jsoup.version>
+		<jsoup.version>1.15.3</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
 		<ical4j.version>4.0.0-beta2</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
-		<typescript-generator.version>2.36.1070 </typescript-generator.version>
+		<typescript-generator.version>2.37.1128</typescript-generator.version>
 	</properties>
 
 	<dependencies>
