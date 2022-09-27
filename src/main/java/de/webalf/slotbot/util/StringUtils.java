@@ -89,6 +89,17 @@ public final class StringUtils {
 	}
 
 	/**
+	 * Returns a trimmed version of the given string. If the string is null or empty, null is returned.
+	 *
+	 * @param str string to trim
+	 * @return trimmed string
+	 */
+	public static String trimAndNullify(String str) {
+		final String trimmed = trim(str);
+		return isEmpty(trimmed) ? null : trimmed;
+	}
+
+	/**
 	 * Gets the first string that is not empty.
 	 *
 	 * @param fallback to use if all given strings are empty

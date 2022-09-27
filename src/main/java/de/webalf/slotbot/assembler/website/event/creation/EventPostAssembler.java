@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
-import static de.webalf.slotbot.util.StringUtils.trim;
+import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 
 /**
  * @author Alf
@@ -33,14 +33,14 @@ public class EventPostAssembler {
 		final Event event = Event.builder()
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))
-				.name(dto.getName().trim())
+				.name(trimAndNullify(dto.getName()))
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
-				.creator(dto.getCreator().trim())
+				.creator(trimAndNullify(dto.getCreator()))
 				.eventType(eventTypeService.find(dto.getEventType()))
-				.description(trim(dto.getDescription()))
-				.missionType(dto.getMissionType())
-				.missionLength(trim(dto.getMissionLength()))
-				.pictureUrl(trim(dto.getPictureUrl()))
+				.description(trimAndNullify(dto.getDescription()))
+				.missionType(trimAndNullify(dto.getMissionType()))
+				.missionLength(trimAndNullify(dto.getMissionLength()))
+				.pictureUrl(trimAndNullify(dto.getPictureUrl()))
 				.details(MinimalEventFieldAssembler.fromDtoIterable(dto.getDetails()))
 				.squadList(squadAssembler.fromDtoList(dto.getSquadList()))
 				.reserveParticipating(dto.getReserveParticipating())
