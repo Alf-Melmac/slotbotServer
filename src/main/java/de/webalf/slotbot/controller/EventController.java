@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
@@ -89,11 +90,30 @@ public class EventController {
 
 	@PutMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@Deprecated
 	public EventReferencelessDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
 		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
 
 		event.setId(eventId);
 		return EventAssembler.toReferencelessDto(eventService.updateEvent(event));
+	}
+
+	@PutMapping("/{id}/edit/text")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	public EventReferencelessDto updateEventField(@PathVariable(value = "id") long eventId, @RequestBody Map.Entry<String, String> field) {
+		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
+
+		final String name = field.getKey();
+		EventDto dto = EventDto.builder().id(eventId).build();
+		try {
+			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, field.getValue().trim());
+		} catch (NoSuchFieldException e) {
+			log.error("Can't find field " + name + " while trying to edit it.", e);
+			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
+		} catch (NullPointerException e) {
+			throw BusinessRuntimeException.builder().title(name + " darf nicht leer sein").cause(e).build();
+		}
+		return EventAssembler.toReferencelessDto(eventService.updateEvent(dto));
 	}
 
 	@PutMapping("/{id}/slotlist")
@@ -106,6 +126,7 @@ public class EventController {
 
 	@PostMapping("/editable")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@Deprecated
 	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {
 		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(pk));
 
