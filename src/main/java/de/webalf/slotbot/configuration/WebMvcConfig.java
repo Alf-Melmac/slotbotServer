@@ -3,9 +3,13 @@ package de.webalf.slotbot.configuration;
 import de.webalf.slotbot.service.ControllerAdviser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * @author Alf
@@ -16,8 +20,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 	private final ControllerAdviser controllerAdviser;
 
+	@Value("${server.cors.allowedOrigins}")
+	private String[] allowedOrigins;
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(controllerAdviser);
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedMethods(GET.name(), POST.name(), PUT.name())
+				.allowedOrigins(allowedOrigins)
+				.allowCredentials(true);
 	}
 }

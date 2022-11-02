@@ -20,10 +20,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Deprecated
 public class ControllerAdviser implements HandlerInterceptor {
 	private final GuildService guildService;
 
 	@Override
+	@Deprecated
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
 		if (modelAndView != null && modelAndView.hasView() && !(modelAndView.getView() instanceof RedirectView)) {
 			modelAndView.addObject("startUrl", linkTo(methodOn(StartWebController.class).getStart()).toUri().toString());
