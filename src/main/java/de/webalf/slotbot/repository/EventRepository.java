@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -17,7 +18,7 @@ import java.util.List;
 @Repository
 public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query("SELECT e.ownerGuild FROM Event e WHERE e.id = :id")
-	Guild findOwnerGuildById(long id);
+	Optional<Guild> findOwnerGuildById(long id);
 
 	@Query("SELECT e FROM Event e WHERE e.dateTime BETWEEN :start AND :end AND (e.shareable = true OR e.ownerGuild.id = de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER)")
 	List<Event> findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);

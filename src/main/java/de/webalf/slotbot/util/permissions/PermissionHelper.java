@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util.permissions;
 
-import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.enums.DiscordUserObjectFields;
 import lombok.NonNull;
@@ -67,15 +66,6 @@ public final class PermissionHelper {
 
 	public static String buildGuildAuthenticationWithPrefix(String roleName, @NonNull Guild guild) {
 		return buildGuildAuthenticationWithPrefix(roleName, guild.getId());
-	}
-
-	/**
-	 * @throws ForbiddenException if userId doesn't match logged in user
-	 */
-	public static void assertIsLoggedInUser(String userId) {
-		if (!isLoggedInUser(userId)) {
-			throw new ForbiddenException("Das darfst du nur für dich selbst.");
-		}
 	}
 
 	/**

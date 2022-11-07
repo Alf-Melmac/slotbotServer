@@ -49,9 +49,8 @@ public class EventController {
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
-											 @RequestParam LocalDateTime end) {
-		//FIXME revert
-		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.find(706254758721224707L)));
+	                                         @RequestParam LocalDateTime end) {
+		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.findCurrentNonNullGuild()));
 	}
 
 	@GetMapping("/{id}/details")
@@ -60,49 +59,41 @@ public class EventController {
 	}
 
 	@PostMapping
-//	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
 	public long postEvent(@Valid @RequestBody EventPostDto event) {
 		return eventCreationService.createEvent(event).getId();
 	}
 
 	@PostMapping("/old")
-	@PreAuthorize("@permissionChecker.hasEventManagePermission(#event.getOwnerGuild())")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
 	@Deprecated
 	public EventReferencelessDto oldPostEvent(@Valid @RequestBody EventDto event) {
+		event.setOwnerGuild(Long.toString(guildService.getCurrentGuildId()));
 		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}
 
 	@GetMapping("/{id}/copy")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
 	public EventPostDto getEventForCopy(@PathVariable(value = "id") long eventId) {
-		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
-
 		return EventPostAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@GetMapping("/{id}/edit")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
 	public EventEditDto getEventForEdit(@PathVariable(value = "id") long eventId) {
-		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
-
 		return EventEditAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	@Deprecated
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
 	public EventReferencelessDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
-
 		event.setId(eventId);
 		return EventAssembler.toReferencelessDto(eventService.updateEvent(event));
 	}
 
 	@PutMapping("/{id}/edit/text")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
 	public EventReferencelessDto updateEventField(@PathVariable(value = "id") long eventId, @RequestBody Map.Entry<String, String> field) {
-		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
-
 		final String name = field.getKey();
 		EventDto dto = EventDto.builder().id(eventId).build();
 		try {
@@ -117,10 +108,8 @@ public class EventController {
 	}
 
 	@PutMapping("/{id}/slotlist")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
 	public EventReferencelessDto updateSlotList(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(eventId));
-
 		return EventAssembler.toReferencelessDto(eventService.updateSquadList(eventId, event));
 	}
 

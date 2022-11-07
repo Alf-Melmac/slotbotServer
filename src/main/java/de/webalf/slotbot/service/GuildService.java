@@ -102,18 +102,14 @@ public class GuildService {
 	/**
 	 * If {@link #findCurrentGuild()} can determine a guild, this one is always taken. Otherwise, the given {@link AbstractEventDto#getOwnerGuild()} is used
 	 *
-	 * @param ownerGuild owner guild of the event
+	 * @param event event with owner guild
 	 * @return evaluated owner guild
 	 */
-	public Guild getOwnerGuild(String ownerGuild) {
+	public Guild getOwnerGuild(@NonNull AbstractEventDto event) {
 		final Guild currentGuild = findCurrentNonNullGuild();
 		return currentGuild.getId() != GUILD_PLACEHOLDER
 				? currentGuild
-				: find(LongUtils.parseLong(ownerGuild, GUILD_PLACEHOLDER));
-	}
-
-	public Guild getOwnerGuild(@NonNull AbstractEventDto event) {
-		return getOwnerGuild(event.getOwnerGuild());
+				: find(LongUtils.parseLong(event.getOwnerGuild(), GUILD_PLACEHOLDER));
 	}
 
 	public Guild getOwnerGuild(@NonNull Event event) {

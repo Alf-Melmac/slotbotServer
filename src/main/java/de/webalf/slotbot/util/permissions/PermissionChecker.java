@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Guild;
+import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,14 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.hasPermissionI
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class PermissionChecker {
 	private final GuildService guildService;
+	private final EventService eventService;
 
 	public boolean hasEventManagePermissionInCurrentOwnerGuild() {
 		return PermissionHelper.hasEventManagePermission(guildService.getCurrentGuildId());
 	}
 
-	public boolean hasEventManagePermission(String guildId) {
-		return PermissionHelper.hasEventManagePermission(guildService.getOwnerGuild(guildId).getId());
+	public boolean hasEventManagePermission(long eventId) {
+		return PermissionHelper.hasEventManagePermission(eventService.getGuildByEventId(eventId).getId());
 	}
 
 	public void assertEventManagePermission(@NonNull Guild guild) {

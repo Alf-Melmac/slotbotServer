@@ -212,7 +212,7 @@ public class EventService {
 	 * @return owner guild
 	 */
 	public Guild getGuildByEventId(long eventId) {
-		return eventRepository.findOwnerGuildById(eventId);
+		return eventRepository.findOwnerGuildById(eventId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	/**

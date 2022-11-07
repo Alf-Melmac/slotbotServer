@@ -71,6 +71,7 @@ public class EventWebController {
 
 	@GetMapping("/{id}/edit/old")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	@Deprecated
 	public ModelAndView getEventEditHtml(@PathVariable(value = "id") long eventId) {
 		final Event event = eventService.findById(eventId);
 		permissionChecker.assertEventManagePermission(event.getOwnerGuild());
