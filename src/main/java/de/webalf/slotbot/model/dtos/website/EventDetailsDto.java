@@ -3,8 +3,8 @@ package de.webalf.slotbot.model.dtos.website;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
@@ -21,7 +21,7 @@ import static de.webalf.slotbot.util.MaxLength.URL;
  * @since 30.10.2020
  */
 @EqualsAndHashCode(callSuper = true)
-@Value
+@Data
 @SuperBuilder
 public class EventDetailsDto extends AbstractIdEntityDto {
 	boolean hidden;
