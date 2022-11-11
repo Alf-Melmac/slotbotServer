@@ -47,6 +47,7 @@ public class EventDetailsAssembler {
 
 		return EventDetailsDto.builder()
 				.id(event.getId())
+				.hidden(event.isHidden())
 				.missionType(event.getMissionType())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.pictureUrl(StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : getLogo(event.getOwnerGuild()))

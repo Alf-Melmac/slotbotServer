@@ -43,6 +43,7 @@ public class FileWebController {
 	}
 
 	@GetMapping("/assets/img/**")
+	@Deprecated
 	public ResponseEntity<Resource> getImage(HttpServletRequest request) {
 		final Resource img = fileService.loadImgAsResource(request.getRequestURI().replace("/assets/img", ""));
 		return ResponseEntity.ok()

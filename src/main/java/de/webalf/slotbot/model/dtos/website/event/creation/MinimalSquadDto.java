@@ -1,5 +1,7 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,6 +16,7 @@ import static de.webalf.slotbot.util.MaxLength.TEXT;
  * @since 25.07.2022
  */
 @Data
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class MinimalSquadDto {
 	@NotBlank

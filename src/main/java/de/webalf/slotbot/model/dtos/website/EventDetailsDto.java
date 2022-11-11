@@ -24,6 +24,8 @@ import static de.webalf.slotbot.util.MaxLength.URL;
 @Value
 @SuperBuilder
 public class EventDetailsDto extends AbstractIdEntityDto {
+	boolean hidden;
+
 	@Size(max = TEXT)
 	String missionType;
 

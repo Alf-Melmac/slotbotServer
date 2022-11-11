@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @since 18.08.2020
  */
 @ResponseStatus(value = HttpStatus.FORBIDDEN)
-@ResponseView("/error/403")
+@ResponseView("/403")
 public class ForbiddenException extends RuntimeException {
 
 	private static final long serialVersionUID = -1227059979658513009L;

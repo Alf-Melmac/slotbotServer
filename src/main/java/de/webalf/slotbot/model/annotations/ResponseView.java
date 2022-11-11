@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ResponseView {
-	String value() default "/error/404";
+	String value() default "/404";
 }
