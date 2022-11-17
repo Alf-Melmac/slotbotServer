@@ -68,7 +68,7 @@ public class SlashCommandsService {
 		log.info("Finished command update for {}.", guild.getName());
 	}
 
-	@SuppressWarnings("unchecked") //The class must implement an interface and thus we can assume the correct return type here
+	@SuppressWarnings("unchecked") //The class must implement an interface, and thus we can assume the correct return type here
 	private List<OptionData> getOptions(Class<?> commandClass, int optionPosition) {
 		try {
 			return (List<OptionData>) commandClass.getMethod("getOptions", int.class).invoke(commandClassHelper.getConstructor(commandClass), optionPosition);

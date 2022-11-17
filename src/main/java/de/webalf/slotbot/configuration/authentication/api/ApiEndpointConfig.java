@@ -37,7 +37,7 @@ public class ApiEndpointConfig extends WebSecurityConfigurerAdapter {
 				.and()
 
 				// disable Cross Site Request Forgery token
-				// we do not rely on cookie based auth and are completely stateless so we are safe
+				// we do not rely on cookie based auth and are completely stateless, so we are safe
 				.csrf().disable()
 
 				// authentication for token based authentication

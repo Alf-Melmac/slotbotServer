@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.util.ListUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -483,7 +482,7 @@ public class EventService {
 	 * @return two slots
 	 */
 	public List<Slot> findSwapSlots(@NonNull Event event, List<UserDto> userDtos) {
-		if (ListUtils.isEmpty(userDtos) || userDtos.size() != 2) {
+		if (org.springframework.util.CollectionUtils.isEmpty(userDtos) || userDtos.size() != 2) {
 			throw BusinessRuntimeException.builder().title("Zum tauschen müssen zwei Nutzer angegeben werden.").build();
 		}
 

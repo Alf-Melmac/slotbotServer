@@ -3,7 +3,6 @@ package de.webalf.slotbot.util.permissions;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Value;
 import lombok.experimental.UtilityClass;
 
 import javax.validation.constraints.NotBlank;
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.*;
 import static de.webalf.slotbot.service.external.DiscordAuthenticationService.*;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.*;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.IS_AUTHENTICATED;
 
 /**
  * @author Alf
@@ -39,7 +37,7 @@ public final class ApplicationPermissionHelper {
 		@NotBlank
 		private final String applicationRole;
 
-		@Value
+		@UtilityClass
 		static class ApplicationRoles {
 			private static final String SYS_ADMIN = "SYS_ADMIN";
 			private static final String ADMIN = "ADMIN";

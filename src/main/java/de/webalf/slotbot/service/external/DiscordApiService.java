@@ -13,8 +13,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.thymeleaf.util.ListUtils;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
@@ -50,6 +50,7 @@ public class DiscordApiService {
 	}
 
 	private static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
+
 	/**
 	 * @see <a href="https://discord.com/developers/docs/resources/user#get-user" target"_top">https://discord.com/developers/docs/resources/user#get-user</a>
 	 */
@@ -94,7 +95,7 @@ public class DiscordApiService {
 		final HttpHeaders headers = response.getHeaders();
 		List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
 		List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
-		if (!ListUtils.isEmpty(remainingHeaders) && !ListUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.get(0))) {
+		if (!CollectionUtils.isEmpty(remainingHeaders) && !CollectionUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.get(0))) {
 			wait = true;
 			waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
 		}
@@ -104,7 +105,7 @@ public class DiscordApiService {
 	/**
 	 * Returns the guild member. If not found it searches for the user itself and builds a {@link GuildMember}
 	 *
-	 * @param userId user to search for
+	 * @param userId  user to search for
 	 * @param guildId guild of the user
 	 * @return {@link GuildMember} with the given user
 	 */

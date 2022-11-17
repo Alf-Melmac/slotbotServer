@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
@@ -45,8 +43,6 @@ public class GuildService {
 		return guildRepository.findByUrlPatternIsNotNull();
 	}
 
-	private static final Set<String> UNKNOWN_GROUPS = new HashSet<>();
-
 	/**
 	 * Finds the current guild matching the current context path
 	 *
@@ -62,7 +58,6 @@ public class GuildService {
 		}
 
 		log.warn("Searched for unknown group with uri '{}'", currentUri);
-		UNKNOWN_GROUPS.add(currentUri);
 		return null;
 	}
 
@@ -74,11 +69,6 @@ public class GuildService {
 	public Guild findCurrentNonNullGuild() {
 		final Guild currentGuild = findCurrentGuild();
 		return currentGuild != null ? currentGuild : getDefault();
-	}
-
-	public String getCurrentGroupIdentifier() {
-		final Guild currentGuild = findCurrentGuild();
-		return currentGuild != null ? currentGuild.getGroupIdentifier() : "Slotbot";
 	}
 
 	public long getCurrentGuildId() {
@@ -139,17 +129,8 @@ public class GuildService {
 		return guildRepository.findById(GUILD_PLACEHOLDER).orElseThrow(IllegalStateException::new);
 	}
 
-	private boolean is(long guildId) {
-		final Optional<Guild> guild = guildRepository.findById(guildId);
-		return guild.isPresent() && guild.get().is();
-	}
-
 	private static boolean is(long guildId, long givenGuildId) {
 		return guildId == givenGuildId;
-	}
-
-	public boolean isSlotbot() {
-		return !isAMB() && !isDAA();
 	}
 
 	private static final long AMB = 706254758721224707L;
@@ -163,15 +144,7 @@ public class GuildService {
 		return is(AMB, guildId);
 	}
 
-	public boolean isAMB() {
-		return is(AMB);
-	}
-
 	public static boolean isDAA(long guildId) {
 		return is(DAA, guildId);
-	}
-
-	public boolean isDAA() {
-		return is(DAA);
 	}
 }

@@ -16,7 +16,6 @@ import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
 import de.webalf.slotbot.service.EventCreationService;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.util.permissions.PermissionChecker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
 
 /**
  * @author Alf
@@ -41,7 +39,6 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
 public class EventController {
-	private final PermissionChecker permissionChecker;
 	private final GuildService guildService;
 	private final EventService eventService;
 	private final EventCreationService eventCreationService;
@@ -62,14 +59,6 @@ public class EventController {
 	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
 	public long postEvent(@Valid @RequestBody EventPostDto event) {
 		return eventCreationService.createEvent(event).getId();
-	}
-
-	@PostMapping("/old")
-	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
-	@Deprecated
-	public EventReferencelessDto oldPostEvent(@Valid @RequestBody EventDto event) {
-		event.setOwnerGuild(Long.toString(guildService.getCurrentGuildId()));
-		return EventAssembler.toReferencelessDto(eventService.createEvent(event));
 	}
 
 	@GetMapping("/{id}/copy")
@@ -113,24 +102,9 @@ public class EventController {
 		return EventAssembler.toReferencelessDto(eventService.updateSquadList(eventId, event));
 	}
 
-	@PostMapping("/editable")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	@Deprecated
-	public EventReferencelessDto updateEventEditable(long pk, String name, String value) {
-		permissionChecker.assertEventManagePermission(eventService.getGuildByEventId(pk));
-
-		EventDto dto = EventDto.builder().id(pk).build();
-		try {
-			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, value.trim());
-		} catch (NoSuchFieldException e) {
-			log.error("Can't find field " + name + " while trying to edit it.", e);
-			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
-		}
-		return EventAssembler.toReferencelessDto(eventService.updateEvent(dto));
-	}
-
-	@PutMapping("/fields")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	/*@PutMapping("/fields")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)*/
+	@SuppressWarnings("unused") //TODO Re-implement default details
 	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestBody String eventTypeName) {
 		return getDefault(eventTypeName);
 	}

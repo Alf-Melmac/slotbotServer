@@ -25,7 +25,6 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Rol
  */
 @UtilityClass
 public final class PermissionHelper {
-	public static final String IS_AUTHENTICATED = "isAuthenticated()"; //Isn't anonymous (logged in)
 
 	/**
 	 * Returns the user id of the currently logged-in oauth user
@@ -110,7 +109,7 @@ public final class PermissionHelper {
 		}
 	}
 
-	public static boolean hasEventManagePermission(Long guildId) {
+	static boolean hasEventManagePermission(Long guildId) {
 		return hasPermissionInGuild(EVENT_MANAGE, guildId);
 	}
 }

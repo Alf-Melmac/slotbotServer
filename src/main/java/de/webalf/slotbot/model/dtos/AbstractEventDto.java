@@ -2,9 +2,11 @@ package de.webalf.slotbot.model.dtos;
 
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.DateUtils;
-import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
@@ -13,7 +15,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -73,19 +74,6 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 
 	public String getRawPictureUrl() {
 		return pictureUrl;
-	}
-
-	@Getter
-	private static final List<String> MISSION_TYPES = List.of("COOP", "COOP+", "Zeus", "TvT", "Training", "Spezial", "Anderes");
-
-	/**
-	 * Returns known mission types, except the one saved in the event
-	 *
-	 * @return known mission types except the saved one
-	 */
-	@SuppressWarnings("unused") //eventEdit.html
-	public List<String> getMissionTypesFiltered() {
-		return ListUtils.getListFiltered(MISSION_TYPES, getMissionType());
 	}
 
 	public ZonedDateTime getDateTimeZoned() {

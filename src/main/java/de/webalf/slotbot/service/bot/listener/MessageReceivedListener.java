@@ -16,10 +16,10 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.thymeleaf.util.ArrayUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static de.webalf.slotbot.util.StringUtils.isNotEmpty;
 import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
@@ -89,7 +89,7 @@ public class MessageReceivedListener extends ListenerAdapter {
 	 * @return true if validation succeeded
 	 */
 	private boolean validate(Message message, @NonNull List<String> argList, @NonNull Command command) {
-		if (!ArrayUtils.contains(ListUtils.convertToBoxedArray(command.argCount()), argList.size())) {
+		if (IntStream.of(command.argCount()).noneMatch(x -> x == argList.size())) {
 			wrongArgumentCount(message, argList, command);
 			return false;
 		} else if (!CommandUtils.isAllowed(command, message)) {

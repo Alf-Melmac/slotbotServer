@@ -47,7 +47,7 @@ public class EventFieldService {
 	}
 
 	/**
-	 * Updates a event field with the given values identified by its id. If no field can be found, a new one is created.
+	 * Updates an event field with the given values identified by its id. If no field can be found, a new one is created.
 	 * (!) Event can not be changed
 	 *
 	 * @param dto   with new values

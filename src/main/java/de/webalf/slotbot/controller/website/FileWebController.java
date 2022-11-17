@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -40,14 +39,6 @@ public class FileWebController {
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
 				.body(file);
-	}
-
-	@GetMapping("/assets/img/**")
-	@Deprecated
-	public ResponseEntity<Resource> getImage(HttpServletRequest request) {
-		final Resource img = fileService.loadImgAsResource(request.getRequestURI().replace("/assets/img", ""));
-		return ResponseEntity.ok()
-				.body(img);
 	}
 
 	@GetMapping("/calendar/{filename:.+}")

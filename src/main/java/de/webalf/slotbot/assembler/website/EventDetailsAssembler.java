@@ -11,7 +11,6 @@ import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
-import de.webalf.slotbot.model.dtos.website.OldEventEditDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DiscordMarkdown;
@@ -22,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -58,29 +56,6 @@ public class EventDetailsAssembler {
 				.creator(event.getCreator())
 				.squadList(toEventDetailsDtoList(event.getSquadList(), optimizeReservedFor))
 				.details(getDetails(event.getDetails(), event.getReserveParticipating()))
-				.build();
-	}
-
-	public OldEventEditDto toEditDto(@NonNull Event event) {
-		final LocalDateTime dateTime = event.getDateTime();
-
-		return OldEventEditDto.builder()
-				.id(event.getId())
-				.hidden(event.isHidden())
-				.shareable(event.isShareable())
-				.name(event.getName())
-				.date(dateTime.toLocalDate())
-				.startTime(dateTime.toLocalTime())
-				.creator(event.getCreator())
-				.eventType(EventTypeAssembler.toDto(event.getEventType()))
-				.description(event.getDescription())
-				.missionType(event.getMissionType())
-				.missionLength(event.getMissionLength())
-				.pictureUrl(event.getPictureUrl())
-				.details(EventFieldAssembler.toDefaultDtoList(event.getDetails()))
-				.squadList(toEventDetailsDtoList(event.getSquadList(), false))
-				.reserveParticipating(event.getReserveParticipating())
-				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.build();
 	}
 

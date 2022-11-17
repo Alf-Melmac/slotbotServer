@@ -7,7 +7,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Utility class to work with {@link List}s
@@ -17,17 +16,6 @@ import java.util.stream.Collectors;
  */
 @UtilityClass
 public final class ListUtils {
-	/**
-	 * Removes the given element from the collection
-	 *
-	 * @param list   to filter
-	 * @param filter element to remove
-	 * @return filtered list
-	 */
-	public static <T> List<T> getListFiltered(@NonNull Collection<T> list, T filter) {
-		return list.stream().filter(element -> !element.equals(filter)).collect(Collectors.toList());
-	}
-
 	/**
 	 * Removes the first element from the list and returns that removed element.
 	 *

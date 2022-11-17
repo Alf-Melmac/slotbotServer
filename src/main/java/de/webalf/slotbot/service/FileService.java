@@ -49,27 +49,6 @@ public class FileService {
 	}
 
 	/**
-	 * Returns the given image file by name as a {@link Resource}
-	 * Searches in {@link StorageProperties#getImages()} path
-	 *
-	 * @param path img path to load
-	 * @return file as {@link Resource}
-	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
-	 */
-	@Cacheable("imgLoader")
-	public Resource loadImgAsResource(String path) {
-		String imageStorage = storageProperties.getImages();
-
-		final int lastSlash = path.lastIndexOf('/');
-		if (lastSlash != -1) {
-			imageStorage += path.substring(0, lastSlash);
-		}
-		final String imgName = path.substring(lastSlash + 1);
-
-		return getResource(path, Paths.get(imageStorage).resolve(imgName));
-	}
-
-	/**
 	 * Returns the given ics file by name as a {@link Resource}
 	 * Searches in {@link StorageProperties#getCalendarOutput()} path
 	 *

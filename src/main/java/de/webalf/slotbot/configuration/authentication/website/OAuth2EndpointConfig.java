@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequestEntityConverter;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Objects;
 
@@ -35,12 +36,14 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http // all non api requests handled here
-				//FIXME: This needs to be changed in future. Currently this allows the frontend to use backend endpoints
-				.csrf().disable()
-
 				.cors().and()
 
-				.logout().logoutSuccessUrl("/events").and()
+				.logout()
+				.logoutSuccessUrl("/events")
+				//TODO Test post logout
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.deleteCookies("JSESSIONID")
+				.and()
 
 				.oauth2Login()
 				.loginPage("/oauth2/authorization/discord")

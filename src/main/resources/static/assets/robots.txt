@@ -4,10 +4,10 @@
 # https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker
 ###################################################################
 
-### Version Information #
+### Version Information - Backend #
 ###################################################
-### Version: V4.2022.04.3053
-### Updated: Tue Apr 19 10:03:34 UTC 2022
+### Version: V4.2022.11.3476
+### Updated: Thu Nov 17 10:03:33 UTC 2022
 ### Bad Bot Count: 637
 ###################################################
 ### Version Information ##

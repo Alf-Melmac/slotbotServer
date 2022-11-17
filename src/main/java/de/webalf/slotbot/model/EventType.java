@@ -1,6 +1,5 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.exception.BusinessRuntimeException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,13 +8,10 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.util.MaxLength.*;
-import static de.webalf.slotbot.util.StringUtils.prependIfMissing;
 
 /**
  * @author Alf
@@ -44,14 +40,4 @@ public class EventType extends AbstractSuperIdEntity {
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;
-
-	public void setColor(@NotNull String color) {
-		String parsedColor = prependIfMissing(color, "#").toLowerCase();
-		if (!HEX_COLOR.matcher(parsedColor).matches()) {
-			throw BusinessRuntimeException.builder().title(parsedColor + " is not a valid hex color.").build();
-		}
-		this.color = parsedColor;
-	}
-
-	private static final Pattern HEX_COLOR = Pattern.compile("^#([a-f\\d]{6}|[a-f\\d]{3})$");
 }

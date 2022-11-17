@@ -42,7 +42,7 @@ public final class CommandUtils {
 	}
 
 	/**
-	 * Checks if the author if the given message is allowed to execute this command
+	 * Checks if the author of the given message is allowed to execute this command
 	 *
 	 * @param command to check permission for
 	 * @param message that triggers the command

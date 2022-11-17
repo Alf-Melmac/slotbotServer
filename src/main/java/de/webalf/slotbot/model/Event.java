@@ -9,7 +9,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
-import org.thymeleaf.util.ListUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -238,16 +237,6 @@ public class Event extends AbstractSuperIdEntity {
 				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild().getId() == guildId).findAny();
 	}
 
-	/**
-	 * Returns the matching {@link EventDiscordInformation} for the given guild
-	 *
-	 * @param guild to find discord information for
-	 * @return optional information
-	 */
-	public Optional<EventDiscordInformation> getDiscordInformation(@NonNull Guild guild) {
-		return getDiscordInformation(guild.getId());
-	}
-
 	public boolean canRevokeShareable() {
 		return getDiscordInformation().stream().allMatch(information -> information.getGuild().equals(getOwnerGuild()));
 	}
@@ -400,7 +389,7 @@ public class Event extends AbstractSuperIdEntity {
 		Optional<Squad> reserve = findSquadByName(RESERVE_NAME);
 		if (reserve.isEmpty()) {
 			//Add reserve if the event is full, squads exist and the reserve is not yet present
-			if (isFull() && !ListUtils.isEmpty(getSquadList())) {
+			if (isFull() && !CollectionUtils.isEmpty(getSquadList())) {
 				addReserve();
 			}
 		} else {

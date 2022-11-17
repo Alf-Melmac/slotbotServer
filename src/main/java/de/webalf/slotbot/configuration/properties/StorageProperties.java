@@ -16,8 +16,5 @@ public class StorageProperties {
 	private String download = "./download";
 
 	@NotBlank
-	private String images = "./img";
-
-	@NotBlank
 	private String calendarOutput = "./calendar";
 }

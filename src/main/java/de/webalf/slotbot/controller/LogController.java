@@ -29,7 +29,7 @@ public class LogController {
 
 	/*@PostMapping
 	@PreAuthorize(HAS_ROLE_ADMIN)*/
-	//TODO Re-implement logs
+	@SuppressWarnings("unused") //TODO Re-implement logs
 	public PagedModel<ActionLogDto> getLogs(@RequestBody Paging page,
 	                                        PagedResourcesAssembler<ActionLog> pagedResourcesAssembler) {
 		ActionLogSpecification logSpecification = new ActionLogSpecification(page.getFilter());

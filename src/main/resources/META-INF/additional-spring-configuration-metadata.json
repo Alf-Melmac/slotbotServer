@@ -22,11 +22,6 @@
 	  "description": "Path from which the /download endpoint obtains files."
 	},
 	{
-	  "name": "storage.images",
-	  "type": "java.lang.String",
-	  "description": "Path from which the /assets/img endpoint obtains images."
-	},
-	{
 	  "name": "storage.calendarOutput",
 	  "type": "java.lang.String",
 	  "description": "Path to which calendar ics files can be written to and retrieved from."

@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
-import org.thymeleaf.util.ListUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
@@ -86,7 +86,7 @@ public final class MessageUtils {
 	 */
 	public static void deletePinAddedMessages(@NonNull MessageChannel channel) {
 		channel.getHistory().retrievePast(4).queue(messages -> {
-			if (ListUtils.isEmpty(messages)) {
+			if (CollectionUtils.isEmpty(messages)) {
 				return;
 			}
 			messages.forEach(message -> {
@@ -193,7 +193,7 @@ public final class MessageUtils {
 	 * Sends the given message to the given recipient via {@link #sendDm(User, String, Consumer, Consumer)}
 	 *
 	 * @param message     that triggered this message sending
-	 * @param recipientId the id of the user the message should be send to
+	 * @param recipientId the id of the user the message should be sent to
 	 * @param messageText text to send
 	 * @param success     called after successful message send
 	 */
@@ -218,7 +218,7 @@ public final class MessageUtils {
 	 * Sends the given message to the given recipient via {@link #sendDm(User, String)}
 	 *
 	 * @param event       that triggered this message sending
-	 * @param recipientId the id of the user the message should be send to
+	 * @param recipientId the id of the user the message should be sent to
 	 * @param messageText text to send
 	 */
 	public static void sendDmToRecipient(@NonNull Event event, long recipientId, String messageText) {
@@ -244,7 +244,8 @@ public final class MessageUtils {
 	}
 
 	static Consumer<Message> doNothing() {
-		return unused -> {};
+		return unused -> {
+		};
 	}
 
 	private static void dmFailure(User user, Consumer<? super Message> success, boolean callSuccessOnFailure, Throwable fail) {
