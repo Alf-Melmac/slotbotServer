@@ -40,15 +40,6 @@ public class UserService {
 		return find(User.DEFAULT_USER_ID);
 	}
 
-	public UserNameDto toUserNameDto(User user) {
-		if (user == null || user.isDefaultUser()) {
-			return null;
-		}
-
-		final String userId = LongUtils.toString(user.getId());
-		return toUserNameDto(user, discordApiService.getName(userId));
-	}
-
 	public UserNameDto toUserNameDto(User user, @NonNull Guild guild) {
 		if (user == null || user.isDefaultUser()) {
 			return null;
