@@ -3,6 +3,7 @@ package de.webalf.slotbot.controller.website;
 import de.webalf.slotbot.model.Redirect;
 import de.webalf.slotbot.repository.RedirectRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,16 +17,20 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 @Controller
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 public class RedirectController {
 	private final RedirectRepository redirectRepository;
 
 	@GetMapping("/{link}")
 	public RedirectView redirectToLink(@PathVariable(value = "link") String link) {
 		RedirectView redirectView = new RedirectView();
-		ServletUriComponentsBuilder contextPath = ServletUriComponentsBuilder.fromCurrentContextPath();
-		contextPath.port(3000);
 		redirectView.setUrl(redirectRepository.findByEndpoint(link)
-				.orElse(Redirect.builder().link(contextPath.toUriString() + "/" + link).build())
+				.orElseGet(() -> {
+					log.warn("!!!!! Redirect to {}", link);
+					ServletUriComponentsBuilder contextPath = ServletUriComponentsBuilder.fromCurrentContextPath();
+					contextPath.port(3000);
+					return Redirect.builder().link(contextPath.toUriString() + "/" + link).build();
+				})
 				.getLink());
 		return redirectView;
 	}
