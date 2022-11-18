@@ -242,7 +242,9 @@ public class EventService {
 	}
 
 	/**
-	 * Updates the event found by id with values from the {@link EventDto}
+	 * Updates the event found by id with values from the {@link EventDto}.
+	 * <p>
+	 * For updating the squad list see {@link #updateSquadList(long, EventDto)}
 	 *
 	 * @param dto with event id and values to update
 	 * @return updated event
@@ -251,7 +253,6 @@ public class EventService {
 	public Event updateEvent(@NonNull EventDto dto) {
 		Event event = updateEvent((AbstractEventDto) dto);
 
-//		DtoUtils.ifPresent(dto.getSquadList(), squadList -> squadService.updateSquadList(squadList, event));
 		DtoUtils.ifPresent(dto.getDetails(), details -> eventFieldService.updateEventDetails(details, event));
 
 		return event;

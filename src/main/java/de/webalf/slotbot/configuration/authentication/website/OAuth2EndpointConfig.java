@@ -40,7 +40,6 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 
 				.logout()
 				.logoutSuccessUrl("/events")
-				//TODO Test post logout
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 				.deleteCookies("JSESSIONID")
 				.and()
