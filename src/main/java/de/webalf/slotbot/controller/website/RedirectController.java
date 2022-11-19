@@ -5,11 +5,14 @@ import de.webalf.slotbot.repository.RedirectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -24,13 +27,16 @@ public class RedirectController {
 	@GetMapping("/{link}")
 	public RedirectView redirectToLink(@PathVariable(value = "link") String link) {
 		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl(redirectRepository.findByEndpoint(link)
-				.orElseGet(() -> {
-					log.warn("!!!!! Redirect to {}", link);
-					ServletUriComponentsBuilder contextPath = ServletUriComponentsBuilder.fromCurrentContextPath();
-					contextPath.port(3000);
-					return Redirect.builder().link(contextPath.toUriString() + "/" + link).build();
-				})
+		Optional<Redirect> redirect = redirectRepository.findByEndpoint(link);
+		if (redirect.isEmpty() && !link.equals("events")) {
+			log.warn("!!!!! Redirect to {}", link);
+			redirectView.setStatusCode(HttpStatus.NOT_FOUND);
+			return redirectView;
+		}
+		redirectView.setUrl(redirect
+				.orElseGet(() -> Redirect.builder()
+						.link(ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() + "/" + link)
+						.build())
 				.getLink());
 		return redirectView;
 	}
