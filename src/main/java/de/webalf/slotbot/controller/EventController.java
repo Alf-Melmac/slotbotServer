@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
 
 /**
  * @author Alf
@@ -102,10 +103,9 @@ public class EventController {
 		return EventAssembler.toReferencelessDto(eventService.updateSquadList(eventId, event));
 	}
 
-	/*@PutMapping("/fields")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)*/
-	@SuppressWarnings("unused") //TODO Re-implement default details
-	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestBody String eventTypeName) {
+	@GetMapping ("/fields/{eventTypeName}")
+	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
+	public List<EventFieldDefaultDto> getEventFieldDefaults(@PathVariable(value = "eventTypeName") String eventTypeName) {
 		return getDefault(eventTypeName);
 	}
 }

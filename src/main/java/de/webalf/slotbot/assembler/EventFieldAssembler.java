@@ -1,11 +1,8 @@
 package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.EventField;
-import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.EventFieldDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
-import de.webalf.slotbot.model.enums.EventFieldType;
-import de.webalf.slotbot.util.eventfield.EventFieldUtils;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
@@ -14,7 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.buildOptionalLink;
-import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefaultSelection;
 
 /**
  * @author Alf
@@ -56,23 +52,6 @@ public final class EventFieldAssembler {
 	public static List<EventFieldReferencelessDto> toReferencelessDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(EventFieldAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
-	}
-
-	private static EventFieldDefaultDto toDefaultDto(EventField eventField) {
-		final EventFieldType fieldType = EventFieldUtils.getDefaultFieldType(eventField);
-		return EventFieldDefaultDto.builder()
-				.id(eventField.getId())
-				.title(eventField.getTitle())
-				.type(fieldType)
-				.selection(getDefaultSelection(fieldType, eventField))
-				.text(eventField.getText())
-				.build();
-	}
-
-	public static List<EventFieldDefaultDto> toDefaultDtoList(Iterable<? extends EventField> eventFields) {
-		return StreamSupport.stream(eventFields.spliterator(), false)
-				.map(EventFieldAssembler::toDefaultDto)
 				.collect(Collectors.toList());
 	}
 }
