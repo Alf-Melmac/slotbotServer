@@ -7,6 +7,5 @@ package de.webalf.slotbot.model.enums;
 public enum EventFieldType {
 	TEXT,
 	TEXT_WITH_SELECTION,
-	BOOLEAN,
-	SELECTION
+	BOOLEAN
 }

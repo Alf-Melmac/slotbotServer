@@ -25,30 +25,30 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @EventFieldDefault(eventTypeName = "Arma 3")
 @Slf4j
 public final class Arma3FieldUtils {
-	private static final List<String> MOD_SETS = List.of("2201_ArmaMachtBock", "2201_ArmaMachtBock_GM", "2201_ArmaMachtBock_VN");
+	private static final List<String> MOD_SETS = List.of("2208_ArmaMachtBock", "2208_ArmaMachtBock_GM", "2208_ArmaMachtBock_VN",
+			"2201_ArmaMachtBock_Antistasi.html", "2211_ArmaMachtBock_Lib.html");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
-			"Ba Long, Quang Tri province, Vietnam", "Bukovina", "Bystrica", "Cao Bang, Vietnam", "Cam Lao Nam",
-			"Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Da Krong, Quang Trie Vietnam",
-			"Dak Pek, Kon Tum province, Vietnam", "Ðông Hà, Quang Tri, Vietnam", "Doung Island, Rung Sat Vietnam",
-			"Die Wüste", "Fapovo v1.8", "Hebontes", "Hellanmaa", "Hellanmaa winter", "Ia Drâng, Gia Lai, Vietnam",
-			"Khe Sanh", "Khe Sanh, Quang Tri, Vietnam (WIP)", "Khoramshahr", "Livonia", "Lowlands, Quang Ngai, Vietnam",
-			"Malden 2035", "Napf Island A3", "NapfWinter Island A3", "Panthera (Winter) v3.9", "Panthera v3.91",
-			"Phu Bai, Hue, Vietnam", "Phuoc Tuy Province, Vietnam", "Plei Trap, Kon Tum, Vietnam", "Porto",
-			"Proving Grounds", "Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani", "SEA, Lam Dong, Vietnam",
-			"Shapur", "Southern Sahrani", "Stratis", "Song Bin Tanh, Mekong Delta, Vietnam",
-			"Song Cu, Dong Nai Vietnam", "Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa",
+			"Ba Long, Quang Tri province, Vietnam", "Bukovina", "Bystrica", "Cam Lao Nam", "Cao Bang, Vietnam",
+			"Chernarus (Herbst)", "Chernarus (Sommer)", "Chernarus (Winter)", "Chongo, Angola v1.30",
+			"Da Krong, Quang Trie Vietnam", "Dak Pek, Kon Tum province, Vietnam", "Die Wüste",
+			"Ðông Hà, Quang Tri, Vietnam", "Doung Island, Rung Sat Vietnam", "Fapovo v1.9", "Hebontes", "Hellanmaa",
+			"Hellanmaa winter", "Ia Drâng, Gia Lai, Vietnam", "Khe Sanh", "Khe Sanh, Quang Tri, Vietnam (WIP)", "Livonia",
+			"Lowlands, Quang Ngai, Vietnam", "Lythium ,FFAA", "Malden 2035", "Napf Island A3", "NapfWinter Island A3",
+			"Niakala", "Panthera (Winter) v3.9", "Panthera v3.91", "Phu Bai, Hue, Vietnam", "Phuoc Tuy Province, Vietnam",
+			"Plei Trap, Kon Tum, Vietnam", "Porto", "Proving Grounds", "Rahmadi", "Rosche, Germany (2.0)", "Ruha", "Sahrani",
+			"SEA, Lam Dong, Vietnam", "Shapur", "Song Bin Tanh, Mekong Delta, Vietnam", "Song Cu, Dong Nai Vietnam",
+			"Southern Sahrani", "Stratis", "Summa", "Summa winter", "Takistan", "Takistan Mountains", "Tanoa", "The Bra",
 			"United Sahrani", "Utes", "Vinjesvingen", "Virolahti", "Virtuelle Realität", "Weferlingen",
 			"Weferlingen (Winter)", "Zargabad");
 
 	@SuppressWarnings("unused") //EventFieldUtils#eventTypeNameToFieldDefaults
 	static final List<EventFieldDefaultDto> FIELDS = List.of(
-			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).build(),
+			EventFieldDefaultDto.builder().title("Respawn").type(BOOLEAN).text("false").build(),
 			EventFieldDefaultDto.builder().title("Modset").type(TEXT_WITH_SELECTION).selection(MOD_SETS)
 					.text(MOD_SETS.get(0)).build(),
-			EventFieldDefaultDto.builder().title("Karte").type(SELECTION).selection(MAPS).build(),
+			EventFieldDefaultDto.builder().title("Karte").type(TEXT_WITH_SELECTION).selection(MAPS).build(),
 			EventFieldDefaultDto.builder().title("Technischer Teleport").type(TEXT).build(),
-			EventFieldDefaultDto.builder().title("Medic-System").type(TEXT).build(),
 			EventFieldDefaultDto.builder().title("Missionszeit").type(TEXT).build(),
 			EventFieldDefaultDto.builder().title("Navigation").type(TEXT).build()
 	);
