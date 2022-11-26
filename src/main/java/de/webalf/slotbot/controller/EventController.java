@@ -103,9 +103,9 @@ public class EventController {
 		return EventAssembler.toReferencelessDto(eventService.updateSquadList(eventId, event));
 	}
 
-	@GetMapping ("/fields/{eventTypeName}")
+	@GetMapping ("/fields")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	public List<EventFieldDefaultDto> getEventFieldDefaults(@PathVariable(value = "eventTypeName") String eventTypeName) {
+	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
 		return getDefault(eventTypeName);
 	}
 }
