@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequestEntityConverter;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Objects;
@@ -37,6 +38,11 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http // all non api requests handled here
 				.cors().and()
+				.csrf(csrf -> {
+					final CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+					csrfTokenRepository.setCookiePath("/");
+					csrf.csrfTokenRepository(csrfTokenRepository);
+				})
 
 				.logout()
 				.logoutSuccessUrl("/events")
