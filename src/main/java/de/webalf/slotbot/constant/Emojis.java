@@ -1,12 +1,12 @@
 package de.webalf.slotbot.constant;
 
-import lombok.Value;
+import lombok.experimental.UtilityClass;
 
 /**
  * @author Alf
  * @since 15.01.2021
  */
-@Value
+@UtilityClass
 public class Emojis {
 	//Codepoint notation
 	public static final String THUMBS_UP = "U+1F44D";

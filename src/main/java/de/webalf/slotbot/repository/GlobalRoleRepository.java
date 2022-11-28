@@ -11,5 +11,5 @@ import java.util.Set;
  */
 @Repository
 public interface GlobalRoleRepository extends SuperIdEntityJpaRepository<GlobalRole> {
-	Set<GlobalRole> findAllByUser_Id(long id);
+	Set<GlobalRole> findAllByUserId(long id);
 }

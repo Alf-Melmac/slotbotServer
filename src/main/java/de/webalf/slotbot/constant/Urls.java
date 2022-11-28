@@ -1,12 +1,12 @@
 package de.webalf.slotbot.constant;
 
-import lombok.Value;
+import lombok.experimental.UtilityClass;
 
 /**
  * @author Alf
  * @since 26.09.2020
  */
-@Value
+@UtilityClass
 public class Urls {
 	private static final String SLOTBOT = "/slotbot";
 

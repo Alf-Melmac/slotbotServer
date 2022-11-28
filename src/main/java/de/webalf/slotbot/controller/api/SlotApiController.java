@@ -33,7 +33,6 @@ public class SlotApiController {
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
 	public EventApiDto putSwap(@RequestBody List<SlotDto> slots) {
 		throw new ForbiddenException("Not yet implemented");
-		//TODO permission check
 //		return EventApiAssembler.toDto(slotService.swap(slots));
 	}
 }

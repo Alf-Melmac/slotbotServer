@@ -86,7 +86,7 @@ public final class ApplicationPermissionHelper {
 		public Set<Role> getAuthorizedRoles() {
 			final Role[] roles = Role.values();
 			final int i = Arrays.asList(roles).indexOf(this);
-			return Arrays.stream(roles).limit(i + 1).collect(Collectors.toUnmodifiableSet());
+			return Arrays.stream(roles).limit(i + 1L).collect(Collectors.toUnmodifiableSet());
 		}
 	}
 

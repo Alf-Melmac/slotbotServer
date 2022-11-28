@@ -1,6 +1,6 @@
 package de.webalf.slotbot.model.authentication;
 
-import lombok.Value;
+import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -21,10 +21,10 @@ public enum ApiTokenType {
 	public Set<ApiTokenType> getAuthorizedTokenTypes() {
 		final ApiTokenType[] apiTokenTypes = ApiTokenType.values();
 		final int i = Arrays.asList(apiTokenTypes).indexOf(this);
-		return Arrays.stream(apiTokenTypes).limit(i + 1).collect(Collectors.toUnmodifiableSet());
+		return Arrays.stream(apiTokenTypes).limit(i + 1L).collect(Collectors.toUnmodifiableSet());
 	}
 
-	@Value
+	@UtilityClass
 	public static class TypeRoleNames { //These static strings are needed for the PreAuthorize annotation. They must be synchronous to the enums above.
 		public static final String READ_PUBLIC = ROLE_PREFIX + "READ_PUBLIC";
 		public static final String READ = ROLE_PREFIX + "READ";

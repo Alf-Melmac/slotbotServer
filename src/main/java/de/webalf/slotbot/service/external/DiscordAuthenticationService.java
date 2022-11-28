@@ -66,7 +66,7 @@ public class DiscordAuthenticationService {
 				}
 		);
 
-		globalRoleRepository.findAllByUser_Id(userId).stream()
+		globalRoleRepository.findAllByUserId(userId).stream()
 				.map(globalRole -> AuthorizationCheckValues.ROLE_PREFIX + globalRole.getRole().getApplicationRole())
 				.forEachOrdered(roles::add);
 
