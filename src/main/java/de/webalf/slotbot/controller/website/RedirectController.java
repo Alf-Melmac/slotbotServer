@@ -1,10 +1,10 @@
 package de.webalf.slotbot.controller.website;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
+import de.webalf.slotbot.service.web.RedirectService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
@@ -12,14 +12,12 @@ import org.springframework.web.servlet.view.RedirectView;
  * @since 09.11.2020
  */
 @Controller
-@Profile("!dev")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class RedirectController {
-	@Value("#{servletContext.contextPath}")
-	private String servletContextPath;
+	private final RedirectService redirectService;
 
 	@GetMapping("/events") //OAuth2EndpointConfig logoutSuccessUrl
 	public RedirectView redirectToEvents() {
-		final String url = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() + "/events";
-		return new RedirectView(url.replace(servletContextPath, ""));
+		return new RedirectView(redirectService.redirectTo("/events"));
 	}
 }
