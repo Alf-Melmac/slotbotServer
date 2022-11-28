@@ -37,7 +37,7 @@
 		<!--Temporary security patch. Remove afterwards-->
 		<postgresql.version>42.5.0</postgresql.version>
 		<!--https://github.com/atteo/classindex/tags -->
-		<classindex.version>3.11</classindex.version>
+		<classindex.version>3.13</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
 		<jda.version>4.4.0_352</jda.version>
 		<!--https://jsoup.org/news/ -->
