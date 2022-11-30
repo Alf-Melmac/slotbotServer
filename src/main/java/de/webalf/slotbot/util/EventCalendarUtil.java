@@ -46,7 +46,7 @@ public final class EventCalendarUtil {
 
 		// Create the event
 		VEvent calendarEvent = new VEvent(eventDateTime, eventName);
-		final String eventUrl = EventUtils.buildCorrectedUrl(event);
+		final String eventUrl = EventUtils.buildUrl(event);
 		try {
 			calendarEvent.add(new Url(new URI(eventUrl)));
 		} catch (URISyntaxException e) {

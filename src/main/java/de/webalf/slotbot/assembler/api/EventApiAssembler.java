@@ -30,7 +30,7 @@ public final class EventApiAssembler {
 		LocalDateTime dateTime = event.getDateTime();
 
 		return EventApiDto.builder()
-				.url(buildUrl(event.getId()))
+				.url(buildUrl(event))
 				.id(event.getId())
 				.hidden(event.isHidden())
 				.shareable(event.isShareable())
@@ -65,7 +65,7 @@ public final class EventApiAssembler {
 				.name(event.getName())
 				.dateTime(event.getDateTime())
 				.squadList(squadApiAssembler.toViewDtoList(event.getSquadList()))
-				.url(buildUrl(event.getId()))
+				.url(buildUrl(event))
 				.build();
 	}
 }

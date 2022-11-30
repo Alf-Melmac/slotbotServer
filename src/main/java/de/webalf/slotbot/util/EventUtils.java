@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util;
 
-import de.webalf.slotbot.controller.EventController;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
@@ -15,8 +14,6 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasReadPerm
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.isCurrentGuild;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Alf
@@ -71,40 +68,25 @@ public final class EventUtils {
 	}
 
 	/**
-	 * Builds the event details url for the given event
+	 * Builds the event details url for the given event information
 	 *
-	 * @param eventId event id to open details for
+	 * @param eventId    event id to open details for
+	 * @param ownerGuild guild owning the event
 	 * @return uri to event details
 	 */
-	public static String buildUrl(long eventId) {
-		return linkTo(methodOn(EventController.class).getEventDetails(eventId)).toUri().toString();
+	public static String buildUrl(long eventId, Guild ownerGuild) {
+		return ownerGuild.getBaseRedirectUrl() + "/events/" + eventId;
 	}
 
 	/**
-	 * Builds the event details url for the given event and validates with {@link #fixUrl(String, Guild)} that the url is an absolute uri
+	 * Builds the event details url for the given event
 	 *
-	 * @param event to build url for
+	 * @param event event to open details for
 	 * @return url to event details
+	 * @see #buildUrl(long, Guild)
 	 */
-	static String buildCorrectedUrl(@NonNull Event event) {
-		return fixUrl(buildUrl(event.getId()), event.getOwnerGuild());
-	}
-
-	/**
-	 * Ensures that the url is an absolute uri
-	 *
-	 * @param url        to check
-	 * @param ownerGuild owner of event
-	 * @return usable url
-	 */
-	static String fixUrl(String url, Guild ownerGuild) {
-		//If the request was made from the discord the url is a relative URI, with absolute path
-		//If an update is triggered by the website the url is an absolut URI
-		//I wasn't able to find a fix for this other than this workaround :(
-		if (!url.startsWith("http")) {
-			return ownerGuild.getBaseRedirectUrl() + url;
-		}
-		return url;
+	public static String buildUrl(@NonNull Event event) {
+		return buildUrl(event.getId(), event.getOwnerGuild());
 	}
 
 	/**

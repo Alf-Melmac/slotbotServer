@@ -28,7 +28,7 @@ public class EventHelper {
 	public MessageEmbed buildDetailsEmbed(@NonNull EventApiDto event) {
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
-				.setTitle(event.getName(), fixUrl(event.getUrl(), event.getOwnerGuild()))
+				.setTitle(event.getName(), buildUrl(event.getId(), event.getOwnerGuild()))
 				.setDescription(event.getDescription())
 				.setThumbnail(event.getPictureUrl())
 				.setFooter(event.getEventType().getName() + " Mission von " + event.getCreator())
@@ -55,14 +55,14 @@ public class EventHelper {
 				text = "Nein";
 			}
 			if (StringUtils.isNotEmpty(field.getLink())) {
-				text = "[" + text + "](" + fixUrl(field.getLink(), event.getOwnerGuild()) + ")";
+				text = "[" + text + "](" + field.getLink() + ")";
 			}
 			addField(field.getTitle(), text, true, embedBuilder);
 		});
 	}
 
-	private String fixUrl(String url, String ownerGuild) {
-		return EventUtils.fixUrl(url, guildService.findByDiscordGuild(Long.parseLong(ownerGuild)));
+	private String buildUrl(long eventId, String ownerGuild) {
+		return EventUtils.buildUrl(eventId, guildService.findByDiscordGuild(Long.parseLong(ownerGuild)));
 	}
 
 	private static String buildScheduleField(ZonedDateTime eventDateTime, String missionLength) {
