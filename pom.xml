@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>2.7.5</version>
+		<version>2.7.6</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -37,8 +37,6 @@
 
 		<!--Versions-->
 		<java.version>11</java.version>
-		<!--Temporary security patch. Remove afterwards-->
-		<postgresql.version>42.5.1</postgresql.version>
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://ci.dv8tion.net/job/JDA/changes -->
