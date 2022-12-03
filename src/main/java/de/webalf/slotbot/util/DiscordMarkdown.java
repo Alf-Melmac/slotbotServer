@@ -48,7 +48,7 @@ public final class DiscordMarkdown {
 		}
 
 		String markdown;
-		markdown = s.replaceAll("\n", HTML_BREAK);
+		markdown = s.replace("\n", HTML_BREAK);
 		markdown = replace(markdown, "~~", STRIKETHROUGH, HTML_STRIKETHROUGH);
 		markdown = replace(markdown, "__", UNDERLINE, HTML_UNDERLINE);
 		markdown = replaceMix(markdown, "***", BOLD_ITALICS, HTML_STRONG, HTML_ITALIC);

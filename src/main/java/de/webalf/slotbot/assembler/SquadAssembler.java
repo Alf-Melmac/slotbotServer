@@ -29,7 +29,7 @@ public final class SquadAssembler {
 				.build();
 	}
 
-	static List<Squad> fromDtoList(Iterable<? extends SquadDto> squadList) {
+	static List<Squad> fromDtoList(Iterable<SquadDto> squadList) {
 		if (squadList == null) {
 			return Collections.emptyList();
 		}
