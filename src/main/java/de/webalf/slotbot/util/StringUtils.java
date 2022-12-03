@@ -131,16 +131,4 @@ public final class StringUtils {
 		}
 		return s;
 	}
-
-	/**
-	 * Prepends the prefix to the start of the string if the string does not already start with the prefix.
-	 *
-	 * @param s      to check
-	 * @param prefix with which the string should start
-	 * @return prefixed string
-	 * @see org.apache.commons.lang3.StringUtils#prependIfMissing(String, CharSequence, CharSequence...)
-	 */
-	public static String prependIfMissing(String s, String prefix) {
-		return org.apache.commons.lang3.StringUtils.prependIfMissing(s, prefix);
-	}
 }

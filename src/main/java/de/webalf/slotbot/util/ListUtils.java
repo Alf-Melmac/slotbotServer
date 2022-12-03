@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,15 +58,5 @@ public final class ListUtils {
 	 */
 	public static boolean twoArguments(@NonNull Collection<?> list) {
 		return list.size() == 2;
-	}
-
-	/**
-	 * Boxes the elements of the primitive type array
-	 *
-	 * @param intArray array with elements to be boxed
-	 * @return array with boxed elements
-	 */
-	public static Integer[] convertToBoxedArray(int[] intArray) {
-		return Arrays.stream(intArray).boxed().toArray(Integer[]::new);
 	}
 }
