@@ -1,6 +1,6 @@
 package de.webalf.slotbot.service.bot.command.util;
 
-import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;

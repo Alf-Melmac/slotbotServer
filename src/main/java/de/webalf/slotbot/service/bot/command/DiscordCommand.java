@@ -8,6 +8,7 @@ import java.util.List;
  * @author Alf
  * @since 01.01.2021
  */
+@Deprecated
 public interface DiscordCommand {
 	void execute(Message message, List<String> args);
 }

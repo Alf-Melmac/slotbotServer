@@ -1,10 +1,8 @@
 package de.webalf.slotbot.util.bot;
 
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 import javax.validation.constraints.NotBlank;
 
@@ -15,16 +13,14 @@ import javax.validation.constraints.NotBlank;
 @UtilityClass
 public final class DiscordUserUtils {
 	/**
-	 * Returns the private channel for the given user by id
+	 * Returns the private channel for the given user
 	 *
 	 * @return the matching private channel or null if it doesn't exist
 	 */
-	public static PrivateChannel getPrivateChannel(@NonNull JDA jda, long userId) {
-		final User user = jda.retrieveUserById(userId).complete();
+	public static PrivateChannel getPrivateChannel(User user) {
 		if (user != null && user.hasPrivateChannel()) {
 			return user.openPrivateChannel().complete();
 		}
-
 		return null;
 	}
 

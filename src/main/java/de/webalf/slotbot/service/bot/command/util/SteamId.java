@@ -1,6 +1,6 @@
 package de.webalf.slotbot.service.bot.command.util;
 
-import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.bot.UserBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;

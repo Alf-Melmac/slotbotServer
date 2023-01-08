@@ -8,16 +8,12 @@ import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 
 /**
  * Wrapper for {@link EventService} to be used by discord bot
@@ -29,16 +25,6 @@ import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventBotService {
 	private final EventService eventService;
-
-	public Optional<Event> findById(@NonNull Message message, long eventId) {
-		final Optional<Event> optionalEvent = eventService.findOptionalById(eventId);
-		if (optionalEvent.isPresent()) {
-			return optionalEvent;
-		} else {
-			replyAndDelete(message, "Das Event mit der ID " + eventId + " konnte nicht gefunden werden.");
-			return Optional.empty();
-		}
-	}
 
 	public Event findById(long eventId) {
 		return eventService.findById(eventId);

@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.annotations;
+package de.webalf.slotbot.model.annotations.bot;
 
 import org.atteo.classindex.IndexAnnotated;
 
@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @IndexAnnotated
-public @interface SelectionMenuListener {
+public @interface StringSelectInteraction {
 	String[] value();
 }

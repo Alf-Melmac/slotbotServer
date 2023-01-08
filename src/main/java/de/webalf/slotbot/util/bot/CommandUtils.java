@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.bot.Command;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Message;

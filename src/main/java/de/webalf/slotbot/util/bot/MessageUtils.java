@@ -6,12 +6,12 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
+import net.dv8tion.jda.api.interactions.Interaction;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotBlank;
@@ -169,13 +169,13 @@ public final class MessageUtils {
 
 	/**
 	 * Sends the given text in the channel of the given message
-	 * Shortcut for {@code sendMessage(interaction.getChannel(), text)}
+	 * Shortcut for {@code sendMessage(interaction.getMessageChannel(), text)}
 	 *
 	 * @param interaction on which channel text should be sent
 	 * @param message     to send
 	 */
-	public static void sendMessage(@NonNull CommandInteraction interaction, @NotBlank String message) {
-		sendMessage(interaction.getChannel(), message);
+	public static void sendMessage(@NonNull Interaction interaction, @NotBlank String message) {
+		sendMessage(interaction.getMessageChannel(), message);
 	}
 
 	/**

@@ -6,9 +6,12 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.interactions.callbacks.IDeferrableCallback;
+import net.dv8tion.jda.api.interactions.callbacks.IMessageEditCallback;
+import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 
 import javax.validation.constraints.NotBlank;
 import java.util.function.Consumer;
@@ -30,8 +33,17 @@ public final class InteractionUtils {
 	 *
 	 * @param interaction to acknowledge
 	 */
-	public static void ephemeralDeferReply(@NonNull Interaction interaction) {
+	public static void ephemeralDeferReply(@NonNull IReplyCallback interaction) {
 		interaction.deferReply(true).queue();
+	}
+
+	/**
+	 * Acknowledge this interaction and defer edit to a later time
+	 *
+	 * @param interaction to acknowledge
+	 */
+	public static void deferEdit(@NonNull IMessageEditCallback interaction) {
+		interaction.deferEdit().queue();
 	}
 
 	/**
@@ -40,23 +52,23 @@ public final class InteractionUtils {
 	 * @param interaction to reply to
 	 * @param reply       reply text
 	 */
-	public static void reply(@NonNull Interaction interaction, @NotBlank String reply) {
+	public static void reply(@NonNull IDeferrableCallback interaction, @NotBlank String reply) {
 		reply(interaction, reply, doNothing());
 	}
 
-	private static void reply(@NonNull Interaction interaction, @NotBlank String reply, Consumer<Message> success) {
+	private static void reply(@NonNull IDeferrableCallback interaction, @NotBlank String reply, Consumer<Message> success) {
 		interaction.getHook().sendMessage(reply).queue(success, fail -> log.warn("Failed to send interaction reply", fail));
 	}
 
 	/**
-	 * Sends an empty message with the given {@link SelectionMenu}
+	 * Sends an empty message with the given {@link StringSelectMenu}
 	 *
-	 * @param interaction   to add selection menu to
-	 * @param selectionMenu to add
+	 * @param interaction   to add string select menu to
+	 * @param selectMenu to add
 	 */
-	public static void addSelectionMenu(@NonNull Interaction interaction, SelectionMenu... selectionMenu) {
-		WebhookMessageAction<Message> messageAction = interaction.getHook().sendMessage(ZERO_WIDTH_SPACE);
-		for (SelectionMenu menu : selectionMenu) {
+	public static void addSelectMenu(@NonNull IDeferrableCallback interaction, StringSelectMenu... selectMenu) {
+		WebhookMessageCreateAction<Message> messageAction = interaction.getHook().sendMessage(ZERO_WIDTH_SPACE);
+		for (StringSelectMenu menu : selectMenu) {
 			messageAction = messageAction.addActionRow(menu);
 		}
 		messageAction.queue();
@@ -69,7 +81,7 @@ public final class InteractionUtils {
 	 * @param reply       reply text
 	 */
 	public static void replyAndRemoveComponents(@NonNull ComponentInteraction interaction, @NotBlank String reply) {
-		interaction.editMessage(reply).setActionRows().queue();
+		interaction.getHook().editOriginal(reply).setComponents().queue();
 	}
 
 	/**
@@ -77,7 +89,26 @@ public final class InteractionUtils {
 	 *
 	 * @param interaction finished interaction
 	 */
-	public static void finishedSlashCommandAction(@NonNull Interaction interaction) {
-		reply(interaction, Emojis.CHECKBOX);
+	public static void finishedInteraction(@NonNull IDeferrableCallback interaction) {
+		reply(interaction, Emojis.CHECKBOX.getFormatted());
+	}
+
+	/**
+	 * Removes the original interaction response
+	 *
+	 * @param interaction finished interaction
+	 */
+	public static void finishedVisibleInteraction(@NonNull IDeferrableCallback interaction) {
+		interaction.getHook().deleteOriginal().queue();
+	}
+
+	/**
+	 * Replies with an error message
+	 *
+	 * @param interaction failed interaction
+	 * @param message     additional information about the error
+	 */
+	public static void failedInteraction(@NonNull IDeferrableCallback interaction, String message) {
+		reply(interaction, Emojis.CROSS_MARK.getFormatted() + " " + message);
 	}
 }

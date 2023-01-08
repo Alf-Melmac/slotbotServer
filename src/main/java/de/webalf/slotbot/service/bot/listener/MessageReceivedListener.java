@@ -4,7 +4,7 @@ import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
@@ -31,6 +31,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDmAndDeleteMessage;
  */
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Deprecated
 public class MessageReceivedListener extends ListenerAdapter {
 	private final DiscordProperties discordProperties;
 	private final CommandClassHelper commandClassHelper;

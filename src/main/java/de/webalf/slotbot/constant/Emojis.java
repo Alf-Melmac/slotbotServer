@@ -1,17 +1,31 @@
 package de.webalf.slotbot.constant;
 
-import lombok.experimental.UtilityClass;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.UnicodeEmoji;
 
 /**
  * @author Alf
  * @since 15.01.2021
  */
-@UtilityClass
-public class Emojis {
+@Getter
+@AllArgsConstructor
+public enum Emojis {
 	//Codepoint notation
-	public static final String THUMBS_UP = "U+1F44D";
-	public static final String THUMBS_DOWN = "U+1F44E";
+	THUMBS_UP(Emoji.fromUnicode("U+1F44D")), //👍
+	THUMBS_DOWN(Emoji.fromUnicode("U+1F44E")), //👎
+	CHECKBOX(Emoji.fromUnicode("U+2611")), //☑
+	CROSS_MARK(Emoji.fromUnicode("U+274C")); //❌
 
-	//Standard discord notation
-	public static final String CHECKBOX = ":ballot_box_with_check:";
+	private final UnicodeEmoji emoji;
+
+	/**
+	 * Get emoji as formatted string to be used in messages
+	 *
+	 * @return Formatted string
+	 */
+	public String getFormatted() {
+		return getEmoji().getFormatted();
+	}
 }

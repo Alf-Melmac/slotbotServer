@@ -1,6 +1,6 @@
 package de.webalf.slotbot.service.bot.listener;
 
-import de.webalf.slotbot.service.bot.SlashCommandsService;
+import de.webalf.slotbot.service.bot.CommandsService;
 import de.webalf.slotbot.util.bot.RoleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GuildReadyListener extends ListenerAdapter {
-	private final SlashCommandsService slashCommandsService;
+	private final CommandsService commandsService;
 
 	@Override
 	public void onGuildReady(@NotNull GuildReadyEvent event) {
 		final Guild guild = event.getGuild();
 		RoleUtils.checkRequiredRoles(guild);
-		slashCommandsService.updateCommands(guild);
+		commandsService.updateCommands(guild);
 	}
 }

@@ -2,23 +2,21 @@ package de.webalf.slotbot.service.bot.command.event;
 
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.model.annotations.SlashCommand;
+import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.bot.SwapRequest;
+import de.webalf.slotbot.model.bot.TranslatableOptionData;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
-import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,18 +24,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static de.webalf.slotbot.constant.Emojis.THUMBS_DOWN;
 import static de.webalf.slotbot.constant.Emojis.THUMBS_UP;
-import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.DiscordUserUtils.getPrivateChannel;
-import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
+import static de.webalf.slotbot.util.bot.InteractionUtils.finishedInteraction;
 import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
-import static de.webalf.slotbot.util.bot.MentionUtils.*;
-import static de.webalf.slotbot.util.bot.MessageUtils.*;
+import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
+import static de.webalf.slotbot.util.bot.MessageUtils.sendDm;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getUserOption;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
 /**
  * @author Alf
@@ -46,87 +41,68 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(names = {"swap"},
-		description = "Sendet eine Anfrage, um einen Slot mit einer Person zu tauschen.",
-		usage = "<Slotnummer>",
-		argCount = {1},
-		authorization = NONE)
-@SlashCommand(name = "swap",
-		description = "Sendet eine Anfrage, um einen Slot mit einer Person zu tauschen.",
-		authorization = NONE,
+@SlashCommand(name = "bot.slash.event.swap",
+		description = "bot.slash.event.swap.description",
+		authorization = Permission.MESSAGE_HISTORY,
 		optionPosition = 0)
-public class Swap implements DiscordCommand, DiscordSlashCommand {
+public class Swap implements DiscordSlashCommand {
 	private final EventBotService eventBotService;
 	private final SlotBotService slotBotService;
 
 	public static final Set<SwapRequest> requests = new HashSet<>();
 
+	private static final String OPTION_SWAP_USER = "bot.slash.event.swap.option.user";
+	private static final List<List<TranslatableOptionData>> OPTIONS = List.of(
+			List.of(new TranslatableOptionData(OptionType.USER, OPTION_SWAP_USER, "bot.slash.event.swap.option.user.description", true))
+	);
+
 	@Override
-	public void execute(Message message, List<String> args) {
-		log.trace("Command: swap");
+	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
+		log.trace("Slash command: swap");
 
-		final long channel = message.getChannel().getIdLong();
-		final net.dv8tion.jda.api.entities.User messageAuthor = message.getAuthor();
-		final String requesterId = messageAuthor.getId();
+		@SuppressWarnings("ConstantConditions") //Required option
+		final String userId = LongUtils.toString(getUserOption(event, OPTION_SWAP_USER));
 
-		final String arg = args.get(0);
-
-		List<Slot> swapSlots;
-		if (isUserMention(arg)) {
-			swapSlots = eventBotService.findSwapSlots(channel, requesterId, getId(arg));
-		} else if (onlyNumbers(arg)) {
-			swapSlots = eventBotService.findSwapSlots(channel, Integer.parseInt(arg), requesterId);
-		} else {
-			replyAndDelete(message, "Du musst einen Mitspieler oder eine Slotnummer übergeben.");
-			return;
-		}
-
-		swap(swapSlots, channel, requesterId, (String reply) -> replyAndDeleteOnlySend(message, reply), message.getJDA(),
-				() -> deleteMessagesInstant(message), true);
-	}
-
-	private void swap(@NonNull List<Slot> swapSlots,
-	                  long channel,
-	                  String requesterId,
-	                  @NonNull Consumer<String> replyConsumer,
-	                  @NonNull JDA jda,
-	                  @NonNull Runnable finishCallback,
-	                  boolean forceFinishCall) {
+		final List<Slot> swapSlots = eventBotService.findSwapSlots(event.getChannel().getIdLong(), event.getUser().getId(), userId);
 		final Slot requesterSlot = swapSlots.get(0);
 		final Slot foreignSlot = swapSlots.get(1);
 
+		final net.dv8tion.jda.api.entities.User requesterUser = event.getUser();
+		final String requesterId = requesterUser.getId();
+
 		if (foreignSlot.isEmpty()) {
-			eventBotService.slot(channel, foreignSlot.getNumber(), requesterId);
+			eventBotService.slot(event.getChannel().getIdLong(), foreignSlot.getNumber(), requesterId);
 		} else {
 			final User requester = requesterSlot.getUser();
 			final User foreignSlotUser = foreignSlot.getUser();
 
-			if (requester.getId() != LongUtils.parseLong(requesterId)) {
+			if (requester.getId() != requesterUser.getIdLong()) {
 				//This should never happen if backend doesn't change its output
 				log.warn("OwnSlotUser is not messageAuthor on swap. OwnSlotId: " + requesterSlot.getId() + " Message author id: " + requesterId);
-				replyConsumer.accept("Da ist ein Reihenfolgeproblem aufgetreten. Versuche es nochmal oder kontaktiere einen Administrator.");
-				if (!forceFinishCall) return;
+				reply(event, locale.t("bot.slash.event.swap.response.backendError"));
+				return;
 			} else if (requester.equals(foreignSlotUser)) {
-				replyConsumer.accept("Du bist schon auf dem Slot.");
-				if (!forceFinishCall) return;
+				reply(event, locale.t("bot.slash.event.swap.response.ownSlot"));
+				return;
 			} else if (SwapRequest.containsRequester(requester)) {
-				replyConsumer.accept("Es besteht bereits eine Tausch-Anfrage.");
-				if (!forceFinishCall) return;
-			} else if (!reversedRequestExists(jda, requesterSlot, foreignSlot, requester, foreignSlotUser)) {
+				reply(event, locale.t("bot.slash.event.swap.response.pending"));
+				return;
+			} else if (!reversedRequestExists(requesterSlot, foreignSlot, requester, requesterUser, foreignSlotUser)) {
+				//noinspection DataFlowIssue Guild only command
 				sendDm(
-						jda.retrieveUserById(foreignSlotUser.getId()).complete(),
-						getUserAsMention(requesterId) + " würde gerne den Slot " + requesterSlot.getName() + " (" + requesterSlot.getNumber() + ") im Event " + requesterSlot.getEvent().getName() + " mit dir tauschen. Du bist aktuell als " + foreignSlot.getName() + " (" + foreignSlot.getNumber() + ") gelistet. \nReagiere mit 👍, um die Anfrage anzunehmen. 👎 dementsprechend, um sie abzulehnen.",
+						event.getGuild().retrieveMemberById(foreignSlotUser.getId()).complete().getUser(),
+						locale.t("bot.dm.swapRequest", requesterUser.getAsMention(), requesterSlot.getName(), requesterSlot.getNumber(), requesterSlot.getEvent().getName(), foreignSlot.getName(), foreignSlot.getNumber()),
 						dmMessage -> {
 							requests.add(new SwapRequest(requesterSlot, foreignSlot, dmMessage.getIdLong()));
 
-							dmMessage.addReaction(THUMBS_UP).queue(unused ->
-									dmMessage.addReaction(THUMBS_DOWN).queue());
+							dmMessage.addReaction(THUMBS_UP.getEmoji()).queue(unused ->
+									dmMessage.addReaction(THUMBS_DOWN.getEmoji()).queue());
 						},
 						false,
-						replyConsumer
+						reply -> reply(event, reply)
 				);
 			}
-			finishCallback.run();
+			finishedInteraction(event);
 		}
 	}
 
@@ -135,11 +111,11 @@ public class Swap implements DiscordCommand, DiscordSlashCommand {
 	 *
 	 * @return true if the reversed swap has been performed
 	 */
-	private boolean reversedRequestExists(JDA jda, Slot requesterSlot, Slot foreignSlot, @NonNull User requester, User foreignSlotUser) {
+	private boolean reversedRequestExists(Slot requesterSlot, Slot foreignSlot, User requester, net.dv8tion.jda.api.entities.User requesterUser, User foreignSlotUser) {
 		final Optional<SwapRequest> request = SwapRequest.findByRequesterAndRequested(foreignSlotUser, requester);
 		if (request.isPresent()) { //Reversed request already exists
 			slotBotService.performDetachedSwap(foreignSlot, requesterSlot);
-			cleanUp(request.get(), getPrivateChannel(jda, requester.getId()));
+			cleanUp(request.get(), getPrivateChannel(requesterUser));
 			return true;
 		}
 		return false;
@@ -151,31 +127,13 @@ public class Swap implements DiscordCommand, DiscordSlashCommand {
 	 * @param request to remove
 	 * @param channel in which the private message has been posted
 	 */
-	public static void cleanUp(SwapRequest request, PrivateChannel channel) {
+	public static void cleanUp(SwapRequest request, MessageChannel channel) {
 		requests.remove(request);                               //Swap request is no longer valid
 		deleteMessagesInstant(channel, request.getMessageId()); //Delete swap request dm
 	}
 
-	private static final String OPTION_SWAP_USER = "tauschperson";
-	private static final List<List<OptionData>> OPTIONS = List.of(
-			List.of(new OptionData(OptionType.USER, OPTION_SWAP_USER, "Person mit der getauscht werden soll.", true))
-	);
-
 	@Override
-	public void execute(SlashCommandEvent event) {
-		log.trace("Slash command: swap");
-
-		@SuppressWarnings("ConstantConditions") //Required option
-		final String userId = LongUtils.toString(getUserOption(event.getOption(OPTION_SWAP_USER)));
-
-		List<Slot> swapSlots = eventBotService.findSwapSlots(event.getChannel().getIdLong(), event.getUser().getId(), userId);
-
-		swap(swapSlots, event.getChannel().getIdLong(), event.getUser().getId(), reply -> reply(event, reply), event.getJDA(),
-				() -> finishedSlashCommandAction(event), false);
-	}
-
-	@Override
-	public List<OptionData> getOptions(int optionPosition) {
+	public List<TranslatableOptionData> getOptions(int optionPosition) {
 		return OPTIONS.get(optionPosition);
 	}
 }

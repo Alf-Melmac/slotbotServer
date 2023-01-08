@@ -105,16 +105,6 @@ public class EventService {
 	}
 
 	/**
-	 * Returns an optional for the event associated with the given eventId
-	 *
-	 * @param eventId to find event for
-	 * @return Event found by id or empty optional
-	 */
-	public Optional<Event> findOptionalById(long eventId) {
-		return eventRepository.findById(eventId);
-	}
-
-	/**
 	 * Returns the event associated with the given eventId
 	 *
 	 * @param eventId to find event for
@@ -122,7 +112,7 @@ public class EventService {
 	 * @throws ResourceNotFoundException if no event with this eventId could be found
 	 */
 	public Event findById(long eventId) {
-		return findOptionalById(eventId).orElseThrow(ResourceNotFoundException::new);
+		return eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	/**

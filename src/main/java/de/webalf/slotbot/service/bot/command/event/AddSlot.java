@@ -1,6 +1,6 @@
 package de.webalf.slotbot.service.bot.command.event;
 
-import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import lombok.RequiredArgsConstructor;

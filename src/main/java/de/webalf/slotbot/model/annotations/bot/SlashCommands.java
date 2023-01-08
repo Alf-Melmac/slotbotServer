@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.annotations;
+package de.webalf.slotbot.model.annotations.bot;
 
 import org.atteo.classindex.IndexAnnotated;
 

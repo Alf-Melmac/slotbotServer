@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDmToRecipient;
 public class ReactionAddService {
 	private final SlotBotService slotBotService;
 
-	public void onSwapReaction(@NonNull PrivateMessageReactionAddEvent event) {
+	public void onSwapReaction(@NonNull MessageReactionAddEvent event) {
 		long messageId = event.getMessageIdLong();
 		long userId = event.getUserIdLong();
 
@@ -36,11 +36,11 @@ public class ReactionAddService {
 		} else if (request.getRequestedSlotUser().getId() != userId) {
 			log.warn("Received reaction from person that isn't the requester. How is this possible in DMs?");
 		} else {
-			final String reaction = event.getReactionEmote().getAsCodepoints();
+			final String reaction = event.getEmoji().getFormatted();
 
-			if (reaction.equalsIgnoreCase(THUMBS_UP)) {
+			if (reaction.equalsIgnoreCase(THUMBS_UP.getFormatted())) {
 				slotBotService.performDetachedSwap(request.getRequesterSlot(), request.getForeignerSlot());
-			} else if (reaction.equalsIgnoreCase(THUMBS_DOWN)) {
+			} else if (reaction.equalsIgnoreCase(THUMBS_DOWN.getFormatted())) {
 				final JDA jda = event.getJDA();
 				sendDmToRecipient(event, request.getRequester().getId(), jda.retrieveUserById(request.getRequestedSlotUser().getId()).complete().getAsMention() + " hat deine Anfrage zum Slot tauschen abgelehnt.");
 				sendDmToRecipient(event, request.getRequestedSlotUser().getId(), "Du hast das Tauschangebot von " + jda.retrieveUserById(request.getRequester().getId()).complete().getAsMention() + " abgelehnt.");

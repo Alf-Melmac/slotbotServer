@@ -4,25 +4,25 @@ import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
-import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.model.annotations.SelectionMenuListener;
-import de.webalf.slotbot.model.annotations.SlashCommand;
+import de.webalf.slotbot.model.annotations.bot.SlashCommand;
+import de.webalf.slotbot.model.annotations.bot.StringSelectInteraction;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.bot.EventBotService;
-import de.webalf.slotbot.service.bot.command.DiscordCommand;
-import de.webalf.slotbot.service.bot.command.DiscordSelectionMenu;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
+import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.ListUtils;
+import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +33,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.service.GuildService.isDAA;
-import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
-import static de.webalf.slotbot.util.bot.MessageUtils.*;
-import static de.webalf.slotbot.util.bot.SelectionMenuUtils.buildSelectionLabel;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.bot.MessageUtils.deletePinAddedMessages;
+import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
+import static de.webalf.slotbot.util.bot.StringSelectUtils.buildSelectLabel;
 
 /**
  * @author Alf
@@ -46,117 +45,80 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(names = {"addEventToChannel", "addChannel", "addEvent"},
-		description = "Ordnet einem Event den aktuellen Kanal zu.",
-		usage = "<Event-ID>",
-		argCount = {1},
-		authorization = EVENT_MANAGE)
-@SlashCommand(name = "addEventToChannel",
-		description = "Wähle ein Event aus und ordne es den aktuellen Kanal zu.",
-		authorization = EVENT_MANAGE)
-@SelectionMenuListener({"addEventToChannel", "addForeignEventToChannel"})
-public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, DiscordSelectionMenu {
+@SlashCommand(name = "bot.slash.event.addEventToChannel",
+		description = "bot.slash.event.addEventToChannel.description",
+		authorization = Permission.MANAGE_CHANNEL)
+@StringSelectInteraction({"addEventToChannel", "addForeignEventToChannel"})
+public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSelect {
 	private final EventBotService eventBotService;
 	private final EventHelper eventHelper;
 
 	@Override
-	public void execute(Message message, List<String> args) {
-		log.trace("Command: addEventToChannel");
-
-		final String eventId = args.get(0);
-		if (!onlyNumbers(eventId)) {
-			replyAndDelete(message, "Bitte übergebe an erster Stelle eine Event-ID.");
-			return;
-		}
-
-		if (existingEventInThisChannel(message.getChannel())) {
-			replyAndDelete(message, "Diesem Kanal ist bereits ein Event zugeordnet.");
-			return;
-		}
-
-		eventBotService.findById(message, Long.parseLong(args.get(0)))
-				.ifPresent(addEventConsumer(message));
-	}
-
-	private Consumer<Event> addEventConsumer(@NonNull Message message) {
-		return event -> {
-			final long guildId = message.getGuild().getIdLong();
-			final Optional<EventDiscordInformation> discordInformation = event.getDiscordInformation(guildId);
-			if (discordInformation.isPresent()) {
-				replyAndDelete(message, "Das Event ist bereits " + discordInformation.get().getChannelAsMention() + " zugeordnet.");
-				return;
-			}
-
-			final MessageChannel channel = message.getChannel();
-			addEventAndPrint(event, channel, guildId);
-			replyAndDelete(message, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
-		};
-	}
-
-	@Override
-	public void execute(SlashCommandEvent slashCommandEvent) {
+	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Slash command: addEventToChannel");
 
-		if (existingEventInThisChannel(slashCommandEvent.getChannel())) {
-			reply(slashCommandEvent, "Diesem Kanal ist bereits ein Event zugeordnet.");
+		if (existingEventInThisChannel(event.getChannel())) {
+			reply(event, locale.t("bot.select.event.addEventToChannel.response.alreadyAnotherAssigned"));
 			return;
 		}
 
-		final List<Event> events = eventBotService.findAllNotAssignedInFuture(slashCommandEvent.getGuild().getIdLong());
-		final List<Event> foreignEvents = eventBotService.findAllForeignNotAssignedInFuture(slashCommandEvent.getGuild().getIdLong());
+		//noinspection DataFlowIssue Guild only command
+		final List<Event> events = eventBotService.findAllNotAssignedInFuture(event.getGuild().getIdLong());
+		final List<Event> foreignEvents = eventBotService.findAllForeignNotAssignedInFuture(event.getGuild().getIdLong());
 		final boolean eventsEmpty = events.isEmpty();
 		final boolean foreignEventsEmpty = foreignEvents.isEmpty();
 		if (eventsEmpty && foreignEventsEmpty) {
-			reply(slashCommandEvent, "Kein nicht zugeordnetes Event in der Zukunft gefunden.");
+			reply(event, locale.t("bot.slash.event.addEventToChannel.response.noneFoundInFuture"));
 			return;
 		}
 
-		final List<SelectionMenu> selectionMenus = new ArrayList<>(2);
+		final List<StringSelectMenu> selectMenus = new ArrayList<>(2);
 		if (!eventsEmpty) {
-			populateSelectionMenuList(events, selectionMenus, "Eigenes Event auswählen...", false);
+			populateSelectMenuList(events, selectMenus, locale.t("bot.select.event.addEventToChannel.own"), false);
 		}
 		if (!foreignEventsEmpty) {
-			populateSelectionMenuList(foreignEvents, selectionMenus, "Fremdes Event auswählen...", true);
+			populateSelectMenuList(foreignEvents, selectMenus, locale.t("bot.select.event.addEventToChannel.foreign"), true);
 		}
 
-		addSelectionMenu(slashCommandEvent, selectionMenus.toArray(new SelectionMenu[0]));
+		addSelectMenu(event, selectMenus.toArray(new StringSelectMenu[0]));
 	}
 
-	private void populateSelectionMenuList(List<Event> events, List<SelectionMenu> selectionMenus, String placeholder, boolean foreign) {
-		final String[] menuIds = getClass().getAnnotation(SelectionMenuListener.class).value();
-		final SelectionMenu.Builder selectionMenuBuilder = SelectionMenu.create(foreign ? menuIds[1] : menuIds[0])
+	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {
+		final String[] menuIds = getClass().getAnnotation(StringSelectInteraction.class).value();
+		final StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create(foreign ? menuIds[1] : menuIds[0])
 				.setPlaceholder(placeholder);
 
 		for (Event event : events) {
 			final String name = (foreign ? "(" + event.getOwnerGuild().getGroupIdentifier() + ") " : "") + event.getName();
-			selectionMenuBuilder.addOption(buildSelectionLabel(name), Long.toString(event.getId()));
+			selectMenuBuilder.addOption(buildSelectLabel(name), Long.toString(event.getId()));
 		}
-		selectionMenus.add(selectionMenuBuilder.build());
+		selectMenus.add(selectMenuBuilder.build());
 	}
 
 	@Override
 	@Transactional
-	public void process(SelectionMenuEvent selectionMenuEvent) {
+	public void process(@NonNull StringSelectInteractionEvent selectMenuEvent, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Selection menu: addEventToChannel");
 
-		final Event event = eventBotService.findById(Long.parseLong(selectionMenuEvent.getValues().get(0)));
+		final Event event = eventBotService.findById(Long.parseLong(selectMenuEvent.getValues().get(0)));
 
-		final long guildId = selectionMenuEvent.getGuild().getIdLong();
+		//noinspection DataFlowIssue Guild only command
+		final long guildId = selectMenuEvent.getGuild().getIdLong();
 		final Optional<EventDiscordInformation> discordInformation = event.getDiscordInformation(guildId);
 		if (discordInformation.isPresent()) {
-			replyAndRemoveComponents(selectionMenuEvent, "Da war jemand schneller als du. Das Event ist bereits " + discordInformation.get().getChannelAsMention() + " zugeordnet.");
+			replyAndRemoveComponents(selectMenuEvent, locale.t("bot.select.event.addEventToChannel.response.alreadyAssigned", discordInformation.get().getChannelAsMention()));
 			return;
 		}
 
-		addEventAndPrint(event, selectionMenuEvent.getChannel(), guildId);
-		replyAndRemoveComponents(selectionMenuEvent, "Event " + event.getName() + " dem aktuellen Kanal hinzugefügt.");
+		addEventAndPrint(event, selectMenuEvent.getChannel(), guildId);
+		finishedVisibleInteraction(selectMenuEvent);
 	}
 
-	private boolean existingEventInThisChannel(@NonNull MessageChannel channel) {
+	private boolean existingEventInThisChannel(MessageChannelUnion channel) {
 		return eventBotService.findByChannel(channel.getIdLong()).isPresent();
 	}
 
-	private void addEventAndPrint(@NonNull Event event, @NonNull MessageChannel channel, long guildId) {
+	private void addEventAndPrint(@NonNull Event event, MessageChannelUnion channel, long guildId) {
 		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
 		if (eventApiDto.getDiscordInformation() == null) {
 			eventApiDto.setDiscordInformation(new HashSet<>());
@@ -172,7 +134,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 	/**
 	 * Called after the event details have been sent, to then send the first part of the slot list
 	 */
-	private Consumer<Message> infoMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, String guildId) {
+	private Consumer<Message> infoMsgConsumer(MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId) {
 		return infoMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresentOrElse(discordInformation -> discordInformation.setInfoMsg(infoMsg.getId()), () -> log.error("Failed to add infoMsg"));
 
@@ -188,7 +150,7 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 
 			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId));
 			if (slotListMessages.size() > 2) {
-				throw BusinessRuntimeException.builder().title("Aktuell sind nur maximal zwei Slotlist-Nachrichten mit jeweils " + Message.MAX_CONTENT_LENGTH + " Zeichen möglich.").build();
+				throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
 			}
 			//Send SlotList
 			sendMessage(channel, ListUtils.shift(slotListMessages),
@@ -197,9 +159,9 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannel, EventApiDto, String)} to update the event with both message ids
+	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, EventApiDto, String)} to update the event with both message ids
 	 */
-	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages, String guildId) {
+	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages, String guildId) {
 		return slotListMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartOne(slotListMsg.getId()));
 
@@ -211,9 +173,9 @@ public class AddEventToChannel implements DiscordCommand, DiscordSlashCommand, D
 	}
 
 	/**
-	 * Must be called after {@link #slotListMsgConsumer(MessageChannel, EventApiDto, List, String)} to update the event with the last message id
+	 * Must be called after {@link #slotListMsgConsumer(MessageChannelUnion, EventApiDto, List, String)} to update the event with the last message id
 	 */
-	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannel channel, @NonNull EventApiDto eventApiDto, String guildId) {
+	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId) {
 		return slotListMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartTwo(slotListMsg.getId()));
 

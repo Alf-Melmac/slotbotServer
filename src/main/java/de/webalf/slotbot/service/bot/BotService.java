@@ -12,10 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
-import javax.security.auth.login.LoginException;
 
 import static de.webalf.slotbot.util.StringUtils.stripPrefixIfExists;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
@@ -31,7 +31,8 @@ public class BotService {
 	private final DiscordProperties discordProperties;
 	private final CommandClassHelper commandClassHelper;
 	private final ReactionAddService reactionAddService;
-	private final SlashCommandsService slashCommandsService;
+	private final CommandsService commandsService;
+	private final MessageSource messageSource;
 
 	@Getter
 	private JDA jda;
@@ -41,20 +42,16 @@ public class BotService {
 	public void startUp() {
 		String token = stripPrefixIfExists(discordProperties.getToken(), TOKEN_PREFIX);
 
-		try {
-			jda = JDABuilder
-					.createLight(token)
-					.enableIntents(GUILD_MEMBERS)
-					.addEventListeners(
-							new MessageReceivedListener(discordProperties, commandClassHelper),
-							new ReactionAddListener(reactionAddService),
-							new GuildReadyListener(slashCommandsService),
-							new InteractionListener(commandClassHelper))
-					.disableIntents(GUILD_BANS, GUILD_EMOJIS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING)
-					.build();
-		} catch (LoginException e) {
-			log.error("Failed to start discord bot", e);
-		}
+		jda = JDABuilder
+				.createLight(token)
+				.enableIntents(GUILD_MEMBERS, GUILD_MESSAGES, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, MESSAGE_CONTENT) //TODO Validate which intents are needed
+				.addEventListeners(
+						new MessageReceivedListener(discordProperties, commandClassHelper),
+						new ReactionAddListener(reactionAddService),
+						new GuildReadyListener(commandsService),
+						new InteractionListener(commandClassHelper, messageSource))
+				.disableIntents(GUILD_BANS, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING, SCHEDULED_EVENTS)
+				.build();
 	}
 
 	@PreDestroy

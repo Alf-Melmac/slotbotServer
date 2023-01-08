@@ -1,14 +1,15 @@
 package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
-import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.model.annotations.SlashCommand;
-import de.webalf.slotbot.model.annotations.SlashCommands;
+import de.webalf.slotbot.model.annotations.bot.Command;
+import de.webalf.slotbot.model.annotations.bot.SlashCommand;
+import de.webalf.slotbot.model.annotations.bot.SlashCommands;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
+import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.util.EventHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class CommandClassHelper {
 	private final DiscordProperties discordProperties;
 
 	/**
-	 * Tries to create a new constructor instance for the given {@link DiscordCommand} or {@link DiscordSlashCommand} class
+	 * Tries to create a new constructor instance for the given {@link DiscordCommand}, {@link DiscordSlashCommand} or {@link DiscordStringSelect} class
 	 *
 	 * @param commandClass command to get constructor for
 	 * @return a new instance of the declared constructor
@@ -68,13 +69,6 @@ public class CommandClassHelper {
 					constructor = declaredConstructor.newInstance(eventBotService, eventHelper);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService and EventHelper parameter for type {}", commandClass.getName(), e);
-				}
-			} else if (Arrays.equals(parameterTypes, new Class<?>[]{DiscordProperties.class})) {
-				//Help
-				try {
-					constructor = declaredConstructor.newInstance(discordProperties);
-				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with DiscordProperties parameter for type {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, SlotBotService.class})) {
 				//Swap
@@ -123,17 +117,5 @@ public class CommandClassHelper {
 			return commandClass.getAnnotation(SlashCommands.class).value();
 		}
 		return new SlashCommand[]{slashCommand};
-	}
-
-	/**
-	 * Returns the {@link SlashCommand} found by the given name
-	 *
-	 * @param name of the slash command
-	 * @return slash command
-	 */
-	public static SlashCommand getSlashCommand(String name) {
-		return Arrays.stream(getSlashCommand(SlashCommandUtils.get(name)))
-				.filter(slashCommand -> slashCommand.name().toLowerCase().equals(name))
-				.findAny().orElseThrow(IllegalStateException::new);
 	}
 }

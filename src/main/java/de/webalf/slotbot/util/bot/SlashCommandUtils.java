@@ -1,21 +1,19 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.model.annotations.SlashCommand;
-import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
+import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.CommandInteractionPayload;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.atteo.classindex.ClassIndex;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static de.webalf.slotbot.util.bot.DiscordLocaleHelper.DEFAULT_LOCALE;
 
 /**
  * @author Alf
@@ -23,13 +21,13 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class SlashCommandUtils {
-	public static final Map<String, Class<?>> commandToClassMap = new HashMap<>();
+	private static final Map<String, Class<?>> commandToClassMap = new HashMap<>();
 
 	static {
 		final Iterable<Class<?>> commandList = ClassIndex.getAnnotated(SlashCommand.class);
 		StreamSupport.stream(commandList.spliterator(), false)
 				.forEach(command -> Arrays.stream(CommandClassHelper.getSlashCommand(command))
-						.forEach(slashCommand -> commandToClassMap.put(slashCommand.name().toLowerCase(), command)));
+						.forEach(slashCommand -> commandToClassMap.put(DEFAULT_LOCALE.t(slashCommand.name()).toLowerCase(), command)));
 	}
 
 	/**
@@ -43,87 +41,68 @@ public final class SlashCommandUtils {
 	}
 
 	/**
-	 * Returns the {@link CommandPrivilege}s that include allowed roles for the given {@link SlashCommand}
+	 * Returns all classes annotated with {@link SlashCommand}
 	 *
-	 * @param guild        to get roles from
-	 * @param slashCommand to get allowed roles for
-	 * @return command privileges with allowed roles
-	 * @see #getAllowedRoles(SlashCommand)
+	 * @return all slash command classes
 	 */
-	public static Set<CommandPrivilege> getCommandPrivileges(@NonNull Guild guild, SlashCommand slashCommand) {
-		return getAllowedRoles(slashCommand).stream()
-				.map(discordRole -> CommandPrivilege.enableRole(guild.getRolesByName(discordRole, false).get(0).getId()))
-				.collect(Collectors.toUnmodifiableSet());
+	public static Collection<Class<?>> get() {
+		return commandToClassMap.values();
+	}
+
+	private static OptionMapping getOptionMapping(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		return interaction.getOption(DEFAULT_LOCALE.t(option));
 	}
 
 	/**
-	 * Returns all discord roles that are allowed to use the given {@link SlashCommand}
-	 *
-	 * @param command to get allowed roles for
-	 * @return names of allowed discord roles
+	 * Asserts that the {@link #getOptionalStringOption(CommandInteractionPayload, String) optional string option}  is present
 	 */
-	private static Set<String> getAllowedRoles(@NonNull SlashCommand command) {
-		//TODO Consider GlobalRole
-		return Arrays.stream(command.authorization().getRoles()).map(ApplicationPermissionHelper.Role::getDiscordRole).collect(Collectors.toUnmodifiableSet());
+	public static String getStringOption(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		return getOptionalStringOption(interaction, option);
 	}
 
 	/**
-	 * Returns the string value of the given not null {@link OptionMapping}
+	 * Returns the string value of the given nullable option
 	 *
-	 * @param option to get text from
-	 * @return string
-	 */
-	public static String getStringOption(@NonNull OptionMapping option) {
-		return option.getAsString();
-	}
-
-	/**
-	 * Returns the string value of the given nullable {@link OptionMapping}
-	 *
-	 * @param option to get text from
 	 * @return string or null
 	 */
-	public static String getOptionalStringOption(OptionMapping option) {
-		return option == null ? null : getStringOption(option);
+	public static String getOptionalStringOption(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		final OptionMapping optionMapping = getOptionMapping(interaction, option);
+		return optionMapping == null ? null : optionMapping.getAsString();
 	}
 
 	/**
-	 * Returns the integer value of the given not null {@link OptionMapping}
-	 *
-	 * @param option to get int from
-	 * @return int
+	 * Asserts that the {@link #getOptionalIntegerOption(CommandInteractionPayload, String) optional int option} is present
 	 */
-	public static int getIntegerOption(@NonNull OptionMapping option) {
-		return Math.toIntExact(option.getAsLong());
+	public static int getIntegerOption(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		//noinspection DataFlowIssue Caller only calls with required options
+		return getOptionalIntegerOption(interaction, option);
 	}
 
 	/**
-	 * Returns the integer value of the given nullable {@link OptionMapping}
+	 * Returns the integer value of the given nullable option
 	 *
-	 * @param option to get int from
 	 * @return int or null
 	 */
-	public static Integer getOptionalIntegerOption(OptionMapping option) {
-		return option == null ? null : getIntegerOption(option);
+	public static Integer getOptionalIntegerOption(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		final OptionMapping optionMapping = getOptionMapping(interaction, option);
+		return optionMapping == null ? null : optionMapping.getAsInt();
 	}
 
 	/**
-	 * Returns the id of the {@link User} of the given not null {@link OptionMapping}
-	 *
-	 * @param option to get user id from
-	 * @return user id
+	 * Asserts that the {@link #getOptionalUserOption(CommandInteractionPayload, String) optional user option} is present and returns it id
 	 */
-	public static long getUserOption(@NonNull OptionMapping option) {
-		return option.getAsUser().getIdLong();
+	public static long getUserOption(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		//noinspection DataFlowIssue Caller only calls with required options
+		return getOptionalUserOption(interaction, option);
 	}
 
 	/**
-	 * Returns the user id of the given nullable {@link OptionMapping}
+	 * Returns the user id of the given nullable option
 	 *
-	 * @param option to get user from
 	 * @return user id or null
 	 */
-	public static Long getOptionalUserOption(OptionMapping option) {
-		return option == null ? null : getUserOption(option);
+	public static Long getOptionalUserOption(@NonNull CommandInteractionPayload interaction, @NonNull String option) {
+		final OptionMapping optionMapping = getOptionMapping(interaction, option);
+		return optionMapping == null ? null : optionMapping.getAsUser().getIdLong();
 	}
 }

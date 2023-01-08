@@ -1,7 +1,7 @@
 package de.webalf.slotbot.service.bot.command.util;
 
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.annotations.Command;
+import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.bot.MessageUtils;
@@ -39,7 +39,7 @@ public class DonationEmbed implements DiscordCommand {
 			case "addD":
 			case "addDonation":
 				final String messageId = args.get(1);
-				message.getTextChannel()
+				message.getChannel()
 						.retrieveMessageById(messageId)
 						.queue(messageWithEmbed -> {
 							final MessageEmbed embed = messageWithEmbed.getEmbeds().stream().findAny()
@@ -50,15 +50,13 @@ public class DonationEmbed implements DiscordCommand {
 							final EmbedBuilder embedBuilder = buildEmbed()
 									.setDescription(description);
 							embed.getFields().stream().findAny().ifPresent(embedBuilder::addField);
-							message.getChannel().editMessageEmbedsById(messageId, embedBuilder
-									.build())
-									.queue();
+							message.getChannel().editMessageEmbedsById(messageId, embedBuilder.build()).queue();
 						});
 				break;
 			case "addB":
 			case "addBoost":
 				final String embedId = args.get(1);
-				message.getTextChannel()
+				message.getChannel()
 						.retrieveMessageById(embedId)
 						.queue(messageWithEmbed -> {
 							final MessageEmbed embed = messageWithEmbed.getEmbeds().stream().findAny().orElseThrow(ResourceNotFoundException::new);
@@ -68,8 +66,8 @@ public class DonationEmbed implements DiscordCommand {
 							value = "‎".equals(value) ? "- " + args.get(2) :
 									value + "\n" + "- " + args.get(2);
 							message.getChannel().editMessageEmbedsById(embedId, buildEmbed()
-									.setDescription(embed.getDescription())
-									.addField("Server Booster", value, false).build())
+											.setDescription(embed.getDescription())
+											.addField("Server Booster", value, false).build())
 									.queue();
 						});
 				break;

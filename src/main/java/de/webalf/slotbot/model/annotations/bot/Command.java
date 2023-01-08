@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.annotations;
+package de.webalf.slotbot.model.annotations.bot;
 
 import de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization;
 import org.atteo.classindex.IndexAnnotated;
@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @IndexAnnotated
+@Deprecated
 public @interface Command {
 	String[] names();
 

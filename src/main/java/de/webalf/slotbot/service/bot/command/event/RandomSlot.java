@@ -1,21 +1,17 @@
 package de.webalf.slotbot.service.bot.command.event;
 
-import de.webalf.slotbot.model.annotations.Command;
-import de.webalf.slotbot.model.annotations.SlashCommand;
+import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
-import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
+import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
-import static de.webalf.slotbot.util.bot.InteractionUtils.finishedSlashCommandAction;
-import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
+import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
 
 /**
  * @author Alf
@@ -23,29 +19,18 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
  */
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
-@Command(names = {"randomSlot", "slotRandom", "random"},
-		description = "Trägt dich auf einem zufälligen Slot im Event ein.",
-		authorization = NONE)
-@SlashCommand(name = "randomSlot",
-		description = "Trägt dich auf einem zufälligen Slot im Event ein.",
-		authorization = NONE)
-public class RandomSlot implements DiscordCommand, DiscordSlashCommand {
+@SlashCommand(name = "bot.slash.event.randomSlot",
+		description = "bot.slash.event.randomSlot.description",
+		authorization = Permission.MESSAGE_HISTORY)
+public class RandomSlot implements DiscordSlashCommand {
 	private final EventBotService eventBotService;
 
 	@Override
-	public void execute(Message message, List<String> args) {
-		log.trace("Command: randomSlot");
-
-		eventBotService.randomSlot(message.getChannel().getIdLong(), message.getAuthor().getId());
-		deleteMessagesInstant(message);
-	}
-
-	@Override
-	public void execute(SlashCommandEvent event) {
+	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Slash command: randomSlot");
 
 		eventBotService.randomSlot(event.getChannel().getIdLong(), event.getUser().getId());
 
-		finishedSlashCommandAction(event);
+		finishedVisibleInteraction(event);
 	}
 }
