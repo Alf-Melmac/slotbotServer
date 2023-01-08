@@ -17,18 +17,20 @@ import java.util.Optional;
 public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventType> {
 	Optional<EventType> findEventTypeByNameAndColor(String name, String color);
 
+	List<EventType> findAllByOrderByName();
+
 	/**
 	 * @see #findEventTypeByNameAndColor(String, String)
 	 */
 	@SneakyThrows(NotSupportedException.class)
 	@Override
-	default Optional<EventType> findById(@NotNull Long l) {
+	default @NotNull Optional<EventType> findById(@NotNull Long l) {
 		throw new NotSupportedException("Id shouldn't be used to get entity. Use findEventTypeByNameAndColor");
 	}
 
 	@SneakyThrows(NotSupportedException.class)
 	@Override
-	default List<EventType> findAllById(@NotNull Iterable<Long> iterable) {
+	default @NotNull List<EventType> findAllById(@NotNull Iterable<Long> iterable) {
 		throw new NotSupportedException("Id shouldn't be used to get entity.");
 	}
 }

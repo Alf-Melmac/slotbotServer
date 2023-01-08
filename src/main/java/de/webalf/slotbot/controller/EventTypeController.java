@@ -23,6 +23,6 @@ public class EventTypeController {
 
 	@GetMapping
 	public List<EventTypeDto> getEventTypes() {
-		return EventTypeAssembler.toDtoList(eventTypeService.findAll());
+		return EventTypeAssembler.toDtoList(eventTypeService.findAllOrdered());
 	}
 }

@@ -34,8 +34,8 @@ public class EventTypeService {
 				.orElseGet(() -> eventTypeRepository.save(EventTypeAssembler.fromDto(eventTypeDto)));
 	}
 
-	public List<EventType> findAll() {
-		return eventTypeRepository.findAll();
+	public List<EventType> findAllOrdered() {
+		return eventTypeRepository.findAllByOrderByName();
 	}
 
 	public void deleteUnused() {
