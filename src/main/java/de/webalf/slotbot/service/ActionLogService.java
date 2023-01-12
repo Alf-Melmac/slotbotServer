@@ -5,13 +5,13 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.ActionLogRepository;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.Duration;
 
 import static de.webalf.slotbot.util.DateUtils.getDateTimeNowZoned;

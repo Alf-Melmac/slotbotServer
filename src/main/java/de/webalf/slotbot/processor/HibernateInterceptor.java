@@ -3,12 +3,10 @@ package de.webalf.slotbot.processor;
 import de.webalf.slotbot.service.UpdateInterceptorService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.CallbackException;
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.Interceptor;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
 
 /**
  * @author Alf
@@ -16,26 +14,24 @@ import java.io.Serializable;
  */
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class HibernateInterceptor extends EmptyInterceptor {
-	private static final long serialVersionUID = 7037471511333181486L;
-
-	private final transient UpdateInterceptorService updateInterceptorService;
+public class HibernateInterceptor implements Interceptor {
+	private final UpdateInterceptorService updateInterceptorService;
 
 	@Override
-	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
+	public boolean onFlushDirty(Object entity, Object id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) throws CallbackException {
 		updateInterceptorService.update(entity, currentState, previousState, propertyNames);
-		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
+		return Interceptor.super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 	}
 
 	@Override
-	public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+	public void onDelete(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) throws CallbackException {
 		updateInterceptorService.onDelete(entity);
-		super.onDelete(entity, id, state, propertyNames, types);
+		Interceptor.super.onDelete(entity, id, state, propertyNames, types);
 	}
 
 	@Override
-	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
+	public void onCollectionUpdate(Object collection, Object key) throws CallbackException {
 		updateInterceptorService.onCollectionUpdate(collection);
-		super.onCollectionUpdate(collection, key);
+		Interceptor.super.onCollectionUpdate(collection, key);
 	}
 }

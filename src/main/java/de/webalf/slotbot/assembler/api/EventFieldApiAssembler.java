@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.dtos.api.EventFieldApiDto;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.buildOptionalLink;
@@ -28,6 +27,6 @@ public final class EventFieldApiAssembler {
 	public static List<EventFieldApiDto> toDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(EventFieldApiAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

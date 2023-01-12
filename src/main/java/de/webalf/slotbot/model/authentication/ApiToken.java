@@ -1,12 +1,11 @@
 package de.webalf.slotbot.model.authentication;
 
 import de.webalf.slotbot.model.Guild;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author Alf

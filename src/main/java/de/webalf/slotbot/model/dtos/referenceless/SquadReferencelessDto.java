@@ -2,11 +2,11 @@ package de.webalf.slotbot.model.dtos.referenceless;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.GuildDto;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Size;
 import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;

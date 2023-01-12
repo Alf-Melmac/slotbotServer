@@ -49,8 +49,8 @@ public final class PermissionHelper {
 
 	private OAuth2User getLoggedIn() {
 		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof OAuth2User) {
-			return (OAuth2User) principal;
+		if (principal instanceof OAuth2User oAuth2User) {
+			return oAuth2User;
 		}
 		return null;
 	}

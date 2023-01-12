@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Alf
@@ -40,6 +39,6 @@ public class EventTypeService {
 
 	public void deleteUnused() {
 		eventTypeRepository.deleteAllInBatch(eventTypeRepository.findAll()
-				.stream().filter(eventType -> eventType.getEvents().isEmpty()).collect(Collectors.toUnmodifiableList()));
+				.stream().filter(eventType -> eventType.getEvents().isEmpty()).toList());
 	}
 }

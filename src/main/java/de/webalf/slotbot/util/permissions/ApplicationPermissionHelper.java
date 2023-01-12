@@ -1,11 +1,11 @@
 package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.util.StringUtils;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
-import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.service.GuildService.getLogo;
@@ -78,7 +77,7 @@ public class EventDetailsAssembler {
 	private List<EventDetailsSquadDto> toEventDetailsDtoList(@NonNull Iterable<? extends Squad> squadList, boolean optimizeReservedFor) {
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(squad -> toEventDetailsDto(squad, optimizeReservedFor))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private EventDetailsSquadDto toEventDetailsDto(@NonNull Squad squad, boolean optimizeReservedFor) {
@@ -95,7 +94,7 @@ public class EventDetailsAssembler {
 	private List<EventDetailsSlotDto> toEventDetailsSlotDtoList(@NonNull Iterable<? extends Slot> slotList, boolean optimizeReservedFor) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(slot -> toEventDetailsSlotDto(slot, optimizeReservedFor))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot, boolean optimizeReservedFor) {

@@ -70,7 +70,7 @@ public class CommandsService {
 
 						return commandData;
 					});
-				}).collect(Collectors.toUnmodifiableList());
+				}).toList();
 		log.info("Found {} commands. Starting update...", slashCommands.size());
 
 		guild.updateCommands().addCommands(slashCommands).queue();
@@ -90,7 +90,7 @@ public class CommandsService {
 						.setNameLocalization(language, locale.t(name).toLowerCase())
 						.setDescriptionLocalization(language, locale.t(description)));
 				return optionData;
-			}).collect(Collectors.toUnmodifiableList());
+			}).toList();
 		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
 			log.error("Failed to getOptions {}", e.getMessage());
 			return Collections.emptyList();

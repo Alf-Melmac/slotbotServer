@@ -1,11 +1,10 @@
 package de.webalf.slotbot.model.dtos.api;
 
 import de.webalf.slotbot.model.dtos.website.UserNameDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;
 

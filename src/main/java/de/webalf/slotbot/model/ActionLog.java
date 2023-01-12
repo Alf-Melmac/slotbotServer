@@ -2,9 +2,9 @@ package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.converter.persistence.DurationPersistenceConverter;
 import de.webalf.slotbot.model.enums.LogAction;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.Duration;
 
 /**

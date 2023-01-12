@@ -4,7 +4,7 @@ import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.service.bot.EventUpdateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.collection.internal.PersistentList;
+import org.hibernate.collection.spi.PersistentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,8 +49,7 @@ public class UpdateInterceptorService {
 	 * @return associated event or null
 	 */
 	private Event getEvent(Object entity) {
-		if (entity instanceof Slot) {
-			final Slot slot = (Slot) entity;
+		if (entity instanceof final Slot slot) {
 			if (!slot.isInReserve()) {
 				return slot.getSquad().getEvent();
 			}
@@ -59,17 +58,14 @@ public class UpdateInterceptorService {
 	}
 
 	private Event getEvent(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
-		if (entity instanceof Event) {
-			final Event event = (Event) entity;
+		if (entity instanceof final Event event) {
 			eventUpdate(previousState, propertyNames, event);
 			return event;
-		} else if (entity instanceof Squad) {
-			final Squad squad = (Squad) entity;
+		} else if (entity instanceof final Squad squad) {
 			if (!squad.isReserve()) {
 				return squad.getEvent();
 			}
-		} else if (entity instanceof Slot) {
-			final Slot slot = (Slot) entity;
+		} else if (entity instanceof final Slot slot) {
 			final Event event = slot.getSquad().getEvent();
 			slotUpdate(currentState, previousState, propertyNames, slot, event);
 			return event;
@@ -122,16 +118,15 @@ public class UpdateInterceptorService {
 	}
 
 	public void onCollectionUpdate(Object collection) {
-		if (collection instanceof PersistentList) {
-			final Object el = ((PersistentList) collection).get(0);
+		if (collection instanceof PersistentList<?> persistentList) {
+			final Object el = persistentList.get(0);
 
-			if (el instanceof Squad) {
-				final Squad squad = (Squad) el;
+			if (el instanceof final Squad squad) {
 				if (!squad.isReserve()) {
 					update(squad.getEvent());
 				}
-			} else if (el instanceof EventField) {
-				update(((EventField) el).getEvent());
+			} else if (el instanceof final EventField eventField) {
+				update(eventField.getEvent());
 			}
 		}
 	}

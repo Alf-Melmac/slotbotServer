@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.SqmParser.ReadStep.NONE;
 import static de.webalf.slotbot.util.StringUtils.removeNonDigitCharacters;
@@ -37,7 +36,7 @@ public final class SqmParser {
 				squad.setSlotList(
 						squad.getSlotList().stream()
 								.sorted(Comparator.comparingInt(MinimalSlotDto::getNumber))
-								.collect(Collectors.toUnmodifiableList())
+								.toList()
 				);
 			}
 			return read;

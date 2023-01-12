@@ -54,8 +54,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query("SELECT e FROM Event e WHERE e.dateTime < :dateTime ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsBeforeAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime);
 
-	@Query("SELECT e FROM Event e WHERE e.dateTime > :dateTime")
-	List<Event> findAllByDateTimeIsAfter(@Param("dateTime") LocalDateTime dateTime);
+	List<Event> findByDateTimeGreaterThan(LocalDateTime dateTime);
+
 
 	@Query(value = "SELECT e " +
 			"FROM Event e " +

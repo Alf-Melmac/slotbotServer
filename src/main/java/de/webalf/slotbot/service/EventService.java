@@ -160,7 +160,7 @@ public class EventService {
 	 * @return all events from the future
 	 */
 	public List<Event> findAllInFuture() {
-		return eventRepository.findAllByDateTimeIsAfter(LocalDateTime.now());
+		return eventRepository.findByDateTimeGreaterThan(LocalDateTime.now());
 	}
 
 	/**

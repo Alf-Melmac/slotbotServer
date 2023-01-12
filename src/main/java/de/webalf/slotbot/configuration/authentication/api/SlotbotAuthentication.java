@@ -17,7 +17,6 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SlotbotAuthentication implements Authentication {
-	private static final long serialVersionUID = 7753355760596674581L;
 	@Getter
 	private String credentials;
 	@Getter

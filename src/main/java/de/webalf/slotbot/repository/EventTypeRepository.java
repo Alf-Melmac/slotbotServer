@@ -1,11 +1,11 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.EventType;
+import jakarta.transaction.NotSupportedException;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.NotSupportedException;
 import java.util.List;
 import java.util.Optional;
 

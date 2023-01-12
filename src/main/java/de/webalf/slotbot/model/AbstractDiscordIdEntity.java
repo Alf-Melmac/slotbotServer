@@ -1,12 +1,11 @@
 package de.webalf.slotbot.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 
 /**
  * Identical to {@link AbstractSuperIdEntity}, but does not generate ids and expects Discord snowflakes

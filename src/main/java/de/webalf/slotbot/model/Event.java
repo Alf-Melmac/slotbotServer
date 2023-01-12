@@ -5,15 +5,15 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.service.bot.EventNotificationService;
 import de.webalf.slotbot.util.EventUtils;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -358,7 +358,7 @@ public class Event extends AbstractSuperIdEntity {
 		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
 			if (!isFull()) {
 				//Fills empty slots with reservists
-				List<Slot> emptySlots = getSquadList().stream().flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty)).collect(Collectors.toList());
+				List<Slot> emptySlots = getSquadList().stream().flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty)).toList();
 				emptySlots.forEach(slot -> reserve.getSlotList().stream()
 						.filter(reserveSlot -> !reserveSlot.isEmpty()).findFirst()
 						.ifPresent(reserveSlot -> {
@@ -369,7 +369,7 @@ public class Event extends AbstractSuperIdEntity {
 			}
 
 			List<Slot> reserveSlots = reserve.getSlotList();
-			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).collect(Collectors.toUnmodifiableList());
+			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).toList();
 
 			//Empty reserve
 			reserveSlots.forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));
@@ -440,7 +440,7 @@ public class Event extends AbstractSuperIdEntity {
 		List<Slot> oldSlotList = reserve.getSlotList();
 		List<User> reserveUsers = oldSlotList.stream()
 				.map(Slot::getUser).filter(Objects::nonNull)
-				.collect(Collectors.toList());
+				.toList();
 
 		//Reduce the reserve size so that all persons already slotted remain so
 		int newReserveSize = Math.max(getDesiredReserveSize(), reserveUsers.size());
@@ -491,7 +491,7 @@ public class Event extends AbstractSuperIdEntity {
 		final List<Slot> emptySlots = getSquadList().stream()
 				.filter(Squad::hasEmptySlot)
 				.flatMap(squad -> squad.getSlotList().stream().filter(slot -> slot.slotIsPossible(user)))
-				.collect(Collectors.toUnmodifiableList());
+				.toList();
 		if (CollectionUtils.isEmpty(emptySlots)) {
 			throw BusinessRuntimeException.builder().title("Kein freier Slot vorhanden.").build();
 		}

@@ -7,7 +7,6 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -34,7 +33,7 @@ public final class MinimalEventFieldAssembler {
 
 		return StreamSupport.stream(dtos.spliterator(), false)
 				.map(MinimalEventFieldAssembler::fromDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static <C extends MinimalEventFieldDto, B extends MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>> MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>
@@ -51,6 +50,6 @@ public final class MinimalEventFieldAssembler {
 	static List<MinimalEventFieldDto> toDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(MinimalEventFieldAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

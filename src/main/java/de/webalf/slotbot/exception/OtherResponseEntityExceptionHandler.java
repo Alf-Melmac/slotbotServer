@@ -1,11 +1,10 @@
 package de.webalf.slotbot.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static de.webalf.slotbot.exception.RestResponseEntityExceptionHandler.determineHttpStatus;
 
@@ -21,7 +20,7 @@ import static de.webalf.slotbot.exception.RestResponseEntityExceptionHandler.det
 @Order(3)
 public class OtherResponseEntityExceptionHandler {
 	@ExceptionHandler(ForbiddenException.class)
-	protected ResponseEntity<?> handleConflict(RuntimeException ex, HttpServletRequest request) {
+	protected ResponseEntity<ExceptionResponse> handleConflict(RuntimeException ex, HttpServletRequest request) {
 		return new ResponseEntity<>(
 				ExceptionResponse.builder()
 						.errorMessage(ex.getMessage())

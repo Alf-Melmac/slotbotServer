@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -28,6 +27,6 @@ final class MinimalSquadIdAssembler {
 	static List<MinimalSquadIdDto> toDtoList(Iterable<? extends Squad> squads) {
 		return StreamSupport.stream(squads.spliterator(), false)
 				.map(MinimalSquadIdAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

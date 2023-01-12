@@ -36,8 +36,7 @@ public class DonationEmbed implements DiscordCommand {
 						.addField("Server Booster", "", false)
 						.build()).queue();
 				break;
-			case "addD":
-			case "addDonation":
+			case "addD", "addDonation":
 				final String messageId = args.get(1);
 				message.getChannel()
 						.retrieveMessageById(messageId)
@@ -53,8 +52,7 @@ public class DonationEmbed implements DiscordCommand {
 							message.getChannel().editMessageEmbedsById(messageId, embedBuilder.build()).queue();
 						});
 				break;
-			case "addB":
-			case "addBoost":
+			case "addB", "addBoost":
 				final String embedId = args.get(1);
 				message.getChannel()
 						.retrieveMessageById(embedId)

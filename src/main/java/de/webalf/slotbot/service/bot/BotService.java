@@ -6,6 +6,7 @@ import de.webalf.slotbot.service.bot.listener.InteractionListener;
 import de.webalf.slotbot.service.bot.listener.MessageReceivedListener;
 import de.webalf.slotbot.service.bot.listener.ReactionAddListener;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
+import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +15,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PreDestroy;
 
 import static de.webalf.slotbot.util.StringUtils.stripPrefixIfExists;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;

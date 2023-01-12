@@ -1,12 +1,12 @@
 package de.webalf.slotbot.model.dtos.website.event.edit;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;

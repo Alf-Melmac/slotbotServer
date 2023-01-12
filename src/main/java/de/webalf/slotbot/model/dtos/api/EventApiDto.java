@@ -1,11 +1,10 @@
 package de.webalf.slotbot.model.dtos.api;
 
 import de.webalf.slotbot.model.dtos.referenceless.EventReferencelessDto;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author Alf

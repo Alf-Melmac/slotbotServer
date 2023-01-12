@@ -1,12 +1,11 @@
 package de.webalf.slotbot.model.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import static de.webalf.slotbot.util.MaxLength.COLOR_RGB;
 import static de.webalf.slotbot.util.MaxLength.TEXT;

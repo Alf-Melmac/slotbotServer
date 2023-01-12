@@ -1,10 +1,9 @@
 package de.webalf.slotbot.util.bot;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author Alf

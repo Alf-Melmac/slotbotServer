@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -26,6 +25,6 @@ final class MinimalSlotIdAssembler {
 	static List<MinimalSlotIdDto> toDtoList(Iterable<? extends Slot> slots) {
 		return StreamSupport.stream(slots.spliterator(), false)
 				.map(MinimalSlotIdAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

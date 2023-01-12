@@ -1,6 +1,7 @@
 package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.constant.Emojis;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 
-import javax.validation.constraints.NotBlank;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.doNothing;

@@ -7,11 +7,11 @@ import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.SlotUtils;
 import de.webalf.slotbot.util.bot.MentionUtils;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Size;
 import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;

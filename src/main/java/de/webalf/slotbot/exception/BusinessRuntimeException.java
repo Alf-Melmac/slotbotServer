@@ -1,13 +1,12 @@
 package de.webalf.slotbot.exception;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.validation.constraints.NotEmpty;
 
 /**
  * @author Alf

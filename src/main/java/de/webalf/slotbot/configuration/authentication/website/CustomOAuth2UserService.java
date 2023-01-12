@@ -3,6 +3,7 @@ package de.webalf.slotbot.configuration.authentication.website;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.webalf.slotbot.service.external.DiscordApiService.User;
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
+import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 
 /**
  * @author Alf
@@ -74,7 +77,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		final Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
 		authorities.forEach(grantedAuthority -> {
-			if (grantedAuthority.getAuthority().equals("ROLE_USER")) {
+			if (grantedAuthority.getAuthority().equals("OAUTH2_USER")) {
+				mappedAuthorities.add(new OAuth2UserAuthority(ROLE_PREFIX + Role.EVERYONE.getApplicationRole(), attributes));
 				mappedAuthorities.addAll(getAuthorities(discordUser, attributes));
 			} else {
 				mappedAuthorities.add(grantedAuthority);

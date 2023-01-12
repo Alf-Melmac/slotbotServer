@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -48,7 +47,7 @@ public final class MinimalSlotAssembler {
 
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(this::fromDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	Guild evaluateReservedFor(String reservedFor) {
@@ -72,6 +71,6 @@ public final class MinimalSlotAssembler {
 	static List<MinimalSlotDto> toDtoList(Iterable<? extends Slot> slots) {
 		return StreamSupport.stream(slots.spliterator(), false)
 				.map(MinimalSlotAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

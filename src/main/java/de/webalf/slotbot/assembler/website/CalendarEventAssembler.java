@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -27,6 +26,6 @@ public final class CalendarEventAssembler {
 	public static List<CalendarEventDto> toDtoList(Iterable<? extends Event> content) {
 		return StreamSupport.stream(content.spliterator(), false)
 				.map(CalendarEventAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

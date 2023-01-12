@@ -1,8 +1,8 @@
 package de.webalf.slotbot.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +65,7 @@ public class User extends AbstractDiscordIdEntity {
 	}
 
 	public List<Event> getSlottedEvents() {
-		return getSlots().stream().map(Slot::getEvent).collect(Collectors.toUnmodifiableList());
+		return getSlots().stream().map(Slot::getEvent).toList();
 	}
 
 	public Set<Guild> getGuilds() {

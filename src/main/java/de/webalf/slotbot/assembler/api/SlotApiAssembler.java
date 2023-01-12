@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -45,12 +44,12 @@ public class SlotApiAssembler {
 	public static List<SlotApiDto> toDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(SlotApiAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public List<SlotApiViewDto> toViewDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(this::toViewDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

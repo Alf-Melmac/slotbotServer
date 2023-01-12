@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -99,6 +98,6 @@ class EventTest {
 	}
 
 	private List<Integer> getSlotNumbers(@NonNull Squad squad) {
-		return squad.getSlotList().stream().map(Slot::getNumber).collect(Collectors.toUnmodifiableList());
+		return squad.getSlotList().stream().map(Slot::getNumber).toList();
 	}
 }

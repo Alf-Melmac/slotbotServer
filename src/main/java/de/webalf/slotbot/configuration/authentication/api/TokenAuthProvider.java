@@ -22,7 +22,7 @@ public class TokenAuthProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(Authentication auth) {
-		return auth; //If I remove this method I get a NullPointerException from AbstractSecurityInterceptor#authenticateIfRequired. Code never dies
+		return auth;
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.dtos.referenceless.NotificationSettingsReferencel
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -25,6 +24,6 @@ public final class NotificationSettingAssembler {
 	public static List<NotificationSettingsReferencelessDto> toReferencelessDtoList(Iterable<? extends NotificationSetting> notificationSettings) {
 		return StreamSupport.stream(notificationSettings.spliterator(), false)
 				.map(NotificationSettingAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

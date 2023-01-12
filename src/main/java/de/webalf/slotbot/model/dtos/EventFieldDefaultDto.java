@@ -1,12 +1,12 @@
 package de.webalf.slotbot.model.dtos;
 
 import de.webalf.slotbot.model.enums.EventFieldType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_TITLE;

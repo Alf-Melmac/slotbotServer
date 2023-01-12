@@ -1,10 +1,9 @@
 package de.webalf.slotbot.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import javax.persistence.*;
 
 /**
  * @author Alf

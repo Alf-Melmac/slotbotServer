@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -19,7 +19,10 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequestEntityConverter;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Objects;
@@ -29,20 +32,29 @@ import java.util.Objects;
  * @since 20.10.2020
  */
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
+public class OAuth2EndpointConfig {
 	private final DiscordAuthenticationService discordAuthenticationService;
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
+		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
+		final CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+		tokenRepository.setCookiePath("/");
+		final XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();
+		// set the name of the attribute the CsrfToken will be populated on
+		delegate.setCsrfRequestAttributeName("_csrf");
+		// Use only the handle() method of XorCsrfTokenRequestAttributeHandler and the
+		// default implementation of resolveCsrfTokenValue() from CsrfTokenRequestHandler
+		final CsrfTokenRequestHandler requestHandler = delegate::handle;
+
 		http // all non api requests handled here
 				.cors().and()
-				.csrf(csrf -> {
-					final CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-					csrfTokenRepository.setCookiePath("/");
-					csrf.csrfTokenRepository(csrfTokenRepository);
-				})
+				.csrf(csrf -> csrf
+						.csrfTokenRepository(tokenRepository)
+						.csrfTokenRequestHandler(requestHandler))
 
 				.logout()
 				.logoutSuccessUrl("/events")
@@ -56,6 +68,8 @@ public class OAuth2EndpointConfig extends WebSecurityConfigurerAdapter {
 				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
 				.and()
 				.userInfoEndpoint().userService(oAuthUserService());
+
+		return http.build();
 	}
 
 	@Bean

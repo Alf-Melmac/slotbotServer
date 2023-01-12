@@ -1,10 +1,10 @@
 package de.webalf.slotbot.configuration.properties;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
 /**

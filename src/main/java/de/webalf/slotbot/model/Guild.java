@@ -2,12 +2,12 @@ package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.converter.persistence.PatternPersistenceConverter;
 import de.webalf.slotbot.util.StringUtils;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;

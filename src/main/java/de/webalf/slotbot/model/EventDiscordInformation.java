@@ -2,9 +2,8 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.util.bot.MentionUtils;
+import jakarta.persistence.*;
 import lombok.*;
-
-import javax.persistence.*;
 
 /**
  * @author Alf

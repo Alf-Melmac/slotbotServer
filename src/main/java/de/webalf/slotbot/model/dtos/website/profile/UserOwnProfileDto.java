@@ -1,10 +1,10 @@
 package de.webalf.slotbot.model.dtos.website.profile;
 
 import de.webalf.slotbot.model.dtos.referenceless.NotificationSettingsReferencelessDto;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**

@@ -1,11 +1,10 @@
 package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author Alf

@@ -7,7 +7,6 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -36,7 +35,7 @@ public final class SquadAssembler {
 
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(SquadAssembler::fromDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -54,7 +53,7 @@ public final class SquadAssembler {
 	static List<SquadReferencelessDto> toReferencelessDtoList(Iterable<? extends Squad> squadList) {
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(SquadAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

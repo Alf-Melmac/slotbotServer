@@ -7,7 +7,6 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -39,7 +38,7 @@ public final class SlotAssembler {
 
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(SlotAssembler::fromDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -61,7 +60,7 @@ public final class SlotAssembler {
 	 * To be used if the focus relies on the slot
 	 */
 	public static List<SlotDto> toDtoList(List<Slot> slotList) {
-		return slotList.stream().map(SlotAssembler::toDto).collect(Collectors.toList());
+		return slotList.stream().map(SlotAssembler::toDto).toList();
 	}
 
 	/**
@@ -84,6 +83,6 @@ public final class SlotAssembler {
 	static List<SlotReferencelessDto> toReferencelessDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(SlotAssembler::toReferencelessDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

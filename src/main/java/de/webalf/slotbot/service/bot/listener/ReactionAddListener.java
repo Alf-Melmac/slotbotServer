@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.constant.Emojis.THUMBS_DOWN;
 import static de.webalf.slotbot.constant.Emojis.THUMBS_UP;
@@ -41,7 +40,7 @@ public class ReactionAddListener extends ListenerAdapter {
 		} else if (event.getChannel().retrieveMessageById(event.getMessageId()).complete()
 				.getReactions().stream()
 				.map(messageReaction -> messageReaction.getEmoji().getFormatted())
-				.collect(Collectors.toUnmodifiableList())
+				.toList()
 				.containsAll(List.of(THUMBS_UP.getFormatted(), THUMBS_DOWN.getFormatted()))) {
 			//For now, we assume this message is a stale swap request and simply delete the message. Can be removed after persisted swap requests prevent this problem
 			//TODO https://trello.com/c/AP4UIpQB/341-persistiere-swap-anfragen

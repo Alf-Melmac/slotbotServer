@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.util.EventCalendarUtil;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotBlank;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;

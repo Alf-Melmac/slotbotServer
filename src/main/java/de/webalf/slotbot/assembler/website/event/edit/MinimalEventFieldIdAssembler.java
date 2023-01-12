@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -27,6 +26,6 @@ final class MinimalEventFieldIdAssembler {
 	static List<MinimalEventFieldIdDto> toDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(MinimalEventFieldIdAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

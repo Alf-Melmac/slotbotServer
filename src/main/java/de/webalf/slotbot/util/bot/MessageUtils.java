@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.interactions.Interaction;
 import org.springframework.util.CollectionUtils;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -249,7 +249,7 @@ public final class MessageUtils {
 	}
 
 	private static void dmFailure(User user, Consumer<? super Message> success, boolean callSuccessOnFailure, Throwable fail) {
-		if (fail instanceof ErrorResponseException && ((ErrorResponseException) fail).getErrorResponse() == CANNOT_SEND_TO_USER) {
+		if (fail instanceof ErrorResponseException ex && ex.getErrorResponse() == CANNOT_SEND_TO_USER) {
 			log.warn("Couldn't send DM to {}. Probably the user prevents receiving messages from the bot.", user.getAsTag());
 		} else {
 			log.warn("Couldn't send DM to {}", user.getAsTag(), fail);

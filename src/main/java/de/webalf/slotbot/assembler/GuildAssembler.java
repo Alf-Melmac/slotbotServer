@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
@@ -43,7 +42,7 @@ public final class GuildAssembler {
 	public static List<GuildDto> toDtoList(Iterable<? extends Guild> guilds) {
 		return StreamSupport.stream(guilds.spliterator(), false)
 				.map(GuildAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static String buildEmojiUrl(@NonNull Guild guild) {

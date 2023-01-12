@@ -16,7 +16,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 
@@ -36,7 +35,7 @@ public class GuildService {
 	}
 
 	public List<Guild> findAllExceptDefault() {
-		return guildRepository.findAllByOrderByGroupIdentifier().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).collect(Collectors.toUnmodifiableList());
+		return guildRepository.findAllByOrderByGroupIdentifier().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).toList();
 	}
 
 	private List<Guild> findAllWithUrlPattern() {

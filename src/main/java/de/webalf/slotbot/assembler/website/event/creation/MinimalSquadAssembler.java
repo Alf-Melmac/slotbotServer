@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -40,7 +39,7 @@ final class MinimalSquadAssembler {
 
 		return StreamSupport.stream(squadList.spliterator(), false)
 				.map(this::fromDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static MinimalSquadDto toDto(Squad squad) {
@@ -54,6 +53,6 @@ final class MinimalSquadAssembler {
 	public static List<MinimalSquadDto> toDtoList(Iterable<? extends Squad> squads) {
 		return StreamSupport.stream(squads.spliterator(), false)
 				.map(MinimalSquadAssembler::toDto)
-				.collect(Collectors.toList());
+				.toList();
 	}
 }
