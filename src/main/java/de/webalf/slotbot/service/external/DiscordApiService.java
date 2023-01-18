@@ -91,7 +91,7 @@ public class DiscordApiService {
 		}
 
 		final ResponseEntity<GuildMember> response = RestTemplatesUtil
-				.get("https://discord.com/api/v8" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), GuildMember.class);
+				.get("https://discord.com/api/v10" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), GuildMember.class);
 		final HttpHeaders headers = response.getHeaders();
 		List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
 		List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
@@ -122,7 +122,7 @@ public class DiscordApiService {
 
 	private WebClient buildWebClient() {
 		return WebClient.builder()
-				.baseUrl("https://discord.com/api/v8")
+				.baseUrl("https://discord.com/api/v10")
 				.defaultHeader("Authorization", discordProperties.getToken())
 				.build();
 	}

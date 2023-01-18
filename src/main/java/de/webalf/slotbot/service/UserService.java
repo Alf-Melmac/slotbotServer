@@ -49,7 +49,7 @@ public class UserService {
 		return toUserNameDto(user, discordApiService.getName(userId, guild.getId()));
 	}
 
-	public UserNameDto toUserNameDto(@NonNull User user, String name) {
+	private UserNameDto toUserNameDto(@NonNull User user, String name) {
 		final UserNameDto userNameDto = UserNameDto.builder().name(name).build();
 		ReflectionUtils.shallowCopyFieldState(UserAssembler.toDto(user), userNameDto);
 		return userNameDto;

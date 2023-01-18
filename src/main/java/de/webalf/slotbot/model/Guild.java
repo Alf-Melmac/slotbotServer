@@ -59,4 +59,8 @@ public class Guild extends AbstractDiscordIdEntity {
 	public String getGroupIdentifier() {
 		return StringUtils.isNotEmpty(groupIdentifier) ? groupIdentifier : Long.toString(id);
 	}
+
+	public String buildEmojiUrl() {
+		return emoji != null ? "https://cdn.discordapp.com/emojis/" + emoji + ".webp" : null;
+	}
 }
