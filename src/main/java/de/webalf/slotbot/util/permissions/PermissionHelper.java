@@ -92,7 +92,7 @@ public final class PermissionHelper {
 	 * @param guildId in which the permission should be present
 	 * @return true if allowed
 	 */
-	static boolean hasPermissionInGuild(@NonNull ApplicationPermissionHelper.Role role, long guildId) {
+	public static boolean hasPermissionInGuild(@NonNull ApplicationPermissionHelper.Role role, long guildId) {
 		final Stream<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream();
 		final Set<String> authorizedRoles = role.getAuthorizedRoles().stream().map(authorizedRole -> ROLE_PREFIX + authorizedRole.getApplicationRole()).collect(Collectors.toUnmodifiableSet());
 		if (guildId == GUILD_PLACEHOLDER) {

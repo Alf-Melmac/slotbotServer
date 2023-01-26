@@ -2,19 +2,12 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
 import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
+import de.webalf.slotbot.util.permissions.PermissionHelper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
-
-import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.getByApplicationRole;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.getAuthoritiesOfLoggedInUser;
 
 /**
  * @author Alf
@@ -29,12 +22,9 @@ public class AuthenticationController {
 	}
 
 	@GetMapping("/access/{requiredApplicationRole}")
-	public boolean getAllowedToAccess(@PathVariable String requiredApplicationRole) {
-		return !Collections.disjoint(
-				getAuthoritiesOfLoggedInUser(),
-				getByApplicationRole(requiredApplicationRole)
-						.getAuthorizedRoles().stream()
-						.map(role -> ROLE_PREFIX + role.getApplicationRole())
-						.collect(Collectors.toSet()));
+	public boolean getAllowedToAccess(@PathVariable String requiredApplicationRole,
+	                                  //Default Value is Guild#GUILD_PLACEHOLDER
+	                                  @RequestParam(required = false, defaultValue = "-1") String guild) {
+		return PermissionHelper.hasPermissionInGuild(getByApplicationRole(requiredApplicationRole), Long.parseLong(guild));
 	}
 }
