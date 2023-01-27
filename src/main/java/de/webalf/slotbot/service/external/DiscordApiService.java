@@ -46,7 +46,7 @@ public class DiscordApiService {
 	@Cacheable("discordNicknames")
 	public String getName(String userId, long guildId) {
 		DiscordGuildMember guildMember = getGuildMemberWithUser(userId, guildId);
-		return guildMember.getNick();
+		return guildMember.getEffectiveName();
 	}
 
 	private static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
@@ -61,9 +61,7 @@ public class DiscordApiService {
 		return buildWebClient().get().uri(url).retrieve().bodyToMono(DiscordUser.class)
 				.onErrorResume(error -> {
 					log.error("Failed to get user {}", userId, error);
-					final DiscordUser errorUser = DiscordUser.builder().build();
-					errorUser.setUsername(UNKNOWN_USER_NAME);
-					return Mono.just(errorUser);
+					return Mono.just(DiscordUser.builder().username(UNKNOWN_USER_NAME).build());
 				})
 				.block();
 	}
@@ -99,7 +97,9 @@ public class DiscordApiService {
 			wait = true;
 			waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
 		}
-		return response.getBody();
+		final DiscordGuildMember guildMember = response.getBody();
+		if (guildMember != null) guildMember.setGuild(guildId);
+		return guildMember;
 	}
 
 	/**

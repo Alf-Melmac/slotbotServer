@@ -1,6 +1,7 @@
 package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
+import de.webalf.slotbot.model.external.discord.DiscordGuildMember;
 import de.webalf.slotbot.model.external.discord.DiscordUser;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -34,6 +35,15 @@ public class DiscordUserAssembler {
 				.id(Long.toString(user.getId()))
 				.name(user.getUsername())
 				.avatarUrl(user.getAvatarUrl())
+				.build();
+	}
+
+	public static DiscordUserDto toDto(DiscordGuildMember member) {
+		final DiscordUser user = member.getUser();
+		return DiscordUserDto.builder()
+				.id(Long.toString(user.getId()))
+				.name(member.getEffectiveName())
+				.avatarUrl(member.getAvatarUrl())
 				.build();
 	}
 }

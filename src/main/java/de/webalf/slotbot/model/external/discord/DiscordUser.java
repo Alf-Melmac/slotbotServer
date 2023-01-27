@@ -1,11 +1,7 @@
 package de.webalf.slotbot.model.external.discord;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.webalf.slotbot.util.bot.DiscordUserUtils;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Representation of a discord user
@@ -14,16 +10,17 @@ import lombok.Setter;
  * @see net.dv8tion.jda.api.entities.User
  * @since 27.01.2023
  */
+//This can't be @Value to allow RestTemplate to create an instance of this class
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class DiscordUser {
 	private long id;
 	private String username;
 	private String avatar;
 	private short discriminator;
-	private String locale;
 
 	public String getAvatarUrl() {
 		return DiscordUserUtils.getAvatarUrl(Long.toString(id), avatar, Short.toString(discriminator));

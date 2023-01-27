@@ -27,7 +27,7 @@ public class UserInGuildAssembler {
 		if (member == null) return null;
 
 		return UserInGuildDto.builder()
-				.user(DiscordUserAssembler.toDto(member.getUser()))
+				.user(DiscordUserAssembler.toDto(member))
 				.build();
 	}
 

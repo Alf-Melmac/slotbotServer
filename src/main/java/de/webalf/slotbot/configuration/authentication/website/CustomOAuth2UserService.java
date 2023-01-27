@@ -1,7 +1,7 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.webalf.slotbot.model.external.discord.DiscordUser;
+import de.webalf.slotbot.model.external.discord.DiscordOauthUser;
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
 		final Map<String, Object> attributes = oAuth2User.getAttributes();
 
-		final DiscordUser discordUser = getDiscordUser(attributes);
+		final DiscordOauthUser discordUser = getDiscordUser(attributes);
 		if (discordUser == null) {
 			return oAuth2User;
 		}
@@ -48,16 +48,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	}
 
 	/**
-	 * Returns the {@link DiscordUser} for the given json map
+	 * Returns the {@link DiscordOauthUser} for the given json map
 	 *
 	 * @param attributes of the user object
 	 * @return user object
 	 */
-	private static DiscordUser getDiscordUser(Map<String, Object> attributes) {
-		DiscordUser discordUser;
+	private static DiscordOauthUser getDiscordUser(Map<String, Object> attributes) {
+		DiscordOauthUser discordUser;
 		try {
 			final String attributesAsJson = new ObjectMapper().writeValueAsString(attributes);
-			discordUser = new ObjectMapper().readValue(attributesAsJson, DiscordUser.class);
+			discordUser = new ObjectMapper().readValue(attributesAsJson, DiscordOauthUser.class);
 		} catch (IOException e) {
 			log.error("Failed to read discordUser", e);
 			return null;
@@ -66,14 +66,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	}
 
 	/**
-	 * Sets the {@link GrantedAuthority}s for the given {@link DiscordUser}
+	 * Sets the {@link GrantedAuthority}s for the given {@link DiscordOauthUser}
 	 *
 	 * @param attributes  of the discordUser
 	 * @param discordUser user
 	 * @param authorities existing authorities
 	 * @return set of mapped authorities
 	 */
-	private Set<GrantedAuthority> mapAuthorities(Map<String, Object> attributes, DiscordUser discordUser, Collection<? extends GrantedAuthority> authorities) {
+	private Set<GrantedAuthority> mapAuthorities(Map<String, Object> attributes, DiscordOauthUser discordUser, Collection<? extends GrantedAuthority> authorities) {
 		final Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
 		authorities.forEach(grantedAuthority -> {
@@ -89,13 +89,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	}
 
 	/**
-	 * Returns the matching application roles for the given discord {@link DiscordUser} roles
+	 * Returns the matching application roles for the given discord {@link DiscordOauthUser} roles
 	 *
 	 * @param discordUser user to get roles for
 	 * @param attributes  of the user
 	 * @return set of granted authorities for known roles
 	 */
-	private Set<GrantedAuthority> getAuthorities(DiscordUser discordUser, Map<String, Object> attributes) {
+	private Set<GrantedAuthority> getAuthorities(DiscordOauthUser discordUser, Map<String, Object> attributes) {
 		final Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
 		discordAuthenticationService.getRoles(discordUser.getId())
