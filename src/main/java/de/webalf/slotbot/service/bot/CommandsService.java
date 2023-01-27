@@ -1,8 +1,10 @@
 package de.webalf.slotbot.service.bot;
 
+import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.bot.TranslatableOptionData;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
+import de.webalf.slotbot.util.bot.ContextMenuUtils;
 import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
 import de.webalf.slotbot.util.bot.SlashCommandUtils;
 import lombok.NonNull;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.DiscordLocale;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -23,6 +26,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static de.webalf.slotbot.util.bot.CommandClassHelper.getContextMenu;
 import static de.webalf.slotbot.util.bot.CommandClassHelper.getSlashCommand;
 import static de.webalf.slotbot.util.bot.DiscordLocaleHelper.DEFAULT_LOCALE;
 import static net.dv8tion.jda.api.interactions.DiscordLocale.GERMAN;
@@ -71,9 +75,21 @@ public class CommandsService {
 						return commandData;
 					});
 				}).toList();
-		log.info("Found {} commands. Starting update...", slashCommands.size());
+		log.info("Found {} commands.", slashCommands.size());
 
-		guild.updateCommands().addCommands(slashCommands).queue();
+		final List<CommandData> contextMenus = ContextMenuUtils.commandToClassMap.values().stream()
+				.map(contextMenuClass -> {
+					final ContextMenu contextMenu = getContextMenu(contextMenuClass);
+					final CommandData commandData = Commands
+							.context(contextMenu.type(), DEFAULT_LOCALE.t(contextMenu.name()))
+							.setDefaultPermissions(DefaultMemberPermissions.enabledFor(contextMenu.authorization()));
+					locales.forEach((language, locale) -> commandData
+							.setNameLocalization(language, locale.t(contextMenu.name())));
+					return commandData;
+				}).toList();
+		log.info("Found {} context menus.", contextMenus.size());
+
+		guild.updateCommands().addCommands(slashCommands).addCommands(contextMenus).queue();
 		log.info("Queued command update for {}.", guild.getName());
 	}
 

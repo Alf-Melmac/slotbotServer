@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.bot.Command;
+import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.SlashCommands;
 import de.webalf.slotbot.service.bot.EventBotService;
@@ -117,5 +118,9 @@ public class CommandClassHelper {
 			return commandClass.getAnnotation(SlashCommands.class).value();
 		}
 		return new SlashCommand[]{slashCommand};
+	}
+
+	public static ContextMenu getContextMenu(@NonNull Class<?> commandClass) {
+		return commandClass.getAnnotation(ContextMenu.class);
 	}
 }

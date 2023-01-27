@@ -4,15 +4,13 @@ import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.util.StringUtils;
-import de.webalf.slotbot.util.bot.CommandClassHelper;
-import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
-import de.webalf.slotbot.util.bot.SlashCommandUtils;
-import de.webalf.slotbot.util.bot.StringSelectUtils;
+import de.webalf.slotbot.util.bot.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,5 +106,27 @@ public class InteractionListener extends ListenerAdapter {
 	private void unknownException(@NonNull StringSelectInteractionEvent event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
 		log.error("Failed to process string selection menu selection {} with id {}", commandClass.getName(), event.getComponentId(), e);
 		replyAndRemoveComponents(event, "Sorry. Error B.");
+	}
+
+	@Override
+	public void onUserContextInteraction(@NonNull UserContextInteractionEvent event) {
+		final String commandName = event.getName();
+		log.debug("Received user context interaction event: {} from {}", commandName, event.getUser().getId());
+
+		final Class<?> commandClass = ContextMenuUtils.get(commandName);
+		if (commandClass == null) {
+			log.error("Received not known context menu: {}", commandName);
+			return;
+		}
+
+		ephemeralDeferReply(event);
+
+		final DiscordLocaleHelper locale = new DiscordLocaleHelper(event.getUserLocale(), messageSource);
+		try {
+			commandClass.getMethod("perform", UserContextInteractionEvent.class, DiscordLocaleHelper.class)
+					.invoke(commandClassHelper.getConstructor(commandClass), event, locale);
+		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+			unknownException(event, commandClass, e);
+		}
 	}
 }
