@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserOwnProfileDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
+import de.webalf.slotbot.model.external.discord.DiscordUser;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserUpdateService;
 import de.webalf.slotbot.service.external.DiscordApiService;
@@ -45,7 +46,7 @@ public class UserController {
 
 	@GetMapping("{userId}")
 	public UserProfileDto getProfileInfo(@PathVariable long userId) {
-		final DiscordApiService.User discordUser = discordApiService.getUser(Long.toString(userId));
+		final DiscordUser discordUser = discordApiService.getUser(Long.toString(userId));
 		if (isUnknownUser(discordUser)) {
 			throw new ResourceNotFoundException("Unknown discord user " + userId);
 		}

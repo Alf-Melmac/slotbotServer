@@ -1,12 +1,13 @@
 package de.webalf.slotbot.service.external;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.exception.IgnoreErrorResponseErrorHandler;
+import de.webalf.slotbot.model.external.discord.DiscordGuildMember;
+import de.webalf.slotbot.model.external.discord.DiscordUser;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.RestTemplatesUtil;
-import de.webalf.slotbot.util.bot.DiscordUserUtils;
-import lombok.*;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,7 +45,7 @@ public class DiscordApiService {
 
 	@Cacheable("discordNicknames")
 	public String getName(String userId, long guildId) {
-		GuildMember guildMember = getGuildMemberWithUser(userId, guildId);
+		DiscordGuildMember guildMember = getGuildMemberWithUser(userId, guildId);
 		return guildMember.getNick();
 	}
 
@@ -55,20 +55,20 @@ public class DiscordApiService {
 	 * @see <a href="https://discord.com/developers/docs/resources/user#get-user" target"_top">https://discord.com/developers/docs/resources/user#get-user</a>
 	 */
 	@Cacheable(cacheNames = "discordUser")
-	public User getUser(String userId) {
+	public DiscordUser getUser(String userId) {
 		String url = "/users/" + userId;
 
-		return buildWebClient().get().uri(url).retrieve().bodyToMono(User.class)
+		return buildWebClient().get().uri(url).retrieve().bodyToMono(DiscordUser.class)
 				.onErrorResume(error -> {
 					log.error("Failed to get user {}", userId, error);
-					final User errorUser = new User();
+					final DiscordUser errorUser = DiscordUser.builder().build();
 					errorUser.setUsername(UNKNOWN_USER_NAME);
 					return Mono.just(errorUser);
 				})
 				.block();
 	}
 
-	public static boolean isUnknownUser(@NonNull User user) {
+	public static boolean isUnknownUser(@NonNull DiscordUser user) {
 		return UNKNOWN_USER_NAME.equals(user.getUsername());
 	}
 
@@ -78,7 +78,7 @@ public class DiscordApiService {
 	/**
 	 * @see <a href="https://discord.com/developers/docs/resources/guild#get-guild-member" target="_top">https://discord.com/developers/docs/resources/guild#get-guild-member</a>
 	 */
-	private synchronized GuildMember getGuildMember(String userId, long guildId) {
+	private synchronized DiscordGuildMember getGuildMember(String userId, long guildId) {
 		String url = "/guilds/" + guildId + "/members/" + userId;
 
 		if (wait) {
@@ -90,8 +90,8 @@ public class DiscordApiService {
 			wait = false;
 		}
 
-		final ResponseEntity<GuildMember> response = RestTemplatesUtil
-				.get("https://discord.com/api/v10" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), GuildMember.class);
+		final ResponseEntity<DiscordGuildMember> response = RestTemplatesUtil
+				.get("https://discord.com/api/v10" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), DiscordGuildMember.class);
 		final HttpHeaders headers = response.getHeaders();
 		List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
 		List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
@@ -103,19 +103,19 @@ public class DiscordApiService {
 	}
 
 	/**
-	 * Returns the guild member. If not found it searches for the user itself and builds a {@link GuildMember}
+	 * Returns the guild member. If not found it searches for the user itself and builds a {@link DiscordGuildMember}
 	 *
 	 * @param userId  user to search for
 	 * @param guildId guild of the user
-	 * @return {@link GuildMember} with the given user
+	 * @return {@link DiscordGuildMember} with the given user
 	 */
 	@Cacheable("guildMember")
-	public GuildMember getGuildMemberWithUser(String userId, long guildId) {
-		GuildMember member = getGuildMember(userId, guildId);
+	public DiscordGuildMember getGuildMemberWithUser(String userId, long guildId) {
+		DiscordGuildMember member = getGuildMember(userId, guildId);
 		if (member.getUser() == null) {
 			log.warn("Fetching user of id " + userId);
-			User user = getUser(userId);
-			member = GuildMember.builder().user(user).roles(Collections.emptySet()).build();
+			DiscordUser user = getUser(userId);
+			member = DiscordGuildMember.builder().user(user).roles(Collections.emptySet()).build();
 		}
 		return member;
 	}
@@ -125,52 +125,5 @@ public class DiscordApiService {
 				.baseUrl("https://discord.com/api/v10")
 				.defaultHeader("Authorization", discordProperties.getToken())
 				.build();
-	}
-
-	@Getter
-	@Setter
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static class User {
-		private long id;
-		private String username;
-		private String avatar;
-		private short discriminator;
-		private String locale;
-
-		public String getAvatarUrl() {
-			return DiscordUserUtils.getAvatarUrl(Long.toString(id), avatar, Short.toString(discriminator));
-		}
-	}
-
-	@Getter
-	@Setter
-	@Builder
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class Role {
-		private long id;
-		private String name;
-		private int position;
-	}
-
-	@Getter
-	@Setter
-	@Builder
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class GuildMember {
-		private User user;
-		private String nick;
-		private Set<Long> roles;
-
-		public String getNick() {
-			if (nick != null) {
-				return nick;
-			} else if (user != null) {
-				return user.getUsername();
-			} else {
-				return null;
-			}
-		}
 	}
 }

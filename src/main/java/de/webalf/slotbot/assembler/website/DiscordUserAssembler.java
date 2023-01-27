@@ -1,7 +1,7 @@
 package de.webalf.slotbot.assembler.website;
 
 import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.model.external.discord.DiscordUser;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -29,7 +29,7 @@ public class DiscordUserAssembler {
 				.build();
 	}
 
-	public static DiscordUserDto toDto(DiscordApiService.User user) {
+	public static DiscordUserDto toDto(DiscordUser user) {
 		return DiscordUserDto.builder()
 				.id(Long.toString(user.getId()))
 				.name(user.getUsername())
