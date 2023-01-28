@@ -20,8 +20,18 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GuildUsersService {
 	private final GuildUsersRepository guildUsersRepository;
+	private final UserService userService;
+	private final GuildService guildService;
 
 	public List<User> getUsers(Guild guild) {
 		return guildUsersRepository.findByGuild(guild).stream().map(GuildUsers::getUser).toList();
+	}
+
+	public GuildUsers add(long userId, long guildId) {
+		final User user = userService.find(userId);
+		final Guild guild = guildService.find(guildId);
+
+		return guildUsersRepository.findByGuildAndUser(guild, user)
+				.orElseGet(() -> guildUsersRepository.save(GuildUsers.builder().user(user).guild(guild).build()));
 	}
 }

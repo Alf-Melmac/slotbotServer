@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.SlashCommands;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.GuildUsersBotService;
 import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.UserBotService;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
@@ -34,6 +35,7 @@ public class CommandClassHelper {
 	private final EventHelper eventHelper;
 	private final SlotBotService slotBotService;
 	private final UserBotService userBotService;
+	private final GuildUsersBotService guildUsersBotService;
 	private final DiscordProperties discordProperties;
 
 	/**
@@ -91,6 +93,13 @@ public class CommandClassHelper {
 					constructor = declaredConstructor.newInstance(userBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with UserBotService parameter for type {}", commandClass.getName(), e);
+				}
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{GuildUsersBotService.class})) {
+				//AddUserToGuild
+				try {
+					constructor = declaredConstructor.newInstance(guildUsersBotService);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					log.error("Failed to create new constructor instance with GuildUsersBotService parameter for type {}", commandClass.getName(), e);
 				}
 			}
 		}
