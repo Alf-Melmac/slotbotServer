@@ -1,6 +1,7 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.UserAssembler;
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
@@ -32,8 +33,22 @@ public class UserService {
 				.orElseGet(() -> userServiceImpl.createUser(userDto));
 	}
 
+	/**
+	 * @see UserServiceImpl#find(long)
+	 */
 	public User find(long id) {
 		return userServiceImpl.find(id);
+	}
+
+	/**
+	 * Returns the user associated with the given userId
+	 *
+	 * @param id to find user for
+	 * @return User found by id
+	 * @throws ResourceNotFoundException if no user with this userId could be found
+	 */
+	User findExisting(long id) {
+		return userRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public User getDefaultUser() {

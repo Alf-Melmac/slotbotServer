@@ -80,6 +80,17 @@ public class GuildService {
 				.orElseGet(() -> guildRepository.save(Guild.builder().id(id).build()));
 	}
 
+	/**
+	 * Returns the guild associated with the given guildId
+	 *
+	 * @param guildId to find guild for
+	 * @return Guild found by id
+	 * @throws ResourceNotFoundException if no guild with this guildId could be found
+	 */
+	Guild findExisting(long guildId) {
+		return guildRepository.findById(guildId).orElseThrow(ResourceNotFoundException::new);
+	}
+
 	public Guild findByDiscordGuild(long discordGuild) {
 		return guildRepository.findById(discordGuild).orElseThrow(ResourceNotFoundException::new);
 	}

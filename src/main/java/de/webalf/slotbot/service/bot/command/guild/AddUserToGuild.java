@@ -33,7 +33,7 @@ public class AddUserToGuild implements DiscordUserContext {
 
 		final User target = event.getTarget();
 		//noinspection DataFlowIssue This context menu is only allowed in guilds
-		guildUsersBotService.add(target.getIdLong(), event.getGuild().getIdLong());
+		guildUsersBotService.add(event.getGuild().getIdLong(), target.getIdLong());
 		reply(event, locale.t("bot.context.guild.addUserToGuild.response", target.getAsMention()));
 	}
 }

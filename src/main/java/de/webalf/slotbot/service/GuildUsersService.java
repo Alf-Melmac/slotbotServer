@@ -27,11 +27,18 @@ public class GuildUsersService {
 		return guildUsersRepository.findByGuild(guild).stream().map(GuildUsers::getUser).toList();
 	}
 
-	public GuildUsers add(long userId, long guildId) {
-		final User user = userService.find(userId);
+	public GuildUsers add(long guildId, long userId) {
 		final Guild guild = guildService.find(guildId);
+		final User user = userService.find(userId);
 
 		return guildUsersRepository.findByGuildAndUser(guild, user)
 				.orElseGet(() -> guildUsersRepository.save(GuildUsers.builder().user(user).guild(guild).build()));
+	}
+
+	public void remove(long guildId, long userId) {
+		final User user = userService.findExisting(userId);
+		final Guild guild = guildService.findExisting(guildId);
+
+		guildUsersRepository.deleteByGuildAndUser(guild, user);
 	}
 }

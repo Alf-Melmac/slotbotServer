@@ -23,4 +23,8 @@ public class PermissionChecker {
 	public boolean hasEventManagePermission(long eventId) {
 		return PermissionHelper.hasEventManagePermission(eventService.getGuildByEventId(eventId).getId());
 	}
+
+	public boolean hasGuildAdminPrivileges(long guildId) {
+		return PermissionHelper.hasAdministratorPermission(guildId);
+	}
 }

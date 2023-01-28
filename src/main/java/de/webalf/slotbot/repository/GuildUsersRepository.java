@@ -17,4 +17,6 @@ public interface GuildUsersRepository extends SuperIdEntityJpaRepository<GuildUs
 	List<GuildUsers> findByGuild(Guild guild);
 
 	Optional<GuildUsers> findByGuildAndUser(Guild guild, User user);
+
+	void deleteByGuildAndUser(Guild guild, User user);
 }

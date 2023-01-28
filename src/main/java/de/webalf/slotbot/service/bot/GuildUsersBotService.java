@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class GuildUsersBotService {
 	private final GuildUsersService guildUsersService;
 
-	public void add(long userId, long guildId) {
-		guildUsersService.add(userId, guildId);
+	public void add(long guildId, long userId) {
+		guildUsersService.add(guildId, userId);
 	}
 }

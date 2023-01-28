@@ -16,8 +16,7 @@ import java.util.stream.Stream;
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.APPLICATION_ROLE_VALUES;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.*;
 
 /**
  * @author Alf
@@ -109,7 +108,21 @@ public final class PermissionHelper {
 		}
 	}
 
-	static boolean hasEventManagePermission(Long guildId) {
+	/**
+	 * Checks for the {@link ApplicationPermissionHelper.Role#ADMINISTRATOR} role
+	 *
+	 * @see #hasPermissionInGuild(ApplicationPermissionHelper.Role, long)
+	 */
+	static boolean hasAdministratorPermission(long guildId) {
+		return hasPermissionInGuild(ADMINISTRATOR, guildId);
+	}
+
+	/**
+	 * Checks for the {@link ApplicationPermissionHelper.Role#EVENT_MANAGE} role
+	 *
+	 * @see #hasPermissionInGuild(ApplicationPermissionHelper.Role, long)
+	 */
+	static boolean hasEventManagePermission(long guildId) {
 		return hasPermissionInGuild(EVENT_MANAGE, guildId);
 	}
 }

@@ -26,6 +26,12 @@ public class UserServiceImpl {
 		return userRepository.save(user);
 	}
 
+	/**
+	 * Returns the user associated with the given userId. Creates a new user if it doesn't already exist.
+	 *
+	 * @param id to find or create user for
+	 * @return User found by id
+	 */
 	User find(long id) {
 		return userRepository.findById(id)
 				.orElseGet(() -> createUser(UserDto.builder().id(LongUtils.toString(id)).build()));

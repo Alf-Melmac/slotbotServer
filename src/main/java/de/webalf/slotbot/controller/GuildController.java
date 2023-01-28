@@ -12,10 +12,8 @@ import de.webalf.slotbot.service.GuildUsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,8 +41,14 @@ public class GuildController {
 	}
 
 	@GetMapping("/{id}/users")
-	public List<UserInGuildDto> getGuildUser(@PathVariable(value = "id") long guildId) {
+	public List<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId) {
 		final Guild guild = guildService.findByDiscordGuild(guildId);
 		return userInGuildAssembler.toDtoList(guildUsersService.getUsers(guild), guild);
+	}
+
+	@DeleteMapping("/{id}/users/{userId}")
+	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	public void deleteGuildUser(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId) {
+		guildUsersService.remove(guildId, userId);
 	}
 }
