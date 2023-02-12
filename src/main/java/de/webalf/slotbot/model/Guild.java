@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.converter.persistence.PatternPersistenceConverter;
+import de.webalf.slotbot.model.enums.Language;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -43,6 +44,12 @@ public class Guild extends AbstractDiscordIdEntity {
 
 	@Column(name = "discord_guild_emoji")
 	private Long emoji;
+
+	@Column(name = "discord_guild_language", nullable = false)
+	@Enumerated(EnumType.STRING)
+	@NonNull
+	@Builder.Default
+	private Language language = Language.DE;
 
 	public static final long GUILD_PLACEHOLDER = -1L;
 

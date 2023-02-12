@@ -4,7 +4,9 @@ import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
+import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
 import de.webalf.slotbot.repository.GuildRepository;
+import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +99,21 @@ public class GuildService {
 
 	public Optional<Guild> findByName(String name) {
 		return guildRepository.findByGroupIdentifier(name);
+	}
+
+	/**
+	 * Updates the guild found by id with values from the {@link GuildConfigDto}
+	 *
+	 * @param guildId guild id
+	 * @param dto     with values to update
+	 * @return updated guild
+	 */
+	public Guild updateGuild(long guildId, @NonNull GuildConfigDto dto) {
+		final Guild guild = findExisting(guildId);
+
+		DtoUtils.ifPresentObject(dto.getLanguage(), guild::setLanguage);
+
+		return guild;
 	}
 
 	/**
