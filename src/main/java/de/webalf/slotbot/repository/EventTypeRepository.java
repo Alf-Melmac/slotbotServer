@@ -1,6 +1,7 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.EventType;
+import de.webalf.slotbot.model.Guild;
 import jakarta.transaction.NotSupportedException;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventType> {
 	Optional<EventType> findEventTypeByNameAndColor(String name, String color);
 
-	List<EventType> findAllByOrderByName();
+	List<EventType> findByGuildNullOrGuildOrderByName(Guild guild);
 
 	/**
 	 * @see #findEventTypeByNameAndColor(String, String)

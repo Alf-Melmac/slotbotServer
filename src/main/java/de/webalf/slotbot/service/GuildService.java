@@ -63,7 +63,7 @@ public class GuildService {
 	}
 
 	/**
-	 * Finds the {@link #findCurrentGuild() current guild} or {@link #getDefault() default guild with placeholder id}} as a fallback
+	 * Finds the {@link #findCurrentGuild() current guild} or {@link #getDefault() default guild with placeholder id} as a fallback
 	 *
 	 * @return current guild
 	 */

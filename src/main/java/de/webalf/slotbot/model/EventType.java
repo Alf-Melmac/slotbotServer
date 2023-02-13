@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -37,6 +39,11 @@ public class EventType extends AbstractSuperIdEntity {
 	@NotBlank
 	@Size(max = COLOR_RGB) //Expected format: #rrggbb
 	private String color;
+
+	@ManyToOne(targetEntity = Guild.class)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "event_type_guild")
+	private Guild guild;
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;

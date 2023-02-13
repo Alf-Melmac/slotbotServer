@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.website.event.creation;
 
 import de.webalf.slotbot.assembler.website.event.EventActionAssembler;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
@@ -30,13 +31,14 @@ public class EventPostAssembler {
 			return null;
 		}
 
+		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
 		final Event event = Event.builder()
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))
 				.name(trimAndNullify(dto.getName()))
 				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
 				.creator(trimAndNullify(dto.getCreator()))
-				.eventType(eventTypeService.find(dto.getEventType()))
+				.eventType(eventTypeService.find(dto.getEventType(), ownerGuild))
 				.description(trimAndNullify(dto.getDescription()))
 				.missionType(trimAndNullify(dto.getMissionType()))
 				.missionLength(trimAndNullify(dto.getMissionLength()))
@@ -44,7 +46,7 @@ public class EventPostAssembler {
 				.details(MinimalEventFieldAssembler.fromDtoIterable(dto.getDetails()))
 				.squadList(squadAssembler.fromDtoList(dto.getSquadList()))
 				.reserveParticipating(dto.getReserveParticipating())
-				.ownerGuild(guildService.findCurrentNonNullGuild())
+				.ownerGuild(ownerGuild)
 				.build();
 		event.setBackReferences();
 		return event;

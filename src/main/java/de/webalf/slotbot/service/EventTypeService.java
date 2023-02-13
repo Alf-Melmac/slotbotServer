@@ -2,6 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.model.EventType;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.repository.EventTypeRepository;
 import lombok.NonNull;
@@ -21,20 +22,26 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventTypeService {
 	private final EventTypeRepository eventTypeRepository;
+	private final GuildService guildService;
 
 	/**
-	 * Finds a {@link EventType} by id of given dto or creates a new one with values from given dto
+	 * Finds a {@link EventType} by id of given dto or creates a new one with values from given dto for the given {@link Guild}
 	 *
 	 * @param eventTypeDto to find identified by id
 	 * @return found eventType or new eventType
 	 */
-	public EventType find(@NonNull EventTypeDto eventTypeDto) {
+	public EventType find(@NonNull EventTypeDto eventTypeDto, Guild guild) {
 		return eventTypeRepository.findEventTypeByNameAndColor(eventTypeDto.getName(), eventTypeDto.getColor())
-				.orElseGet(() -> eventTypeRepository.save(EventTypeAssembler.fromDto(eventTypeDto)));
+				.orElseGet(() -> eventTypeRepository.save(EventTypeAssembler.fromDto(eventTypeDto, guild)));
 	}
 
+	/**
+	 * Finds all global and {@link GuildService#findCurrentNonNullGuild() guild specific} {@link EventType}s
+	 *
+	 * @return event types ordered by name
+	 */
 	public List<EventType> findAllOrdered() {
-		return eventTypeRepository.findAllByOrderByName();
+		return eventTypeRepository.findByGuildNullOrGuildOrderByName(guildService.findCurrentNonNullGuild());
 	}
 
 	public void deleteUnused() {

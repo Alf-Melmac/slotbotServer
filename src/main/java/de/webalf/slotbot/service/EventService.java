@@ -56,8 +56,9 @@ public class EventService {
 			throw BusinessRuntimeException.builder().title("In mindestens einem der angegebenen Kanäle gibt es bereits ein Event.").build();
 		}
 		Event event = eventAssembler.fromDto(eventDto);
-		event.setEventType(eventTypeService.find(eventDto.getEventType()));
-		event.setOwnerGuild(guildService.getOwnerGuild(eventDto));
+		final Guild ownerGuild = guildService.getOwnerGuild(eventDto);
+		event.setEventType(eventTypeService.find(eventDto.getEventType(), ownerGuild));
+		event.setOwnerGuild(ownerGuild);
 		setReservedFor(event);
 
 		event.validate();
@@ -219,7 +220,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getDate(), event::setDate);
 		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
-		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType())));
+		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType(), event.getOwnerGuild())));
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);

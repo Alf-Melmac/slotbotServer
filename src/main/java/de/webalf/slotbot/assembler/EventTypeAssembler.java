@@ -1,7 +1,9 @@
 package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.EventType;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.EventTypeDto;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -13,14 +15,11 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class EventTypeAssembler {
-	public static EventType fromDto(EventTypeDto dto) {
-		if (dto == null) {
-			return null;
-		}
-
+	public static EventType fromDto(@NonNull EventTypeDto dto, Guild guild) {
 		return EventType.builder()
 				.name(dto.getName())
 				.color(dto.getColor())
+				.guild(guild)
 				.build();
 	}
 
