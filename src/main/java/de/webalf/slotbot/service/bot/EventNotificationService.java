@@ -6,21 +6,24 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.SchedulerService;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.util.EventUtils.buildNotificationMessage;
+import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 
 /**
  * @author Alf
@@ -35,6 +38,7 @@ public class EventNotificationService {
 	private final NotificationSettingsService notificationSettingsService;
 	private final MessageHelper messageHelper;
 	private final EventService eventService;
+	private final MessageSource messageSource;
 
 	@Getter
 	private static final Map<NotificationIdentifier, ScheduledFuture<?>> SCHEDULED_NOTIFICATIONS = new NotificationMap<>();
@@ -55,6 +59,8 @@ public class EventNotificationService {
 	 * @param user  to notify
 	 */
 	public void createNotifications(@NonNull Event event, User user) {
+		final Locale guildLocale = event.getOwnerGuildLocale();
+
 		notificationSettingsService.findSettings(user, event).forEach(notificationSetting -> {
 			final int delay = notificationSetting.getNotificationDelay(event.getDateTime());
 			if (delay < 0) {
@@ -62,7 +68,7 @@ public class EventNotificationService {
 			}
 			SCHEDULED_NOTIFICATIONS.computeIfAbsent(buildNotificationIdentifier(event, user, delay),
 					k -> schedulerService.schedule(() -> {
-						messageHelper.sendDmToRecipient(user, buildNotificationMessage(event));
+						messageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(DateUtils.getDateTimeZoned(event.getDateTime()))}, guildLocale));
 						SCHEDULED_NOTIFICATIONS.remove(k);
 					}, delay));
 		});

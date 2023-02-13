@@ -16,10 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static de.webalf.slotbot.service.GuildService.isAMB;
@@ -39,6 +41,7 @@ public class EventUpdateService {
 	private final EventNotificationService eventNotificationService;
 	private final EventCalendarService eventCalendarService;
 	private final SchedulerService schedulerService;
+	private final MessageSource messageSource;
 
 	public void update(@NonNull Event event) throws IllegalStateException {
 		log.trace("Update");
@@ -79,12 +82,15 @@ public class EventUpdateService {
 		if (Objects.equals(currentUser, previousUser)) {
 			return;
 		}
+		final Locale guildLocale = event.getOwnerGuildLocale();
 		if (previousUser != null && !previousUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(previousUser, "Du bist nun vom Event **" + event.getName() + "** am " + EventUtils.getDateTimeInDiscordFormat(event) + " ausgetragen.");
+			messageHelper.sendDmToRecipient(previousUser,
+					messageSource.getMessage("event.unslotted", new String[]{event.getName(), EventUtils.getDateTimeInDiscordFormat(event)}, guildLocale));
 			EventNotificationService.removeNotifications(event, previousUser);
 			eventCalendarService.rebuildCalendar(previousUser);
 		} else if (currentUser != null && !currentUser.isDefaultUser()) {
-			messageHelper.sendDmToRecipient(currentUser, "Du bist im Event **" + event.getName() + "** am " + EventUtils.getDateTimeInDiscordFormat(event) + " nun auf dem Slot " + slot.getNumber() + " *" + slot.getName() + "* eingetragen.");
+			messageHelper.sendDmToRecipient(currentUser,
+					messageSource.getMessage("event.slotted", new String[]{event.getName(), EventUtils.getDateTimeInDiscordFormat(event), Integer.toString(slot.getNumber()), slot.getName()}, guildLocale));
 			if (isAMB(event.getOwnerGuild())) {
 				longTimeNoSee(currentUser);
 			}

@@ -7,13 +7,14 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.springframework.context.MessageSource;
 
 import java.util.List;
+import java.util.Locale;
 
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasReadPermission;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.isCurrentGuild;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
-import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 
 /**
  * @author Alf
@@ -100,16 +101,15 @@ public final class EventUtils {
 		return slots.stream().anyMatch(slot -> slot.getNumber() == slotNumber);
 	}
 
-	public static String buildNotificationMessage(@NonNull Event event) {
-		return "**Erinnerung**: Das Event **" + event.getName() + "** geht " + RELATIVE.format(DateUtils.getDateTimeZoned(event.getDateTime())) + " los.";
-	}
-
 	public static String buildArchiveMessage(@NonNull Event event) {
+		final MessageSource messageSource = StaticContextAccessor.getBean(MessageSource.class);
+		final Locale guildLocale = event.getOwnerGuildLocale();
 		String message = "**__" + event.getName() + "__** " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}
-		message += "von " + event.getCreator() + "; " + event.getSlotCountWithoutReserve() + " verfügbare Slots";
+		message += messageSource.getMessage("from", null, guildLocale) + " " + event.getCreator() + "; "
+				+ event.getSlotCountWithoutReserve() + " " + messageSource.getMessage("event.archive.availableSlots", null, guildLocale);
 		return message;
 	}
 

@@ -241,6 +241,13 @@ public class Event extends AbstractSuperIdEntity {
 		return getDiscordInformation().stream().allMatch(information -> information.getGuild().equals(getOwnerGuild()));
 	}
 
+	/**
+	 * Shortcut for retrieving the {@link Locale} for the {@link #ownerGuild} of this event
+	 */
+	public Locale getOwnerGuildLocale() {
+		return Locale.forLanguageTag(getOwnerGuild().getLanguage().name());
+	}
+
 	// Validator
 
 	/**
