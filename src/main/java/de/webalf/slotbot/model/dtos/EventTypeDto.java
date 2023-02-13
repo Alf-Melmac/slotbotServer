@@ -29,6 +29,9 @@ public class EventTypeDto {
 	@Size(max = COLOR_RGB)
 	String color;
 
+	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.
+	String guild;
+
 	public String getColor() {
 		return color.toLowerCase();
 	}

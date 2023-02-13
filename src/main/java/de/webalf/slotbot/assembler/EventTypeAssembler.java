@@ -24,9 +24,12 @@ public final class EventTypeAssembler {
 	}
 
 	public static EventTypeDto toDto(EventType eventType) {
+		final Guild guild = eventType.getGuild();
+		final String guildId = guild != null ? Long.toString(guild.getId()) : null;
 		return EventTypeDto.builder()
 				.name(eventType.getName())
 				.color(eventType.getColor())
+				.guild(guildId)
 				.build();
 	}
 

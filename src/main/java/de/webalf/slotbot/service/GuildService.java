@@ -89,7 +89,7 @@ public class GuildService {
 	 * @return Guild found by id
 	 * @throws ResourceNotFoundException if no guild with this guildId could be found
 	 */
-	Guild findExisting(long guildId) {
+	public Guild findExisting(long guildId) {
 		return guildRepository.findById(guildId).orElseThrow(ResourceNotFoundException::new);
 	}
 

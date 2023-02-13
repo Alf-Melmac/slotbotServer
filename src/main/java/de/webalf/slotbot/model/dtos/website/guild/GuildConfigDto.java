@@ -1,11 +1,8 @@
 package de.webalf.slotbot.model.dtos.website.guild;
 
-import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.model.enums.Language;
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.List;
 
 /**
  * @author Alf
@@ -15,5 +12,4 @@ import java.util.List;
 @Builder
 public class GuildConfigDto {
 	Language language;
-	List<EventTypeDto> eventTypes;
 }

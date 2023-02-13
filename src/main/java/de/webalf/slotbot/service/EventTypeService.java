@@ -22,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventTypeService {
 	private final EventTypeRepository eventTypeRepository;
-	private final GuildService guildService;
 
 	/**
 	 * Finds a {@link EventType} by id of given dto or creates a new one with values from given dto for the given {@link Guild}
@@ -38,10 +37,11 @@ public class EventTypeService {
 	/**
 	 * Finds all global and {@link GuildService#findCurrentNonNullGuild() guild specific} {@link EventType}s
 	 *
+	 * @param guild to find event types for
 	 * @return event types ordered by name
 	 */
-	public List<EventType> findAllOrdered() {
-		return eventTypeRepository.findByGuildNullOrGuildOrderByName(guildService.findCurrentNonNullGuild());
+	public List<EventType> findAllOrdered(@NonNull Guild guild) {
+		return eventTypeRepository.findByGuildNullOrGuildOrderByName(guild);
 	}
 
 	public void deleteUnused() {
