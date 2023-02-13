@@ -70,8 +70,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 			"WHERE e.dateTime > :dateTime AND e.ownerGuild.id <> :guild AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild.id = :guild) " +
 			"AND (" +
 			"e.shareable = true " +
-			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE sq.reservedFor = :guild) " +
-			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE EXISTS(SELECT sl FROM sq.slotList sl WHERE sl.reservedFor = :guild))" +
+			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE sq.reservedFor.id = :guild) " +
+			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE EXISTS(SELECT sl FROM sq.slotList sl WHERE sl.reservedFor.id = :guild))" +
 			") " +
 			"ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("guild") long guildId);
