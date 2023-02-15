@@ -245,7 +245,7 @@ public class Event extends AbstractSuperIdEntity {
 	 * Shortcut for retrieving the {@link Locale} for the {@link #ownerGuild} of this event
 	 */
 	public Locale getOwnerGuildLocale() {
-		return Locale.forLanguageTag(getOwnerGuild().getLanguage().name());
+		return getOwnerGuild().getLocale();
 	}
 
 	// Validator

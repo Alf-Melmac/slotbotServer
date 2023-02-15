@@ -9,10 +9,12 @@ import de.webalf.slotbot.model.annotations.bot.StringSelectInteraction;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.GuildBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.ListUtils;
+import de.webalf.slotbot.util.StaticContextAccessor;
 import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,10 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.service.GuildService.isDAA;
@@ -52,6 +52,7 @@ import static de.webalf.slotbot.util.bot.StringSelectUtils.buildSelectLabel;
 public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSelect {
 	private final EventBotService eventBotService;
 	private final EventHelper eventHelper;
+	private final GuildBotService guildBotService;
 
 	@Override
 	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
@@ -127,14 +128,15 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 		final String guildIdString = Long.toString(guildId);
 		eventApiDto.getDiscordInformation().add(EventDiscordInformationDto.builder().channel(channel.getId()).guild(guildIdString).build());
 
-		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(eventApiDto)) //Send event details
-				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString));
+		final Locale guildLocale = guildBotService.getGuildLocale(guildId);
+		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)) //Send event details
+				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString, guildLocale));
 	}
 
 	/**
 	 * Called after the event details have been sent, to then send the first part of the slot list
 	 */
-	private Consumer<Message> infoMsgConsumer(MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId) {
+	private Consumer<Message> infoMsgConsumer(MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId, @NonNull Locale guildLocale) {
 		return infoMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresentOrElse(discordInformation -> discordInformation.setInfoMsg(infoMsg.getId()), () -> log.error("Failed to add infoMsg"));
 
@@ -148,7 +150,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			}
 			sendMessage(channel, spacer);
 
-			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId));
+			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId), StaticContextAccessor.getBean(MessageSource.class).getMessage("event.slotlist.title", null, guildLocale));
 			if (slotListMessages.size() > 2) {
 				throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
 			}
@@ -159,7 +161,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, EventApiDto, String)} to update the event with both message ids
+	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, EventApiDto, String, Locale)} to update the event with both message ids
 	 */
 	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages, String guildId) {
 		return slotListMsg -> {

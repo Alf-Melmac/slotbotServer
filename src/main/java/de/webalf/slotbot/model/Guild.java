@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;
@@ -69,5 +70,9 @@ public class Guild extends AbstractDiscordIdEntity {
 
 	public String buildEmojiUrl() {
 		return emoji != null ? "https://cdn.discordapp.com/emojis/" + emoji + ".webp" : null;
+	}
+
+	public Locale getLocale() {
+		return Locale.forLanguageTag(getLanguage().name());
 	}
 }

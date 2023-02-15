@@ -7,6 +7,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.buildOptionalLink;
@@ -51,6 +52,6 @@ public final class EventFieldAssembler {
 	public static List<EventFieldReferencelessDto> toReferencelessDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(EventFieldAssembler::toReferencelessDto)
-				.toList();
+				.collect(Collectors.toList());
 	}
 }

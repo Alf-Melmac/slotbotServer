@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 17.01.2022
  */
 class EventReferencelessDtoTest {
+	private static final String TRANSLATED_TITLE = "TestTitle";
+
 	@Test
 	void getSlotListPrintsUser() {
 		final EventReferencelessDto sut = EventReferencelessDto.builder()
@@ -28,9 +30,9 @@ class EventReferencelessDtoTest {
 						.build()))
 				.build();
 
-		final List<String> slotList = sut.getSlotList(1L);
-		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad**\n1 Slot: <@1234>");
+			final List<String> slotList = sut.getSlotList(1L, TRANSLATED_TITLE);
+			assertThat(slotList).hasSize(1);
+			assertThat(slotList.get(0)).isEqualTo("__**" + TRANSLATED_TITLE + "**__\n\n**Squad**\n1 Slot: <@1234>");
 	}
 
 	@Test
@@ -48,9 +50,9 @@ class EventReferencelessDtoTest {
 						.build()))
 				.build();
 
-		final List<String> slotList = sut.getSlotList(1L);
+		final List<String> slotList = sut.getSlotList(1L, TRANSLATED_TITLE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad**\n1 Slot: *Replacement*");
+		assertThat(slotList.get(0)).isEqualTo("__**" + TRANSLATED_TITLE + "**__\n\n**Squad**\n1 Slot: *Replacement*");
 	}
 
 	@Test
@@ -58,9 +60,9 @@ class EventReferencelessDtoTest {
 		final long g1 = 1L;
 		final EventReferencelessDto sut = buildEvent(Long.toString(g1), "2");
 
-		final List<String> slotList = sut.getSlotList(g1);
+		final List<String> slotList = sut.getSlotList(g1, TRANSLATED_TITLE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1** [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n**4 Slot free** [g1]:\n**5 Slot g1** [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n**8 Slot g1** [g1]:\n9 Slot g2 [g2]:");
+		assertThat(slotList.get(0)).isEqualTo("__**" + TRANSLATED_TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1** [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n**4 Slot free** [g1]:\n**5 Slot g1** [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n**8 Slot g1** [g1]:\n9 Slot g2 [g2]:");
 	}
 
 	@Test
@@ -68,18 +70,18 @@ class EventReferencelessDtoTest {
 		final long g2 = 2L;
 		final EventReferencelessDto sut = buildEvent("1", Long.toString(g2));
 
-		final List<String> slotList = sut.getSlotList(g2);
+		final List<String> slotList = sut.getSlotList(g2, TRANSLATED_TITLE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n**3 Slot g2** [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n**6 Slot g2** [g2]:\n\n**Squad g2 [g2]**\n**7 Slot free** [g2]:\n8 Slot g1 [g1]:\n**9 Slot g2** [g2]:");
+		assertThat(slotList.get(0)).isEqualTo("__**" + TRANSLATED_TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n**3 Slot g2** [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n**6 Slot g2** [g2]:\n\n**Squad g2 [g2]**\n**7 Slot free** [g2]:\n8 Slot g1 [g1]:\n**9 Slot g2** [g2]:");
 	}
 
 	@Test
 	void getSlotListMarksReservationsForForeignGuild() {
 		final EventReferencelessDto sut = buildEvent("1", "2");
 
-		final List<String> slotList = sut.getSlotList(3L);
+		final List<String> slotList = sut.getSlotList(3L, TRANSLATED_TITLE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**Teilnahmeplatzaufzählung**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n8 Slot g1 [g1]:\n9 Slot g2 [g2]:");
+		assertThat(slotList.get(0)).isEqualTo("__**" + TRANSLATED_TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n8 Slot g1 [g1]:\n9 Slot g2 [g2]:");
 	}
 
 	private EventReferencelessDto buildEvent(String guild1, String guild2) {

@@ -53,8 +53,9 @@ public class EventUpdateService {
 			}
 
 			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto)).queue();
-			final List<String> slotList = eventApiDto.getSlotList(discordInformation.getGuild().getId());
+			final Locale guildLocale = discordInformation.getGuild().getLocale();
+			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)).queue();
+			final List<String> slotList = eventApiDto.getSlotList(discordInformation.getGuild().getId(), messageSource.getMessage("event.slotlist.title", null, guildLocale));
 			//noinspection ConstantConditions SlotList can't be null here
 			eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
 			eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();

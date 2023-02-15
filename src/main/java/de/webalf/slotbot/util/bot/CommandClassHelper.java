@@ -5,10 +5,7 @@ import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.SlashCommands;
-import de.webalf.slotbot.service.bot.EventBotService;
-import de.webalf.slotbot.service.bot.GuildUsersBotService;
-import de.webalf.slotbot.service.bot.SlotBotService;
-import de.webalf.slotbot.service.bot.UserBotService;
+import de.webalf.slotbot.service.bot.*;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
@@ -35,6 +32,7 @@ public class CommandClassHelper {
 	private final EventHelper eventHelper;
 	private final SlotBotService slotBotService;
 	private final UserBotService userBotService;
+	private final GuildBotService guildBotService;
 	private final GuildUsersBotService guildUsersBotService;
 	private final DiscordProperties discordProperties;
 
@@ -66,12 +64,12 @@ public class CommandClassHelper {
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService parameter for type {}", commandClass.getName(), e);
 				}
-			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, EventHelper.class})) {
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, EventHelper.class, GuildBotService.class})) {
 				//AddEventToChannel
 				try {
-					constructor = declaredConstructor.newInstance(eventBotService, eventHelper);
+					constructor = declaredConstructor.newInstance(eventBotService, eventHelper, guildBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventBotService and EventHelper parameter for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance with EventBotService, EventHelper and GuildBotService parameter for type {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, SlotBotService.class})) {
 				//Swap

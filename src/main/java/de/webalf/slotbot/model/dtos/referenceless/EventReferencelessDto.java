@@ -30,8 +30,8 @@ public class EventReferencelessDto extends AbstractEventDto {
 	 *
 	 * @return slotlist
 	 */
-	public List<String> getSlotList(long guildId) {
-		StringBuilder slotListText = new StringBuilder("__**Teilnahmeplatzaufzählung**__");
+	public List<String> getSlotList(long guildId, String translatedTitle) {
+		StringBuilder slotListText = new StringBuilder("__**").append(translatedTitle).append("**__");
 		List<String> messages = new ArrayList<>();
 		for (SquadReferencelessDto squad : getSquadList()) {
 			final StringBuilder squadText = squad.toSlotList(guildId);

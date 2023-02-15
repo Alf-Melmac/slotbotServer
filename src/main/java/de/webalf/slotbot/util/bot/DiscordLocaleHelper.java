@@ -1,6 +1,7 @@
 package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.util.StaticContextAccessor;
+import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.interactions.DiscordLocale;
 import org.springframework.context.MessageSource;
@@ -14,6 +15,7 @@ import static net.dv8tion.jda.api.interactions.DiscordLocale.ENGLISH_UK;
  * @since 07.01.2023
  */
 public class DiscordLocaleHelper {
+	@Getter
 	private final Locale locale;
 	private final MessageSource messageSource;
 

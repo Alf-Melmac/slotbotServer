@@ -19,9 +19,11 @@ import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.service.GuildService.getLogo;
@@ -34,6 +36,7 @@ import static de.webalf.slotbot.service.GuildService.getLogo;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventDetailsAssembler {
 	private final DiscordApiService discordApiService;
+	private final MessageSource messageSource;
 
 	public EventDetailsDto toDto(@NonNull Event event) {
 		return toDto(event, true);
@@ -54,21 +57,24 @@ public class EventDetailsAssembler {
 				.descriptionAsHtml(DiscordMarkdown.toHtml(event.getDescription()))
 				.creator(event.getCreator())
 				.squadList(toEventDetailsDtoList(event.getSquadList(), optimizeReservedFor))
-				.details(getDetails(event.getDetails(), event.getReserveParticipating()))
+				.details(getDetails(event.getDetails(), event.getReserveParticipating(), event.getOwnerGuildLocale()))
 				.build();
 	}
 
-	private List<EventFieldReferencelessDto> getDetails(List<EventField> details, Boolean reserveParticipating) {
+	private List<EventFieldReferencelessDto> getDetails(List<EventField> details, Boolean reserveParticipating, @NonNull Locale guildLocale) {
 		final List<EventFieldReferencelessDto> detailDtos = EventFieldAssembler.toReferencelessDtoList(details);
 		if (reserveParticipating != null) {
-			detailDtos.add(EventFieldReferencelessDto.builder().title("Kann die Reserve mitspielen?").text(reserveParticipating.toString()).build());
+			detailDtos.add(EventFieldReferencelessDto.builder()
+					.title(messageSource.getMessage("event.details.reserveParticipating", null, guildLocale))
+					.text(reserveParticipating.toString())
+					.build());
 		}
 		detailDtos.forEach(detailDto -> {
 			final String detailText = detailDto.getText();
 			if (detailText.equals("true")) {
-				detailDto.setText("Ja");
+				detailDto.setText(messageSource.getMessage("yes", null, guildLocale));
 			} else if (detailText.equals("false")) {
-				detailDto.setText("Nein");
+				detailDto.setText(messageSource.getMessage("no", null, guildLocale));
 			}
 		});
 		return detailDtos;

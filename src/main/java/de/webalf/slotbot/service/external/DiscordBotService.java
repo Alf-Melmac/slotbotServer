@@ -59,6 +59,7 @@ public class DiscordBotService {
 			final User user = jda.retrieveUserById(userId).complete();
 			return DiscordGuildMember.builder().user(DiscordUser.fromJda(user)).build();
 		} catch (ErrorResponseException ignored) {
+			/*ignore*/
 		}
 
 		log.warn("Failed to retrieve user {}", userId);
