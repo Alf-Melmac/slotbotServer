@@ -26,7 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Slf4j
 public final class Arma3FieldUtils {
 	private static final List<String> MOD_SETS = List.of("2208_ArmaMachtBock", "2208_ArmaMachtBock_GM", "2208_ArmaMachtBock_VN",
-			"2201_ArmaMachtBock_Antistasi.html", "2211_ArmaMachtBock_Lib.html");
+			"2201_ArmaMachtBock_Antistasi", "2211_ArmaMachtBock_Lib", "2205_ArmaMachtBock_LibGM");
 
 	private static final List<String> MAPS = List.of("A Shau Valley, Vietnam", "Aliabad Region", "Altis", "Anizay",
 			"Ba Long, Quang Tri province, Vietnam", "Bukovina", "Bystrica", "Cam Lao Nam", "Cao Bang, Vietnam",
@@ -61,22 +61,9 @@ public final class Arma3FieldUtils {
 		fileNames.forEach(fileName -> {
 			final Matcher matcher = FILE_PATTERN.matcher(fileName);
 			matcher.find();
-			DOWNLOADABLE_MOD_SETS.put(replaceSpecialNames(matcher.group(2)), fileName);
+			DOWNLOADABLE_MOD_SETS.put(matcher.group(2), fileName);
 		});
 		log.info("Found {} downloadable mod packs", DOWNLOADABLE_MOD_SETS.size());
-	}
-
-	private static String replaceSpecialNames(String matchedName) {
-		switch (matchedName) {
-			case "2012_ArmaMachtBock_Full":
-				return "2012_ArmaMachtBock";
-			case "2101_ArmaMachtBock_Full_v2":
-				return "2101_ArmaMachtBock";
-			case "2103_ArmaMachtBock_Full":
-				return "2103_ArmaMachtBock";
-			default:
-				return matchedName;
-		}
 	}
 
 	/**
