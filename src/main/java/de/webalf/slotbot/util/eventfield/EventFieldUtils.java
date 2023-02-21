@@ -31,7 +31,7 @@ public final class EventFieldUtils {
 		final String title = eventField.getTitle();
 
 		if ("Modset".equalsIgnoreCase(title)) {
-			return Arma3FieldUtils.getModSetUrl(eventField.getText());
+			return Arma3FieldUtils.getModSetUrl(eventField.getText(), eventField.getEvent().getOwnerGuild().getBaseRedirectUrl());
 		}
 
 		return null;

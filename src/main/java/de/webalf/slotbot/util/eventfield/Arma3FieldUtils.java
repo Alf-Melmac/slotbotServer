@@ -3,6 +3,7 @@ package de.webalf.slotbot.util.eventfield;
 import de.webalf.slotbot.controller.website.FileWebController;
 import de.webalf.slotbot.model.annotations.EventFieldDefault;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,16 +70,21 @@ public final class Arma3FieldUtils {
 	/**
 	 * Matches the given string to a known modSet url
 	 *
-	 * @param modSet to get url for
+	 * @param modSet  to get url for
+	 * @param baseUrl fallback url if the current request doesn't have a mapping
 	 * @return download url if known or null
 	 */
-	public static String getModSetUrl(String modSet) {
+	public static String getModSetUrl(String modSet, @NonNull String baseUrl) {
 		if (modSet == null) {
 			return null;
 		}
 		final String fileName = DOWNLOADABLE_MOD_SETS.get(modSet);
 		if (fileName != null) {
-			return linkTo(methodOn(FileWebController.class).getFile(fileName)).toUri().toString();
+			final String url = linkTo(methodOn(FileWebController.class).getFile(fileName)).toUri().toString();
+			if (!url.startsWith("http")) {
+				return baseUrl + url;
+			}
+			return url;
 		}
 		return null;
 	}
