@@ -148,14 +148,14 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			} else {
 				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png";
 			}
-			sendMessage(channel, spacer);
+			sendMessage(channel, spacer, true);
 
 			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId), StaticContextAccessor.getBean(MessageSource.class).getMessage("event.slotlist.title", null, guildLocale));
 			if (slotListMessages.size() > 2) {
 				throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
 			}
 			//Send SlotList
-			sendMessage(channel, ListUtils.shift(slotListMessages),
+			sendMessage(channel, ListUtils.shift(slotListMessages), true,
 					slotListMsgConsumer(channel, eventApiDto, slotListMessages, guildId));
 		};
 	}
@@ -169,7 +169,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 			slotListMsg.pin().queue();
 
-			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)),
+			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true,
 					slotListMsgLastConsumer(channel, eventApiDto, guildId));
 		};
 	}

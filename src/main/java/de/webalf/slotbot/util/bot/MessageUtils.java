@@ -142,7 +142,18 @@ public final class MessageUtils {
 	 * @param message to send
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message) {
-		sendMessage(channel, message, doNothing());
+		sendMessage(channel, message, false);
+	}
+
+	/**
+	 * Sends the given message in the given channel
+	 *
+	 * @param channel                 to send into
+	 * @param message                 to send
+	 * @param suppressNotifications suppress notifications for this message
+	 */
+	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressNotifications) {
+		sendMessage(channel, message, suppressNotifications, doNothing());
 	}
 
 	/**
@@ -153,7 +164,19 @@ public final class MessageUtils {
 	 * @param success message consumer
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, Consumer<Message> success) {
-		channel.sendMessage(message).queue(success);
+		sendMessage(channel, message, false, success);
+	}
+
+	/**
+	 * Sends the given message in the given channel and queues the given success consumer
+	 *
+	 * @param channel                 to send into
+	 * @param message                 to send
+	 * @param suppressedNotifications suppress notifications for this message
+	 * @param success                 message consumer
+	 */
+	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressedNotifications, Consumer<Message> success) {
+		channel.sendMessage(message).setSuppressedNotifications(suppressedNotifications).queue(success);
 	}
 
 	/**
