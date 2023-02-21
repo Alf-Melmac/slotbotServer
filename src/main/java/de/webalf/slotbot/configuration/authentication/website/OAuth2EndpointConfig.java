@@ -43,6 +43,7 @@ public class OAuth2EndpointConfig {
 	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
 		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
 		final CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+		tokenRepository.setSecure(true);
 		tokenRepository.setCookiePath("/");
 		final XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();
 		// set the name of the attribute the CsrfToken will be populated on
