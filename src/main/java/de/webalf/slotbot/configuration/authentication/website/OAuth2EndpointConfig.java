@@ -37,6 +37,7 @@ import java.util.Objects;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OAuth2EndpointConfig {
 	private final DiscordAuthenticationService discordAuthenticationService;
+	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
 	@Bean
 	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
@@ -65,6 +66,7 @@ public class OAuth2EndpointConfig {
 				.oauth2Login()
 				.loginPage("/oauth2/authorization/discord")
 				.defaultSuccessUrl("/events")
+				.successHandler(authenticationSuccessHandler)
 				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
 				.and()
 				.userInfoEndpoint().userService(oAuthUserService());
