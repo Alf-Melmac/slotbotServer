@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 public class UserInGuildAssembler {
 	private final DiscordBotService discordBotService;
 
-	private UserInGuildDto toDto(@NonNull User user, @NonNull Guild guild) {
+	public UserInGuildDto toDto(@NonNull User user, @NonNull Guild guild) {
 		final DiscordGuildMember member = discordBotService.getGuildMember(user.getId(), guild.getId());
 		if (member == null) return null;
 

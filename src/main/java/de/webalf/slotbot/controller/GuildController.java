@@ -9,11 +9,13 @@ import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.website.GuildDetailsDto;
 import de.webalf.slotbot.model.dtos.website.UserInGuildDto;
 import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
+import de.webalf.slotbot.model.dtos.website.pagination.FrontendPageable;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,10 +56,17 @@ public class GuildController {
 		return GuildConfigAssembler.toDto(guildService.updateGuild(guildId, guildConfig));
 	}
 
-	@GetMapping("/{id}/users")
+	@GetMapping("/{id}/users/old")
 	public List<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId) {
 		final Guild guild = guildService.findByDiscordGuild(guildId);
-		return userInGuildAssembler.toDtoList(guildUsersService.getUsers(guild), guild);
+		return userInGuildAssembler.toDtoList(guildUsersService.getUsers(guild, null), guild);
+	}
+
+	@GetMapping("/{id}/users")
+	public FrontendPageable<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId, Pageable pageRequest) {
+		final Guild guild = guildService.findByDiscordGuild(guildId);
+		return FrontendPageable.of(guildUsersService.getUsers(guild, pageRequest)
+				.map(user -> userInGuildAssembler.toDto(user, guild)));
 	}
 
 	@DeleteMapping("/{id}/users/{userId}")
