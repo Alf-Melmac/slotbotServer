@@ -6,10 +6,10 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.repository.GuildUsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * @author Alf
@@ -23,8 +23,8 @@ public class GuildUsersService {
 	private final UserService userService;
 	private final GuildService guildService;
 
-	public List<User> getUsers(Guild guild) {
-		return guildUsersRepository.findByGuild(guild).stream().map(GuildUsers::getUser).toList();
+	public Page<User> getUsers(Guild guild, Pageable pageable) {
+		return guildUsersRepository.findByGuild(guild, pageable).map(GuildUsers::getUser);
 	}
 
 	public GuildUsers add(long guildId, long userId) {

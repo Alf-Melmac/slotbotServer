@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,6 +36,7 @@ public class DiscordBotService {
 	 * @return the member or null if not resolvable
 	 * @see DiscordApiService#getGuildMemberWithUser(String, long)
 	 */
+	@Cacheable("botGuildMember")
 	public DiscordGuildMember getGuildMember(long userId, long guildId) {
 		final JDA jda = botService.getJda();
 		if (jda == null) {

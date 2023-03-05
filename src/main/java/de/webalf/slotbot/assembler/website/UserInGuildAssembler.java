@@ -10,9 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
-
 /**
  * @author Alf
  * @since 18.01.2023
@@ -22,18 +19,12 @@ import java.util.stream.StreamSupport;
 public class UserInGuildAssembler {
 	private final DiscordBotService discordBotService;
 
-	private UserInGuildDto toDto(@NonNull User user, @NonNull Guild guild) {
+	public UserInGuildDto toDto(@NonNull User user, @NonNull Guild guild) {
 		final DiscordGuildMember member = discordBotService.getGuildMember(user.getId(), guild.getId());
 		if (member == null) return null;
 
 		return UserInGuildDto.builder()
 				.user(DiscordUserAssembler.toDto(member))
 				.build();
-	}
-
-	public List<UserInGuildDto> toDtoList(@NonNull Iterable<? extends User> users, @NonNull Guild guild) {
-		return StreamSupport.stream(users.spliterator(), false)
-				.map(user -> this.toDto(user, guild))
-				.toList();
 	}
 }
