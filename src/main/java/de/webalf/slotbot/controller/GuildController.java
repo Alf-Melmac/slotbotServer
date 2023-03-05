@@ -56,12 +56,6 @@ public class GuildController {
 		return GuildConfigAssembler.toDto(guildService.updateGuild(guildId, guildConfig));
 	}
 
-	@GetMapping("/{id}/users/old")
-	public List<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId) {
-		final Guild guild = guildService.findByDiscordGuild(guildId);
-		return userInGuildAssembler.toDtoList(guildUsersService.getUsers(guild, null), guild);
-	}
-
 	@GetMapping("/{id}/users")
 	public FrontendPageable<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId, Pageable pageRequest) {
 		final Guild guild = guildService.findByDiscordGuild(guildId);
