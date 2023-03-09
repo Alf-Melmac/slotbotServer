@@ -12,7 +12,6 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
@@ -52,7 +51,7 @@ public class EventDetailsAssembler {
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.pictureUrl(StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : getLogo(event.getOwnerGuild()))
 				.name(event.getName())
-				.dateTimeZoned(DateUtils.getDateTimeZoned(event.getDateTime()))
+				.dateTime(event.getDateTime())
 				.missionLength(event.getMissionLength())
 				.descriptionAsHtml(DiscordMarkdown.toHtml(event.getDescription()))
 				.creator(event.getCreator())

@@ -6,6 +6,8 @@ import lombok.experimental.UtilityClass;
 import java.time.*;
 import java.util.Comparator;
 
+import static java.time.ZoneOffset.UTC;
+
 /**
  * @author Alf
  * @since 18.01.2021
@@ -19,17 +21,31 @@ public final class DateUtils {
 		};
 	}
 
-	private static final ZoneId ZONE_BERLIN = ZoneId.of("Europe/Berlin");
-
+	/**
+	 * Returns the given date time in utc offset
+	 */
 	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDateTime dateTime) {
-		return dateTime.atZone(ZONE_BERLIN);
+		return dateTime.atZone(UTC);
 	}
 
-	public static ZonedDateTime getDateTimeNowZoned() {
-		return ZonedDateTime.ofInstant(Instant.now(), ZONE_BERLIN);
-	}
-
+	/**
+	 * Returns the given date and time in utc offset
+	 */
 	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDate date, @NonNull LocalTime time) {
-		return date.atTime(time).atZone(ZONE_BERLIN);
+		return date.atTime(time).atZone(UTC);
+	}
+
+	/**
+	 * Checks if the given date time in utc offset if in the future
+	 */
+	public static boolean isInFuture(@NonNull LocalDateTime dateTime) {
+		return Instant.now().isBefore(dateTime.toInstant(UTC));
+	}
+
+	/**
+	 * Returns the current date time in utc offset
+	 */
+	public LocalDateTime now() {
+		return LocalDateTime.now(UTC);
 	}
 }

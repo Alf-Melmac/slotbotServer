@@ -9,6 +9,7 @@ import de.webalf.slotbot.model.dtos.*;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.CollectionUtils;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
@@ -152,7 +153,7 @@ public class EventService {
 	 * @return all events from the past
 	 */
 	public List<Event> findAllInPast() {
-		return eventRepository.findAllByDateTimeIsBeforeAndOrderByDateTime(LocalDateTime.now());
+		return eventRepository.findAllByDateTimeIsBeforeAndOrderByDateTime(DateUtils.now());
 	}
 
 	/**
@@ -161,7 +162,7 @@ public class EventService {
 	 * @return all events from the future
 	 */
 	public List<Event> findAllInFuture() {
-		return eventRepository.findByDateTimeGreaterThan(LocalDateTime.now());
+		return eventRepository.findByDateTimeGreaterThan(DateUtils.now());
 	}
 
 	/**
@@ -171,7 +172,7 @@ public class EventService {
 	 * @return all events in the future that have no channel
 	 */
 	public List<Event> findAllNotAssignedInFuture(long guildId) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuildAndOrderByDateTime(DateUtils.now(), guildId);
 	}
 
 	/**
@@ -181,7 +182,7 @@ public class EventService {
 	 * @return all events in the future that have no channel
 	 */
 	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(LocalDateTime.now(), guildId);
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(DateUtils.now(), guildId);
 	}
 
 	/**

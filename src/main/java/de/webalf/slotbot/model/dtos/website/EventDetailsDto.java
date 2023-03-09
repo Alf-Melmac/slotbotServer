@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static de.webalf.slotbot.util.MaxLength.TEXT;
@@ -42,7 +42,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	String missionLength;
 
-	ZonedDateTime dateTimeZoned;
+	LocalDateTime dateTime;
 
 	String descriptionAsHtml;
 

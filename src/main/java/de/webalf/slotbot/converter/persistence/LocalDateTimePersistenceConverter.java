@@ -13,8 +13,7 @@ import java.time.ZoneOffset;
  * @since 22.06.2020
  */
 @Converter
-public class LocalDateTimePersistenceConverter implements
-		AttributeConverter<LocalDateTime, Long> {
+public class LocalDateTimePersistenceConverter implements AttributeConverter<LocalDateTime, Long> {
 
 	@Override
 	public Long convertToDatabaseColumn(LocalDateTime entityValue) {

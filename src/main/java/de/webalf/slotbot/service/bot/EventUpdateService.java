@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.SchedulerService;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.ListUtils;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -107,7 +107,7 @@ public class EventUpdateService {
 	 */
 	private void longTimeNoSee(@NonNull User user) {
 		user.getLastEventDateTime().ifPresentOrElse(lastEvent -> {
-			if (lastEvent.plusMonths(3).isBefore(LocalDateTime.now())) {
+			if (lastEvent.plusMonths(3).isBefore(DateUtils.now())) {
 				messageHelper.sendDmToRecipient(user, "Über drei Monate haben wir dich nicht mehr gesehen. Schau doch gerne mal wieder öfter vorbei. Falls du einen neuen Technikcheck brauchst oder andere Fragen hast, melde dich doch bitte bei <@327385716977958913>.");
 			}
 		}, () -> messageHelper.sendDmToRecipient(user, "Schön dich bei Arma macht Bock begrüßen zu dürfen. Falls du vor deiner Teilnahme einen Technikcheck machen möchtest, oder sonstige Fragen hast, melde dich bitte bei <@327385716977958913>. Ansonsten wünschen wir dir viel Spaß!"));

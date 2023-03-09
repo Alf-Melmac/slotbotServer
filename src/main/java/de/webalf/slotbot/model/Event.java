@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.service.bot.EventNotificationService;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.EventUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -506,7 +507,7 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	public void archive(long guildId) {
-		if (LocalDateTime.now().isBefore(getDateTime())) {
+		if (DateUtils.isInFuture(getDateTime())) {
 			throw BusinessRuntimeException.builder().title("Es können nur Events in der Vergangenheit archiviert werden.").build();
 		}
 

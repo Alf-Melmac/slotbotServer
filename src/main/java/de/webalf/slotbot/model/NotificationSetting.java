@@ -1,15 +1,12 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.util.DateUtils;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-
-import static de.webalf.slotbot.util.DateUtils.getDateTimeNowZoned;
-import static de.webalf.slotbot.util.DateUtils.getDateTimeZoned;
 
 /**
  * @author Alf
@@ -44,10 +41,10 @@ public class NotificationSetting extends AbstractSuperIdEntity {
 	 * @return delay until notification must be sent
 	 */
 	public int getNotificationDelay(LocalDateTime eventTime) {
-		return (int) ChronoUnit.MINUTES.between(getDateTimeNowZoned(), getNotificationTime(eventTime));
+		return (int) ChronoUnit.MINUTES.between(DateUtils.now(), getNotificationTime(eventTime));
 	}
 
-	private ZonedDateTime getNotificationTime(@NonNull LocalDateTime eventTime) {
-		return getDateTimeZoned(eventTime.minusHours(hoursBeforeEvent).minusMinutes(minutesBeforeEvent));
+	private LocalDateTime getNotificationTime(@NonNull LocalDateTime eventTime) {
+		return eventTime.minusHours(hoursBeforeEvent).minusMinutes(minutesBeforeEvent);
 	}
 }

@@ -16,7 +16,7 @@ import net.fortuna.ical4j.util.UidGenerator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 /**
  * @author Alf
@@ -42,10 +42,10 @@ public final class EventCalendarUtil {
 
 	private static void addCalendarEvent(@NonNull Calendar calendar, @NonNull Event event) {
 		final String eventName = event.getName();
-		final ZonedDateTime eventDateTime = DateUtils.getDateTimeZoned(event.getDateTime());
+		final LocalDateTime eventDateTime = event.getDateTime();
 
 		// Create the event
-		VEvent calendarEvent = new VEvent(eventDateTime, eventName);
+		VEvent calendarEvent = new VEvent(DateUtils.getDateTimeZoned(eventDateTime), eventName);
 		final String eventUrl = EventUtils.buildUrl(event);
 		try {
 			calendarEvent.add(new Url(new URI(eventUrl)));

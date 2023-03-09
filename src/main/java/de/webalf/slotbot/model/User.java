@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.util.DateUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,11 +58,12 @@ public class User extends AbstractDiscordIdEntity {
 				.map(Slot::getSquad)
 				.map(Squad::getEvent)
 				.map(Event::getDateTime)
-				.filter(dateTime -> dateTime.isBefore(LocalDateTime.now())).min(getLocalDateTimeComparator());
+				.filter(dateTime -> dateTime.isBefore(DateUtils.now()))
+				.min(getLocalDateTimeComparator());
 	}
 
 	public long countParticipatedEvents() {
-		return getSlots().stream().filter(slot -> slot.getEvent().getDateTime().isBefore(LocalDateTime.now())).count();
+		return getSlots().stream().filter(slot -> slot.getEvent().getDateTime().isBefore(DateUtils.now())).count();
 	}
 
 	public List<Event> getSlottedEvents() {
