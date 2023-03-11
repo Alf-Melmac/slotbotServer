@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static de.webalf.slotbot.service.GuildService.isDAA;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
 import static de.webalf.slotbot.util.bot.MessageUtils.deletePinAddedMessages;
@@ -130,25 +129,18 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 		final Locale guildLocale = guildBotService.getGuildLocale(guildId);
 		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)) //Send event details
-				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString, guildLocale));
+				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString, guildLocale, event.getOwnerGuild().getSpacerUrl()));
 	}
 
 	/**
 	 * Called after the event details have been sent, to then send the first part of the slot list
 	 */
-	private Consumer<Message> infoMsgConsumer(MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId, @NonNull Locale guildLocale) {
+	private Consumer<Message> infoMsgConsumer(MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId, @NonNull Locale guildLocale, String spacerUrl) {
 		return infoMsg -> {
 			eventApiDto.getDiscordInformation(guildId).ifPresentOrElse(discordInformation -> discordInformation.setInfoMsg(infoMsg.getId()), () -> log.error("Failed to add infoMsg"));
 
 			//Send Spacer
-			final long ownerGuild = Long.parseLong(eventApiDto.getOwnerGuild());
-			String spacer;
-			if (isDAA(ownerGuild)) {
-				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/902303885228646420/Discord_Missionstrenner_DAA-transparent.png";
-			} else {
-				spacer = "https://cdn.discordapp.com/attachments/759147249325572097/798539020677808178/Discord_Missionstrenner.png";
-			}
-			sendMessage(channel, spacer, true);
+			sendMessage(channel, spacerUrl, true);
 
 			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId), StaticContextAccessor.getBean(MessageSource.class).getMessage("event.slotlist.title", null, guildLocale));
 			if (slotListMessages.size() > 2) {
@@ -161,7 +153,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, EventApiDto, String, Locale)} to update the event with both message ids
+	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, EventApiDto, String, Locale, String)} to update the event with both message ids
 	 */
 	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages, String guildId) {
 		return slotListMsg -> {

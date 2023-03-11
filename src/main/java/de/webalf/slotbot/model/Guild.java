@@ -12,8 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
-import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
+import static de.webalf.slotbot.util.MaxLength.*;
 
 /**
  * @author Alf
@@ -46,6 +45,10 @@ public class Guild extends AbstractDiscordIdEntity {
 	@Column(name = "discord_guild_emoji")
 	private Long emoji;
 
+	@Column(name = "discord_guild_spacer_url", length = URL_DB)
+	@Size(max = URL)
+	private String spacerUrl;
+
 	@Column(name = "discord_guild_language", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@NonNull
@@ -70,6 +73,10 @@ public class Guild extends AbstractDiscordIdEntity {
 
 	public String buildEmojiUrl() {
 		return emoji != null ? "https://cdn.discordapp.com/emojis/" + emoji + ".webp" : null;
+	}
+
+	public String getSpacerUrl() {
+		return StringUtils.isNotEmpty(spacerUrl) ? spacerUrl : "https://cdn.discordapp.com/attachments/759147249325572097/1084262121761677322/Discord_Missionstrenner_Slotbot.png";
 	}
 
 	public Locale getLocale() {
