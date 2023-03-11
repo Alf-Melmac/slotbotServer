@@ -19,19 +19,19 @@ public class HibernateInterceptor implements Interceptor {
 
 	@Override
 	public boolean onFlushDirty(Object entity, Object id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) throws CallbackException {
-		updateInterceptorService.update(entity, currentState, previousState, propertyNames);
+//		updateInterceptorService.update(entity, currentState, previousState, propertyNames);
 		return Interceptor.super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 	}
 
 	@Override
 	public void onDelete(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) throws CallbackException {
-		updateInterceptorService.onDelete(entity);
+//		updateInterceptorService.onDelete(entity);
 		Interceptor.super.onDelete(entity, id, state, propertyNames, types);
 	}
 
 	@Override
 	public void onCollectionUpdate(Object collection, Object key) throws CallbackException {
-		updateInterceptorService.onCollectionUpdate(collection);
+//		updateInterceptorService.onCollectionUpdate(collection);
 		Interceptor.super.onCollectionUpdate(collection, key);
 	}
 }
