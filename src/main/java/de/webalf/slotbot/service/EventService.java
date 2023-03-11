@@ -218,8 +218,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getHidden(), event::setHidden);
 		DtoUtils.ifPresent(dto.getShareable(), event::setShareable);
 		DtoUtils.ifPresent(dto.getName(), event::setName);
-		DtoUtils.ifPresent(dto.getDate(), event::setDate);
-		DtoUtils.ifPresent(dto.getStartTime(), event::setTime);
+		DtoUtils.ifPresent(dto.getDateTime(), event::setDateTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType(), event.getOwnerGuild())));
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);

@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
 import static de.webalf.slotbot.util.StringUtils.trim;
@@ -35,7 +33,7 @@ public class EventAssembler {
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))
 				.name(dto.getName().trim())
-				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
+				.dateTime(dto.getDateTime())
 				.creator(dto.getCreator().trim())
 				//Event type is set by using service
 				.description(trim(dto.getDescription()))
@@ -56,14 +54,12 @@ public class EventAssembler {
 	 * To be used if the focus relies on the event. Does include squadList and details
 	 */
 	public static EventReferencelessDto toReferencelessDto(Event event) {
-		final LocalDateTime dateTime = event.getDateTime();
 		return EventReferencelessDto.builder()
 				.id(event.getId())
 				.hidden(event.isHidden())
 				.shareable(event.isShareable())
 				.name(event.getName())
-				.date(dateTime.toLocalDate())
-				.startTime(dateTime.toLocalTime())
+				.dateTime(event.getDateTime())
 				.creator(event.getCreator())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())
@@ -82,14 +78,12 @@ public class EventAssembler {
 	 * To be used if the focus relies not on the event. Doesn't include the squadlist or details
 	 */
 	static EventDto toAbstractDto(Event event) {
-		final LocalDateTime dateTime = event.getDateTime();
 		return EventDto.builder()
 				.id(event.getId())
 				.hidden(event.isHidden())
 				.shareable(event.isShareable())
 				.name(event.getName())
-				.date(dateTime.toLocalDate())
-				.startTime(dateTime.toLocalTime())
+				.dateTime(event.getDateTime())
 				.creator(event.getCreator())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())

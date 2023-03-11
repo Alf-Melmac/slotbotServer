@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import java.time.LocalDateTime;
-
 import static de.webalf.slotbot.util.EventUtils.buildUrl;
 
 /**
@@ -27,16 +25,13 @@ public final class EventApiAssembler {
 	private final SquadApiAssembler squadApiAssembler;
 
 	public static EventApiDto toDto(@NonNull Event event) {
-		LocalDateTime dateTime = event.getDateTime();
-
 		return EventApiDto.builder()
 				.url(buildUrl(event))
 				.id(event.getId())
 				.hidden(event.isHidden())
 				.shareable(event.isShareable())
 				.name(event.getName())
-				.date(dateTime.toLocalDate())
-				.startTime(dateTime.toLocalTime())
+				.dateTime(event.getDateTime())
 				.creator(event.getCreator())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())

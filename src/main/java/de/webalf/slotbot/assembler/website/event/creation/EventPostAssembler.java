@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
 import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 
@@ -36,7 +34,7 @@ public class EventPostAssembler {
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))
 				.name(trimAndNullify(dto.getName()))
-				.dateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
+				.dateTime(dto.getDateTime())
 				.creator(trimAndNullify(dto.getCreator()))
 				.eventType(eventTypeService.find(dto.getEventType(), ownerGuild))
 				.description(trimAndNullify(dto.getDescription()))

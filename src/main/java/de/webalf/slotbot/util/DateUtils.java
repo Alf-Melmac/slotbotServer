@@ -3,7 +3,9 @@ package de.webalf.slotbot.util;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 
 import static java.time.ZoneOffset.UTC;
@@ -26,13 +28,6 @@ public final class DateUtils {
 	 */
 	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDateTime dateTime) {
 		return dateTime.atZone(UTC);
-	}
-
-	/**
-	 * Returns the given date and time in utc offset
-	 */
-	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDate date, @NonNull LocalTime time) {
-		return date.atTime(time).atZone(UTC);
 	}
 
 	/**

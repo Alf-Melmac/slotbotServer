@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Set;
@@ -38,10 +37,7 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	private String name;
 
 	@NotNull
-	private LocalDate date;
-
-	@NotNull
-	private LocalTime startTime;
+	private LocalDateTime dateTime;
 
 	@NotBlank
 	@Size(max = TEXT)
@@ -77,7 +73,7 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	}
 
 	public ZonedDateTime getDateTimeZoned() {
-		return DateUtils.getDateTimeZoned(date, startTime);
+		return DateUtils.getDateTimeZoned(dateTime);
 	}
 
 	public Optional<EventDiscordInformationDto> getDiscordInformation(String guildId) {

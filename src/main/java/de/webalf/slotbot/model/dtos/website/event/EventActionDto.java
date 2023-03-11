@@ -9,8 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import static de.webalf.slotbot.util.MaxLength.*;
 
@@ -33,10 +32,7 @@ public abstract class EventActionDto {
 	private String name;
 
 	@NotNull
-	private LocalDate date;
-
-	@NotNull
-	private LocalTime startTime;
+	private LocalDateTime dateTime;
 
 	@NotBlank
 	@Size(max = TEXT)

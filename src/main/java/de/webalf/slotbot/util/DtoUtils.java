@@ -5,8 +5,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
 import lombok.experimental.UtilityClass;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -69,13 +68,7 @@ public final class DtoUtils {
 		}
 	}
 
-	public static void ifPresent(LocalDate value, Consumer<LocalDate> consumer) {
-		if (isPresent(value)) {
-			consumer.accept(value);
-		}
-	}
-
-	public static void ifPresent(LocalTime value, Consumer<LocalTime> consumer) {
+	public static void ifPresent(LocalDateTime value, Consumer<LocalDateTime> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);
 		}
