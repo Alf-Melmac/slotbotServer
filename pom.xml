@@ -28,11 +28,11 @@
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>5.0.0-beta.5</jda.version>
+		<jda.version>5.0.0-beta.6</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.15.4</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
-		<ical4j.version>4.0.0-beta5</ical4j.version>
+		<ical4j.version>4.0.0-beta6</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.1.1185</typescript-generator.version>
 	</properties>
