@@ -95,7 +95,7 @@ public class EventUpdateService {
 			if (isAMB(event.getOwnerGuild())) {
 				longTimeNoSee(currentUser);
 			}
-			schedulerService.schedule(() -> eventNotificationService.createNotifications(event, currentUser), 1);
+			schedulerService.schedule(() -> eventNotificationService.createNotifications(event, currentUser), 0);
 			eventCalendarService.rebuildCalendar(currentUser);
 		}
 	}
