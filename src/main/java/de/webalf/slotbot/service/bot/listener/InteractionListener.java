@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
 
@@ -65,8 +66,9 @@ public class InteractionListener extends ListenerAdapter {
 	}
 
 	private void unknownException(@NonNull GenericCommandInteractionEvent event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
-		log.error("Failed to execute command interaction {} with options {}", commandClass.getName(), event.getOptions(), e);
-		failedInteraction(event, "Sorry. Error A.");
+		final String errorCode = UUID.nameUUIDFromBytes(e.getMessage().getBytes()).toString();
+		log.error("Failed to execute command interaction {} with options {} - {}", commandClass.getName(), event.getOptions(), errorCode, e);
+		failedInteraction(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
 
 	@Override
@@ -104,8 +106,9 @@ public class InteractionListener extends ListenerAdapter {
 	}
 
 	private void unknownException(@NonNull StringSelectInteractionEvent event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
-		log.error("Failed to process string selection menu selection {} with id {}", commandClass.getName(), event.getComponentId(), e);
-		replyAndRemoveComponents(event, "Sorry. Error B.");
+		final String errorCode = UUID.nameUUIDFromBytes(e.getMessage().getBytes()).toString();
+		log.error("Failed to process string selection menu selection {} with id {} - {}", commandClass.getName(), event.getComponentId(), errorCode, e);
+		replyAndRemoveComponents(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
 
 	@Override
