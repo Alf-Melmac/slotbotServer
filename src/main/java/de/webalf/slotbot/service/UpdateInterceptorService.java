@@ -118,7 +118,8 @@ public class UpdateInterceptorService {
 	}
 
 	public void onCollectionUpdate(Object collection) {
-		if (collection instanceof PersistentList<?> persistentList) {
+		if (collection instanceof final PersistentList<?> persistentList) {
+			if (persistentList.isEmpty()) return;
 			final Object el = persistentList.get(0);
 
 			if (el instanceof final Squad squad) {

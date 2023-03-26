@@ -7,6 +7,7 @@ import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.*;
 import de.webalf.slotbot.model.dtos.api.EventRecipientApiDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.CollectionUtils;
 import de.webalf.slotbot.util.DateUtils;
@@ -207,13 +208,16 @@ public class EventService {
 	}
 
 	/**
-	 * Updates the event found by id with values from the {@link AbstractEventDto}
+	 * Updates the event found by id with values from the {@link EventDto}.
+	 * <p>
+	 * For updating discord information see {@link #updateDiscordInformation(AbstractEventDto)}
 	 *
-	 * @param dto with event id and values to update
+	 * @param eventId event to update
+	 * @param dto     with values to update
 	 * @return updated event
 	 */
-	public Event updateEvent(@NonNull AbstractEventDto dto) {
-		Event event = findById(dto.getId());
+	public Event updateEvent(long eventId, @NonNull EventUpdateDto dto) {
+		Event event = findById(eventId);
 
 		DtoUtils.ifPresent(dto.getHidden(), event::setHidden);
 		DtoUtils.ifPresent(dto.getShareable(), event::setShareable);
@@ -224,36 +228,29 @@ public class EventService {
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
-		DtoUtils.ifPresentOrEmpty(dto.getRawPictureUrl(), event::setPictureUrl);
+		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), event::setPictureUrl);
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
-		final Set<EventDiscordInformationDto> dtoDiscordInformation = dto.getDiscordInformation();
-		DtoUtils.ifPresent(dtoDiscordInformation, discordInformation -> eventDiscordInformationService.updateDiscordInformation(dtoDiscordInformation, event));
+
+		DtoUtils.ifPresentObject(dto.getDetails(), details -> eventFieldService.updateEventDetails(details, event));
+		DtoUtils.ifPresentObject(dto.getSquadList(), squadlist -> {
+			squadService.updateSquadList(squadlist, event);
+			event.removeReservedForDefaultGuild();
+		});
 
 		return event;
 	}
 
 	/**
-	 * Updates the event found by id with values from the {@link EventDto}.
-	 * <p>
-	 * For updating the squad list see {@link #updateSquadList(long, EventDto)}
+	 * Updates the discord information of the event found by id with values from the {@link AbstractEventDto}.
 	 *
-	 * @param dto with event id and values to update
+	 * @param dto to get discord information from
 	 * @return updated event
-	 * @see #updateEvent(AbstractEventDto)
 	 */
-	public Event updateEvent(@NonNull EventDto dto) {
-		Event event = updateEvent((AbstractEventDto) dto);
+	public Event updateDiscordInformation(AbstractEventDto dto) {
+		Event event = findById(dto.getId());
 
-		DtoUtils.ifPresent(dto.getDetails(), details -> eventFieldService.updateEventDetails(details, event));
-
-		return event;
-	}
-
-	public Event updateSquadList(long eventId, EventDto dto) {
-		Event event = findById(eventId);
-
-		squadService.updateSquadList(dto.getSquadList(), event);
-		event.removeReservedForDefaultGuild();
+		final Set<EventDiscordInformationDto> dtoDiscordInformation = dto.getDiscordInformation();
+		DtoUtils.ifPresent(dtoDiscordInformation, discordInformation -> eventDiscordInformationService.updateDiscordInformation(dtoDiscordInformation, event));
 
 		return event;
 	}

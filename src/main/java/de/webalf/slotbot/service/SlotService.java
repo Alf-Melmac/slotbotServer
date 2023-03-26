@@ -7,8 +7,8 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
 import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.SlotRepository;
 import de.webalf.slotbot.util.DtoUtils;
@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static de.webalf.slotbot.util.StringUtils.getFirstNotEmpty;
 
 /**
  * @author Alf
@@ -55,7 +53,7 @@ public class SlotService {
 	 * @param slotList new slotlist
 	 * @param squad    to update
 	 */
-	void updateSlotList(@NonNull List<SlotDto> slotList, @NonNull Squad squad) {
+	void updateSlotList(@NonNull List<MinimalSlotIdDto> slotList, @NonNull Squad squad) {
 		List<Slot> squadSlots = squad.getSlotList();
 		if (squadSlots != null) {
 			squadSlots.clear();
@@ -77,24 +75,16 @@ public class SlotService {
 	 * @param squad is required when a new slot must be created
 	 * @return updated Slot
 	 */
-	private Slot updateOrCreateSlot(@NonNull SlotDto dto, @NonNull Squad squad) {
+	private Slot updateOrCreateSlot(@NonNull MinimalSlotIdDto dto, @NonNull Squad squad) {
 		Slot slot = slotRepository.findById(dto.getId()).orElseGet(() -> Slot.builder().squad(squad).build());
 
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
-		final GuildDto reservedFor = dto.getReservedFor();
-		if (reservedFor != null) {
-			slot.setReservedFor(guildService.findByDiscordGuild(Long.parseLong(reservedFor.getId())));
-		} else {
-			slot.setReservedFor(null);
-		}
-		if (slot.isBlocked() && dto.getUser() == null) {
+		slot.setReservedFor(guildService.evaluateReservedFor(dto.getReservedFor()));
+		if (dto.isBlocked()) {
+			blockSlot(slot, dto.getReplacementText());
+		} else if (slot.isBlocked()) {
 			slot.setUser(null);
-		} else {
-			DtoUtils.ifPresent(dto.getUser(), slot::setUser);
-		}
-		if (slot.isBlocked()) {
-			slot.setReplacementText(getFirstNotEmpty("Gesperrt", dto.getReplacementText(), slot.getReplacementText()));
 		}
 
 		return slot;

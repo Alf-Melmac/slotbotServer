@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
 import de.webalf.slotbot.repository.GuildRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,6 +100,10 @@ public class GuildService {
 
 	public Optional<Guild> findByName(String name) {
 		return guildRepository.findByGroupIdentifier(name);
+	}
+
+	public Guild evaluateReservedFor(String reservedFor) {
+		return StringUtils.isNotEmpty(reservedFor) ? find(Long.parseLong(reservedFor)) : null;
 	}
 
 	/**

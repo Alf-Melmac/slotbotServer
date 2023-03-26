@@ -3,6 +3,7 @@ package de.webalf.slotbot.controller.api;
 import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.api.EventApiDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.util.permissions.ApiPermissionChecker;
 import jakarta.validation.Valid;
@@ -44,10 +45,9 @@ public class EventApiController {
 
 	@PutMapping("/{id}")
 	@PreAuthorize(HAS_POTENTIAL_WRITE_PERMISSION)
-	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
+	public EventApiDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventUpdateDto event) {
 		log.trace("updateEvent: {}", event.getName());
-		event.setId(eventId);
 		apiPermissionChecker.assertApiWriteAccess(eventService.findById(eventId));
-		return EventApiAssembler.toDto(eventService.updateEvent(event));
+		return EventApiAssembler.toDto(eventService.updateEvent(eventId, event));
 	}
 }

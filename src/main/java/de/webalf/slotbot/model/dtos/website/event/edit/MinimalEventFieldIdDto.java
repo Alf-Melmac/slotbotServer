@@ -2,8 +2,10 @@ package de.webalf.slotbot.model.dtos.website.event.edit;
 
 import de.webalf.slotbot.model.dtos.website.event.IdEntity;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalEventFieldDto;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -11,8 +13,9 @@ import lombok.experimental.SuperBuilder;
  * @since 20.08.2022
  */
 @EqualsAndHashCode(callSuper = true)
-@Value
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 @SuperBuilder
 public class MinimalEventFieldIdDto extends MinimalEventFieldDto implements IdEntity {
-	long id;
+	private long id;
 }

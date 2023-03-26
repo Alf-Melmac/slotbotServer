@@ -5,12 +5,12 @@ import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.assembler.website.event.edit.EventEditAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.service.EventCreationService;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
@@ -74,16 +74,15 @@ public class EventController {
 
 	@PutMapping("/{id}")
 	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
-	public EventEditDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		event.setId(eventId);
-		return EventEditAssembler.toDto(eventService.updateEvent(event));
+	public EventEditDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventUpdateDto event) {
+		return EventEditAssembler.toDto(eventService.updateEvent(eventId, event));
 	}
 
 	@PutMapping("/{id}/edit/text")
 	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
 	public EventEditDto updateEventField(@PathVariable(value = "id") long eventId, @RequestBody Map.Entry<String, String> field) {
 		final String name = field.getKey();
-		EventDto dto = EventDto.builder().id(eventId).build();
+		EventUpdateDto dto = EventUpdateDto.builder().build();
 		try {
 			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, field.getValue().trim());
 		} catch (NoSuchFieldException e) {
@@ -92,13 +91,7 @@ public class EventController {
 		} catch (NullPointerException e) {
 			throw BusinessRuntimeException.builder().title(name + " darf nicht leer sein").cause(e).build();
 		}
-		return EventEditAssembler.toDto(eventService.updateEvent(dto));
-	}
-
-	@PutMapping("/{id}/slotlist")
-	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
-	public EventEditDto updateSlotList(@PathVariable(value = "id") long eventId, @RequestBody EventDto event) {
-		return EventEditAssembler.toDto(eventService.updateSquadList(eventId, event));
+		return EventEditAssembler.toDto(eventService.updateEvent(eventId, dto));
 	}
 
 	@GetMapping ("/fields")

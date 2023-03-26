@@ -2,8 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.model.dtos.GuildDto;
-import de.webalf.slotbot.model.dtos.SquadDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSquadIdDto;
 import de.webalf.slotbot.repository.SquadRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
@@ -34,7 +33,7 @@ public class SquadService {
 	 * @param squadList new squadList
 	 * @param event     to update
 	 */
-	void updateSquadList(@NonNull List<SquadDto> squadList, @NonNull Event event) {
+	void updateSquadList(@NonNull List<MinimalSquadIdDto> squadList, @NonNull Event event) {
 		List<Squad> eventSquads = event.getSquadList();
 		if (eventSquads != null) {
 			eventSquads.clear();
@@ -59,16 +58,11 @@ public class SquadService {
 	 * @param event is required when a new squad must be created
 	 * @return updated Squad
 	 */
-	private Squad updateOrCreateSquad(@NonNull SquadDto dto, @NonNull Event event) {
+	private Squad updateOrCreateSquad(@NonNull MinimalSquadIdDto dto, @NonNull Event event) {
 		Squad squad = squadRepository.findById(dto.getId()).orElseGet(() -> Squad.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getName(), squad::setName);
-		final GuildDto reservedFor = dto.getReservedFor();
-		if (reservedFor != null) {
-			squad.setReservedFor(guildService.findByDiscordGuild(Long.parseLong(reservedFor.getId())));
-		} else {
-			squad.setReservedFor(null);
-		}
+		squad.setReservedFor(guildService.evaluateReservedFor(dto.getReservedFor()));
 
 		if (dto.getSlotList() != null) {
 			slotService.updateSlotList(dto.getSlotList(), squad);

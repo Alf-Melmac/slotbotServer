@@ -175,7 +175,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 			slotListMsg.pin().queue(unused -> deletePinAddedMessages(channel));
 
-			eventBotService.updateEvent(eventApiDto);
+			eventBotService.updateDiscordInformation(eventApiDto);
 		};
 	}
 }

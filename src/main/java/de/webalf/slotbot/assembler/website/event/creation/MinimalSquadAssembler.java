@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.website.event.creation;
 
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.GuildUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 final class MinimalSquadAssembler {
 	private final MinimalSlotAssembler slotAssembler;
+	private final GuildService guildService;
 
 	private Squad fromDto(MinimalSquadDto squadDto) {
 		if (squadDto == null) {
@@ -28,7 +30,7 @@ final class MinimalSquadAssembler {
 		return Squad.builder()
 				.name(squadDto.getName().trim())
 				.slotList(slotAssembler.fromDtoList(squadDto.getSlotList()))
-				.reservedFor(slotAssembler.evaluateReservedFor(squadDto.getReservedFor()))
+				.reservedFor(guildService.evaluateReservedFor(squadDto.getReservedFor()))
 				.build();
 	}
 

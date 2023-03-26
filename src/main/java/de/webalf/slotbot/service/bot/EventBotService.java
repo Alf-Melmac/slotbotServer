@@ -50,8 +50,8 @@ public class EventBotService {
 		return eventService.findAllForeignNotAssignedInFuture(guildId);
 	}
 
-	public void updateEvent(AbstractEventDto dto) {
-		eventService.updateEvent(dto);
+	public void updateDiscordInformation(AbstractEventDto dto) {
+		eventService.updateDiscordInformation(dto);
 	}
 
 	public void archiveEvent(long eventId, long guildId) {

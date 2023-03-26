@@ -2,7 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventField;
-import de.webalf.slotbot.model.dtos.EventFieldDto;
+import de.webalf.slotbot.model.dtos.website.event.edit.MinimalEventFieldIdDto;
 import de.webalf.slotbot.repository.EventFieldRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
@@ -30,7 +30,7 @@ public class EventFieldService {
 	 * @param detailsDtos new details
 	 * @param event       to update
 	 */
-	void updateEventDetails(@NonNull List<EventFieldDto> detailsDtos, @NonNull Event event) {
+	void updateEventDetails(@NonNull List<MinimalEventFieldIdDto> detailsDtos, @NonNull Event event) {
 		List<EventField> existingDetails = event.getDetails();
 		if (existingDetails != null) {
 			existingDetails.clear();
@@ -54,7 +54,7 @@ public class EventFieldService {
 	 * @param event is required when a new field must be created
 	 * @return updated or new event field
 	 */
-	private EventField updateOrCreateEventField(@NonNull EventFieldDto dto, @NonNull Event event) {
+	private EventField updateOrCreateEventField(@NonNull MinimalEventFieldIdDto dto, @NonNull Event event) {
 		EventField eventField = eventFieldRepository.findById(dto.getId()).orElseGet(() -> EventField.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getTitle(), eventField::setTitle);
