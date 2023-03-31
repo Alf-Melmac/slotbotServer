@@ -31,7 +31,7 @@ public class EventMigrationApiController {
 		}
 		eventRepository.findAll().forEach(event -> {
 			log.info("Migrating event: {}", event.getId());
-			event.setDateTime(event.getDateTime().minusHours(1));
+			event.setDateTime(event.getDateTime().minusHours(2));
 		});
 		eventRepository.flush();
 		migrated = true;
