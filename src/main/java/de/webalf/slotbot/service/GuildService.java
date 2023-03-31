@@ -116,7 +116,7 @@ public class GuildService {
 	public Guild updateGuild(long guildId, @NonNull GuildConfigDto dto) {
 		final Guild guild = findExisting(guildId);
 
-		DtoUtils.ifPresentObject(dto.getLanguage(), guild::setLanguage);
+		DtoUtils.ifPresentObject(dto.language(), guild::setLanguage);
 
 		return guild;
 	}
