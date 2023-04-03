@@ -62,10 +62,6 @@ public class User extends AbstractDiscordIdEntity {
 				.min(getLocalDateTimeComparator());
 	}
 
-	public long countParticipatedEvents() {
-		return getSlots().stream().filter(slot -> slot.getEvent().getDateTime().isBefore(DateUtils.now())).count();
-	}
-
 	public List<Event> getSlottedEvents() {
 		return getSlots().stream().map(Slot::getEvent).toList();
 	}

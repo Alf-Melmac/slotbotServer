@@ -11,6 +11,7 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
 import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.SlotRepository;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
@@ -168,5 +169,15 @@ public class SlotService {
 		actionLogService.logEventAction(LogAction.SWAP, slot1.getEvent(), slot1.getUser(), slot2.getUser());
 
 		return slot1.getEvent();
+	}
+
+	/**
+	 * Counts the number of slots of the given user before today
+	 *
+	 * @param user to count slots for
+	 * @return number of participations
+	 */
+	public long countByUserBeforeToday(@NonNull User user) {
+		return slotRepository.countByUserAndSquadEventDateTimeBefore(user, DateUtils.now());
 	}
 }

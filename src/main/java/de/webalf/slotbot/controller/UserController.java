@@ -9,6 +9,7 @@ import de.webalf.slotbot.model.dtos.website.profile.UserOwnProfileDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
 import de.webalf.slotbot.model.external.discord.DiscordUser;
 import de.webalf.slotbot.service.NotificationSettingsService;
+import de.webalf.slotbot.service.SlotService;
 import de.webalf.slotbot.service.UserUpdateService;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
@@ -42,6 +43,7 @@ public class UserController {
 	private final DiscordApiService discordApiService;
 	private final DiscordAuthenticationService discordAuthenticationService;
 	private final UserUpdateService userService;
+	private final SlotService slotService;
 	private final NotificationSettingsService notificationSettingsService;
 
 	@GetMapping("{userId}")
@@ -56,7 +58,7 @@ public class UserController {
 		return UserProfileDto.builder()
 				.user(DiscordUserAssembler.toDto(discordUser))
 				.roles("@" + String.join(", @", discordAuthenticationService.getRoles(userId)))
-				.participatedEventsCount(user.countParticipatedEvents())
+				.participatedEventsCount(slotService.countByUserBeforeToday(user))
 				.ownProfile(ownProfile)
 				.build();
 	}
