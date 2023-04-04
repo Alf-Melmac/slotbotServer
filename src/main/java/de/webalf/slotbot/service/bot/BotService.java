@@ -1,10 +1,8 @@
 package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
-import de.webalf.slotbot.service.bot.listener.GuildReadyListener;
-import de.webalf.slotbot.service.bot.listener.InteractionListener;
-import de.webalf.slotbot.service.bot.listener.MessageReceivedListener;
-import de.webalf.slotbot.service.bot.listener.ReactionAddListener;
+import de.webalf.slotbot.service.EventDiscordInformationService;
+import de.webalf.slotbot.service.bot.listener.*;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
@@ -32,6 +30,7 @@ public class BotService {
 	private final ReactionAddService reactionAddService;
 	private final CommandsService commandsService;
 	private final MessageSource messageSource;
+	private final EventDiscordInformationService eventDiscordInformationService;
 
 	@Getter
 	private JDA jda;
@@ -43,12 +42,13 @@ public class BotService {
 
 		jda = JDABuilder
 				.createLight(token)
-				.enableIntents(GUILD_MEMBERS, GUILD_MESSAGES, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, MESSAGE_CONTENT) //TODO Validate which intents are needed
+				.enableIntents(GUILD_MEMBERS, GUILD_MESSAGES, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, MESSAGE_CONTENT)
 				.addEventListeners(
 						new MessageReceivedListener(discordProperties, commandClassHelper),
 						new ReactionAddListener(reactionAddService),
 						new GuildReadyListener(commandsService),
-						new InteractionListener(commandClassHelper, messageSource))
+						new InteractionListener(commandClassHelper, messageSource),
+						new ChannelDeleteListener(eventDiscordInformationService))
 				.disableIntents(GUILD_MODERATION, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING, SCHEDULED_EVENTS)
 				.build();
 	}

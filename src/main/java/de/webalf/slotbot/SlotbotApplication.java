@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.config.BootstrapMode;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author Alf
@@ -17,6 +18,7 @@ import org.springframework.data.repository.config.BootstrapMode;
  */
 @SpringBootApplication
 @EnableCaching
+@EnableAsync
 @ConfigurationPropertiesScan("de.webalf.slotbot.configuration.properties")
 @EnableJpaRepositories(bootstrapMode = BootstrapMode.DEFERRED)
 /*This annotation (with bootstrapMode) had to be introduced with spring-boot-starter-parent version 2.3.7.RELEASE. Without it, the application cannot start.

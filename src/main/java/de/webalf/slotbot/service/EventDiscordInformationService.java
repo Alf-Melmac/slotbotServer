@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -87,5 +88,16 @@ public class EventDiscordInformationService {
 			discordInformation.setEvent(event);
 			event.getDiscordInformation().add(discordInformation);
 		});
+	}
+
+	/**
+	 * Removes the discord information for the given channel
+	 *
+	 * @param channelId to remove information for
+	 */
+	@Async
+	public void removeByChannel(long channelId) {
+		findEventByChannel(channelId)
+				.ifPresent(event -> event.getDiscordInformation().removeIf(information -> information.getChannel() == channelId));
 	}
 }
