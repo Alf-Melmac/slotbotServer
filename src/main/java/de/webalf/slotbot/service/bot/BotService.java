@@ -31,6 +31,7 @@ public class BotService {
 	private final CommandsService commandsService;
 	private final MessageSource messageSource;
 	private final EventDiscordInformationService eventDiscordInformationService;
+	private final GuildBotService guildBotService;
 
 	@Getter
 	private JDA jda;
@@ -48,7 +49,7 @@ public class BotService {
 						new ReactionAddListener(reactionAddService),
 						new GuildReadyListener(commandsService),
 						new InteractionListener(commandClassHelper, messageSource),
-						new ChannelDeleteListener(eventDiscordInformationService))
+						new DeleteListener(eventDiscordInformationService, guildBotService, messageSource))
 				.disableIntents(GUILD_MODERATION, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING, SCHEDULED_EVENTS)
 				.build();
 	}

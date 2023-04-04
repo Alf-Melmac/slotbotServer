@@ -91,7 +91,7 @@ public class EventDiscordInformationService {
 	}
 
 	/**
-	 * Removes the discord information for the given channel
+	 * Removes the discord information for the given channel (if present)
 	 *
 	 * @param channelId to remove information for
 	 */
@@ -99,5 +99,27 @@ public class EventDiscordInformationService {
 	public void removeByChannel(long channelId) {
 		findEventByChannel(channelId)
 				.ifPresent(event -> event.getDiscordInformation().removeIf(information -> information.getChannel() == channelId));
+	}
+
+	/**
+	 * Removes the discord information for the given channel and messageId (if present).
+	 * If a discord information is removed, the given runnable is executed.
+	 *
+	 * @param channelId to remove information for
+	 * @param messageId to remove information for
+	 * @param onRemoval to execute if a {@link EventDiscordInformation} is removed
+	 */
+	@Async
+	public void removeByMessage(long channelId, long messageId, Runnable onRemoval) {
+		findEventByChannel(channelId)
+				.ifPresent(event -> event.getDiscordInformation().removeIf(information -> {
+					final boolean match = information.getInfoMsg() == messageId
+							|| information.getSlotListMsgPartOne() == messageId
+							|| information.getSlotListMsgPartTwo() == messageId;
+					if (match) {
+						onRemoval.run();
+					}
+					return match;
+				}));
 	}
 }
