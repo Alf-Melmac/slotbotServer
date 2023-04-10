@@ -66,7 +66,7 @@ public class InteractionListener extends ListenerAdapter {
 	}
 
 	private void unknownException(@NonNull GenericCommandInteractionEvent event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
-		final String errorCode = UUID.nameUUIDFromBytes(e.getMessage().getBytes()).toString();
+		final String errorCode = getErrorCode(e);
 		log.error("Failed to execute command interaction {} with options {} - {}", commandClass.getName(), event.getOptions(), errorCode, e);
 		failedInteraction(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
@@ -106,7 +106,7 @@ public class InteractionListener extends ListenerAdapter {
 	}
 
 	private void unknownException(@NonNull StringSelectInteractionEvent event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
-		final String errorCode = UUID.nameUUIDFromBytes(e.getMessage().getBytes()).toString();
+		final String errorCode = getErrorCode(e);
 		log.error("Failed to process string selection menu selection {} with id {} - {}", commandClass.getName(), event.getComponentId(), errorCode, e);
 		replyAndRemoveComponents(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
@@ -131,5 +131,10 @@ public class InteractionListener extends ListenerAdapter {
 		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 			unknownException(event, commandClass, e);
 		}
+	}
+
+	private String getErrorCode(ReflectiveOperationException e) {
+		final String message = e.getMessage();
+		return message != null ? UUID.nameUUIDFromBytes(message.getBytes()).toString() : UUID.randomUUID().toString();
 	}
 }
