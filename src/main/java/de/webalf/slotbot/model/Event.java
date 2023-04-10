@@ -15,9 +15,7 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -285,24 +283,6 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	// Setter
-
-	/**
-	 * Sets the date part of the event DateTime
-	 *
-	 * @param date to set
-	 */
-	public void setDate(@NonNull LocalDate date) {
-		setDateTime(getDateTime().withYear(date.getYear()).withMonth(date.getMonth().getValue()).withDayOfMonth(date.getDayOfMonth()));
-	}
-
-	/**
-	 * Sets the time part of the event DateTime
-	 *
-	 * @param time to set
-	 */
-	public void setTime(@NonNull LocalTime time) {
-		setDateTime(getDateTime().withHour(time.getHour()).withMinute(time.getMinute()));
-	}
 
 	/**
 	 * Set parents in child objects

@@ -39,8 +39,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 
 	@Query("SELECT e " +
 			"FROM Event e " +
-			"WHERE e.dateTime BETWEEN :start AND :end AND e.hidden = false AND " +
-			"(" +
+			"WHERE e.dateTime BETWEEN :start AND :end AND e.hidden = false " +
+			"AND (" +
 			"e.ownerGuild = :guild " +
 			"OR EXISTS(SELECT di FROM e.discordInformation di WHERE di.guild = :guild) " +
 			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE sq.reservedFor = :guild) " +
@@ -51,8 +51,17 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	@Query("SELECT e FROM Event e WHERE (e.ownerGuild = :ownerGuild OR EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild = :ownerGuild)) AND e.hidden = false")
 	List<Event> findAllByGuildAndHiddenFalse(@Param("ownerGuild") Guild ownerGuild);
 
-	@Query("SELECT e FROM Event e WHERE e.dateTime < :dateTime ORDER BY e.dateTime")
-	List<Event> findAllByDateTimeIsBeforeAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime);
+	@Query("SELECT e " +
+			"FROM Event e " +
+			"WHERE e.dateTime < :dateTime " +
+			"AND (" +
+			"e.ownerGuild = :guild " +
+			"OR EXISTS(SELECT di FROM e.discordInformation di WHERE di.guild = :guild) " +
+			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE sq.reservedFor = :guild) " +
+			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE EXISTS(SELECT sl FROM sq.slotList sl WHERE sl.reservedFor = :guild))" +
+			")" +
+			"ORDER BY e.dateTime")
+	List<Event> findAllByDateTimeIsBeforeAndOwnerGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("guild") Guild guild);
 
 	List<Event> findByDateTimeGreaterThan(LocalDateTime dateTime);
 

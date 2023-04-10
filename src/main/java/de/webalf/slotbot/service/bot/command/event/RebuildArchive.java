@@ -45,7 +45,8 @@ public class RebuildArchive implements DiscordSlashCommand {
 			return;
 		}
 
-		eventBotService.findAllInPast().forEach(pastEvent -> sendMessage(archiveChannel, EventUtils.buildArchiveMessage(pastEvent)));
+		eventBotService.findAllInPast(guild.getIdLong())
+				.forEach(pastEvent -> sendMessage(archiveChannel, EventUtils.buildArchiveMessage(pastEvent)));
 		reply(event, archiveChannel.getAsMention());
 	}
 }

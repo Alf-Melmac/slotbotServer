@@ -38,8 +38,8 @@ public class EventBotService {
 		return findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	public List<Event> findAllInPast() {
-		return eventService.findAllInPast();
+	public List<Event> findAllInPast(long guildId) {
+		return eventService.findAllInPast(guildId);
 	}
 
 	public List<Event> findAllNotAssignedInFuture(long guildId) {

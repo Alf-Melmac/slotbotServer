@@ -149,12 +149,12 @@ public class EventService {
 	}
 
 	/**
-	 * Returns all events that happened before now
+	 * Returns all events for the given guild that happened before now
 	 *
 	 * @return all events from the past
 	 */
-	public List<Event> findAllInPast() {
-		return eventRepository.findAllByDateTimeIsBeforeAndOrderByDateTime(DateUtils.now());
+	public List<Event> findAllInPast(long guildId) {
+		return eventRepository.findAllByDateTimeIsBeforeAndOwnerGuildAndOrderByDateTime(DateUtils.now(), guildService.findExisting(guildId));
 	}
 
 	/**
