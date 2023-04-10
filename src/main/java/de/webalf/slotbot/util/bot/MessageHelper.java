@@ -22,11 +22,7 @@ public class MessageHelper {
 	private final BotService botService;
 
 	public void sendDmToRecipient(@NonNull User recipient, String messageText) {
-		sendDmToRecipient(recipient.getId(), messageText);
-	}
-
-	public void sendDmToRecipient(long recipientId, String messageText) {
-		botService.getJda().retrieveUserById(recipientId).queue(
+		botService.getJda().retrieveUserById(recipient.getId()).queue(
 				user -> sendDm(user, messageText)
 		);
 	}

@@ -24,7 +24,7 @@ public final class SlotUtils {
 	 * @return effective reservation for display
 	 * @see #getEffectiveReservedForDisplay(GuildDto, GuildDto, List)
 	 */
-	public Guild getEffectiveReservedForDisplay(Guild reservedFor, @NonNull Squad squad) {
+	public static Guild getEffectiveReservedForDisplay(Guild reservedFor, @NonNull Squad squad) {
 		final Guild effectiveReservedFor = reservedFor != null ? reservedFor : squad.getReservedFor();
 		if (squad.getReservedFor() != null && squad.getReservedFor().equals(effectiveReservedFor) &&
 				squad.getSlotList().stream().allMatch(slot -> effectiveReservedFor.equals(slot.getEffectiveReservedFor()))) {
@@ -43,7 +43,7 @@ public final class SlotUtils {
 	 * @return effective reservation for display
 	 * @see #getEffectiveReservedForDisplay(Guild, Squad)
 	 */
-	public GuildDto getEffectiveReservedForDisplay(GuildDto reservedFor, GuildDto squadReservedFor, List<? extends SlotReferencelessDto> slotList) {
+	public static GuildDto getEffectiveReservedForDisplay(GuildDto reservedFor, GuildDto squadReservedFor, List<? extends SlotReferencelessDto> slotList) {
 		final GuildDto effectiveReservedFor = reservedFor != null ? reservedFor : squadReservedFor;
 		if (squadReservedFor != null && squadReservedFor.equals(effectiveReservedFor) &&
 				slotList.stream().allMatch(slot -> effectiveReservedFor.equals(slot.getReservedFor() != null ? slot.getReservedFor() : squadReservedFor))) {

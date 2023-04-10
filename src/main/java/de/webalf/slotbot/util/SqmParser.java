@@ -28,7 +28,6 @@ import static de.webalf.slotbot.util.StringUtils.removeNonDigitCharacters;
 @UtilityClass
 @Slf4j
 public final class SqmParser {
-
 	public static List<MinimalSquadDto> createSlotListFromFile(MultipartFile file) {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 			final List<MinimalSquadDto> read = read(reader);
@@ -170,7 +169,7 @@ public final class SqmParser {
 	 * @param s     to parse slot from. Include number and name
 	 * @param squad to add slot to
 	 */
-	private void readSlot(String s, MinimalSquadDto squad) {
+	private static void readSlot(String s, MinimalSquadDto squad) {
 		final Matcher matcher = DIGIT.matcher(s.trim());
 
 		MinimalSlotDto slot;

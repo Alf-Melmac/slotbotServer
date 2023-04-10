@@ -100,22 +100,6 @@ public final class StringUtils {
 	}
 
 	/**
-	 * Gets the first string that is not empty.
-	 *
-	 * @param fallback to use if all given strings are empty
-	 * @param strs     strings that may be null or empty
-	 * @return first found not empty string or the given fallback if non is not empty
-	 */
-	public static String getFirstNotEmpty(String fallback, String... strs) {
-		for (String str : strs) {
-			if (isNotEmpty(str)) {
-				return str;
-			}
-		}
-		return fallback;
-	}
-
-	/**
 	 * Removes the prefix if the string starts with it.
 	 *
 	 * @param s      to check

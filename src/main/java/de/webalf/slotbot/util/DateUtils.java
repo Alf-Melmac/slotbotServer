@@ -40,7 +40,7 @@ public final class DateUtils {
 	/**
 	 * Returns the current date time in utc offset
 	 */
-	public LocalDateTime now() {
+	public static LocalDateTime now() {
 		return LocalDateTime.now(UTC);
 	}
 }

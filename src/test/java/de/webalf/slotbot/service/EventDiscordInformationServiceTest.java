@@ -120,7 +120,6 @@ class EventDiscordInformationServiceTest {
 		assertMessageEquals("Mindestens einer der übergebenen Guilds ist dieses Event bereits zugeordnet.", exception);
 	}
 
-
 	@Test
 	void updateDiscordInformationThrowsIfChannelAlreadyHasEvent() {
 		final long existingEventChannel = 1123;

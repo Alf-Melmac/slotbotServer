@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,11 +25,7 @@ public class EventPostAssembler {
 	private final MinimalSquadAssembler squadAssembler;
 	private final GuildService guildService;
 
-	public Event fromDto(EventPostDto dto) {
-		if (dto == null) {
-			return null;
-		}
-
+	public Event fromDto(@NonNull EventPostDto dto) {
 		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
 		final Event event = Event.builder()
 				.hidden(parseBoolean(dto.getHidden(), false))

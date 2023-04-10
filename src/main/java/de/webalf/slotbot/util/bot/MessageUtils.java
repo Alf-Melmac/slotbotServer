@@ -33,7 +33,7 @@ import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 @UtilityClass
 @Slf4j
 public final class MessageUtils {
-	static final int STANDARD_DELETION_TIME = 5; //In seconds
+	private static final int STANDARD_DELETION_TIME = 5; //In seconds
 
 	/**
 	 * Checks if the given message is not {@link Message#isFromGuild()}

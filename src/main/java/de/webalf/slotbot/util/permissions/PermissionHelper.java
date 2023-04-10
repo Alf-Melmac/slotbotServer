@@ -24,7 +24,6 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Rol
  */
 @UtilityClass
 public final class PermissionHelper {
-
 	/**
 	 * Returns the user id of the currently logged-in oauth user
 	 *
@@ -46,7 +45,7 @@ public final class PermissionHelper {
 		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(APPLICATION_ROLE_VALUES.keySet()::contains).collect(Collectors.toSet());
 	}
 
-	private OAuth2User getLoggedIn() {
+	private static OAuth2User getLoggedIn() {
 		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof OAuth2User oAuth2User) {
 			return oAuth2User;

@@ -39,24 +39,4 @@ public final class ListUtils {
 	public static boolean zeroArguments(@NonNull Collection<?> list) {
 		return CollectionUtils.isEmpty(list);
 	}
-
-	/**
-	 * Checks if the list has only one element inside
-	 *
-	 * @param list to check
-	 * @return true if only one argument is inside the list
-	 */
-	public static boolean oneArgument(@NonNull Collection<?> list) {
-		return list.size() == 1;
-	}
-
-	/**
-	 * Checks if the list has two element inside
-	 *
-	 * @param list to check
-	 * @return true if two arguments are inside the list
-	 */
-	public static boolean twoArguments(@NonNull Collection<?> list) {
-		return list.size() == 2;
-	}
 }

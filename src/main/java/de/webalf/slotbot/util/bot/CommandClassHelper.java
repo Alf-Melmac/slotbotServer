@@ -9,6 +9,7 @@ import de.webalf.slotbot.service.bot.*;
 import de.webalf.slotbot.service.bot.command.DiscordCommand;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
+import de.webalf.slotbot.service.bot.command.DiscordUserContext;
 import de.webalf.slotbot.util.EventHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class CommandClassHelper {
 	private final DiscordProperties discordProperties;
 
 	/**
-	 * Tries to create a new constructor instance for the given {@link DiscordCommand}, {@link DiscordSlashCommand} or {@link DiscordStringSelect} class
+	 * Tries to create a new constructor instance for the given {@link DiscordCommand}, {@link DiscordSlashCommand}, {@link DiscordStringSelect} or {@link DiscordUserContext} class
 	 *
 	 * @param commandClass command to get constructor for
 	 * @return a new instance of the declared constructor
