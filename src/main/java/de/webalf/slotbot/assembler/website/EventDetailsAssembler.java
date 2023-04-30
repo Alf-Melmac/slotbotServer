@@ -3,10 +3,7 @@ package de.webalf.slotbot.assembler.website;
 import de.webalf.slotbot.assembler.EventFieldAssembler;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.assembler.GuildAssembler;
-import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.EventField;
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
+import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
@@ -26,6 +23,7 @@ import java.util.Locale;
 import java.util.stream.StreamSupport;
 
 import static de.webalf.slotbot.service.GuildService.getLogo;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
 
 /**
  * @author Alf
@@ -103,17 +101,18 @@ public class EventDetailsAssembler {
 	}
 
 	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot, boolean optimizeReservedFor) {
+		final User user = slot.getUser();
 		String text = null;
 		boolean blocked = false;
-		if (slot.getUser() != null) {
-			if (slot.getUser().isDefaultUser()) {
+		if (user != null) {
+			if (user.isDefaultUser()) {
 				text = slot.getReplacementText();
 				if (StringUtils.isEmpty(text)) {
 					text = "Gesperrt";
 				}
 				blocked = true;
 			} else {
-				text = discordApiService.getName(LongUtils.toString(slot.getUser().getId()), slot.getSquad().getEvent().getOwnerGuild().getId());
+				text = discordApiService.getName(LongUtils.toString(user.getId()), slot.getSquad().getEvent().getOwnerGuild().getId());
 			}
 		}
 
@@ -123,8 +122,9 @@ public class EventDetailsAssembler {
 				.number(slot.getNumber())
 				.reservedFor(GuildAssembler.toDto(optimizeReservedFor ? slot.getEffectiveReservedForDisplay() : slot.getReservedFor()))
 				.text(text)
-				.occupied(!(slot.getUser() == null || slot.getUser().isDefaultUser()))
+				.occupied(!(user == null || user.isDefaultUser()))
 				.blocked(blocked)
+				.own(user != null && isLoggedInUser(user.getId()))
 				.build();
 	}
 }

@@ -31,4 +31,6 @@ public class EventDetailsSlotDto extends AbstractIdEntityDto {
 	boolean occupied;
 
 	boolean blocked;
+
+	boolean own;
 }
