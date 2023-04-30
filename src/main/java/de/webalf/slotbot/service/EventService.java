@@ -285,11 +285,7 @@ public class EventService {
 		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		User user = userService.find(userDto);
 
-		slot.assertSlotIsPossible(user);
-		event.unslotIfAlreadySlotted(user);
-		eventRepository.saveAndFlush(event);
-		slotService.slot(slot, user);
-		return event;
+		return slot(event, slot, user);
 	}
 
 	/**
@@ -297,6 +293,31 @@ public class EventService {
 	 */
 	public Event slot(long channel, int slotNumber, UserDto userDto) {
 		return slot(findByChannel(channel), slotNumber, userDto);
+	}
+
+	/**
+	 * Slots the {@link UserService#getLoggedIn() logged-in user} into the slot found by given id
+	 */
+	public Event slot(long slotId) {
+		final Slot slot = slotService.findById(slotId);
+		return slot(slot.getEvent(), slot, userService.getLoggedIn());
+	}
+
+	/**
+	 * Slots the given user into the given slot of the given event. Checks slotting permissions and ensures unslot
+	 * before slotting.
+	 *
+	 * @param event event
+	 * @param slot slot to slot into
+	 * @param user user to slot
+	 * @return event in which the person has been slotted
+	 */
+	private Event slot(@NonNull Event event, @NonNull Slot slot, @NonNull User user) {
+		slot.assertSlotIsPossible(user);
+		event.unslotIfAlreadySlotted(user);
+		eventRepository.saveAndFlush(event);
+		slotService.slot(slot, user);
+		return event;
 	}
 
 	/**

@@ -45,7 +45,7 @@ public final class PermissionHelper {
 		return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).filter(APPLICATION_ROLE_VALUES.keySet()::contains).collect(Collectors.toSet());
 	}
 
-	private static OAuth2User getLoggedIn() {
+	public static OAuth2User getLoggedIn() {
 		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof OAuth2User oAuth2User) {
 			return oAuth2User;

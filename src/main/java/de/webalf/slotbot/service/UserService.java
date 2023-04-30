@@ -9,6 +9,7 @@ import de.webalf.slotbot.model.dtos.website.UserNameDto;
 import de.webalf.slotbot.repository.UserRepository;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,13 @@ public class UserService {
 	 */
 	User findExisting(long id) {
 		return userRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	/**
+	 * Return the currently {@link PermissionHelper#getLoggedInUserId() logged in user}
+	 */
+	public User getLoggedIn() {
+		return findExisting(Long.parseLong(PermissionHelper.getLoggedInUserId()));
 	}
 
 	public User getDefaultUser() {

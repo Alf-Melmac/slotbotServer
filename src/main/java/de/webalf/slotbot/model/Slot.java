@@ -145,7 +145,7 @@ public class Slot extends AbstractSuperIdEntity {
 	public void assertSlotIsPossible(@NonNull User user) {
 		if (isSlotWithSlottedUser(user)) {
 			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
-		} else if (!isEmpty()) {
+		} else if (isNotEmpty()) {
 			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
 		} else if (!allowedByReservation(user)) {
 			throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();

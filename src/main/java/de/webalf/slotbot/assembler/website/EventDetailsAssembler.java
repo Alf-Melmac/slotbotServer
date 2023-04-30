@@ -8,10 +8,13 @@ import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
+import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
+import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser
 public class EventDetailsAssembler {
 	private final DiscordApiService discordApiService;
 	private final MessageSource messageSource;
+	private final UserService userService;
 
 	public EventDetailsDto toDto(@NonNull Event event) {
 		return toDto(event, true);
@@ -103,6 +107,7 @@ public class EventDetailsAssembler {
 	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot, boolean optimizeReservedFor) {
 		final User user = slot.getUser();
 		String text = null;
+		boolean occupied = false;
 		boolean blocked = false;
 		if (user != null) {
 			if (user.isDefaultUser()) {
@@ -113,6 +118,7 @@ public class EventDetailsAssembler {
 				blocked = true;
 			} else {
 				text = discordApiService.getName(LongUtils.toString(user.getId()), slot.getSquad().getEvent().getOwnerGuild().getId());
+				occupied = true;
 			}
 		}
 
@@ -122,9 +128,10 @@ public class EventDetailsAssembler {
 				.number(slot.getNumber())
 				.reservedFor(GuildAssembler.toDto(optimizeReservedFor ? slot.getEffectiveReservedForDisplay() : slot.getReservedFor()))
 				.text(text)
-				.occupied(!(user == null || user.isDefaultUser()))
+				.occupied(occupied)
 				.blocked(blocked)
 				.own(user != null && isLoggedInUser(user.getId()))
+				.slottable(PermissionHelper.getLoggedIn() == null || !DateUtils.isInFuture(slot.getEvent().getDateTime()) ? null : slot.slotIsPossible(userService.getLoggedIn()))
 				.build();
 	}
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 
 /**
  * @author Alf
@@ -33,7 +32,7 @@ public class NotificationSettingsController {
 	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public List<NotificationSettingsReferencelessDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
 		return NotificationSettingAssembler.toReferencelessDtoList(
-				notificationSettingsService.updateGlobalNotificationSettings(userService.find(Long.parseLong(getLoggedInUserId())), notificationSettings)
+				notificationSettingsService.updateGlobalNotificationSettings(userService.getLoggedIn(), notificationSettings)
 		);
 	}
 }

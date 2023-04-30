@@ -38,6 +38,17 @@ public class SlotService {
 	private final ActionLogService actionLogService;
 
 	/**
+	 * Returns the slot with the given id
+	 *
+	 * @param id of the slot to get
+	 * @return slot
+	 * @throws ResourceNotFoundException if no slot with the given id exists
+	 */
+	Slot findById(long id) {
+		return slotRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	/**
 	 * Creates a new {@link Slot} with the values from the given {@link SlotDto}
 	 *
 	 * @param dto values
