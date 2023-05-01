@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
 
 /**
  * @author Alf
@@ -98,5 +99,11 @@ public class EventController {
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
 		return getDefault(eventTypeName);
+	}
+
+	@PutMapping("/slotting/{id}")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public EventDetailsDto putSlotting(@PathVariable(value = "id") long slotId) {
+		return eventDetailsAssembler.toDto(eventService.slot(slotId));
 	}
 }
