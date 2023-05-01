@@ -282,17 +282,9 @@ public class EventService {
 	 * @throws BusinessRuntimeException if the slot is already occupied
 	 */
 	public Event slot(@NonNull Event event, int slotNumber, UserDto userDto) {
-		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		User user = userService.find(userDto);
-
+		final Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		final User user = userService.find(userDto);
 		return slot(event, slot, user);
-	}
-
-	/**
-	 * Searches for the given channel the matching event and {@link #slot(Event, int, UserDto)}
-	 */
-	public Event slot(long channel, int slotNumber, UserDto userDto) {
-		return slot(findByChannel(channel), slotNumber, userDto);
 	}
 
 	/**
@@ -308,8 +300,8 @@ public class EventService {
 	 * before slotting.
 	 *
 	 * @param event event
-	 * @param slot slot to slot into
-	 * @param user user to slot
+	 * @param slot  slot to slot into
+	 * @param user  user to slot
 	 * @return event in which the person has been slotted
 	 */
 	private Event slot(@NonNull Event event, @NonNull Slot slot, @NonNull User user) {
@@ -326,19 +318,33 @@ public class EventService {
 	 * @param event   event
 	 * @param userDto person that should be unslotted
 	 * @return Event in which the person has been unslotted
+	 * @throws ResourceNotFoundException if the user is not slotted in the given event
 	 */
 	public Event unslot(@NonNull Event event, UserDto userDto) {
-		User user = userService.find(userDto);
-		Slot slot = event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new);
-		slotService.unslot(slot, user);
-		return event;
+		final User user = userService.find(userDto);
+		final Slot slot = event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new);
+		return unslot(event, slot, user);
 	}
 
 	/**
-	 * Searches for the given channel the matching event and {@link #unslot(Event, UserDto)}
+	 * Removes the {@link UserService#getLoggedIn() logged-in user} from the slot found by given id
 	 */
-	public Event unslot(long channel, UserDto userDto) {
-		return unslot(findByChannel(channel), userDto);
+	public Event unslot(long slotId) {
+		final Slot slot = slotService.findById(slotId);
+		return unslot(slot.getEvent(), slot, userService.getLoggedIn());
+	}
+
+	/**
+	 * Removes the given user from its slot in the given event.
+	 *
+	 * @param event event
+	 * @param slot  slot to unslot from
+	 * @param user  user to unslot
+	 * @return event in which the unslot has been performed
+	 */
+	private Event unslot(@NonNull Event event, @NonNull Slot slot, @NonNull User user) {
+		slotService.unslot(slot, user);
+		return event;
 	}
 
 	/**

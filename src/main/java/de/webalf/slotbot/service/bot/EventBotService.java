@@ -59,11 +59,11 @@ public class EventBotService {
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {
-		eventService.slot(channel, slotNumber, userDtoWithId(userId));
+		eventService.slot(eventService.findByChannel(channel), slotNumber, userDtoWithId(userId));
 	}
 
 	public void unslot(long channel, String userId) {
-		eventService.unslot(channel, userDtoWithId(userId));
+		eventService.unslot(eventService.findByChannel(channel), userDtoWithId(userId));
 	}
 
 	public void unslot(long channel, int slotNumber) {

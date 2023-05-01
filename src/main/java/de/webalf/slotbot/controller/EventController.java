@@ -106,4 +106,10 @@ public class EventController {
 	public EventDetailsDto putSlotting(@PathVariable(value = "id") long slotId) {
 		return eventDetailsAssembler.toDto(eventService.slot(slotId));
 	}
+
+	@PutMapping("/unslotting/{id}")
+	@PreAuthorize(HAS_ROLE_EVERYONE)
+	public EventDetailsDto putUnslotting(@PathVariable(value = "id") long slotId) {
+		return eventDetailsAssembler.toDto(eventService.unslot(slotId));
+	}
 }
