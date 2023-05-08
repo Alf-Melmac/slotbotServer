@@ -34,7 +34,7 @@ class DiscordMarkdownTest {
 						"text styles"),
 				Arguments.of("""
 						Hello
-						World""", String.format("Hello%s\nWorld", HTML_BREAK), "line break"),
+						World""", String.format("Hello\n%s\nWorld", HTML_BREAK), "line break"),
 				Arguments.of("Evil <script>alert('Hello World');</script> <a href=\"https://example.com\">Link</a>",
 						"Evil  Link", "filters other html tags")
 		);
