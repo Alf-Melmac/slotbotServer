@@ -1,6 +1,5 @@
 package de.webalf.slotbot.service.bot;
 
-import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
@@ -11,6 +10,7 @@ import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +22,7 @@ import java.util.Optional;
  * @since 04.01.2021
  */
 @Service
+@Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventBotService {
 	private final EventService eventService;
@@ -35,7 +36,7 @@ public class EventBotService {
 	}
 
 	public Event findByChannelOrThrow(long channel) {
-		return findByChannel(channel).orElseThrow(ResourceNotFoundException::new);
+		return eventService.findByChannel(channel);
 	}
 
 	public List<Event> findAllInPast(long guildId) {
@@ -59,11 +60,11 @@ public class EventBotService {
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {
-		eventService.slot(eventService.findByChannel(channel), slotNumber, userDtoWithId(userId));
+		eventService.slot(findByChannelOrThrow(channel), slotNumber, userDtoWithId(userId));
 	}
 
 	public void unslot(long channel, String userId) {
-		eventService.unslot(eventService.findByChannel(channel), userDtoWithId(userId));
+		eventService.unslot(findByChannelOrThrow(channel), userDtoWithId(userId));
 	}
 
 	public void unslot(long channel, int slotNumber) {
