@@ -43,8 +43,9 @@ public class EventUpdateService {
 	private final SchedulerService schedulerService;
 	private final MessageSource messageSource;
 
-	public void update(@NonNull Event event) throws IllegalStateException {
+	public void update(@NonNull EventUpdateSetting eventUpdateSetting) {
 		log.trace("Update");
+		final Event event = eventUpdateSetting.event();
 
 		event.getDiscordInformation().forEach(discordInformation -> {
 			final TextChannel eventChannel = botService.getJda().getTextChannelById(discordInformation.getChannel());
@@ -54,11 +55,17 @@ public class EventUpdateService {
 
 			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
 			final Locale guildLocale = discordInformation.getGuild().getLocale();
-			eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)).queue();
-			final List<String> slotList = eventApiDto.getSlotList(discordInformation.getGuild().getId(), messageSource.getMessage("event.slotlist.title", null, guildLocale));
-			//noinspection ConstantConditions SlotList can't be null here
-			eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
-			eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
+			if (eventUpdateSetting.embed()) {
+				log.trace("Edit embed");
+				eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)).queue();
+			}
+			if (eventUpdateSetting.slotlist()) {
+				log.trace("Edit slotlist");
+				final List<String> slotList = eventApiDto.getSlotList(discordInformation.getGuild().getId(), messageSource.getMessage("event.slotlist.title", null, guildLocale));
+				//noinspection ConstantConditions SlotList can't be null here
+				eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
+				eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
+			}
 		});
 	}
 

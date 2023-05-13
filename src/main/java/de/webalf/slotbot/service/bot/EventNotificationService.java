@@ -66,10 +66,10 @@ public class EventNotificationService {
 				return;
 			}
 			SCHEDULED_NOTIFICATIONS.computeIfAbsent(buildNotificationIdentifier(event, user, delay),
-					k -> schedulerService.schedule(() -> {
-						messageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(event.getDateTime())}, guildLocale));
-						SCHEDULED_NOTIFICATIONS.remove(k);
-					}, delay));
+					k -> schedulerService.schedule(
+							() -> messageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(event.getDateTime())}, guildLocale)),
+							() -> SCHEDULED_NOTIFICATIONS.remove(k),
+							delay));
 		});
 	}
 
