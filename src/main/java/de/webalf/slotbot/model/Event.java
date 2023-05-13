@@ -9,6 +9,7 @@ import de.webalf.slotbot.util.EventUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -78,6 +79,7 @@ public class Event extends AbstractSuperIdEntity {
 
 	@Column(name = "event_picture_url", length = URL_DB)
 	@Size(max = URL)
+	@Pattern(regexp = "|\\s*(https?|attachment)://\\S+\\s*") //See EmbedBuilder.URL_PATTERN
 	private String pictureUrl;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

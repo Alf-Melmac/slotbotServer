@@ -15,6 +15,7 @@ import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -228,7 +229,12 @@ public class EventService {
 		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
-		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), event::setPictureUrl);
+		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), pictureUrl -> {
+			if (!EmbedBuilder.URL_PATTERN.matcher(pictureUrl).matches()) {
+				throw BusinessRuntimeException.builder().title("Invalid picture url pattern").build();
+			}
+			event.setPictureUrl(pictureUrl);
+		});
 		DtoUtils.ifPresent(dto.getReserveParticipating(), event::setReserveParticipating);
 
 		DtoUtils.ifPresentObject(dto.getDetails(), details -> eventFieldService.updateEventDetails(details, event));
