@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.constant.Urls.API;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_ADMIN_PERMISSION;
@@ -35,7 +36,11 @@ public class StatusApiController {
 
 	@GetMapping("/scheduledNotifications")
 	@PreAuthorize(HAS_ADMIN_PERMISSION)
-	public Map<NotificationIdentifier, ScheduledFuture<?>> getAllScheduledEventNotifications() {
-		return EventNotificationService.getSCHEDULED_NOTIFICATIONS();
+	public Map<NotificationIdentifier, Long> getAllScheduledEventNotifications() {
+		return EventNotificationService.getSCHEDULED_NOTIFICATIONS()
+				.entrySet()
+				.stream()
+				.map(entry -> Map.entry(entry.getKey(), entry.getValue().getDelay(TimeUnit.MINUTES)))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 }
