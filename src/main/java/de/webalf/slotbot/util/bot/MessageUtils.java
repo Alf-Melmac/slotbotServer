@@ -273,9 +273,9 @@ public final class MessageUtils {
 
 	private static void dmFailure(User user, Consumer<? super Message> success, boolean callSuccessOnFailure, Throwable fail) {
 		if (fail instanceof ErrorResponseException ex && ex.getErrorResponse() == CANNOT_SEND_TO_USER) {
-			log.warn("Couldn't send DM to {}. Probably the user prevents receiving messages from the bot.", user.getAsTag());
+			log.warn("Couldn't send DM to @{}. Probably the user prevents receiving messages from the bot.", user.getName());
 		} else {
-			log.warn("Couldn't send DM to {}", user.getAsTag(), fail);
+			log.warn("Couldn't send DM to @{}", user.getName(), fail);
 		}
 
 		if (callSuccessOnFailure) {

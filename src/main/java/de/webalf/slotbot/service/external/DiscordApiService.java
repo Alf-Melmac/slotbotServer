@@ -40,7 +40,7 @@ public class DiscordApiService {
 	 */
 	@Cacheable("discordUsernames")
 	public String getName(String userId) {
-		return getUser(userId).getUsername();
+		return getUser(userId).getEffectiveName();
 	}
 
 	@Cacheable("discordNicknames")

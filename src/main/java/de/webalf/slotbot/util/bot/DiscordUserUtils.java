@@ -1,9 +1,11 @@
 package de.webalf.slotbot.util.bot;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.UserSnowflake;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 /**
@@ -27,9 +29,9 @@ public final class DiscordUserUtils {
 	/**
 	 * @see User#getEffectiveAvatarUrl()
 	 */
-	public static String getAvatarUrl(@NotBlank String id, String avatar, @NotBlank String discriminator) {
+	public static String getAvatarUrl(@NotBlank String id, String avatar) {
 		if (avatar == null) {
-			return getDefaultAvatarUrl(Short.parseShort(discriminator));
+			return getDefaultAvatarUrl(id);
 		}
 		return String.format(User.AVATAR_URL, id, avatar, avatar.startsWith("a_") ? "gif" : "png");
 	}
@@ -37,17 +39,14 @@ public final class DiscordUserUtils {
 	/**
 	 * @see Member#getEffectiveAvatarUrl()
 	 */
-	public static String getAvatarUrl(@NotBlank String guild, @NotBlank String id, String avatar, @NotBlank String discriminator) {
+	public static String getAvatarUrl(@NotBlank String guild, @NotBlank String id, String avatar) {
 		if (avatar == null) {
-			return getDefaultAvatarUrl(Short.parseShort(discriminator));
+			return getDefaultAvatarUrl(id);
 		}
 		return String.format(Member.AVATAR_URL, guild, id, avatar, avatar.startsWith("a_") ? "gif" : "png");
 	}
 
-	/**
-	 * @see User#getDefaultAvatarUrl()
-	 */
-	private static String getDefaultAvatarUrl(short discriminator) {
-		return String.format(User.DEFAULT_AVATAR_URL, discriminator % 5);
+	private static String getDefaultAvatarUrl(@NonNull String id) {
+		return UserSnowflake.fromId(id).getDefaultAvatarUrl();
 	}
 }

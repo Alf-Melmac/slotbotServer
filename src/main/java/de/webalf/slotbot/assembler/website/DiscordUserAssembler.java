@@ -21,11 +21,12 @@ public class DiscordUserAssembler {
 		if (oAuth2User == null) {
 			return null;
 		}
-		String id = getAttribute(oAuth2User, ID);
+		final String id = getAttribute(oAuth2User, ID);
+		final String globalName = getAttribute(oAuth2User, GLOBAL_NAME);
 		return DiscordUserDto.builder()
 				.id(id)
-				.name(getAttribute(oAuth2User, USERNAME))
-				.avatarUrl(getAvatarUrl(id, getAttribute(oAuth2User, AVATAR), getAttribute(oAuth2User, DISCRIMINATOR)))
+				.name(globalName != null ? globalName : getAttribute(oAuth2User, USERNAME))
+				.avatarUrl(getAvatarUrl(id, getAttribute(oAuth2User, AVATAR)))
 				.authorities(getAuthoritiesOfLoggedInUser())
 				.build();
 	}
@@ -33,7 +34,7 @@ public class DiscordUserAssembler {
 	public static DiscordUserDto toDto(DiscordUser user) {
 		return DiscordUserDto.builder()
 				.id(Long.toString(user.getId()))
-				.name(user.getUsername())
+				.name(user.getEffectiveName())
 				.avatarUrl(user.getAvatarUrl())
 				.build();
 	}

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class DiscordOauthUser {
 	private long id;
 	private String username;
+	private String globalName;
 	private String avatar;
-	private short discriminator;
 	private String locale;
 }

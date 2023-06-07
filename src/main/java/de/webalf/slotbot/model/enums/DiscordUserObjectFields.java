@@ -8,7 +8,7 @@ package de.webalf.slotbot.model.enums;
 public enum DiscordUserObjectFields {
 	ID,
 	USERNAME,
-	DISCRIMINATOR,
+	GLOBAL_NAME,
 	AVATAR;
 
 	@Override

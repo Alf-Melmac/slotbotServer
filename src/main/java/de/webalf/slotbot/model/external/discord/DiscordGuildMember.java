@@ -35,7 +35,7 @@ public class DiscordGuildMember {
 		if (nick != null) {
 			return nick;
 		} else if (user != null) {
-			return user.getUsername();
+			return user.getEffectiveName();
 		} else {
 			return null;
 		}
@@ -43,7 +43,7 @@ public class DiscordGuildMember {
 
 	public String getAvatarUrl() {
 		if (avatar != null) {
-			return DiscordUserUtils.getAvatarUrl(Long.toString(guild), Long.toString(user.getId()), avatar, Short.toString(user.getDiscriminator()));
+			return DiscordUserUtils.getAvatarUrl(Long.toString(guild), Long.toString(user.getId()), avatar);
 		}
 		return user.getAvatarUrl();
 	}
