@@ -3,6 +3,7 @@ package de.webalf.slotbot.configuration.authentication.website;
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Objects;
 
+import static org.springframework.boot.web.server.Cookie.SameSite.STRICT;
+import static org.springframework.security.config.Customizer.withDefaults;
+
 /**
  * @author Alf
  * @since 20.10.2020
@@ -42,9 +46,13 @@ public class OAuth2EndpointConfig {
 	@Bean
 	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
 		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
-		final CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-		tokenRepository.setSecure(true);
-		tokenRepository.setCookiePath("/");
+		final CookieCsrfTokenRepository tokenRepository = new CookieCsrfTokenRepository();
+		tokenRepository.setCookieCustomizer(cookie -> cookie
+				.path("/")
+				.httpOnly(false)
+				.secure(true)
+				.sameSite(STRICT.attributeValue())
+		);
 		final XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();
 		// set the name of the attribute the CsrfToken will be populated on
 		delegate.setCsrfRequestAttributeName("_csrf");
@@ -53,26 +61,36 @@ public class OAuth2EndpointConfig {
 		final CsrfTokenRequestHandler requestHandler = delegate::handle;
 
 		http // all non api requests handled here
-				.cors().and()
+				.cors(withDefaults())
 				.csrf(csrf -> csrf
 						.csrfTokenRepository(tokenRepository)
 						.csrfTokenRequestHandler(requestHandler))
 
-				.logout()
-				.logoutSuccessUrl("/events")
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.deleteCookies("JSESSIONID")
-				.and()
+				.logout(logout -> logout
+						.logoutSuccessUrl("/events")
+						.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+						.deleteCookies("JSESSIONID")
+				)
 
-				.oauth2Login()
-				.loginPage("/oauth2/authorization/discord")
-				.defaultSuccessUrl("/events")
-				.successHandler(authenticationSuccessHandler)
-				.tokenEndpoint().accessTokenResponseClient(accessTokenResponseClient())
-				.and()
-				.userInfoEndpoint().userService(oAuthUserService());
+				.oauth2Login(login -> login
+						.loginPage("/oauth2/authorization/discord")
+						.defaultSuccessUrl("/events")
+						.successHandler(authenticationSuccessHandler)
+						.tokenEndpoint(tokenEndpoint -> tokenEndpoint
+								.accessTokenResponseClient(accessTokenResponseClient())
+						)
+						.userInfoEndpoint(userInfo -> userInfo
+								.userService(oAuthUserService())
+						)
+				);
 
 		return http.build();
+	}
+
+	@Bean
+	public CookieSameSiteSupplier sameSiteSupplier() {
+		// Force JSESSIONID cookie to be SameSite=Lax
+		return CookieSameSiteSupplier.ofLax();
 	}
 
 	@Bean
