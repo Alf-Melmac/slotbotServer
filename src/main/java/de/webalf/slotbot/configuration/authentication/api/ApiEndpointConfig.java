@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -32,15 +33,15 @@ public class ApiEndpointConfig {
 	protected SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 		http
 				// no session management required
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
+				.sessionManagement(sessionManagement -> sessionManagement
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
 				// only match API requests
 				.securityMatcher(API + "/**")
 
 				// disable Cross Site Request Forgery token
 				// we do not rely on cookie based auth and are completely stateless, so we are safe
-				.csrf().disable()
+				.csrf(CsrfConfigurer::disable)
 
 				// authentication for token based authentication
 				.authenticationProvider(tokenAuthProvider)

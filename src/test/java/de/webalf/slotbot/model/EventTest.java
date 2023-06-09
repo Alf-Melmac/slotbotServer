@@ -1,16 +1,19 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Alf
@@ -53,6 +56,68 @@ class EventTest {
 												.build())))
 								.build())))
 				.build();
+	}
+
+	//validate
+	@Test
+	void validateAllowsMinimalEvent() {
+		final Event sut = Event.builder()
+				//Hibernate would initialize these as empty list
+				.squadList(Collections.emptyList())
+				.details(Collections.emptyList())
+				.build();
+
+		assertDoesNotThrow(sut::validate);
+	}
+
+	@Test
+	void validateAllowsEvent() {
+		final Event sut = Event.builder()
+				.hidden(true)
+				.shareable(true)
+				.name("Event")
+				.dateTime(LocalDateTime.now())
+				.creator("Creator")
+				.eventType(EventType.builder().build())
+				.description("Description")
+				.missionType("Mission Type")
+				.missionLength("Mission Length")
+				.pictureUrl("https://example.net")
+				.details(List.of(EventField.builder().build()))
+				.squadList(List.of(Squad.builder().slotList(List.of(Slot.builder().build())).build()))
+				.reserveParticipating(true)
+				.ownerGuild(Guild.builder().build())
+				.build();
+
+		assertDoesNotThrow(sut::validate);
+	}
+
+	@Test
+	void validateDetectsDuplicatedSlotNumber() {
+		final Event sut = Event.builder()
+				.squadList(List.of(
+						Squad.builder().slotList(List.of(Slot.builder().number(1).build())).build(),
+						Squad.builder().slotList(List.of(Slot.builder().number(1).build())).build()
+				))
+				.build();
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, sut::validate);
+		assertMessageEquals("Slotnummern müssen innerhalb eines Events eindeutig sein.", exception);
+	}
+
+	@Test
+	void validateDetectsTooManyDetails() {
+		final ArrayList<EventField> details = new ArrayList<>();
+		for (int i = 0; i < 24; i++) {
+			details.add(EventField.builder().build());
+		}
+		final Event sut = Event.builder()
+				.squadList(Collections.emptyList())
+				.details(details)
+				.build();
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, sut::validate);
+		assertMessageEquals("Es dürfen nur 23 Detailfelder angegeben werden.", exception);
 	}
 
 	//slotUpdate
