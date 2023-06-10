@@ -4,15 +4,17 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
+import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
@@ -198,21 +200,27 @@ class EventHelperEmbedTest {
 	}
 
 	@Test
-	@Disabled
-		//FIXME Maybe mock links?
 	void buildDetailsEmbedTransformsLinkField() {
 		final String eventFieldTitle = "Modset";
 		final String eventFieldText = "event field text";
 
 		final String eventFieldLink = "event field link";
 		final Event event = MINIMAL_EVENT
+				.squadList(Collections.emptyList())
 				.details(List.of(EventField.builder()
 						.title(eventFieldTitle)
 						.text(eventFieldText)
 						.build()))
 				.build();
+		event.setBackReferences();
 
-		final MessageEmbed result = sut.buildDetailsEmbed(event, TEST_LOCALE);
+		final MessageEmbed result;
+		try (MockedStatic<Arma3FieldUtils> fieldUtils = Mockito.mockStatic(Arma3FieldUtils.class)) {
+			fieldUtils.when(() -> Arma3FieldUtils.getModSetUrl(eventFieldText, GUILD_BASE_URL))
+					.thenReturn(eventFieldLink);
+
+			result = sut.buildDetailsEmbed(event, TEST_LOCALE);
+		}
 
 		assertThat(result.getFields())
 				.filteredOn(field -> eventFieldTitle.equals(field.getName()))

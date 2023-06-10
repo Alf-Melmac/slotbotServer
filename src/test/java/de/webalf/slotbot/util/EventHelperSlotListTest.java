@@ -3,10 +3,13 @@ package de.webalf.slotbot.util;
 import de.webalf.slotbot.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
+import java.util.Collections;
 import java.util.List;
 
 import static de.webalf.slotbot.util.MockUtils.TEST_LOCALE;
@@ -17,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alf
  * @since 17.01.2022
  */
+@ExtendWith(MockitoExtension.class)
 class EventHelperSlotListTest {
 	private static final String TITLE = "Title";
 
@@ -103,7 +107,7 @@ class EventHelperSlotListTest {
 		final Guild g1 = Guild.builder().id(guild1).groupIdentifier("g1").build();
 		final Guild g2 = Guild.builder().id(guild2).groupIdentifier("g2").build();
 
-		return Event.builder()
+		final Event event = Event.builder()
 				.squadList(List.of(
 						Squad.builder()
 								.name("Squad free")
@@ -161,6 +165,9 @@ class EventHelperSlotListTest {
 												.reservedFor(g2)
 												.build()
 								)).build()))
+				.details(Collections.emptyList())
 				.build();
+		event.setBackReferences();
+		return event;
 	}
 }
