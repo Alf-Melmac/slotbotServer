@@ -2,9 +2,7 @@ package de.webalf.slotbot.util;
 
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,18 +23,6 @@ public final class ListUtils {
 		if (list.isEmpty()) {
 			return null;
 		}
-		final T firstEl = list.get(0);
-		list.remove(0);
-		return firstEl;
-	}
-
-	/**
-	 * Checks if the list is empty
-	 *
-	 * @param list to check
-	 * @return true if the list is empty
-	 */
-	public static boolean zeroArguments(@NonNull Collection<?> list) {
-		return CollectionUtils.isEmpty(list);
+		return list.remove(0);
 	}
 }

@@ -12,5 +12,7 @@ public class Urls {
 
 	public static final String API = SLOTBOT + "/api/v1";
 
+	public static final String UNSTABLE = API + "/unstable";
+
 	public static final String ADMIN = "/admin";
 }

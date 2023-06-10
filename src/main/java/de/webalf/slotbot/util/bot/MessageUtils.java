@@ -148,8 +148,8 @@ public final class MessageUtils {
 	/**
 	 * Sends the given message in the given channel
 	 *
-	 * @param channel                 to send into
-	 * @param message                 to send
+	 * @param channel               to send into
+	 * @param message               to send
 	 * @param suppressNotifications suppress notifications for this message
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressNotifications) {
@@ -181,17 +181,6 @@ public final class MessageUtils {
 
 	/**
 	 * Sends the given text in the channel of the given message
-	 * Shortcut for {@code sendMessage(message.getChannel(), text)}
-	 *
-	 * @param message on which channel text should be sent
-	 * @param text    to send
-	 */
-	public static void sendMessage(@NonNull Message message, @NotBlank String text) {
-		sendMessage(message.getChannel(), text);
-	}
-
-	/**
-	 * Sends the given text in the channel of the given message
 	 * Shortcut for {@code sendMessage(interaction.getMessageChannel(), text)}
 	 *
 	 * @param interaction on which channel text should be sent
@@ -210,18 +199,6 @@ public final class MessageUtils {
 	 */
 	public static void sendDmAndDeleteMessage(Message message, String messageText) {
 		sendDm(message.getAuthor(), message, messageText, unused -> deleteMessagesInstant(message), true);
-	}
-
-	/**
-	 * Sends the given message to the given recipient via {@link #sendDm(User, String, Consumer, Consumer)}
-	 *
-	 * @param message     that triggered this message sending
-	 * @param recipientId the id of the user the message should be sent to
-	 * @param messageText text to send
-	 * @param success     called after successful message send
-	 */
-	public static void sendDmToRecipient(@NonNull Message message, long recipientId, String messageText, Consumer<? super Message> success) {
-		sendDm(message.getJDA().retrieveUserById(recipientId).complete(), message, messageText, success, false);
 	}
 
 	private static void sendDm(@NonNull User user, @NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure) {

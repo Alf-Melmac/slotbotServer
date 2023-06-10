@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util.eventfield;
 
-import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.annotations.EventFieldDefault;
 import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
@@ -21,22 +20,6 @@ import java.util.Map;
 @UtilityClass
 @Slf4j
 public final class EventFieldUtils {
-	/**
-	 * Returns a link if the given {@link EventField} references something.
-	 *
-	 * @param eventField to build link for
-	 * @return link if known or null
-	 */
-	public static String buildOptionalLink(EventField eventField) {
-		final String title = eventField.getTitle();
-
-		if ("Modset".equalsIgnoreCase(title)) {
-			return Arma3FieldUtils.getModSetUrl(eventField.getText(), eventField.getEvent().getOwnerGuild().getBaseRedirectUrl());
-		}
-
-		return null;
-	}
-
 	private static final Map<String, List<EventFieldDefaultDto>> eventTypeNameToFieldDefaults = new HashMap<>();
 	static {
 		ClassIndex.getAnnotated(EventFieldDefault.class)

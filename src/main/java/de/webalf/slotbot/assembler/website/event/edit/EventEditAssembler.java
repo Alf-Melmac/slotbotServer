@@ -1,5 +1,6 @@
 package de.webalf.slotbot.assembler.website.event.edit;
 
+import de.webalf.slotbot.assembler.minimal.MinimalEventFieldIdAssembler;
 import de.webalf.slotbot.assembler.website.event.EventActionAssembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;

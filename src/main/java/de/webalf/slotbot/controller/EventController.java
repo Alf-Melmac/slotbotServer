@@ -11,7 +11,6 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
-import de.webalf.slotbot.service.EventCreationService;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
 import jakarta.validation.Valid;
@@ -41,7 +40,6 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
 public class EventController {
 	private final GuildService guildService;
 	private final EventService eventService;
-	private final EventCreationService eventCreationService;
 	private final EventDetailsAssembler eventDetailsAssembler;
 
 	@GetMapping(value = "/list")
@@ -58,7 +56,7 @@ public class EventController {
 	@PostMapping
 	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
 	public long postEvent(@Valid @RequestBody EventPostDto event) {
-		return eventCreationService.createEvent(event).getId();
+		return eventService.createEvent(event).getId();
 	}
 
 	@GetMapping("/{id}/copy")

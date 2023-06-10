@@ -23,7 +23,4 @@ public class EventDiscordInformationDto {
 	private String slotListMsgPartOne;
 
 	private String slotListMsgPartTwo;
-
-	@NotBlank
-	private String channelUrl;
 }

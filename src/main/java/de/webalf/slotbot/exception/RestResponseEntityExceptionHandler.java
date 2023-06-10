@@ -51,7 +51,7 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 
 		return new ResponseEntity<>(
 				ExceptionResponse.builder()
-						.errorMessage(errorMessage + (fieldErrors.size() > 1 ? " are invalid." : errorMessage + " is invalid.") + " Missing mandatory field?")
+						.errorMessage(errorMessage + (fieldErrors.size() > 1 ? " are" : " is") + " invalid. Missing mandatory field?")
 						.requestedURI(((ServletWebRequest) request).getRequest().getRequestURI())
 						.build(),
 				HttpStatus.BAD_REQUEST);

@@ -1,13 +1,10 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
 import de.webalf.slotbot.repository.GuildRepository;
 import de.webalf.slotbot.util.DtoUtils;
-import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -103,7 +100,7 @@ public class GuildService {
 	}
 
 	public Guild evaluateReservedFor(String reservedFor) {
-		return StringUtils.isNotEmpty(reservedFor) ? find(Long.parseLong(reservedFor)) : null;
+		return StringUtils.isNotEmpty(reservedFor) ? findExisting(Long.parseLong(reservedFor)) : null;
 	}
 
 	/**
@@ -119,24 +116,6 @@ public class GuildService {
 		DtoUtils.ifPresentObject(dto.language(), guild::setLanguage);
 
 		return guild;
-	}
-
-	/**
-	 * If {@link #findCurrentGuild()} can determine a guild, this one is always taken. Otherwise, the given {@link AbstractEventDto#getOwnerGuild()} is used
-	 *
-	 * @param event event with owner guild
-	 * @return evaluated owner guild
-	 */
-	public Guild getOwnerGuild(@NonNull AbstractEventDto event) {
-		final Guild currentGuild = findCurrentNonNullGuild();
-		return currentGuild.getId() != GUILD_PLACEHOLDER
-				? currentGuild
-				: find(LongUtils.parseLong(event.getOwnerGuild(), GUILD_PLACEHOLDER));
-	}
-
-	public Guild getOwnerGuild(@NonNull Event event) {
-		//None optional field thus can just be returned
-		return event.getOwnerGuild();
 	}
 
 	private static final String SLOTBOT_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899740543603589130/AM-name-slotbot-small.png";

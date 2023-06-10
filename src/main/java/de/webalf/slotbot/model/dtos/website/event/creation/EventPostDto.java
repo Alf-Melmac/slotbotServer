@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
+import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldDto;
 import de.webalf.slotbot.model.dtos.website.event.EventActionDto;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

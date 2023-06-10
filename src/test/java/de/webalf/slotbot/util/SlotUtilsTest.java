@@ -3,8 +3,6 @@ package de.webalf.slotbot.util;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.model.dtos.GuildDto;
-import de.webalf.slotbot.model.dtos.referenceless.SlotReferencelessDto;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -49,16 +47,16 @@ class SlotUtilsTest {
 
 	@ParameterizedTest(name = "{0}")
 	@MethodSource
-	void getEffectiveReservedForDisplayWithDto(String name, GuildDto reservedFor, GuildDto squadReservedFor, List<? extends SlotReferencelessDto> slotList, GuildDto expected) {
+	void getEffectiveReservedForDisplayWithDto(String name, Guild reservedFor, Guild squadReservedFor, List<Slot> slotList, Guild expected) {
 		assertEquals(expected, SlotUtils.getEffectiveReservedForDisplay(reservedFor, squadReservedFor, slotList));
 	}
 
 	private static Stream<Arguments> getEffectiveReservedForDisplayWithDto() {
-		final GuildDto GUILD = GuildDto.builder().id("1").build();
-		final GuildDto GUILD_2 = GuildDto.builder().id("2").build();
+		final Guild GUILD = Guild.builder().id(1).build();
+		final Guild GUILD_2 = Guild.builder().id(2).build();
 
-		final List<SlotReferencelessDto> ALL_SLOTS = List.of(buildSlot(GUILD), buildSlot(GUILD));
-		final List<SlotReferencelessDto> DIFFERENT_SLOTS = List.of(buildSlot(GUILD), buildSlot(GUILD_2));
+		final List<Slot> ALL_SLOTS = List.of(buildSlot(GUILD), buildSlot(GUILD));
+		final List<Slot> DIFFERENT_SLOTS = List.of(buildSlot(GUILD), buildSlot(GUILD_2));
 
 		return Stream.of(
 				Arguments.of("Slot and complete Squad reserved for the same guild", GUILD, GUILD, ALL_SLOTS, null),
@@ -69,9 +67,5 @@ class SlotUtilsTest {
 				Arguments.of("Slot not reserved and Squad partial", null, GUILD, DIFFERENT_SLOTS, GUILD),
 				Arguments.of("Slot and Squad not reserved", null, null, null, null)
 		);
-	}
-
-	private static SlotReferencelessDto buildSlot(GuildDto reservedFor) {
-		return SlotReferencelessDto.builder().reservedFor(reservedFor).build();
 	}
 }

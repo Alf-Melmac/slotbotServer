@@ -2,19 +2,14 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.SquadDto;
-import de.webalf.slotbot.model.dtos.referenceless.SquadReferencelessDto;
 import lombok.experimental.UtilityClass;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.StreamSupport;
 
 /**
  * @author Alf
  * @since 23.06.2020
  */
 @UtilityClass
-public final class SquadAssembler {
+final class SquadAssembler {
 	static Squad fromDto(SquadDto squadDto) {
 		if (squadDto == null) {
 			return null;
@@ -26,34 +21,6 @@ public final class SquadAssembler {
 				.slotList(SlotAssembler.fromDtoList(squadDto.getSlotList()))
 				.reservedFor(GuildAssembler.fromDto(squadDto.getReservedFor()))
 				.build();
-	}
-
-	static List<Squad> fromDtoList(Iterable<SquadDto> squadList) {
-		if (squadList == null) {
-			return Collections.emptyList();
-		}
-
-		return StreamSupport.stream(squadList.spliterator(), false)
-				.map(SquadAssembler::fromDto)
-				.toList();
-	}
-
-	/**
-	 * To be used if the focus relies on the event
-	 */
-	private static SquadReferencelessDto toReferencelessDto(Squad squad) {
-		return SquadReferencelessDto.builder()
-				.id(squad.getId())
-				.name(squad.getName())
-				.slotList(SlotAssembler.toReferencelessDtoList(squad.getSlotList()))
-				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
-				.build();
-	}
-
-	static List<SquadReferencelessDto> toReferencelessDtoList(Iterable<? extends Squad> squadList) {
-		return StreamSupport.stream(squadList.spliterator(), false)
-				.map(SquadAssembler::toReferencelessDto)
-				.toList();
 	}
 
 	/**

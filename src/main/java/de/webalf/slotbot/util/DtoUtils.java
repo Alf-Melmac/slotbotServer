@@ -1,5 +1,6 @@
 package de.webalf.slotbot.util;
 
+import de.webalf.slotbot.model.AbstractDiscordIdEntity;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -74,5 +75,27 @@ public final class DtoUtils {
 		if (isPresent(value)) {
 			consumer.accept(value);
 		}
+	}
+
+	/**
+	 * Returns the id of the given entity if it is not null, otherwise null
+	 *
+	 * @param entity to get id from
+	 * @param <T>    type of entity
+	 * @return id of entity or null
+	 */
+	private static <T extends AbstractDiscordIdEntity> Long getIdIfPresent(T entity) {
+		return entity != null ? entity.getId() : null;
+	}
+
+	/**
+	 * Returns the id of the given entity as string if it is not null, otherwise null
+	 *
+	 * @param entity to get id from
+	 * @param <T>    type of entity
+	 * @return id of entity or null
+	 */
+	public static <T extends AbstractDiscordIdEntity> String getIdStringIfPresent(T entity) {
+		return LongUtils.toString(getIdIfPresent(entity));
 	}
 }

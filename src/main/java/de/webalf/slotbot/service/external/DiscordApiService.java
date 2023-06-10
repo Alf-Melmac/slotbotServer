@@ -33,16 +33,12 @@ public class DiscordApiService {
 	private final DiscordProperties discordProperties;
 
 	/**
-	 * Returns the nickname for the given user(id) on the server or the username
+	 * Returns the nickname for the given user on the server
 	 *
-	 * @param userId user to get name for
+	 * @param userId  user to get name for
+	 * @param guildId server to get name on
 	 * @return nickname on server or username if not set
 	 */
-	@Cacheable("discordUsernames")
-	public String getName(String userId) {
-		return getUser(userId).getEffectiveName();
-	}
-
 	@Cacheable("discordNicknames")
 	public String getName(String userId, long guildId) {
 		DiscordGuildMember guildMember = getGuildMemberWithUser(userId, guildId);

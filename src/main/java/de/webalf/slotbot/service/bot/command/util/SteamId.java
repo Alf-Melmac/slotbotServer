@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.ListUtils.zeroArguments;
 import static de.webalf.slotbot.util.bot.MessageUtils.*;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.NONE;
 
@@ -34,7 +34,7 @@ public class SteamId implements DiscordCommand {
 	public void execute(Message message, List<String> args) {
 		log.trace("Command: setSteamId");
 
-		if (zeroArguments(args)) { //Get steamId
+		if (CollectionUtils.isEmpty(args)) { //Get steamId
 			final Long steamId = userBotService.findUser(message.getAuthor().getIdLong()).getSteamId64();
 
 			if (steamId == null || steamId == 0) {

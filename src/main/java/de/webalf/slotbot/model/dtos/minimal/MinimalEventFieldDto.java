@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.dtos.website.event.creation;
+package de.webalf.slotbot.model.dtos.minimal;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

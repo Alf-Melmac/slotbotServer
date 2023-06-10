@@ -2,7 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventField;
-import de.webalf.slotbot.model.dtos.website.event.edit.MinimalEventFieldIdDto;
+import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldIdDto;
 import de.webalf.slotbot.repository.EventFieldRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;

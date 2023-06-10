@@ -1,8 +1,7 @@
-package de.webalf.slotbot.assembler.website.event.edit;
+package de.webalf.slotbot.assembler.minimal;
 
-import de.webalf.slotbot.assembler.website.event.creation.MinimalEventFieldAssembler;
 import de.webalf.slotbot.model.EventField;
-import de.webalf.slotbot.model.dtos.website.event.edit.MinimalEventFieldIdDto;
+import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldIdDto;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -14,7 +13,7 @@ import java.util.stream.StreamSupport;
  * @since 20.08.2022
  */
 @UtilityClass
-final class MinimalEventFieldIdAssembler {
+public final class MinimalEventFieldIdAssembler {
 	private static MinimalEventFieldIdDto toDto(@NonNull EventField eventField) {
 		MinimalEventFieldIdDto.MinimalEventFieldIdDtoBuilder<?, ?> builder = MinimalEventFieldIdDto.builder();
 		MinimalEventFieldAssembler.toDto(builder, eventField);
@@ -23,7 +22,7 @@ final class MinimalEventFieldIdAssembler {
 				.build();
 	}
 
-	static List<MinimalEventFieldIdDto> toDtoList(Iterable<? extends EventField> eventFields) {
+	public static List<MinimalEventFieldIdDto> toDtoList(Iterable<? extends EventField> eventFields) {
 		return StreamSupport.stream(eventFields.spliterator(), false)
 				.map(MinimalEventFieldIdAssembler::toDto)
 				.toList();

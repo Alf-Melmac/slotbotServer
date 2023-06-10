@@ -1,9 +1,6 @@
 package de.webalf.slotbot.assembler.api;
 
-import de.webalf.slotbot.assembler.GuildAssembler;
-import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.dtos.api.SlotApiDto;
 import de.webalf.slotbot.model.dtos.api.SlotApiViewDto;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,23 +12,12 @@ import java.util.stream.StreamSupport;
 
 /**
  * @author Alf
- * @since 22.02.2021
+ * @since 08.06.2023
  */
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class SlotApiAssembler {
+final class SlotApiViewAssembler {
 	private final UserService userService;
-
-	private static SlotApiDto toDto(Slot slot) {
-		return SlotApiDto.builder()
-				.id(slot.getId())
-				.name(slot.getName())
-				.number(slot.getNumber())
-				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
-				.user(UserAssembler.toDto(slot.getUser()))
-				.replacementText(slot.getReplacementText())
-				.build();
-	}
 
 	private SlotApiViewDto toViewDto(Slot slot) {
 		return SlotApiViewDto.builder()
@@ -41,13 +27,7 @@ public class SlotApiAssembler {
 				.build();
 	}
 
-	public static List<SlotApiDto> toDtoList(Iterable<? extends Slot> slotList) {
-		return StreamSupport.stream(slotList.spliterator(), false)
-				.map(SlotApiAssembler::toDto)
-				.toList();
-	}
-
-	public List<SlotApiViewDto> toViewDtoList(Iterable<? extends Slot> slotList) {
+	List<SlotApiViewDto> toViewDtoList(Iterable<? extends Slot> slotList) {
 		return StreamSupport.stream(slotList.spliterator(), false)
 				.map(this::toViewDto)
 				.toList();

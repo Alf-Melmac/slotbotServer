@@ -1,5 +1,6 @@
 package de.webalf.slotbot.assembler.website.event.creation;
 
+import de.webalf.slotbot.assembler.minimal.MinimalEventFieldAssembler;
 import de.webalf.slotbot.assembler.website.event.EventActionAssembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;

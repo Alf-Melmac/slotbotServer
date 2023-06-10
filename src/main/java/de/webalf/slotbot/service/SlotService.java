@@ -109,7 +109,7 @@ public class SlotService {
 	 * @param user to be slotted
 	 * @return the updated slot
 	 */
-	public Slot slot(@NonNull Slot slot, User user) {
+	Slot slot(@NonNull Slot slot, User user) {
 		slot.slot(user);
 		actionLogService.logEventAction(LogAction.SLOT, slot.getEvent(), user);
 		return slot;

@@ -3,7 +3,7 @@ package de.webalf.slotbot.service.bot;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.AbstractEventDto;
+import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
@@ -51,8 +51,8 @@ public class EventBotService {
 		return eventService.findAllForeignNotAssignedInFuture(guildId);
 	}
 
-	public void updateDiscordInformation(AbstractEventDto dto) {
-		eventService.updateDiscordInformation(dto);
+	public void addDiscordInformation(long eventId, EventDiscordInformationDto dto) {
+		eventService.addDiscordInformation(eventId, dto);
 	}
 
 	public void archiveEvent(long eventId, long guildId) {
@@ -60,7 +60,11 @@ public class EventBotService {
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {
-		eventService.slot(findByChannelOrThrow(channel), slotNumber, userDtoWithId(userId));
+		eventService.slot(findByChannelOrThrow(channel), slotNumber, Long.parseLong(userId));
+	}
+
+	public void blockSlot(long channel, int slotNumber, String replacementText) {
+		eventService.blockSlot(findByChannelOrThrow(channel), slotNumber, replacementText);
 	}
 
 	public void unslot(long channel, String userId) {
@@ -68,7 +72,7 @@ public class EventBotService {
 	}
 
 	public void unslot(long channel, int slotNumber) {
-		eventService.unslot(channel, slotNumber);
+		eventService.unslot(findByChannelOrThrow(channel), slotNumber);
 	}
 
 	public void randomSlot(long channel, String userId) {
@@ -76,31 +80,23 @@ public class EventBotService {
 	}
 
 	public void addSlot(long channel, int squadNumber, int slotNumber, String slotName) {
-		eventService.addSlot(channel, squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
+		eventService.addSlot(findByChannelOrThrow(channel), squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
 	}
 
 	public void delSlot(long channel, int slotNumber) {
-		eventService.deleteSlot(channel, slotNumber);
-	}
-
-	public void blockSlot(long channel, int slotNumber, String replacementText) {
-		eventService.blockSlot(channel, slotNumber, replacementText);
+		eventService.deleteSlot(findByChannelOrThrow(channel), slotNumber);
 	}
 
 	public void renameSquad(long channel, int slotNumber, String squadName) {
-		eventService.renameSquad(channel, slotNumber, squadName);
+		eventService.renameSquad(findByChannelOrThrow(channel), slotNumber, squadName);
 	}
 
 	public void renameSlot(long channel, int slotNumber, String slotName) {
-		eventService.renameSlot(channel, slotNumber, slotName);
+		eventService.renameSlot(findByChannelOrThrow(channel), slotNumber, slotName);
 	}
 
 	public List<Slot> findSwapSlots(long channel, String firstUserId, String secondUserId) {
-		return eventService.findSwapSlots(channel, List.of(userDtoWithId(firstUserId), userDtoWithId(secondUserId)));
-	}
-
-	public List<Slot> findSwapSlots(long channel, int slotNumber, String userId) {
-		return eventService.findSwapSlots(channel, slotNumber, userDtoWithId(userId));
+		return eventService.findSwapSlots(findByChannelOrThrow(channel), List.of(userDtoWithId(firstUserId), userDtoWithId(secondUserId)));
 	}
 
 	public List<User> findAllParticipants(long channel) {

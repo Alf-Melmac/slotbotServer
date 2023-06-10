@@ -4,7 +4,6 @@ import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.context.MessageSource;
@@ -40,19 +39,6 @@ public final class EventUtils {
 
 	static boolean apiReadAccessAllowed(boolean shareable, boolean hidden, Guild ownerGuild) {
 		return apiReadAccessAllowed(shareable, hidden, ownerGuild.getId());
-	}
-
-	/**
-	 * Checks if read permission is given for the given event.
-	 *
-	 * @param eventDto event to check
-	 * @throws ForbiddenException if read permission is not given
-	 * @see #apiReadAccessAllowed(boolean, boolean, long)
-	 */
-	public static void assertApiReadAccess(@NonNull AbstractEventDto eventDto) throws ForbiddenException {
-		if (!apiReadAccessAllowed(eventDto.getShareable(), eventDto.getHidden(), Long.parseLong(eventDto.getOwnerGuild()))) {
-			throw new ForbiddenException("Not allowed to read here.");
-		}
 	}
 
 	/**

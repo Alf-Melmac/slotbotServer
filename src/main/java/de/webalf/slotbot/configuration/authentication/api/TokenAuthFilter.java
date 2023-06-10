@@ -53,7 +53,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
 		// if there is an auth token, create an Authentication object
 		if (authToken != null) {
-			log.info("API request to '{}' with token '{}' from: {}", request.getRequestURL(), authToken, request.getHeader("user-agent"));
+			log.info("{} API request to '{}' with token '{}' from: {}", request.getMethod(), request.getRequestURL(), authToken, request.getHeader("user-agent"));
 			Set<GrantedAuthority> grantedAuthorities;
 			try {
 				grantedAuthorities = mapAuthorities(authToken);

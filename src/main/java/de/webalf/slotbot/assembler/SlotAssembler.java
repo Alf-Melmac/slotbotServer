@@ -2,7 +2,6 @@ package de.webalf.slotbot.assembler;
 
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.SlotDto;
-import de.webalf.slotbot.model.dtos.referenceless.SlotReferencelessDto;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collections;
@@ -63,26 +62,4 @@ public final class SlotAssembler {
 		return slotList.stream().map(SlotAssembler::toDto).toList();
 	}
 
-	/**
-	 * To be used if the focus relies on the event
-	 */
-	private static SlotReferencelessDto toReferencelessDto(Slot slot) {
-		return SlotReferencelessDto.builder()
-				.id(slot.getId())
-				.name(slot.getName())
-				.number(slot.getNumber())
-				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
-				.user(UserAssembler.toDto(slot.getUser()))
-				.replacementText(slot.getReplacementText())
-				.build();
-	}
-
-	/**
-	 * To be used if the focus relies on the event
-	 */
-	static List<SlotReferencelessDto> toReferencelessDtoList(Iterable<? extends Slot> slotList) {
-		return StreamSupport.stream(slotList.spliterator(), false)
-				.map(SlotAssembler::toReferencelessDto)
-				.toList();
-	}
 }

@@ -4,12 +4,10 @@ import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.LongUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -37,16 +35,6 @@ public class EventDiscordInformationAssembler {
 				.build();
 	}
 
-	Set<EventDiscordInformation> fromDtoIterable(Iterable<? extends EventDiscordInformationDto> dtos) {
-		if (dtos == null) {
-			return Collections.emptySet();
-		}
-
-		return StreamSupport.stream(dtos.spliterator(), true)
-				.map(this::fromDto)
-				.collect(Collectors.toUnmodifiableSet());
-	}
-
 	private static EventDiscordInformationDto toDto(EventDiscordInformation discordInformation) {
 		if (discordInformation == null) {
 			return null;
@@ -58,7 +46,6 @@ public class EventDiscordInformationAssembler {
 				.infoMsg(LongUtils.toString(discordInformation.getInfoMsg()))
 				.slotListMsgPartOne(LongUtils.toString(discordInformation.getSlotListMsgPartOne()))
 				.slotListMsgPartTwo(LongUtils.toString(discordInformation.getSlotListMsgPartTwo()))
-				.channelUrl(getChannelUrl(discordInformation))
 				.build();
 	}
 
@@ -68,7 +55,4 @@ public class EventDiscordInformationAssembler {
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
-	private static String getChannelUrl(@NonNull EventDiscordInformation discordInformation) {
-		return "discord://discordapp.com/channels/" + discordInformation.getGuild() + "/" + discordInformation.getChannel();
-	}
 }

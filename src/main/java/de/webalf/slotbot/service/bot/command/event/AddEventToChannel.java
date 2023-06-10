@@ -1,20 +1,17 @@
 package de.webalf.slotbot.service.bot.command.event;
 
-import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.StringSelectInteraction;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
-import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.GuildBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.ListUtils;
-import de.webalf.slotbot.util.StaticContextAccessor;
 import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +23,12 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
@@ -83,6 +82,10 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 		addSelectMenu(event, selectMenus.toArray(new StringSelectMenu[0]));
 	}
 
+	private boolean existingEventInThisChannel(@NonNull MessageChannelUnion channel) {
+		return eventBotService.findByChannel(channel.getIdLong()).isPresent();
+	}
+
 	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {
 		final String[] menuIds = getClass().getAnnotation(StringSelectInteraction.class).value();
 		final StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create(foreign ? menuIds[1] : menuIds[0])
@@ -114,68 +117,67 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 		finishedVisibleInteraction(selectMenuEvent);
 	}
 
-	private boolean existingEventInThisChannel(MessageChannelUnion channel) {
-		return eventBotService.findByChannel(channel.getIdLong()).isPresent();
-	}
-
-	private void addEventAndPrint(@NonNull Event event, MessageChannelUnion channel, long guildId) {
-		final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
-		if (eventApiDto.getDiscordInformation() == null) {
-			eventApiDto.setDiscordInformation(new HashSet<>());
-		}
-		//Set event channel
-		final String guildIdString = Long.toString(guildId);
-		eventApiDto.getDiscordInformation().add(EventDiscordInformationDto.builder().channel(channel.getId()).guild(guildIdString).build());
+	private void addEventAndPrint(@NonNull Event event, @NonNull MessageChannelUnion channel, long guildId) {
+		//Set event channel and guild
+		final EventDiscordInformationDto newInformation = EventDiscordInformationDto.builder()
+				.channel(channel.getId())
+				.guild(Long.toString(guildId))
+				.build();
 
 		final Locale guildLocale = guildBotService.getGuildLocale(guildId);
-		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)) //Send event details
-				.queue(infoMsgConsumer(channel, eventApiDto, guildIdString, guildLocale, event.getOwnerGuild().getSpacerUrl()));
+		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(event, guildLocale)) //Send event details
+				.queue(infoMsgConsumer(channel, event, newInformation, guildId, guildLocale));
 	}
 
 	/**
 	 * Called after the event details have been sent, to then send the first part of the slot list
 	 */
-	private Consumer<Message> infoMsgConsumer(MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId, @NonNull Locale guildLocale, String spacerUrl) {
+	private Consumer<Message> infoMsgConsumer(@NonNull MessageChannelUnion channel, @NonNull Event event, @NonNull EventDiscordInformationDto discordInformation, long guildId, @NonNull Locale guildLocale) {
 		return infoMsg -> {
-			eventApiDto.getDiscordInformation(guildId).ifPresentOrElse(discordInformation -> discordInformation.setInfoMsg(infoMsg.getId()), () -> log.error("Failed to add infoMsg"));
+			//Set info msg
+			discordInformation.setInfoMsg(infoMsg.getId());
 
 			//Send Spacer
-			sendMessage(channel, spacerUrl, true);
+			sendMessage(channel, event.getOwnerGuild().getSpacerUrl(), true);
 
-			final List<String> slotListMessages = eventApiDto.getSlotList(Long.parseLong(guildId), StaticContextAccessor.getBean(MessageSource.class).getMessage("event.slotlist.title", null, guildLocale));
+			final List<String> slotListMessages = eventHelper.buildSlotList(event, guildId, guildLocale);
 			if (slotListMessages.size() > 2) {
 				throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
 			}
 			//Send SlotList
 			sendMessage(channel, ListUtils.shift(slotListMessages), true,
-					slotListMsgConsumer(channel, eventApiDto, slotListMessages, guildId));
+					slotListMsgConsumer(channel, event.getId(), discordInformation, slotListMessages));
 		};
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, EventApiDto, String, Locale, String)} to update the event with both message ids
+	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, Event, EventDiscordInformationDto, long, Locale)} to update the event with both message ids
 	 */
-	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, List<String> slotListMessages, String guildId) {
+	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannelUnion channel, long eventId, @NonNull EventDiscordInformationDto discordInformation, List<String> slotListMessages) {
 		return slotListMsg -> {
-			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartOne(slotListMsg.getId()));
+			//Set slot list msg part one
+			discordInformation.setSlotListMsgPartOne(slotListMsg.getId());
 
+			//Pin slotlist msg
 			slotListMsg.pin().queue();
 
 			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true,
-					slotListMsgLastConsumer(channel, eventApiDto, guildId));
+					slotListMsgLastConsumer(channel, eventId, discordInformation));
 		};
 	}
 
 	/**
-	 * Must be called after {@link #slotListMsgConsumer(MessageChannelUnion, EventApiDto, List, String)} to update the event with the last message id
+	 * Must be called after {@link #slotListMsgConsumer(MessageChannelUnion, long, EventDiscordInformationDto, List)} to update the event with the last message id
 	 */
-	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannelUnion channel, @NonNull EventApiDto eventApiDto, String guildId) {
+	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannelUnion channel, long eventId, @NonNull EventDiscordInformationDto discordInformation) {
 		return slotListMsg -> {
-			eventApiDto.getDiscordInformation(guildId).ifPresent(discordInformation -> discordInformation.setSlotListMsgPartTwo(slotListMsg.getId()));
+			//Set slot list msg part two
+			discordInformation.setSlotListMsgPartTwo(slotListMsg.getId());
 
+			//Pin second slotlist msg and remove pin information
 			slotListMsg.pin().queue(unused -> deletePinAddedMessages(channel));
 
-			eventBotService.updateDiscordInformation(eventApiDto);
+			eventBotService.addDiscordInformation(eventId, discordInformation);
 		};
 	}
 }

@@ -3,9 +3,11 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.EventUtils;
+import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -104,6 +106,15 @@ public class Event extends AbstractSuperIdEntity {
 	private Guild ownerGuild;
 
 	// Getter
+
+	/**
+	 * Returns the picture url or the guild logo if no picture url is set
+	 *
+	 * @return not empty picture url
+	 */
+	public String getPictureUrlWithDefault() {
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : GuildService.getLogo(getOwnerGuild());
+	}
 
 	/**
 	 * Finds a slot by its position

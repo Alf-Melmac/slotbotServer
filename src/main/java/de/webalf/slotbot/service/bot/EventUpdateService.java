@@ -1,10 +1,8 @@
 package de.webalf.slotbot.service.bot;
 
-import de.webalf.slotbot.assembler.api.EventApiAssembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.api.EventApiDto;
 import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.util.DateUtils;
@@ -53,15 +51,14 @@ public class EventUpdateService {
 				throw new IllegalStateException("Channel " + discordInformation.getChannel() + " couldn't be found.");
 			}
 
-			final EventApiDto eventApiDto = EventApiAssembler.toDto(event);
 			final Locale guildLocale = discordInformation.getGuild().getLocale();
 			if (eventUpdateSetting.embed()) {
 				log.trace("Edit embed");
-				eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(eventApiDto, guildLocale)).queue();
+				eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(event, guildLocale)).queue();
 			}
 			if (eventUpdateSetting.slotlist()) {
 				log.trace("Edit slotlist");
-				final List<String> slotList = eventApiDto.getSlotList(discordInformation.getGuild().getId(), messageSource.getMessage("event.slotlist.title", null, guildLocale));
+				final List<String> slotList = eventHelper.buildSlotList(event, discordInformation.getGuild().getId(),guildLocale);
 				//noinspection ConstantConditions SlotList can't be null here
 				eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
 				eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();

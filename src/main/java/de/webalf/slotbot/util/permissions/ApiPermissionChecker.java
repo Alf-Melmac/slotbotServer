@@ -3,8 +3,8 @@ package de.webalf.slotbot.util.permissions;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.model.dtos.AbstractEventDto;
 import de.webalf.slotbot.service.GuildService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,11 @@ public class ApiPermissionChecker {
 	private final GuildService guildService;
 
 	/**
-	 * Checks if write permission is given for the owner of the given event.
-	 *
-	 * @param event to check owner guild write permission for
+	 * Checks if write permission is given for the {@link GuildService#findCurrentNonNullGuild() current guild}
 	 */
-	public void assertApiWriteAccess(AbstractEventDto event) {
-		assertApiWriteAccessAllowed(guildService.getOwnerGuild(event));
+	public boolean assertApiWriteAccess() {
+		assertApiWriteAccessAllowed(guildService.findCurrentNonNullGuild());
+		return true;
 	}
 
 	/**
@@ -34,8 +33,8 @@ public class ApiPermissionChecker {
 	 *
 	 * @param event to check owner guild write permission for
 	 */
-	public void assertApiWriteAccess(Event event) {
-		assertApiWriteAccessAllowed(guildService.getOwnerGuild(event));
+	public static void assertApiWriteAccess(@NonNull Event event) {
+		assertApiWriteAccessAllowed(event.getOwnerGuild());
 	}
 
 	/**

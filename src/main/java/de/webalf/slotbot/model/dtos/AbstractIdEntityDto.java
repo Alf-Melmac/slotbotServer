@@ -1,6 +1,5 @@
 package de.webalf.slotbot.model.dtos;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -13,6 +12,5 @@ import lombok.experimental.SuperBuilder;
 @RequiredArgsConstructor
 @SuperBuilder
 public abstract class AbstractIdEntityDto {
-	@NotNull
 	protected long id;
 }

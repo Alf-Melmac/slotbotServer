@@ -1,5 +1,6 @@
 package de.webalf.slotbot.exception;
 
+import lombok.NonNull;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
@@ -9,7 +10,7 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
  */
 public class IgnoreErrorResponseErrorHandler extends DefaultResponseErrorHandler {
 	@Override
-	public void handleError(ClientHttpResponse response) {
+	public void handleError(@NonNull ClientHttpResponse response) {
 		//Do nothing
 	}
 }
