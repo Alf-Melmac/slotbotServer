@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * Slot Dto that includes important fields needed to display a slotlist

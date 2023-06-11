@@ -10,8 +10,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
-import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
 
 /**
  * @author Alf

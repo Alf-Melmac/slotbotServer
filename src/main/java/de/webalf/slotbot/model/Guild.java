@@ -12,7 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * @author Alf

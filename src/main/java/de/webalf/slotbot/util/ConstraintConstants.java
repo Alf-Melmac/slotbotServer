@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
  * @since 01.08.2021
  */
 @UtilityClass
-public final class MaxLength {
+public final class ConstraintConstants {
 	public static final int TEXT = 80;
 	public static final int TEXT_DB = (int) (TEXT * 1.25);
 
@@ -25,7 +25,9 @@ public final class MaxLength {
 
 	public static final int URL = 1666;
 	public static final int URL_DB = 2083;
+	public static final String URL_PATTERN = "|\\s*(https?|attachment)://\\S+\\s*"; //See EmbedBuilder.URL_PATTERN
 
-	public static final int COLOR_RGB = 7; //Expected format: #rrggbb
-	public static final int COLOR_RGB_DB = COLOR_RGB;
+	public static final int HEX_COLOR = 7; //Expected format: #rrggbb
+	public static final int HEX_COLOR_DB = HEX_COLOR;
+	public static final String HEX_COLOR_PATTERN = "^#([a-f0-9]{6})$"; //Expected format: #rrggbb
 }

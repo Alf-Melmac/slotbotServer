@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * @author Alf

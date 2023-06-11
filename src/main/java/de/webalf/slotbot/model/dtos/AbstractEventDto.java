@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * @author Alf

@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_TITLE;
-import static de.webalf.slotbot.util.MaxLength.EMBEDDABLE_VALUE;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_VALUE;
 
 /**
  * @author Alf

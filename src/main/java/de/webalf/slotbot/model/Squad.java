@@ -17,8 +17,8 @@ import org.hibernate.annotations.FetchMode;
 import java.util.List;
 import java.util.Optional;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
-import static de.webalf.slotbot.util.MaxLength.TEXT_DB;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
 
 /**
  * @author Alf

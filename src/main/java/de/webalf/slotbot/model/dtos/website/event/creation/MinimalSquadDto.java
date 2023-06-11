@@ -9,7 +9,7 @@ import lombok.Data;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * @author Alf

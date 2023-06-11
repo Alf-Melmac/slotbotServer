@@ -49,9 +49,10 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 		final List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 		final String errorMessage = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining(", "));
 
+		final boolean multiple = fieldErrors.size() > 1;
 		return new ResponseEntity<>(
 				ExceptionResponse.builder()
-						.errorMessage(errorMessage + (fieldErrors.size() > 1 ? " are" : " is") + " invalid. Missing mandatory field?")
+						.errorMessage(errorMessage + (multiple ? " are" : " is") + " invalid. Missing mandatory field" + (multiple ? "s" : "") + "?")
 						.requestedURI(((ServletWebRequest) request).getRequest().getRequestURI())
 						.build(),
 				HttpStatus.BAD_REQUEST);

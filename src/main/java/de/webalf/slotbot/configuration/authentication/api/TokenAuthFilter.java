@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +36,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.buildGuildAuth
 @Slf4j
 public class TokenAuthFilter extends OncePerRequestFilter {
 	@Value("${slotbot.auth.token.name:slotbot-auth-token}")
+	@Getter
 	private String tokenName;
 
 	private final TokenAuthProvider tokenAuthProvider;

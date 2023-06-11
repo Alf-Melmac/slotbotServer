@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
-import static de.webalf.slotbot.util.MaxLength.COLOR_RGB;
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.HEX_COLOR;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * @author Alf
@@ -26,7 +26,7 @@ public class EventTypeDto {
 	String name;
 
 	@NotBlank
-	@Size(max = COLOR_RGB)
+	@Size(min = HEX_COLOR, max = HEX_COLOR)
 	String color;
 
 	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.

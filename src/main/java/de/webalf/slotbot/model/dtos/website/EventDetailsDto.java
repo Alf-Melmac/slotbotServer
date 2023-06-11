@@ -13,8 +13,8 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
-import static de.webalf.slotbot.util.MaxLength.URL;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.URL;
 
 /**
  * @author Alf

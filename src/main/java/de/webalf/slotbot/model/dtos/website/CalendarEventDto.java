@@ -10,8 +10,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-import static de.webalf.slotbot.util.MaxLength.COLOR_RGB;
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.HEX_COLOR;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * @author Alf
@@ -28,7 +28,7 @@ public class CalendarEventDto extends AbstractIdEntityDto {
 	private LocalDateTime start;
 
 	@NotBlank
-	@Size(max = COLOR_RGB)
+	@Size(min = HEX_COLOR, max = HEX_COLOR)
 	private String color;
 
 	private ShortEventInformationDto shortInformation;

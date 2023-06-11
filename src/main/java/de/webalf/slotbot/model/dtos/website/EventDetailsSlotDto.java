@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * @author Alf

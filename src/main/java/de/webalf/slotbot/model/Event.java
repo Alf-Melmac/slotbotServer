@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
-import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * @author Alf
@@ -81,7 +81,7 @@ public class Event extends AbstractSuperIdEntity {
 
 	@Column(name = "event_picture_url", length = URL_DB)
 	@Size(max = URL)
-	@Pattern(regexp = "|\\s*(https?|attachment)://\\S+\\s*") //See EmbedBuilder.URL_PATTERN
+	@Pattern(regexp = URL_PATTERN)
 	private String pictureUrl;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

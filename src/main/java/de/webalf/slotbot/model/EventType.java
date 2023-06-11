@@ -2,6 +2,7 @@ package de.webalf.slotbot.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * @author Alf
@@ -35,9 +36,10 @@ public class EventType extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String name;
 
-	@Column(name = "event_color", length = COLOR_RGB_DB)
+	@Column(name = "event_color", length = HEX_COLOR_DB)
 	@NotBlank
-	@Size(max = COLOR_RGB) //Expected format: #rrggbb
+	@Size(min = HEX_COLOR, max = HEX_COLOR)
+	@Pattern(regexp = HEX_COLOR_PATTERN)
 	private String color;
 
 	@ManyToOne(targetEntity = Guild.class)

@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * @author Alf

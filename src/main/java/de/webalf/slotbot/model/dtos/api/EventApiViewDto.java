@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * Event Dto that includes important fields needed to display a slotlist

@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-import static de.webalf.slotbot.util.MaxLength.*;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * Abstract dto for creating or editing events. Doesn't include details and squad list.

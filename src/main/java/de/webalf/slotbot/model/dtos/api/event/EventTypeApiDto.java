@@ -1,12 +1,13 @@
 package de.webalf.slotbot.model.dtos.api.event;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 
-import static de.webalf.slotbot.util.MaxLength.COLOR_RGB;
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
  * @author Alf
@@ -20,6 +21,8 @@ public class EventTypeApiDto {
 	String name;
 
 	@NotBlank
-	@Size(max = COLOR_RGB)
+	@Size(min = HEX_COLOR, max = HEX_COLOR)
+	@Pattern(regexp = HEX_COLOR_PATTERN)
+	@Schema(format = "hex-color")
 	String color;
 }

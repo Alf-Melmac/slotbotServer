@@ -7,7 +7,7 @@ import lombok.Value;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.MaxLength.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * Squad Dto that includes important fields needed to display a slotlist
