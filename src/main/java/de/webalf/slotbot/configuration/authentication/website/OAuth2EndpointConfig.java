@@ -43,13 +43,6 @@ public class OAuth2EndpointConfig {
 	private final DiscordAuthenticationService discordAuthenticationService;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-	private static final String[] SWAGGER_WHITELIST = {
-			// -- swagger ui
-			"/swagger-ui/**",
-			"/swagger-ui.html",
-			"/v3/api-docs/**"
-	};
-
 	@Bean
 	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
 		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
@@ -72,10 +65,6 @@ public class OAuth2EndpointConfig {
 				.csrf(csrf -> csrf
 						.csrfTokenRepository(tokenRepository)
 						.csrfTokenRequestHandler(requestHandler))
-
-				//FIXME THIS BREAKS DENYING ACCESS TO THE API
-				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(SWAGGER_WHITELIST).permitAll()/*.authenticated()*/)
 
 				.logout(logout -> logout
 						.logoutSuccessUrl("/events")
