@@ -15,7 +15,6 @@ import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
-import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -85,10 +84,7 @@ public class EventDetailsAssembler {
 		boolean blocked = false;
 		if (user != null) {
 			if (user.isDefaultUser()) {
-				text = slot.getReplacementText();
-				if (StringUtils.isEmpty(text)) {
-					text = "Gesperrt";
-				}
+				text = slot.getReplacementTextOrDefault();
 				blocked = true;
 			} else {
 				text = discordApiService.getName(LongUtils.toString(user.getId()), slot.getSquad().getEvent().getOwnerGuild().getId());

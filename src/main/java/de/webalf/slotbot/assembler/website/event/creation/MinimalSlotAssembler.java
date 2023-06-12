@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSlotDto;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.util.GuildUtils;
+import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,14 @@ public final class MinimalSlotAssembler {
 			return null;
 		}
 
+		final boolean blocked = slotDto.isBlocked();
+		final String replacementText = slotDto.getReplacementText();
 		return Slot.builder()
 				.name(slotDto.getName().trim())
 				.number(slotDto.getNumber())
 				.reservedFor(guildService.evaluateReservedFor(slotDto.getReservedFor()))
-				.user(slotDto.isBlocked() ? userService.getDefaultUser() : null)
-				.replacementText(slotDto.isBlocked() ? slotDto.getReplacementText() : null)
+				.user(blocked ? userService.getDefaultUser() : null)
+				.replacementText(blocked && StringUtils.isNotEmpty(replacementText) ? replacementText.trim() : null)
 				.build();
 	}
 

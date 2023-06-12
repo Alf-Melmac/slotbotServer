@@ -94,9 +94,11 @@ public class SlotService {
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
 		slot.setReservedFor(guildService.evaluateReservedFor(dto.getReservedFor()));
 		if (dto.isBlocked()) {
-			blockSlot(slot, dto.getReplacementText());
+			final String replacementText = dto.getReplacementText();
+			blockSlot(slot, StringUtils.isNotEmpty(replacementText) ? replacementText.trim() : null);
 		} else if (slot.isBlocked()) {
 			slot.setUser(null);
+			slot.setReplacementText(null);
 		}
 
 		return slot;
@@ -156,9 +158,6 @@ public class SlotService {
 	 * @param replacementText to be shown instead the user
 	 */
 	void blockSlot(@NonNull Slot slot, String replacementText) {
-		if (StringUtils.isEmpty(replacementText)) {
-			replacementText = "Gesperrt";
-		}
 		slot.blockSlot(userService.find(User.DEFAULT_USER_ID), replacementText);
 	}
 

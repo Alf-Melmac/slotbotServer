@@ -142,7 +142,7 @@ public class EventHelper {
 	 * @param guildId to prepare slotlist for
 	 * @return squad in discord message format
 	 */
-	private StringBuilder toSlotList(Squad squad, long guildId) {
+	private StringBuilder toSlotList(@NonNull Squad squad, long guildId) {
 		StringBuilder squadText = new StringBuilder("**").append(squad.getName());
 		final Guild reservedFor = squad.getReservedFor();
 		if (reservedFor != null) {
@@ -164,7 +164,7 @@ public class EventHelper {
 	 * @param squadSlots       all slots of the squad containing this slot
 	 * @return slot in discord message format
 	 */
-	private StringBuilder toSlotList(Slot slot, long guildId, Guild squadReservedFor, List<Slot> squadSlots) {
+	private StringBuilder toSlotList(@NonNull Slot slot, long guildId, Guild squadReservedFor, List<Slot> squadSlots) {
 		StringBuilder slotText = new StringBuilder();
 
 		boolean notReservedForOthers;
@@ -196,7 +196,7 @@ public class EventHelper {
 		if (!isEmpty && !isBlocked) {
 			slotText.append(" ").append(MentionUtils.getUserAsMention(slot.getUser().getId()));
 		} else if (isBlocked) {
-			slotText.append(" *").append(slot.getReplacementText()).append("*");
+			slotText.append(" *").append(slot.getReplacementTextOrDefault()).append("*");
 		}
 		return slotText;
 	}

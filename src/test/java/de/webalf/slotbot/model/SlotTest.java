@@ -58,9 +58,20 @@ class SlotTest {
 
 	@Test
 	void isBlockedDetectsBlockedSlot() {
-		final Slot sut = Slot.builder().user(User.builder().id(User.DEFAULT_USER_ID).build()).build();
+		final Slot sut = buildBlockedSlot();
 
 		assertTrue(sut.isBlocked());
+	}
+
+	private static Slot buildBlockedSlot() {
+		return buildBlockedSlot(null);
+	}
+
+	private static Slot buildBlockedSlot(String replacementText) {
+		return Slot.builder()
+				.user(User.builder().id(User.DEFAULT_USER_ID).build())
+				.replacementText(replacementText)
+				.build();
 	}
 
 	//getEffectiveReservedForDisplay
@@ -139,6 +150,29 @@ class SlotTest {
 		squad.setSlotList(slots);
 		slot.setSquad(squad);
 		return slot;
+	}
+
+	//getReplacementTextOrDefault
+	@Test
+	void getReplacementTextOrDefaultWithNotBlockedSlot() {
+		final Slot sut = Slot.builder().build();
+
+		assertNull(sut.getReplacementTextOrDefault());
+	}
+
+	@Test
+	void getReplacementTextOrDefaultWithoutReplacementText() {
+		final Slot sut = buildBlockedSlot();
+
+		assertEquals("Gesperrt", sut.getReplacementTextOrDefault());
+	}
+
+	@Test
+	void getReplacementTextOrDefaultWithReplacementText() {
+		final String replacementText = "replacementText";
+		final Slot sut = buildBlockedSlot(replacementText);
+
+		assertEquals(replacementText, sut.getReplacementTextOrDefault());
 	}
 
 	//slotWithoutUpdate

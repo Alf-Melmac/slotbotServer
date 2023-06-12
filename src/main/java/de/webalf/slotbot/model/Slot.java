@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.util.SlotUtils;
+import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -100,6 +101,18 @@ public class Slot extends AbstractSuperIdEntity {
 	 */
 	public Guild getEffectiveReservedForDisplay() {
 		return SlotUtils.getEffectiveReservedForDisplay(getReservedFor(), getSquad());
+	}
+
+	/**
+	 * Returns the replacement text for this slot if it is blocked
+	 *
+	 * @return replacement text or null if not blocked
+	 */
+	public String getReplacementTextOrDefault() {
+		if (!isBlocked()) {
+			return null;
+		}
+		return StringUtils.isEmpty(replacementText) ? "Gesperrt" : replacementText;
 	}
 
 	// Setter
