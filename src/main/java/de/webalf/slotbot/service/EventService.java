@@ -139,14 +139,14 @@ public class EventService {
 	}
 
 	/**
-	 * Returns all {@link User}s slotted in the event associated with the given channelId.
+	 * Returns all ids of the {@link User}s slotted in the event associated with the given channelId.
 	 * {@link User#DEFAULT_USER_ID} is filtered out.
 	 *
 	 * @param channel to find event for
 	 * @return participant list
 	 */
-	public List<User> findAllParticipants(long channel) {
-		return eventRepository.findAllParticipants(channel);
+	public List<Long> findAllParticipantIds(long channel) {
+		return eventRepository.findAllParticipantIds(channel);
 	}
 
 	/**

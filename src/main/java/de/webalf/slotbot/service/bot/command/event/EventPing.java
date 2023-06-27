@@ -44,7 +44,7 @@ public class EventPing implements DiscordSlashCommand {
 		log.trace("Slash command: eventPing");
 
 		final String mentions = eventBotService.findAllParticipants(event.getChannel().getIdLong()).stream()
-				.map(user -> User.fromId(user.getId()).getAsMention())
+				.map(userId -> User.fromId(userId).getAsMention())
 				.collect(Collectors.joining(" "));
 
 		final String message = getStringOption(event, OPTION_MESSAGE);

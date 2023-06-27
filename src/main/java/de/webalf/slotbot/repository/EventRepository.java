@@ -2,7 +2,6 @@ package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -85,6 +84,9 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 			"ORDER BY e.dateTime")
 	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("guild") long guildId);
 
-	@Query("SELECT s.user FROM Slot s WHERE s.user.id <> de.webalf.slotbot.model.User.DEFAULT_USER_ID AND EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.channel = :channel AND di.event = s.squad.event)")
-	List<User> findAllParticipants(@Param("channel") long channel);
+	@Query("""
+			SELECT s.user.id FROM Slot s INNER JOIN s.squad.event.discordInformation discordInformation
+			WHERE discordInformation.channel = :channel AND s.user.id <> de.webalf.slotbot.model.User.DEFAULT_USER_ID
+			""")
+	List<Long> findAllParticipantIds(@Param("channel") long channel);
 }
