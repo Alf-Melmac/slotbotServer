@@ -1,6 +1,6 @@
 package de.webalf.slotbot.util;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -17,7 +17,7 @@ public class StaticContextAccessor implements ApplicationContextAware {
 	private static ApplicationContext applicationContext;
 
 	@Override
-	public void setApplicationContext(@NotNull ApplicationContext context) throws BeansException {
+	public void setApplicationContext(@NonNull ApplicationContext context) throws BeansException {
 		applicationContext = context;
 	}
 

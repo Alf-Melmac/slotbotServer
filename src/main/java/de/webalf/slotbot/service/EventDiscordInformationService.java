@@ -122,4 +122,14 @@ public class EventDiscordInformationService {
 					return match;
 				}));
 	}
+
+	/**
+	 * Removes all discord information for the given server
+	 *
+	 * @param guildId to remove information for
+	 */
+	@Async
+	public void removeByGuild(long guildId) {
+		discordInformationRepository.deleteByGuildId(guildId);
+	}
 }

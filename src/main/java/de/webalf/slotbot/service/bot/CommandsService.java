@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +50,7 @@ public class CommandsService {
 	 *
 	 * @param guild to update commands for
 	 */
+	@Async
 	public void updateCommands(@NonNull Guild guild) {
 		log.info("Updating commands for {}...", guild.getName());
 
@@ -77,7 +79,7 @@ public class CommandsService {
 				}).toList();
 		log.info("Found {} commands.", slashCommands.size());
 
-		final List<CommandData> contextMenus = ContextMenuUtils.commandToClassMap.values().stream()
+		final List<CommandData> contextMenus = ContextMenuUtils.get().stream()
 				.map(contextMenuClass -> {
 					final ContextMenu contextMenu = getContextMenu(contextMenuClass);
 					final CommandData commandData = Commands

@@ -2,12 +2,12 @@ package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.service.EventDiscordInformationService;
 import de.webalf.slotbot.service.bot.GuildBotService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
@@ -25,13 +25,13 @@ public class DeleteListener extends ListenerAdapter {
 	private final MessageSource messageSource;
 
 	@Override
-	public void onChannelDelete(@NotNull ChannelDeleteEvent event) {
+	public void onChannelDelete(@NonNull ChannelDeleteEvent event) {
 		log.trace("Channel {} deleted in guild {}", event.getChannel().getId(), event.getGuild().getId());
 		eventDiscordInformationService.removeByChannel(event.getChannel().getIdLong());
 	}
 
 	@Override
-	public void onMessageDelete(@NotNull MessageDeleteEvent event) {
+	public void onMessageDelete(@NonNull MessageDeleteEvent event) {
 		if (!event.isFromGuild()) return;
 		log.trace("Message {} deleted in channel {} in guild {}", event.getMessageId(), event.getChannel().getId(), event.getGuild().getId());
 

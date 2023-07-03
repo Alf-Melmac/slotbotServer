@@ -29,8 +29,8 @@ public class BotService {
 	private final CommandClassHelper commandClassHelper;
 	private final ReactionAddService reactionAddService;
 	private final CommandsService commandsService;
-	private final MessageSource messageSource;
 	private final EventDiscordInformationService eventDiscordInformationService;
+	private final MessageSource messageSource;
 	private final GuildBotService guildBotService;
 
 	@Getter
@@ -47,10 +47,10 @@ public class BotService {
 				.addEventListeners(
 						new MessageReceivedListener(discordProperties, commandClassHelper),
 						new ReactionAddListener(reactionAddService),
-						new GuildReadyListener(commandsService),
+						new GuildReadyListener(commandsService, eventDiscordInformationService),
 						new InteractionListener(commandClassHelper, messageSource),
 						new DeleteListener(eventDiscordInformationService, guildBotService, messageSource))
-				.disableIntents(GUILD_MODERATION, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING, SCHEDULED_EVENTS)
+				.disableIntents(GUILD_MODERATION, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGE_TYPING, SCHEDULED_EVENTS, AUTO_MODERATION_CONFIGURATION, AUTO_MODERATION_EXECUTION)
 				.build();
 	}
 
