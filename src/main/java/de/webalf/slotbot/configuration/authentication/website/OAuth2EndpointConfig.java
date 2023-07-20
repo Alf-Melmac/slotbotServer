@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
@@ -36,7 +35,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
  * @since 20.10.2020
  */
 @Configuration
-@EnableMethodSecurity
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OAuth2EndpointConfig {

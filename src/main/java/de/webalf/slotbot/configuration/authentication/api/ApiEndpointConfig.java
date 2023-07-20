@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -21,7 +20,6 @@ import static de.webalf.slotbot.constant.Urls.API;
  * @since 23.09.2020
  */
 @Configuration
-@EnableMethodSecurity
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ApiEndpointConfig {
