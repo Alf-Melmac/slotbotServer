@@ -2,9 +2,10 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
+import de.webalf.slotbot.model.dtos.website.guild.GuildConfigPutDto;
 import de.webalf.slotbot.repository.GuildRepository;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -104,18 +105,29 @@ public class GuildService {
 	}
 
 	/**
-	 * Updates the guild found by id with values from the {@link GuildConfigDto}
+	 * Updates the guild found by id with values from the {@link GuildConfigPutDto}
 	 *
 	 * @param guildId guild id
 	 * @param dto     with values to update
 	 * @return updated guild
 	 */
-	public Guild updateGuild(long guildId, @NonNull GuildConfigDto dto) {
+	public Guild updateGuild(long guildId, @NonNull GuildConfigPutDto dto) {
 		final Guild guild = findExisting(guildId);
 
-		DtoUtils.ifPresentObject(dto.language(), guild::setLanguage);
+		DtoUtils.ifPresent(dto.getLanguage(), guild::setLanguage);
+		DtoUtils.ifPresent(dto.getArchiveChannel(), archiveChannelId -> guild.setArchiveChannel(LongUtils.parseLongWrapper(archiveChannelId)));
 
 		return guild;
+	}
+
+	public void removeArchiveChannelByChannel(long guildId, long removedChannelId) {
+		final Guild guild = find(guildId);
+
+		final Long archiveChannel = guild.getArchiveChannel();
+		if (archiveChannel != null && (archiveChannel == removedChannelId)) {
+			guild.setArchiveChannel(null);
+
+		}
 	}
 
 	private static final String SLOTBOT_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899740543603589130/AM-name-slotbot-small.png";

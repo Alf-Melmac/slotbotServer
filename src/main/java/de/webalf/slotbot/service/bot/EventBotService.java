@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.entities.Guild;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +39,6 @@ public class EventBotService {
 		return eventService.findByChannel(channel);
 	}
 
-	public List<Event> findAllInPast(long guildId) {
-		return eventService.findAllInPast(guildId);
-	}
-
 	public List<Event> findAllNotAssignedInFuture(long guildId) {
 		return eventService.findAllNotAssignedInFuture(guildId);
 	}
@@ -54,8 +51,12 @@ public class EventBotService {
 		eventService.addDiscordInformation(eventId, dto);
 	}
 
-	public void archiveEvent(long eventId, long guildId) {
-		eventService.archiveEvent(eventId, guildId);
+	public void archiveEvent(long channel, Guild guild) {
+		eventService.archiveEvent(findByChannelOrThrow(channel), guild);
+	}
+
+	public void retriggerArchiveEvents(Guild guild) {
+		eventService.retriggerArchiveEvents(guild);
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {

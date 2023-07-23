@@ -9,9 +9,12 @@ import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.website.GuildDetailsDto;
 import de.webalf.slotbot.model.dtos.website.UserInGuildDto;
 import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
+import de.webalf.slotbot.model.dtos.website.guild.GuildConfigPutDto;
+import de.webalf.slotbot.model.dtos.website.guild.GuildDiscordIntegrationDto;
 import de.webalf.slotbot.model.dtos.website.pagination.FrontendPageable;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
+import de.webalf.slotbot.service.integration.GuildDiscordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +35,7 @@ import java.util.List;
 @Slf4j
 public class GuildController {
 	private final GuildService guildService;
+	private final GuildDiscordService guildDiscordService;
 	private final GuildUsersService guildUsersService;
 	private final UserInGuildAssembler userInGuildAssembler;
 
@@ -52,8 +57,18 @@ public class GuildController {
 
 	@PutMapping("/{id}/config")
 	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
-	public GuildConfigDto putGuildConfig(@PathVariable(value = "id") long guildId, @RequestBody GuildConfigDto guildConfig) {
+	public GuildConfigDto putGuildConfig(@PathVariable(value = "id") long guildId, @RequestBody GuildConfigPutDto guildConfig) {
 		return GuildConfigAssembler.toDto(guildService.updateGuild(guildId, guildConfig));
+	}
+
+	@GetMapping("/{id}/discord")
+	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	public GuildDiscordIntegrationDto getDiscordIntegration(@PathVariable(value = "id") long guildId) {
+		final boolean connected = guildDiscordService.isConnected(guildId);
+		return GuildDiscordIntegrationDto.builder()
+				.connected(connected)
+				.categories(connected ? guildDiscordService.getGuildChannels(guildId) : Collections.emptyList())
+				.build();
 	}
 
 	@GetMapping("/{id}/users")

@@ -27,7 +27,9 @@ public class DeleteListener extends ListenerAdapter {
 	@Override
 	public void onChannelDelete(@NonNull ChannelDeleteEvent event) {
 		log.trace("Channel {} deleted in guild {}", event.getChannel().getId(), event.getGuild().getId());
-		eventDiscordInformationService.removeByChannel(event.getChannel().getIdLong());
+		final long removedChannelId = event.getChannel().getIdLong();
+		eventDiscordInformationService.removeByChannel(removedChannelId);
+		guildBotService.removeArchiveChannelByChannel(event.getGuild().getIdLong(), removedChannelId);
 	}
 
 	@Override

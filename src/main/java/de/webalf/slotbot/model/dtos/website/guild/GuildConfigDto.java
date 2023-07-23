@@ -8,4 +8,4 @@ import lombok.Builder;
  * @since 12.02.2023
  */
 @Builder
-public record GuildConfigDto(Language language) {}
+public record GuildConfigDto(Language language, String archiveChannel) {}

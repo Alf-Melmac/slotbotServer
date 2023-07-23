@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -68,6 +69,13 @@ public final class DtoUtils {
 	public static void ifPresent(LocalDateTime value, Consumer<LocalDateTime> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);
+		}
+	}
+
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	public static <T> void ifPresent(Optional<T> value, Consumer<T> consumer) {
+		if (isPresent(value)) {
+			consumer.accept(value.orElse(null));
 		}
 	}
 

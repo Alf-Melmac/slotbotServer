@@ -55,6 +55,9 @@ public class Guild extends AbstractDiscordIdEntity {
 	@Builder.Default
 	private Language language = Language.DE;
 
+	@Column(name = "discord_guild_archive_channel")
+	private Long archiveChannel;
+
 	public static final long GUILD_PLACEHOLDER = -1L;
 
 	public boolean is() {

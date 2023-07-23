@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
@@ -35,7 +34,6 @@ public class CommandClassHelper {
 	private final UserBotService userBotService;
 	private final GuildBotService guildBotService;
 	private final GuildUsersBotService guildUsersBotService;
-	private final DiscordProperties discordProperties;
 
 	/**
 	 * Tries to create a new constructor instance for the given {@link DiscordCommand}, {@link DiscordSlashCommand}, {@link DiscordStringSelect} or {@link DiscordUserContext} class
@@ -55,50 +53,50 @@ public class CommandClassHelper {
 				try {
 					constructor = declaredConstructor.newInstance();
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance without parameters for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance without parameters for class {}", commandClass.getName(), e);
 				}
 				break;
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class})) {
-				//AddSlot, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
+				//AddSlot, ArchiveEvent, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventBotService parameter for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance with EventBotService parameter for class {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, EventHelper.class, GuildBotService.class})) {
 				//AddEventToChannel
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService, eventHelper, guildBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventBotService, EventHelper and GuildBotService parameter for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance with EventBotService, EventHelper and GuildBotService parameter for class {}", commandClass.getName(), e);
+				}
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, GuildBotService.class})) {
+				//RebuildArchive
+				try {
+					constructor = declaredConstructor.newInstance(eventBotService, guildBotService);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					log.error("Failed to create new constructor instance with EventBotService and GuildBotService parameter for class {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, SlotBotService.class})) {
 				//Swap
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService, slotBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for type {}", commandClass.getName(), e);
-				}
-			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, DiscordProperties.class})) {
-				//ArchiveEvent
-				try {
-					constructor = declaredConstructor.newInstance(eventBotService, discordProperties);
-				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with EventBotService and DiscordProperties parameter for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for class {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{UserBotService.class})) {
 				//SteamId
 				try {
 					constructor = declaredConstructor.newInstance(userBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with UserBotService parameter for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance with UserBotService parameter for class {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{GuildUsersBotService.class})) {
 				//AddUserToGuild
 				try {
 					constructor = declaredConstructor.newInstance(guildUsersBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with GuildUsersBotService parameter for type {}", commandClass.getName(), e);
+					log.error("Failed to create new constructor instance with GuildUsersBotService parameter for class {}", commandClass.getName(), e);
 				}
 			}
 		}

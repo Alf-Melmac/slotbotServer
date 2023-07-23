@@ -21,4 +21,12 @@ public class GuildBotService {
 	public Locale getGuildLocale(long guildId) {
 		return guildService.find(guildId).getLocale();
 	}
+
+	public Long getGuildArchiveChannel(long guildId) {
+		return guildService.find(guildId).getArchiveChannel();
+	}
+
+	public void removeArchiveChannelByChannel(long guildId, long removedChannelId) {
+		guildService.removeArchiveChannelByChannel(guildId, removedChannelId);
+	}
 }

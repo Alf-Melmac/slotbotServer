@@ -11,12 +11,14 @@ import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.repository.EventRepository;
+import de.webalf.slotbot.service.event.EventArchiveEvent;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,7 @@ public class EventService {
 	private final EventFieldService eventFieldService;
 	private final EventDiscordInformationService eventDiscordInformationService;
 	private final GuildService guildService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -105,8 +108,8 @@ public class EventService {
 	 *
 	 * @return all events from the past
 	 */
-	public List<Event> findAllInPast(long guildId) {
-		return eventRepository.findAllByDateTimeIsBeforeAndOwnerGuildAndOrderByDateTime(DateUtils.now(), guildService.findExisting(guildId));
+	private List<Event> findAllInPast(Guild guild) {
+		return eventRepository.findAllByDateTimeIsBeforeAndOwnerGuildAndOrderByDateTime(DateUtils.now(), guild);
 	}
 
 	/**
@@ -234,13 +237,26 @@ public class EventService {
 	}
 
 	/**
-	 * Searches for the given event by id and archives it
+	 * {@link Event#archive(long) Archives} the given event
 	 *
-	 * @param eventId event id
-	 * @param guildId in which the event is being archived
+	 * @param event        event
+	 * @param discordGuild in which the event is being archived
 	 */
-	public void archiveEvent(long eventId, long guildId) {
-		findById(eventId).archive(guildId);
+	public void archiveEvent(@NonNull Event event, @NonNull net.dv8tion.jda.api.entities.Guild discordGuild) {
+		final long guildId = discordGuild.getIdLong();
+		event.archive(guildId);
+		eventPublisher.publishEvent(EventArchiveEvent.builder().event(event).guild(guildService.find(guildId)).discordGuild(discordGuild).build());
+	}
+
+	/**
+	 * Retriggers all {@link EventArchiveEvent}s for the given guild
+	 *
+	 * @param discordGuild in which the archiving should be triggered again
+	 */
+	public void retriggerArchiveEvents(@NonNull net.dv8tion.jda.api.entities.Guild discordGuild) {
+		final Guild guild = guildService.find(discordGuild.getIdLong());
+		findAllInPast(guild)
+				.forEach(event -> eventPublisher.publishEvent(EventArchiveEvent.builder().event(event).guild(guild).discordGuild(discordGuild).build()));
 	}
 
 	/**

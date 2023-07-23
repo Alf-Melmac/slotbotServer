@@ -1,10 +1,9 @@
 package de.webalf.slotbot.service.bot.command.event;
 
-import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.GuildBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
-import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.ChannelUtils;
 import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
 import lombok.NonNull;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.failedInteraction;
 import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
-import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 
 /**
  * @author Alf
@@ -31,7 +29,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 		authorization = Permission.ADMINISTRATOR)
 public class RebuildArchive implements DiscordSlashCommand {
 	private final EventBotService eventBotService;
-	private final DiscordProperties discordProperties;
+	private final GuildBotService guildBotService;
 
 	@Override
 	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
@@ -39,14 +37,17 @@ public class RebuildArchive implements DiscordSlashCommand {
 
 		final Guild guild = event.getGuild();
 		//noinspection DataFlowIssue Guild only command
-		final TextChannel archiveChannel = ChannelUtils.getChannel(discordProperties.getArchive(guild.getIdLong()), guild, "archive");
-		if (archiveChannel == null) {
-			failedInteraction(event, locale.t("bot.slash.event.archive.response.configError"));
+		final Long guildArchiveChannel = guildBotService.getGuildArchiveChannel(guild.getIdLong());
+		if (guildArchiveChannel == null) {
+			failedInteraction(event, locale.t("bot.slash.event.archive.response.configMissing"));
 			return;
 		}
-
-		eventBotService.findAllInPast(guild.getIdLong())
-				.forEach(pastEvent -> sendMessage(archiveChannel, EventUtils.buildArchiveMessage(pastEvent)));
+		final TextChannel archiveChannel = ChannelUtils.getChannel(guildArchiveChannel, guild, "archive");
+		if (archiveChannel == null) {
+			failedInteraction(event, locale.t("bot.slash.event.archive.response.channelMissing"));
+			return;
+		}
+		eventBotService.retriggerArchiveEvents(guild);
 		reply(event, archiveChannel.getAsMention());
 	}
 }
