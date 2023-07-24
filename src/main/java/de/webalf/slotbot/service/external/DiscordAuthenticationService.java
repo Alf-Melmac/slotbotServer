@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -24,7 +23,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.buildGuildAuth
  * @since 19.09.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class DiscordAuthenticationService {
 	private static final String ROLE_PREFIX = "Slotbot_";

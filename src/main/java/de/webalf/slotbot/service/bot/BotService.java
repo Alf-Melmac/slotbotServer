@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ import static net.dv8tion.jda.api.requests.GatewayIntent.*;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class BotService {
 	private final DiscordProperties discordProperties;
 	private final CommandClassHelper commandClassHelper;

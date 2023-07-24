@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.dtos.referenceless.NotificationSettingsReferencel
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
  */
 @RestController
 @RequestMapping("/notifications")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class NotificationSettingsController {
 	private final NotificationSettingsService notificationSettingsService;
 	private final UserService userService;

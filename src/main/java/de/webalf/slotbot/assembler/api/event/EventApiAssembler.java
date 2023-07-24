@@ -10,7 +10,6 @@ import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
@@ -21,7 +20,7 @@ import static de.webalf.slotbot.util.StringUtils.trim;
  * @since 04.11.2020
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public final class EventApiAssembler {
 	private final EventTypeService eventTypeService;
 	private final GuildService guildService;

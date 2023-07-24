@@ -9,7 +9,6 @@ import de.webalf.slotbot.util.RestTemplatesUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @since 29.10.2020
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;

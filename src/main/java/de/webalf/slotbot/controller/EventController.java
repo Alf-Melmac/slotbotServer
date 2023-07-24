@@ -16,7 +16,6 @@ import de.webalf.slotbot.service.GuildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
  */
 @RestController
 @RequestMapping("/events")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class EventController {
 	private final GuildService guildService;

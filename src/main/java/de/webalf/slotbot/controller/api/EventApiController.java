@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +32,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTI
 @RequestMapping(API + "/events")
 @RestController
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Tag(name = EVENTS, description = "Everything related to events")
 public class EventApiController {
 	private final EventApiService eventApiService;

@@ -5,7 +5,6 @@ import de.webalf.slotbot.service.bot.BotService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static de.webalf.slotbot.util.bot.MessageUtils.sendDm;
@@ -17,7 +16,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDm;
  * @since 02.01.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class MessageHelper {
 	private final BotService botService;
 

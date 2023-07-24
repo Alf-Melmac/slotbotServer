@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.GuildUsers;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.repository.GuildUsersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class GuildUsersService {
 	private final GuildUsersRepository guildUsersRepository;
 	private final UserService userService;

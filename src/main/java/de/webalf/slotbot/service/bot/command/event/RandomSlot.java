@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
 
@@ -17,7 +16,7 @@ import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInterac
  * @author Alf
  * @since 31.03.2021
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @SlashCommand(name = "bot.slash.event.randomSlot",
 		description = "bot.slash.event.randomSlot.description",

@@ -3,7 +3,6 @@ package de.webalf.slotbot.assembler.api;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.api.SquadApiViewDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.stream.StreamSupport;
  * @since 08.06.2023
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 class SquadApiViewAssembler {
 	private final SlotApiViewAssembler slotApiAssembler;
 

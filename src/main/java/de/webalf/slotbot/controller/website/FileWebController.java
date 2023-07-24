@@ -5,7 +5,6 @@ import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,7 +22,7 @@ import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
  * @since 24.11.2020
  */
 @Controller
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class FileWebController {
 	private final FileService fileService;

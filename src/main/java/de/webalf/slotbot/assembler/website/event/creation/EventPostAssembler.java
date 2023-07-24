@@ -9,7 +9,6 @@ import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
@@ -20,7 +19,7 @@ import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
  * @since 25.07.2022
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventPostAssembler {
 	private final EventTypeService eventTypeService;
 	private final MinimalSquadAssembler squadAssembler;

@@ -6,7 +6,6 @@ import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,7 +27,7 @@ import java.util.stream.Stream;
  * @since 24.11.2020
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class FileService {
 	private final StorageProperties storageProperties;

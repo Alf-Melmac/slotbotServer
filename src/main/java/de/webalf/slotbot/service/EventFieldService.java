@@ -7,7 +7,6 @@ import de.webalf.slotbot.repository.EventFieldRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventFieldService {
 	private final EventFieldRepository eventFieldRepository;
 

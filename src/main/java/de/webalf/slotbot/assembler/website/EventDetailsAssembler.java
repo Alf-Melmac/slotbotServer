@@ -18,7 +18,6 @@ import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,7 +30,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser
  * @since 30.10.2020
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventDetailsAssembler {
 	private final DiscordApiService discordApiService;
 	private final EventFieldReferencelessAssembler eventFieldReferencelessAssembler;

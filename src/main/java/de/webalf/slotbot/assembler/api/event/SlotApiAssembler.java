@@ -10,7 +10,6 @@ import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -22,7 +21,7 @@ import java.util.stream.StreamSupport;
  * @since 22.02.2021
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 final class SlotApiAssembler {
 	private final UserService userService;
 	private final GuildService guildService;

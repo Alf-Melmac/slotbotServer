@@ -4,7 +4,6 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.api.SlotApiViewDto;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.stream.StreamSupport;
  * @since 08.06.2023
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 final class SlotApiViewAssembler {
 	private final UserService userService;
 

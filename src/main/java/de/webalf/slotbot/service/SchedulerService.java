@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Executors;
@@ -17,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @since 07.08.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class SchedulerService {
 	private ScheduledExecutorService scheduler;

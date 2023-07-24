@@ -17,7 +17,6 @@ import de.webalf.slotbot.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +29,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class SlotService {
 	private final SlotRepository slotRepository;
 	private final GuildService guildService;

@@ -14,7 +14,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,7 @@ import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
  * @since 11.01.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class EventUpdateService {
 	private final EventHelper eventHelper;

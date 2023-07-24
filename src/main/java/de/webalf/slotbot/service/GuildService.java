@@ -10,7 +10,6 @@ import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,7 +25,7 @@ import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class GuildService {
 	private final GuildRepository guildRepository;

@@ -6,7 +6,6 @@ import de.webalf.slotbot.service.SchedulerService;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -22,7 +21,7 @@ import static de.webalf.slotbot.service.bot.EventUpdater.EventUpdateIdentifier.b
  * @since 10.05.2023
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventUpdater {
 	private final SchedulerService schedulerService;
 	private final EventUpdateService eventUpdateService;

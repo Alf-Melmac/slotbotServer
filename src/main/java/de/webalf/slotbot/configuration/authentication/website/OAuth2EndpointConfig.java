@@ -2,7 +2,6 @@ package de.webalf.slotbot.configuration.authentication.website;
 
 import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +35,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
  */
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class OAuth2EndpointConfig {
 	private final DiscordAuthenticationService discordAuthenticationService;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;

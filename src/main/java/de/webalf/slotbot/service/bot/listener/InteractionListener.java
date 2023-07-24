@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +25,7 @@ import static de.webalf.slotbot.util.bot.InteractionUtils.*;
  * @since 15.07.2021
  */
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class InteractionListener extends ListenerAdapter {
 	private final CommandClassHelper commandClassHelper;
 	private final MessageSource messageSource;

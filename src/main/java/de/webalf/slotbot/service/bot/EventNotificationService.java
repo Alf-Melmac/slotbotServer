@@ -10,7 +10,6 @@ import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,7 @@ import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class EventNotificationService {
 	private final SchedulerService schedulerService;

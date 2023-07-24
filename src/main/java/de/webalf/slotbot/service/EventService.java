@@ -17,7 +17,6 @@ import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,7 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventMan
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventService {
 	private final EventRepository eventRepository;
 	private final EventPostAssembler eventPostAssembler;

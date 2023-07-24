@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
  * @since 23.07.2023
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventArchiveBotListener {
 	@EventListener
 	public void onEventArchiveEvent(@NonNull EventArchiveEvent event) {

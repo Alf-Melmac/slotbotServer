@@ -6,7 +6,6 @@ import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -26,7 +25,7 @@ import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
  * @author Alf
  * @since 29.10.2020
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final DiscordAuthenticationService discordAuthenticationService;

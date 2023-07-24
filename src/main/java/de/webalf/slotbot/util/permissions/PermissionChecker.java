@@ -3,7 +3,6 @@ package de.webalf.slotbot.util.permissions;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Service;
  * @since 07.01.2022
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class PermissionChecker {
 	private final GuildService guildService;
 	private final EventService eventService;

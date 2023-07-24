@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTI
 @RequestMapping(API + "/events/{id}/slot/{slotNumber}")
 @RestController
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Tag(name = SLOTS, description = "Everything related to slots in events")
 @SecurityRequirement(name = SECURITY_KEY_WRITE)
 public class SlottingApiController {

@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.failedInteraction;
 import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
@@ -22,7 +21,7 @@ import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
  * @author Alf
  * @since 07.07.2021
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @SlashCommand(name = "bot.slash.event.rebuildArchive",
 		description = "bot.slash.event.rebuildArchive.description",

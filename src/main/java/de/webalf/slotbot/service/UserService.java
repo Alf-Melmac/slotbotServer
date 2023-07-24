@@ -12,7 +12,6 @@ import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
@@ -23,7 +22,7 @@ import org.springframework.util.ReflectionUtils;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
 	private final DiscordApiService discordApiService;

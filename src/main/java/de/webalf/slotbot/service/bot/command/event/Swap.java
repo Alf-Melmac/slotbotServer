@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -39,7 +38,7 @@ import static de.webalf.slotbot.util.bot.SlashCommandUtils.getUserOption;
  * @since 13.01.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @SlashCommand(name = "bot.slash.event.swap",
 		description = "bot.slash.event.swap.description",

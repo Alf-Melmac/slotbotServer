@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -30,7 +29,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDmAndDeleteMessage;
  * @since 01.01.2021
  */
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Deprecated
 public class MessageReceivedListener extends ListenerAdapter {
 	private final DiscordProperties discordProperties;

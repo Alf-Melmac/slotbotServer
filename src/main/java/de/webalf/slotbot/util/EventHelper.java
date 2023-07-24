@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,7 @@ import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
  * @since 05.01.2022
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventHelper {
 	private final MessageSource messageSource;
 

@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.Command;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
 
@@ -19,7 +18,7 @@ import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
  * @author Alf
  * @since 27.01.2023
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @ContextMenu(name = "bot.context.guild.addUserToGuild",
 		type = Command.Type.USER,

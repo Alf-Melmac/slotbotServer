@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalIntegerOpt
  * @author Alf
  * @since 11.01.2021
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @SlashCommand(name = "bot.slash.event.unslot",
 		description = "bot.slash.event.unslot.description",

@@ -1,7 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -21,7 +20,7 @@ import static de.webalf.slotbot.constant.Urls.API;
  */
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class ApiEndpointConfig {
 	private final TokenAuthFilter tokenAuthFilter;
 	private final TokenAuthProvider tokenAuthProvider;

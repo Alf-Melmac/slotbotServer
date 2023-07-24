@@ -7,7 +7,6 @@ import de.webalf.slotbot.model.external.discord.DiscordGuildMember;
 import de.webalf.slotbot.service.external.DiscordBotService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @since 18.01.2023
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class UserInGuildAssembler {
 	private final DiscordBotService discordBotService;
 

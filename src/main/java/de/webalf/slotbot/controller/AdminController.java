@@ -7,7 +7,6 @@ import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +25,7 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
 @RestController
 @RequestMapping(ADMIN + "/utils")
 @PreAuthorize(HAS_ROLE_SYS_ADMIN)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class AdminController {
 	private final FileService fileService;
 	private final EventTypeService eventTypeService;

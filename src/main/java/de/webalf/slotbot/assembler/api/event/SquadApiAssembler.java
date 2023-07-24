@@ -8,7 +8,6 @@ import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -20,7 +19,7 @@ import java.util.stream.StreamSupport;
  * @since 22.02.2021
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 final class SquadApiAssembler {
 	private final SlotApiAssembler slotAssembler;
 	private final GuildService guildService;

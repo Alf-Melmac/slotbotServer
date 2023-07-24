@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.service.UserUpdateService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @since 22.02.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class UserBotService {
 	private final UserService userService;
 	private final UserUpdateService userUpdateService;

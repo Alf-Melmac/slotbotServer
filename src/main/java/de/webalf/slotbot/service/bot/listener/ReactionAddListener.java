@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
  * @since 14.01.2021
  */
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class ReactionAddListener extends ListenerAdapter {
 	private final ReactionAddService reactionAddService;
 

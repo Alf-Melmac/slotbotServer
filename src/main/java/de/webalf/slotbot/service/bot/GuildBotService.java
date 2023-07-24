@@ -2,7 +2,6 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
@@ -14,7 +13,7 @@ import java.util.Locale;
  * @since 15.02.2023
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class GuildBotService {
 	private final GuildService guildService;
 

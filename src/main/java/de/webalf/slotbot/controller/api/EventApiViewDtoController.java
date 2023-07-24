@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +25,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.HAS_POTENTI
 @RequestMapping(UNSTABLE + "/events/view")
 @RestController
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Tag(name = TagNames.UNSTABLE, description = "Unstable API")
 @SecurityRequirement(name = SECURITY_KEY_READ_PUBLIC)
 public class EventApiViewDtoController {

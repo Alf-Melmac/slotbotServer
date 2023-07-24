@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.GuildService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasWritePermission;
@@ -16,7 +15,7 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasWritePer
  * @since 07.01.2022
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class ApiPermissionChecker {
 	private final GuildService guildService;
 

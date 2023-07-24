@@ -4,7 +4,6 @@ import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.service.SlotService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  * @since 14.01.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class SlotBotService {
 	private final SlotService slotService;
 

@@ -16,7 +16,6 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.customizers.OperationCustomizer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @since 09.10.2021
  */
 @Configuration
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class OpenApiConfig {
 	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;

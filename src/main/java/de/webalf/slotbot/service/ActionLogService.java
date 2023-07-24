@@ -9,7 +9,6 @@ import de.webalf.slotbot.util.DateUtils;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ import java.time.Duration;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class ActionLogService {
 	private final ActionLogRepository logRepository;
 

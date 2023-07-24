@@ -9,7 +9,6 @@ import de.webalf.slotbot.repository.EventDiscordInformationRepository;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class EventDiscordInformationService {
 	private final EventDiscordInformationRepository discordInformationRepository;
 	private final EventDiscordInformationAssembler discordInformationAssembler;

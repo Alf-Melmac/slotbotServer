@@ -1,7 +1,6 @@
 package de.webalf.slotbot.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -14,7 +13,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @since 09.01.2022
  */
 @Configuration
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 	@Value("${server.cors.allowedOrigins}")
 	private String[] allowedOrigins;

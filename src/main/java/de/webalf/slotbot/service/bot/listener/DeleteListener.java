@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
@@ -17,7 +16,7 @@ import java.util.Locale;
  * @author Alf
  * @since 03.04.2023
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class DeleteListener extends ListenerAdapter {
 	private final EventDiscordInformationService eventDiscordInformationService;

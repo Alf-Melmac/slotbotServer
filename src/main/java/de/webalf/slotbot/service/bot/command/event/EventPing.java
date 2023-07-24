@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +24,7 @@ import static de.webalf.slotbot.util.bot.SlashCommandUtils.getStringOption;
  * @author Alf
  * @since 21.03.2021
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @SlashCommand(name = "bot.slash.event.ping",
 		description = "bot.slash.event.ping.description",

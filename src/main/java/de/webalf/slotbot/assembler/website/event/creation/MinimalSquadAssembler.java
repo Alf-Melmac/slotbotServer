@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.GuildUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -17,7 +16,7 @@ import java.util.stream.StreamSupport;
  * @since 25.07.2022
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 final class MinimalSquadAssembler {
 	private final MinimalSlotAssembler slotAssembler;
 	private final GuildService guildService;

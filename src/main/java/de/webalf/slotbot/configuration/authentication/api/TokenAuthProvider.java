@@ -5,7 +5,6 @@ import de.webalf.slotbot.model.authentication.ApiToken;
 import de.webalf.slotbot.repository.ApiTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @since 23.09.2020
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class TokenAuthProvider implements AuthenticationProvider {
 	private final ApiTokenRepository apiTokenRepository;

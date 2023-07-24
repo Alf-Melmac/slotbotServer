@@ -13,7 +13,6 @@ import de.webalf.slotbot.util.EventHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Constructor;
@@ -26,7 +25,7 @@ import java.util.Arrays;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class CommandClassHelper {
 	private final EventBotService eventBotService;
 	private final EventHelper eventHelper;

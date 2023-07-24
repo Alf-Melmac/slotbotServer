@@ -22,7 +22,6 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ import static de.webalf.slotbot.util.bot.StringSelectUtils.buildSelectLabel;
  * @author Alf
  * @since 04.01.2021
  */
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 @SlashCommand(name = "bot.slash.event.addEventToChannel",
 		description = "bot.slash.event.addEventToChannel.description",

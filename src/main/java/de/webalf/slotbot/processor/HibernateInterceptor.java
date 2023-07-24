@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.CallbackException;
 import org.hibernate.Interceptor;
 import org.hibernate.type.Type;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @since 29.12.2020
  */
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class HibernateInterceptor implements Interceptor {
 	private final UpdateInterceptorService updateInterceptorService;
 

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static de.webalf.slotbot.constant.Emojis.THUMBS_DOWN;
@@ -20,7 +19,7 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendDmToRecipient;
  * @since 15.01.2021
  */
 @Service
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 @Slf4j
 public class ReactionAddService {
 	private final SlotBotService slotBotService;
