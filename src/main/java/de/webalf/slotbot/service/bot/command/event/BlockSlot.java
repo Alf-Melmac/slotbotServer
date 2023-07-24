@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.bot.InteractionUtils.finishedInteraction;
+import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getIntegerOption;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalStringOption;
 
@@ -46,7 +46,7 @@ public class BlockSlot implements DiscordSlashCommand {
 		final String replacementText = getOptionalStringOption(event, OPTION_REPLACEMENT);
 		eventBotService.blockSlot(event.getChannel().getIdLong(), slotNumber, replacementText);
 
-		finishedInteraction(event);
+		finishedVisibleInteraction(event);
 	}
 
 	@Override
