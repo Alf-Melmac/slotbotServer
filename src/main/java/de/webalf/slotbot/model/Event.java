@@ -5,7 +5,7 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
-import de.webalf.slotbot.util.DateUtils;
+import de.webalf.slotbot.service.event.EventArchiveEvent;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
@@ -499,12 +499,16 @@ public class Event extends AbstractSuperIdEntity {
 		return emptySlots.get(RANDOM.nextInt(emptySlots.size()));
 	}
 
+	/**
+	 * Archives the event for the given guild. This removes the discord information for the guild and
+	 * removes all notifications for the event, if the guild is the owner guild.
+	 * <p>
+	 * Don't forget to {@link EventArchiveEvent inform other systems} about the archiving process.
+	 *
+	 * @param guildId to archive event for
+	 */
 	public void archive(long guildId) {
-		if (DateUtils.isInFuture(getDateTime())) {
-			throw BusinessRuntimeException.builder().title("Es können nur Events in der Vergangenheit archiviert werden.").build();
-		}
-
-		getDiscordInformation(guildId).ifPresent(informationOfGuild -> getDiscordInformation().remove(informationOfGuild));
+		getDiscordInformation().removeIf(information -> information.getGuild().getId() == guildId);
 		if (getOwnerGuild().getId() == guildId) {
 			EventNotificationService.removeNotifications(getId());
 		}

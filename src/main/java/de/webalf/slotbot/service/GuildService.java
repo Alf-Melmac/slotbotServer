@@ -10,6 +10,7 @@ import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -119,13 +120,13 @@ public class GuildService {
 		return guild;
 	}
 
+	@Async
 	public void removeArchiveChannelByChannel(long guildId, long removedChannelId) {
 		final Guild guild = find(guildId);
 
 		final Long archiveChannel = guild.getArchiveChannel();
 		if (archiveChannel != null && (archiveChannel == removedChannelId)) {
 			guild.setArchiveChannel(null);
-
 		}
 	}
 

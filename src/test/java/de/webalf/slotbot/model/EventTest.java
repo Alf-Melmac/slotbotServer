@@ -1,19 +1,20 @@
 package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.service.bot.EventNotificationService;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
 
 /**
  * @author Alf
@@ -164,5 +165,58 @@ class EventTest {
 
 	private List<Integer> getSlotNumbers(@NonNull Squad squad) {
 		return squad.getSlotList().stream().map(Slot::getNumber).toList();
+	}
+
+	//archive
+	@Test
+	void archiveUpdatesDiscordInformation() {
+		final long archivingGuild = 1;
+		final long otherGuild = 2;
+
+		final EventDiscordInformation infoToKeep = EventDiscordInformation.builder().guild(Guild.builder().id(otherGuild).build()).build();
+		final Event sut = Event.builder()
+				.discordInformation(new HashSet<>(Arrays.asList(
+						EventDiscordInformation.builder().guild(Guild.builder().id(archivingGuild).build()).build(),
+						infoToKeep
+				)))
+				.ownerGuild(Guild.builder().build())
+				.build();
+
+		sut.archive(archivingGuild);
+
+		assertThat(sut.getDiscordInformation())
+				.hasSize(1)
+				.containsExactly(infoToKeep);
+	}
+
+	@Test
+	void archiveRemovesNotifications() {
+		final int ownerGuild = 1;
+		final Event sut = Event.builder()
+				.ownerGuild(Guild.builder().id(ownerGuild).build())
+				.discordInformation(Collections.emptySet())
+				.build();
+
+		try (MockedStatic<EventNotificationService> eventNotificationService = mockStatic(EventNotificationService.class)) {
+			sut.archive(ownerGuild);
+
+			eventNotificationService.verify(() -> EventNotificationService.removeNotifications(sut.getId()));
+		}
+	}
+
+	@Test
+	void archiveDoesntRemoveNotificationsForOtherGuild() {
+		final int ownerGuild = 1;
+		final int otherGuild = 2;
+		final Event sut = Event.builder()
+				.ownerGuild(Guild.builder().id(ownerGuild).build())
+				.discordInformation(Collections.emptySet())
+				.build();
+
+		try (MockedStatic<EventNotificationService> eventNotificationService = mockStatic(EventNotificationService.class)) {
+			sut.archive(otherGuild);
+
+			eventNotificationService.verify(() -> EventNotificationService.removeNotifications(sut.getId()), never());
+		}
 	}
 }

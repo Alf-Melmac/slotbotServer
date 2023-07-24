@@ -6,8 +6,10 @@ import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.service.EventService;
+import de.webalf.slotbot.service.event.EventArchiveInitializedEvent;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventBotService {
 	private final EventService eventService;
+	private final GuildBotService guildBotService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public Event findById(long eventId) {
 		return eventService.findById(eventId);
@@ -50,12 +54,14 @@ public class EventBotService {
 		eventService.addDiscordInformation(eventId, dto);
 	}
 
-	public void archiveEvent(long channel, Guild guild) {
-		eventService.archiveEvent(findByChannelOrThrow(channel), guild);
-	}
-
 	public void retriggerArchiveEvents(Guild guild) {
-		eventService.retriggerArchiveEvents(guild);
+		final de.webalf.slotbot.model.Guild persistentGuild = guildBotService.find(guild.getIdLong());
+		eventService.findAllInPast(persistentGuild)
+				.forEach(event -> eventPublisher.publishEvent(EventArchiveInitializedEvent.builder()
+						.event(event)
+						.guild(persistentGuild)
+						.discordGuild(guild)
+						.build()));
 	}
 
 	public void slot(long channel, int slotNumber, String userId) {

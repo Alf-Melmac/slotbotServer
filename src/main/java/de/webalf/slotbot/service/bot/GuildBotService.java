@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.bot;
 
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,16 @@ import java.util.Locale;
 public class GuildBotService {
 	private final GuildService guildService;
 
+	Guild find(long guildId) {
+		return guildService.find(guildId);
+	}
+
 	public Locale getGuildLocale(long guildId) {
-		return guildService.find(guildId).getLocale();
+		return find(guildId).getLocale();
 	}
 
 	public Long getGuildArchiveChannel(long guildId) {
-		return guildService.find(guildId).getArchiveChannel();
+		return find(guildId).getArchiveChannel();
 	}
 
 	public void removeArchiveChannelByChannel(long guildId, long removedChannelId) {

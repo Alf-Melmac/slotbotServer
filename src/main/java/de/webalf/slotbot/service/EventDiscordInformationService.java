@@ -6,9 +6,11 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.repository.EventDiscordInformationRepository;
+import de.webalf.slotbot.service.event.EventArchiveEvent;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class EventDiscordInformationService {
 	private final EventDiscordInformationRepository discordInformationRepository;
 	private final EventDiscordInformationAssembler discordInformationAssembler;
+	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -90,14 +93,19 @@ public class EventDiscordInformationService {
 	}
 
 	/**
-	 * Removes the discord information for the given channel (if present)
+	 * If there is an event associated with the given channelId in the given guild, it is archived.
 	 *
+	 * @param guildId to archive event in
 	 * @param channelId to remove information for
 	 */
 	@Async
-	public void removeByChannel(long channelId) {
-		findEventByChannel(channelId)
-				.ifPresent(event -> event.getDiscordInformation().removeIf(information -> information.getChannel() == channelId));
+	public void removeByChannel(long guildId, long channelId) {
+		final Optional<Event> optionalEvent = findEventByChannel(channelId);
+		if (optionalEvent.isPresent()) {
+			final Event event = optionalEvent.get();
+			event.archive(guildId);
+			eventPublisher.publishEvent(EventArchiveEvent.builder().event(event).guildId(guildId).build());
+		}
 	}
 
 	/**

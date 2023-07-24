@@ -55,14 +55,20 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Slash command: addEventToChannel");
 
-		if (existingEventInThisChannel(event.getChannel())) {
+		final long channelId = event.getChannel().getIdLong();
+		if (existingEventInThisChannel(channelId)) {
 			reply(event, locale.t("bot.select.event.addEventToChannel.response.alreadyAnotherAssigned"));
 			return;
 		}
-
 		//noinspection DataFlowIssue Guild only command
-		final List<Event> events = eventBotService.findAllNotAssignedInFuture(event.getGuild().getIdLong());
-		final List<Event> foreignEvents = eventBotService.findAllForeignNotAssignedInFuture(event.getGuild().getIdLong());
+		final long guildId = event.getGuild().getIdLong();
+		if (isArchiveChannel(guildId, channelId)) {
+			reply(event, locale.t("bot.select.event.addEventToChannel.response.isArchive"));
+			return;
+		}
+
+		final List<Event> events = eventBotService.findAllNotAssignedInFuture(guildId);
+		final List<Event> foreignEvents = eventBotService.findAllForeignNotAssignedInFuture(guildId);
 		final boolean eventsEmpty = events.isEmpty();
 		final boolean foreignEventsEmpty = foreignEvents.isEmpty();
 		if (eventsEmpty && foreignEventsEmpty) {
@@ -81,8 +87,12 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 		addSelectMenu(event, selectMenus.toArray(new StringSelectMenu[0]));
 	}
 
-	private boolean existingEventInThisChannel(@NonNull MessageChannelUnion channel) {
-		return eventBotService.findByChannel(channel.getIdLong()).isPresent();
+	private boolean existingEventInThisChannel(long channelId) {
+		return eventBotService.findByChannel(channelId).isPresent();
+	}
+
+	private boolean isArchiveChannel(long guildId, long channelId) {
+		return guildBotService.getGuildArchiveChannel(guildId) == channelId;
 	}
 
 	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {

@@ -38,12 +38,12 @@ public class RebuildArchive implements DiscordSlashCommand {
 		//noinspection DataFlowIssue Guild only command
 		final Long guildArchiveChannel = guildBotService.getGuildArchiveChannel(guild.getIdLong());
 		if (guildArchiveChannel == null) {
-			failedInteraction(event, locale.t("bot.slash.event.archive.response.configMissing"));
+			failedInteraction(event, locale.t("bot.slash.event.rebuildArchive.response.configMissing"));
 			return;
 		}
 		final TextChannel archiveChannel = ChannelUtils.getChannel(guildArchiveChannel, guild, "archive");
 		if (archiveChannel == null) {
-			failedInteraction(event, locale.t("bot.slash.event.archive.response.channelMissing"));
+			failedInteraction(event, locale.t("bot.slash.event.rebuildArchive.response.channelMissing"));
 			return;
 		}
 		eventBotService.retriggerArchiveEvents(guild);
