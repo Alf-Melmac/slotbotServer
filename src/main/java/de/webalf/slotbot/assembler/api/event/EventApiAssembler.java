@@ -12,6 +12,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.StreamSupport;
+
 import static de.webalf.slotbot.util.BooleanUtils.parseBoolean;
 import static de.webalf.slotbot.util.StringUtils.trim;
 
@@ -64,5 +67,11 @@ public final class EventApiAssembler {
 				.squadList(SquadApiAssembler.toIdDtoList(event.getSquadList()))
 				.reserveParticipating(event.getReserveParticipating())
 				.build();
+	}
+
+	public static List<EventApiIdDto> toDtoList(@NonNull Iterable<? extends Event> events) {
+		return StreamSupport.stream(events.spliterator(), false)
+				.map(EventApiAssembler::toDto)
+				.toList();
 	}
 }

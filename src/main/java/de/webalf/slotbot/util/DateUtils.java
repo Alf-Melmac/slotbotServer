@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
@@ -42,5 +43,9 @@ public final class DateUtils {
 	 */
 	public static LocalDateTime now() {
 		return LocalDateTime.now(UTC);
+	}
+
+	public static LocalDateTime atEndOfDay(@NonNull LocalDate date) {
+		return date.atTime(23, 59, 59);
 	}
 }

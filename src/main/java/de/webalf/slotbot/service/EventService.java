@@ -16,7 +16,6 @@ import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +45,6 @@ public class EventService {
 	private final EventFieldService eventFieldService;
 	private final EventDiscordInformationService eventDiscordInformationService;
 	private final GuildService guildService;
-	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -80,19 +78,25 @@ public class EventService {
 		return eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 	}
 
+	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
+		return findAllBetween(start, end, hasEventManageRole());
+	}
+
 	/**
-	 * Returns all events owned by the given guild that take place in the specified period
+	 * Returns all events in the given period.
+	 * Events are filtered by the {@link GuildService#findCurrentNonNullGuild() current guild}.
 	 *
 	 * @return all events in given period
 	 */
-	public List<Event> findAllBetweenOfGuild(LocalDateTime start, LocalDateTime end, @NonNull Guild ownerGuild) {
+	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end, boolean canReadHidden) {
+		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
 		if (ownerGuild.getId() == GUILD_PLACEHOLDER) {
-			return hasEventManageRole() ?
+			return canReadHidden ?
 					eventRepository.findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(start, end) :
 					eventRepository.findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(start, end);
 		}
 
-		return hasEventManageRole() ?
+		return canReadHidden ?
 				eventRepository.findAllByGuildAndDateTimeBetween(ownerGuild, start, end) :
 				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
 	}

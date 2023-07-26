@@ -12,7 +12,6 @@ import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.service.GuildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +36,13 @@ import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS
 @RequiredArgsConstructor
 @Slf4j
 public class EventController {
-	private final GuildService guildService;
 	private final EventService eventService;
 	private final EventDetailsAssembler eventDetailsAssembler;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
 	                                         @RequestParam LocalDateTime end) {
-		return CalendarEventAssembler.toDtoList(eventService.findAllBetweenOfGuild(start, end, guildService.findCurrentNonNullGuild()));
+		return CalendarEventAssembler.toDtoList(eventService.findAllBetween(start, end));
 	}
 
 	@GetMapping("/{id}/details")

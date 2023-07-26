@@ -2,6 +2,7 @@ package de.webalf.slotbot.exception;
 
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = {ResourceNotFoundException.class, BusinessRuntimeException.class, ForbiddenException.class})
-	protected ResponseEntity<ExceptionResponse> handleConflict(RuntimeException ex, HttpServletRequest request) {
+	protected ResponseEntity<ExceptionResponse> handleConflict(@NonNull RuntimeException ex, @NonNull HttpServletRequest request) {
 		return new ResponseEntity<>(
 				ExceptionResponse.builder()
 						.errorMessage(determineErrorMessage(ex))
@@ -53,6 +54,16 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 		return new ResponseEntity<>(
 				ExceptionResponse.builder()
 						.errorMessage(errorMessage + (multiple ? " are" : " is") + " invalid. Missing mandatory field" + (multiple ? "s" : "") + "?")
+						.requestedURI(((ServletWebRequest) request).getRequest().getRequestURI())
+						.build(),
+				HttpStatus.BAD_REQUEST);
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleTypeMismatch(@NonNull TypeMismatchException ex, @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
+		return new ResponseEntity<>(
+				ExceptionResponse.builder()
+						.errorMessage("Failed to convert '" + ex.getPropertyName() + "' with value: '" + ex.getValue() + "'")
 						.requestedURI(((ServletWebRequest) request).getRequest().getRequestURI())
 						.build(),
 				HttpStatus.BAD_REQUEST);

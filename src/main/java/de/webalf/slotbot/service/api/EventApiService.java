@@ -3,8 +3,10 @@ package de.webalf.slotbot.service.api;
 import de.webalf.slotbot.assembler.api.event.EventApiAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.api.event.creation.EventApiDto;
 import de.webalf.slotbot.service.EventService;
+import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import de.webalf.slotbot.util.permissions.ApiPermissionChecker;
@@ -13,6 +15,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasReadPermission;
 
 /**
  * Wrapper for {@link EventService} to be used by the api endpoints
@@ -27,6 +35,7 @@ public class EventApiService {
 	private final EventService eventService;
 	private final EventApiAssembler eventApiAssembler;
 	private final MessageSource messageSource;
+	private final GuildService guildService;
 
 	/**
 	 * In addition to {@link EventService#findById(long)}, the API access rights for the event are checked
@@ -35,6 +44,17 @@ public class EventApiService {
 		final Event event = eventService.findById(eventId);
 		EventUtils.assertApiReadAccess(event);
 		return event;
+	}
+
+	public List<Event> findAllBetween(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {
+		final long requestedDays = Duration.between(start, end).toDays();
+		final Guild guild = guildService.findCurrentNonNullGuild();
+		if (requestedDays > 30) {
+			throw BusinessRuntimeException.builder()
+					.title(messageSource.getMessage("api.events.error.tooManyDays", new Long[]{requestedDays}, guild.getLocale()))
+					.build();
+		}
+		return eventService.findAllBetween(start, end, hasReadPermission(false, guild.getId()));
 	}
 
 	/**
