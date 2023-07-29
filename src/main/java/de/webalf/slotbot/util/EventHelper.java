@@ -124,7 +124,7 @@ public class EventHelper {
 				slotListText = new StringBuilder(nextSlotText).append("\n").append(String.join("\n", splitSquadText)); //Next slot list message must contain the rest of the squad
 			} else {
 				//First squad in new message doesn't need a leading new line
-				if (slotListText.length() != 0) {
+				if (!slotListText.isEmpty()) {
 					slotListText.append("\n\n");
 				}
 				slotListText.append(squadText);

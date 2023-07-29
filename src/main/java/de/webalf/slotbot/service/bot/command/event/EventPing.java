@@ -9,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -16,6 +17,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.webalf.slotbot.util.StringUtils.splitEveryNth;
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
 import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getStringOption;
@@ -48,7 +50,8 @@ public class EventPing implements DiscordSlashCommand {
 
 		final String message = getStringOption(event, OPTION_MESSAGE);
 
-		sendMessage(event, message + "\n" + mentions);
+		splitEveryNth(message + "\n" + mentions, Message.MAX_CONTENT_LENGTH)
+				.forEach(messagePart -> sendMessage(event, messagePart));
 
 		finishedVisibleInteraction(event);
 	}

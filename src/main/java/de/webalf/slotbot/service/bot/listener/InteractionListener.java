@@ -73,7 +73,7 @@ public class InteractionListener extends ListenerAdapter {
 	@Override
 	public void onStringSelectInteraction(@NonNull StringSelectInteractionEvent event) {
 		final String componentId = event.getComponentId();
-		log.debug("Received selection menu event: {} from {}", componentId, event.getUser().getId());
+		log.debug("Received selection menu event: '{}' from {}", componentId, event.getUser().getId());
 
 		final DiscordLocaleHelper locale = new DiscordLocaleHelper(event.getUserLocale(), messageSource);
 		final Class<?> aClass = StringSelectUtils.get(componentId);
@@ -113,7 +113,7 @@ public class InteractionListener extends ListenerAdapter {
 	@Override
 	public void onUserContextInteraction(@NonNull UserContextInteractionEvent event) {
 		final String commandName = event.getName();
-		log.debug("Received user context interaction event: {} from {}", commandName, event.getUser().getId());
+		log.debug("Received user context interaction event: '{}' from {}", commandName, event.getUser().getId());
 
 		final Class<?> commandClass = ContextMenuUtils.get(commandName);
 		if (commandClass == null) {

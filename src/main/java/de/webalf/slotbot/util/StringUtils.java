@@ -1,5 +1,6 @@
 package de.webalf.slotbot.util;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
@@ -50,6 +51,21 @@ public final class StringUtils {
 			s.add(group);
 		}
 		return s;
+	}
+
+	/**
+	 * Splits a string into substrings of length n and returns them as a list.
+	 *
+	 * @param str the string to split
+	 * @param n   the length of each substring
+	 * @return a list of substrings of length n
+	 */
+	public static List<String> splitEveryNth(@NonNull String str, int n) {
+		final List<String> split = new ArrayList<>();
+		for (int i = 0; i < str.length(); i += n) {
+			split.add(str.substring(i, Math.min(str.length(), i + n)));
+		}
+		return split;
 	}
 
 	/**
