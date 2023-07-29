@@ -412,12 +412,9 @@ public class EventService {
 	 * @param event      event
 	 * @param slotNumber to edit name of
 	 * @param slotName   new name
-	 * @return event in which the slot has been renamed
 	 */
-	public Event renameSlot(@NonNull Event event, int slotNumber, String slotName) {
-		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		slotService.renameSlot(slot, slotName);
-		return event;
+	public void renameSlot(@NonNull Event event, int slotNumber, String slotName) {
+		slotService.renameSlot(event, slotNumber, slotName);
 	}
 
 	/**

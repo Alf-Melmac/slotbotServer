@@ -99,8 +99,8 @@ public class CommandsService {
 			@SuppressWarnings("unchecked") //The class must implement an interface, and thus we can assume the correct return type here
 			final List<TranslatableOptionData> options = (List<TranslatableOptionData>) commandClass.getMethod("getOptions", int.class).invoke(commandClassHelper.getConstructor(commandClass), optionPosition);
 			return options.stream().map(option -> {
-				final String name = option.getName();
-				final String description = option.getDescription();
+				final String name = option.name();
+				final String description = option.description();
 				final OptionData optionData = option
 						.toOptionData(DEFAULT_LOCALE.t(name), DEFAULT_LOCALE.t(name));
 				locales.forEach((language, locale) -> optionData

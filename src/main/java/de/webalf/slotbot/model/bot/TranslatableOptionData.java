@@ -1,6 +1,5 @@
 package de.webalf.slotbot.model.bot;
 
-import lombok.Value;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -10,14 +9,8 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
  * @author Alf
  * @since 07.01.2023
  */
-@Value
-public class TranslatableOptionData {
-	OptionType type;
-	String name;
-	String description;
-	boolean isRequired;
-
+public record TranslatableOptionData(OptionType type, String name, String description, boolean required) {
 	public OptionData toOptionData(String name, String description) {
-		return new OptionData(type, name, description, isRequired);
+		return new OptionData(type, name, description, required);
 	}
 }

@@ -131,13 +131,14 @@ public class SlotService {
 	}
 
 	/**
-	 * Renames the given slot
+	 * Renames the slot with the given name for the specified event and slot number.
 	 *
-	 * @param slot     to rename
-	 * @param slotName new name
+	 * @param event      event to which the slot belongs
+	 * @param slotNumber slot number
+	 * @param slotName   new slot name
 	 */
-	void renameSlot(@NonNull Slot slot, @NotBlank String slotName) {
-		slot.setName(slotName);
+	public void renameSlot(@NonNull Event event, int slotNumber, @NotBlank String slotName) {
+		slotRepository.updateNameByEventAndNumber(slotName, event, slotNumber);
 	}
 
 	/**
