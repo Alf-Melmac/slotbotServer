@@ -54,7 +54,7 @@ public class InteractionListener extends ListenerAdapter {
 				if (StringUtils.isNotEmpty(cause.getMessage())) {
 					reply(event, cause.getMessage());
 				} else {
-					reply(event, locale.t("bot.slash.response.notFound"));
+					reply(event, locale.t("bot.interaction.response.notFound"));
 				}
 			} else {
 				unknownException(event, commandClass, e);
@@ -94,7 +94,7 @@ public class InteractionListener extends ListenerAdapter {
 				if (StringUtils.isNotEmpty(cause.getMessage())) {
 					replyAndRemoveComponents(event, cause.getMessage());
 				} else {
-					replyAndRemoveComponents(event, "Das gesuchte Element kann nicht erreicht werden.");
+					replyAndRemoveComponents(event, locale.t("bot.interaction.response.notFound"));
 				}
 			} else {
 				unknownException(event, aClass, e);
