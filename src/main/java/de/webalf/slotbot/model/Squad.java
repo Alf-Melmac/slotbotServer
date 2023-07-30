@@ -100,6 +100,13 @@ public class Squad extends AbstractSuperIdEntity {
 
 	// Setter
 
+	public void setName(String name) {
+		if (isReserve()) {
+			throw new ForbiddenException("Reserve may not be renamed.");
+		}
+		this.name = name;
+	}
+
 	/**
 	 * Adds a new slot to the squad
 	 *

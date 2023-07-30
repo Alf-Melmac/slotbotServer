@@ -117,16 +117,16 @@ public class Event extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * Finds a slot by its position
+	 * Finds a {@link Squad} by its position in an event. Reserve is not included.
 	 *
 	 * @param squadPosition position to get squad for
 	 * @return the squad
 	 * @throws BusinessRuntimeException if there is no squad at the given position
 	 */
 	public Squad findSquadByPosition(int squadPosition) {
-		final List<Squad> squad = getSquadList();
+		final List<Squad> squad = getSquadsExceptReserve();
 		if (squad.size() <= squadPosition || squadPosition < 0) {
-			throw BusinessRuntimeException.builder().title("Den Squad konnte ich nicht finden.").build();
+			throw BusinessRuntimeException.builder().title("Couldn't find or rename the squad.").build();
 		}
 		return squad.get(squadPosition);
 	}
@@ -177,8 +177,8 @@ public class Event extends AbstractSuperIdEntity {
 	 *
 	 * @return every squad that isn't the reserve
 	 */
-	private Set<Squad> getSquadsExceptReserve() {
-		return getSquadList().stream().filter(squad -> !squad.isReserve()).collect(Collectors.toUnmodifiableSet());
+	private List<Squad> getSquadsExceptReserve() {
+		return getSquadList().stream().filter(squad -> !squad.isReserve()).toList();
 	}
 
 	public Set<User> getAllParticipants() {

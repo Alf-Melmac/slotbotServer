@@ -21,6 +21,57 @@ import static org.mockito.Mockito.never;
  * @since 20.10.2021
  */
 class EventTest {
+	//findSquadByPosition
+	@Test
+	void findSquadByPosition() {
+		final Squad squad1 = Squad.builder().name("Squad 1").build();
+		final Squad squad2 = Squad.builder().name("Squad 2").build();
+		final Squad squad3 = Squad.builder().name("Squad 3").build();
+		final Event sut = buildEventWithSquads(squad1, squad2, squad3);
+
+		assertThat(sut.findSquadByPosition(0)).isEqualTo(squad1);
+		assertThat(sut.findSquadByPosition(1)).isEqualTo(squad2);
+		assertThat(sut.findSquadByPosition(2)).isEqualTo(squad3);
+	}
+
+	@Test
+	void findSquadByPositionWithOneSquad() {
+		final Squad squad = Squad.builder().name("Squad").build();
+		final Event sut = buildEventWithSquads(squad);
+
+		assertThat(sut.findSquadByPosition(0)).isEqualTo(squad);
+	}
+
+	@Test
+	void findSquadByPositionWithEmptyList() {
+		final Event sut = buildEventWithSquads();
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.findSquadByPosition(0));
+		assertMessageEquals("Couldn't find or rename the squad.", exception);
+	}
+
+	@Test
+	void findSquadByPositionWithNegative() {
+		final Event sut = buildEventWithSquads(Squad.builder().name("Squad").build());
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.findSquadByPosition(-1));
+		assertMessageEquals("Couldn't find or rename the squad.", exception);
+	}
+
+	@Test
+	void findSquadByPositionWithTooLarge() {
+		final Event sut = buildEventWithSquads(Squad.builder().name("Squad").build());
+
+		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.findSquadByPosition(1));
+		assertMessageEquals("Couldn't find or rename the squad.", exception);
+	}
+
+	private Event buildEventWithSquads(Squad... squads) {
+		return Event.builder()
+				.squadList(Arrays.asList(squads))
+				.build();
+	}
+
 	//isEmpty
 	@Test
 	void isEmptyReturnsTrue() {

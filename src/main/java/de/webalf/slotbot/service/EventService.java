@@ -386,9 +386,6 @@ public class EventService {
 	 */
 	public Event addSlot(@NonNull Event event, int squadPosition, SlotDto slotDto) {
 		final Squad squad = event.findSquadByPosition(squadPosition);
-		if (squad.isReserve()) {
-			throw BusinessRuntimeException.builder().title("Der Reserve kann manuell kein Slot hinzugefügt werden.").build();
-		}
 		squad.addSlot(slotService.newSlot(slotDto));
 		return event;
 	}
