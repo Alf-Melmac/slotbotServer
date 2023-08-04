@@ -2,6 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
@@ -372,7 +373,11 @@ public class EventService {
 	 * @return event in which the slot has been renamed
 	 */
 	public Event renameSquad(@NonNull Event event, int squadPosition, String squadName) {
-		event.findSquadByPosition(squadPosition).setName(squadName);
+		final Squad squad = event.findSquadByPosition(squadPosition);
+		if (squad.isReserve()) {
+			throw new ForbiddenException("Reserve may not be renamed.");
+		}
+		squad.setName(squadName);
 		return event;
 	}
 
