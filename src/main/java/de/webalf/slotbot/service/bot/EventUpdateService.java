@@ -41,7 +41,7 @@ public class EventUpdateService {
 	private final MessageSource messageSource;
 
 	public void update(@NonNull EventUpdateSetting eventUpdateSetting) {
-		log.trace("Update");
+		log.trace("Update {}", eventUpdateSetting);
 		final Event event = eventUpdateSetting.event();
 
 		event.getDiscordInformation().forEach(discordInformation -> {
