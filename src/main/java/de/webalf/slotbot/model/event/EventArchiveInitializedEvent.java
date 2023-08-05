@@ -1,4 +1,4 @@
-package de.webalf.slotbot.service.event;
+package de.webalf.slotbot.model.event;
 
 import de.webalf.slotbot.model.Event;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NonNull;
  * @param guild        Archiving guild
  * @param discordGuild Archiving guild
  * @author Alf
+ * @see EventArchiveEvent
  * @since 23.07.2023
  */
 @Builder

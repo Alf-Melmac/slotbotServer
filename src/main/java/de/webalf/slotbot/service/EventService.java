@@ -2,7 +2,6 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
@@ -142,6 +141,21 @@ public class EventService {
 	 */
 	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
 		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(DateUtils.now(), guildId);
+	}
+
+	/**
+	 * Searches for the last event of the given guild the given user is slotted in.
+	 *
+	 * @param user       user to search for
+	 * @param ownerGuild event owner guild
+	 * @return Optional containing the last event of the user, or empty if no event is found
+	 */
+	public Optional<Event> findLastEventOfUserInGuild(@NonNull User user, @NonNull Guild ownerGuild) {
+		return eventRepository.findFirstByOwnerGuildAndSquadListSlotListUserOrderByDateTimeDesc(ownerGuild, user);
+	}
+
+	public List<Event> findEventsOfUser(@NonNull User user) {
+		return eventRepository.findBySquadListSlotListUser(user);
 	}
 
 	/**
@@ -374,9 +388,6 @@ public class EventService {
 	 */
 	public Event renameSquad(@NonNull Event event, int squadPosition, String squadName) {
 		final Squad squad = event.findSquadByPosition(squadPosition);
-		if (squad.isReserve()) {
-			throw new ForbiddenException("Reserve may not be renamed.");
-		}
 		squad.setName(squadName);
 		return event;
 	}

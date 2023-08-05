@@ -2,11 +2,12 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
+import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.service.event.EventArchiveInitializedEvent;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import org.springframework.context.ApplicationEventPublisher;
@@ -48,6 +49,10 @@ public class EventBotService {
 
 	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
 		return eventService.findAllForeignNotAssignedInFuture(guildId);
+	}
+
+	public Optional<Event> findLastEventOfUser(User user, de.webalf.slotbot.model.Guild guild) {
+		return eventService.findLastEventOfUserInGuild(user, guild);
 	}
 
 	public void addDiscordInformation(long eventId, EventDiscordInformationDto dto) {

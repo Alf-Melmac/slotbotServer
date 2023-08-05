@@ -5,6 +5,8 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.event.EventMetadataUpdateEvent;
+import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import de.webalf.slotbot.util.EventCalendarUtil;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,12 +49,22 @@ public class EventCalendarService {
 			return;
 		}
 
-		if (log.isTraceEnabled()) {
-			log.trace("Building calendar for guild {} [{}]", guild.getGroupIdentifier(), guild.getId());
-		}
+		log.trace("Building calendar for guild {} [{}]", guild.getGroupIdentifier(), guild.getId());
 		//This may be moved to the guild entity once shared events are persistently matched to foreign guilds
 		final List<Event> events = eventService.findAllPublicByGuild(guild);
 		buildAndWrite(events, guild.getId());
+	}
+
+	@EventListener
+	@Async
+	public void rebuildCalendar(@NonNull SlotUserChangedEvent changedEvent) {
+		if (changedEvent.previousUserIs()) {
+			rebuildCalendar(changedEvent.previousUser());
+		}
+
+		if (changedEvent.currentUserIs()) {
+			rebuildCalendar(changedEvent.currentUser());
+		}
 	}
 
 	/**
@@ -63,34 +77,26 @@ public class EventCalendarService {
 		if (user.isDefaultUser()) {
 			return;
 		}
-		if (log.isTraceEnabled()) {
-			log.trace("Building calendar for user {}", user.getId());
-		}
 		if (!user.isExternalCalendarIntegrationActive()) {
 			deleteCalendar(user.getId());
 			return;
 		}
-
-		buildAndWrite(user.getSlottedEvents(), user.getId());
+		log.trace("Building calendar for user {}", user.getId());
+		buildAndWrite(eventService.findEventsOfUser(user), user.getId());
 	}
 
 	/**
 	 * Rebuilds the calendar for the given event
-	 *
-	 * @param event that has changed
 	 */
-	private void rebuildCalendars(@NonNull Event event) {
-		if (log.isTraceEnabled()) {
-			log.trace("Building calendar for event {} [{}]", event.getName(), event.getId());
-		}
+	@EventListener
+	@Async
+	public void rebuildCalendars(@NonNull EventMetadataUpdateEvent updateEvent) {
+		final Event event = eventService.findById(updateEvent.eventId());
+		log.trace("Creating calendars for event {} [{}]", event.getName(), event.getId());
 		event.getAllParticipants().forEach(this::rebuildCalendar);
 		Stream.concat(Stream.of(event.getOwnerGuild()), event.getDiscordInformation().stream().map(EventDiscordInformation::getGuild))
 				.distinct()
 				.forEach(this::rebuildCalendar);
-	}
-
-	public void rebuildCalendars(long eventId) {
-		rebuildCalendars(eventService.findById(eventId));
 	}
 
 	private void buildAndWrite(@NonNull List<Event> events, long id) {
@@ -102,7 +108,7 @@ public class EventCalendarService {
 		log.debug("Building calendar for {}", id);
 		final Calendar calendar = EventCalendarUtil.buildEventCalendar(events);
 		writeCalendar(calendar, getCalendarPath(id));
-		log.trace("Calendar write finished.");
+		log.trace("Calendar write finished. {} events written", events.size());
 	}
 
 	/**
@@ -129,9 +135,7 @@ public class EventCalendarService {
 	 */
 	private void deleteCalendar(long id) {
 		try {
-			if (log.isTraceEnabled()) {
-				log.trace("Deleting calendar {}", id);
-			}
+			log.trace("Deleting calendar {}", id);
 			final boolean deleted = Files.deleteIfExists(Paths.get(getCalendarPath(id)));
 			if (deleted && log.isDebugEnabled()) {
 				log.debug("Deleted calendar of {}", id);

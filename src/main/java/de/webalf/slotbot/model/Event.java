@@ -5,7 +5,7 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
-import de.webalf.slotbot.service.event.EventArchiveEvent;
+import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;

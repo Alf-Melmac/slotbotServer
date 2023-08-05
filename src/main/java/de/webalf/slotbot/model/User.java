@@ -1,17 +1,11 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.util.DateUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static de.webalf.slotbot.util.DateUtils.getLocalDateTimeComparator;
 
 /**
  * @author Alf
@@ -33,9 +27,6 @@ public class User extends AbstractDiscordIdEntity {
 	private boolean externalCalendarIntegrationActive = false;
 
 	@OneToMany(mappedBy = "user")
-	private Set<Slot> slots = new HashSet<>();
-
-	@OneToMany(mappedBy = "user")
 	private Set<GuildUsers> guilds = new HashSet<>();
 
 	@OneToMany(mappedBy = "user")
@@ -51,19 +42,6 @@ public class User extends AbstractDiscordIdEntity {
 
 	public boolean isDefaultUser() {
 		return getId() == DEFAULT_USER_ID;
-	}
-
-	public Optional<LocalDateTime> getLastEventDateTime() {
-		return getSlots().stream()
-				.map(Slot::getSquad)
-				.map(Squad::getEvent)
-				.map(Event::getDateTime)
-				.filter(dateTime -> dateTime.isBefore(DateUtils.now()))
-				.min(getLocalDateTimeComparator());
-	}
-
-	public List<Event> getSlottedEvents() {
-		return getSlots().stream().map(Slot::getEvent).toList();
 	}
 
 	public Set<Guild> getGuilds() {

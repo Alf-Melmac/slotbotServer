@@ -1,6 +1,5 @@
-package de.webalf.slotbot.processor;
+package de.webalf.slotbot.service.update;
 
-import de.webalf.slotbot.service.UpdateInterceptorService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.CallbackException;
 import org.hibernate.Interceptor;

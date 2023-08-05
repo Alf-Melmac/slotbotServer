@@ -1,6 +1,6 @@
 package de.webalf.slotbot.configuration;
 
-import de.webalf.slotbot.processor.HibernateInterceptor;
+import de.webalf.slotbot.service.update.HibernateInterceptor;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Configuration;

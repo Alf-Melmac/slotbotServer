@@ -2,6 +2,7 @@ package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
+import de.webalf.slotbot.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -89,4 +90,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 			WHERE discordInformation.channel = :channel AND s.user.id <> de.webalf.slotbot.model.User.DEFAULT_USER_ID
 			""")
 	List<Long> findAllParticipantIds(@Param("channel") long channel);
+
+	Optional<Event> findFirstByOwnerGuildAndSquadListSlotListUserOrderByDateTimeDesc(Guild ownerGuild, User user);
+
+	List<Event> findBySquadListSlotListUser(User user);
 }

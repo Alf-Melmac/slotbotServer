@@ -1,15 +1,16 @@
-package de.webalf.slotbot.service;
+package de.webalf.slotbot.service.update;
 
 import de.webalf.slotbot.model.*;
-import de.webalf.slotbot.service.bot.EventUpdateService;
-import de.webalf.slotbot.service.bot.EventUpdateSetting;
-import de.webalf.slotbot.service.bot.EventUpdater;
+import de.webalf.slotbot.model.event.EventMetadataUpdateEvent;
+import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.collection.spi.PersistentList;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author Alf
@@ -18,16 +19,16 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UpdateInterceptorService {
-	private final EventUpdateService eventUpdateService;
+class UpdateInterceptorService {
 	private final EventUpdater eventUpdater;
+	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Informs the discord bot about a deletion in an event
 	 *
 	 * @param entity that may be an event related object
 	 */
-	public void onDelete(Object entity) {
+	void onDelete(Object entity) {
 		eventUpdater.update(getEvent(entity));
 	}
 
@@ -39,7 +40,7 @@ public class UpdateInterceptorService {
 	 * @param previousState of the entity
 	 * @param propertyNames of the updated entity properties
 	 */
-	public void update(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
+	void update(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
 		eventUpdater.update(getEvent(entity, currentState, previousState, propertyNames));
 	}
 
@@ -76,7 +77,9 @@ public class UpdateInterceptorService {
 	 * This method is called when
 	 * <ul>
 	 *     <li>any event field is changed</li>
+	 *     <li>squad is renamed</li>
 	 *     <li>slot<ul>
+	 *         <li>renamed</li>
 	 *          <li>slotted</li>
 	 *          <li>unslotted</li>
 	 *          <li>blocked</li>
@@ -97,6 +100,13 @@ public class UpdateInterceptorService {
 					.embed(true)
 					.slotlist(false)
 					.build();
+		} else if (entity instanceof final Squad squad) {
+			log.trace("Update update squad");
+			return EventUpdateSetting.builder()
+					.event(squad.getEvent())
+					.embed(false)
+					.slotlist(true)
+					.build();
 		} else if (entity instanceof final Slot slot) {
 			final Event event = slot.getSquad().getEvent();
 			slotUpdate(currentState, previousState, propertyNames, slot, event);
@@ -111,53 +121,56 @@ public class UpdateInterceptorService {
 	}
 
 	/**
-	 * Triggers a {@link EventUpdateService#rebuildCalendar(long) calendar rebuild} or
-	 * {@link EventUpdateService#updateEventNotifications(long) notification update} if necessary after an event update.
+	 * Triggers {@link EventMetadataUpdateEvent} if necessary due to changes in an {@link Event}.
 	 */
 	private void eventUpdate(Object[] previousState, String[] propertyNames, Event event) {
-		boolean calendarRebuildTodo = true;
+		propertyLoop:
 		for (int i = 0; i < propertyNames.length; i++) {
-			if (calendarRebuildTodo) {
-				if (propertyNames[i].equals(Event_.NAME)) {
+			switch (propertyNames[i]) {
+				case Event_.NAME -> {
 					final String oldName = (String) previousState[i];
 					final String newName = event.getName();
 					if (!oldName.equals(newName)) {
-						eventUpdateService.rebuildCalendar(event.getId());
-						calendarRebuildTodo = false;
+						eventPublisher.publishEvent(new EventMetadataUpdateEvent(event.getId()));
+						break propertyLoop;
 					}
-				} else if (propertyNames[i].equals(Event_.HIDDEN)) {
+				}
+				case Event_.HIDDEN -> {
 					final boolean oldHiddenState = (boolean) previousState[i];
 					final boolean newHiddenState = event.isHidden();
 					if (oldHiddenState != newHiddenState) {
-						eventUpdateService.rebuildCalendar(event.getId());
-						calendarRebuildTodo = false;
+						eventPublisher.publishEvent(new EventMetadataUpdateEvent(event.getId()));
+						break propertyLoop;
 					}
 				}
-			}
-
-			if (propertyNames[i].equals(Event_.DATE_TIME)) {
-				final LocalDateTime oldEventDateTime = (LocalDateTime) previousState[i];
-				final LocalDateTime newEventDateTime = event.getDateTime();
-				if (!oldEventDateTime.isEqual(newEventDateTime)) {
-					eventUpdateService.updateEventNotifications(event.getId());
-					if (calendarRebuildTodo) {
-						eventUpdateService.rebuildCalendar(event.getId());
+				case Event_.DATE_TIME -> {
+					final LocalDateTime oldEventDateTime = (LocalDateTime) previousState[i];
+					final LocalDateTime newEventDateTime = event.getDateTime();
+					if (!oldEventDateTime.isEqual(newEventDateTime)) {
+						eventPublisher.publishEvent(new EventMetadataUpdateEvent(event.getId()));
+						break propertyLoop;
 					}
-					break;
+				}
+				default -> {
+					// continue searching for handled changed properties
 				}
 			}
 		}
 	}
 
 	/**
-	 * Triggers an {@link EventUpdateService#informAboutSlotChange(Event, Slot, User, User) slot change notification} if
-	 * a slot user changed.
+	 * Triggers an {@link SlotUserChangedEvent} if a {@link Slot} user changed.
 	 */
 	private void slotUpdate(Object[] currentState, Object[] previousState, String[] propertyNames, Slot slot, Event event) {
 		if (!slot.isInReserve()) {
 			for (int i = 0; i < propertyNames.length; i++) {
-				if (propertyNames[i].equals(Slot_.USER)) {
-					eventUpdateService.informAboutSlotChange(event, slot, (User) currentState[i], (User) previousState[i]);
+				if (propertyNames[i].equals(Slot_.USER) && !Objects.equals(currentState[i], previousState[i])) {
+					eventPublisher.publishEvent(SlotUserChangedEvent.builder()
+							.event(event)
+							.slot(slot)
+							.currentUser((User) currentState[i])
+							.previousUser((User) previousState[i])
+							.build());
 					break;
 				}
 			}
@@ -185,7 +198,7 @@ public class UpdateInterceptorService {
 	 *
 	 * @param collection updated collection
 	 */
-	public void onCollectionUpdate(Object collection) {
+	void onCollectionUpdate(Object collection) {
 		if (collection instanceof final PersistentList<?> persistentList) {
 			if (persistentList.isEmpty()) return;
 			final Object el = persistentList.get(0);

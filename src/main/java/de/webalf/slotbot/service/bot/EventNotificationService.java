@@ -3,6 +3,8 @@ package de.webalf.slotbot.service.bot;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.NotificationMap;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.event.EventMetadataUpdateEvent;
+import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.SchedulerService;
@@ -11,6 +13,8 @@ import de.webalf.slotbot.util.bot.MessageHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +55,18 @@ public class EventNotificationService {
 		int delay;
 	}
 
+	@EventListener
+	@Async
+	public void createNotifications(@NonNull SlotUserChangedEvent changedEvent) {
+		if (changedEvent.previousUserIs()) {
+			removeNotifications(changedEvent.event(), changedEvent.previousUser());
+		}
+
+		if (changedEvent.currentUserIs()) {
+			createNotifications(changedEvent.event(), changedEvent.currentUser());
+		}
+	}
+
 	/**
 	 * Creates a new notification for given user in given event
 	 *
@@ -85,10 +101,11 @@ public class EventNotificationService {
 
 	/**
 	 * Recreates all notifications for the given event
-	 *
-	 * @param eventId event to refresh notifications for
 	 */
-	public void updateNotifications(long eventId) {
+	@EventListener
+	@Async
+	public void updateNotifications(@NonNull EventMetadataUpdateEvent updateEvent) {
+		final long eventId = updateEvent.eventId();
 		removeNotifications(eventId);
 		createNotificationsForAllParticipants(eventService.findById(eventId));
 	}

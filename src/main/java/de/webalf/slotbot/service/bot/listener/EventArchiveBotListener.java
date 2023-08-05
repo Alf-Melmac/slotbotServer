@@ -1,9 +1,10 @@
-package de.webalf.slotbot.service.bot;
+package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.service.event.EventArchiveEvent;
-import de.webalf.slotbot.service.event.EventArchiveInitializedEvent;
+import de.webalf.slotbot.service.bot.BotService;
+import de.webalf.slotbot.model.event.EventArchiveEvent;
+import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.ChannelUtils;
 import lombok.NonNull;

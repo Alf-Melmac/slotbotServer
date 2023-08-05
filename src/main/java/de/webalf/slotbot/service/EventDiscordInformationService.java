@@ -6,7 +6,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.repository.EventDiscordInformationRepository;
-import de.webalf.slotbot.service.event.EventArchiveEvent;
+import de.webalf.slotbot.model.event.EventArchiveEvent;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
