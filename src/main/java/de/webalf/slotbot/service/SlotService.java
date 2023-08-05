@@ -138,7 +138,8 @@ public class SlotService {
 	 * @param slotName   new slot name
 	 */
 	public void renameSlot(@NonNull Event event, int slotNumber, @NotBlank String slotName) {
-		slotRepository.updateNameByEventAndNumber(slotName, event, slotNumber);
+		final Slot slot = slotRepository.findByNumberAndSquadEvent(slotNumber, event).orElseThrow(ResourceNotFoundException::new);
+		slot.setName(slotName);
 	}
 
 	/**
