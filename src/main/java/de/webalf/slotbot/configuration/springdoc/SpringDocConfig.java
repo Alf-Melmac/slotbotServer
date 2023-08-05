@@ -21,11 +21,4 @@ public class SpringDocConfig {
 		config.setPackagesToScan(List.of("de.webalf.slotbot.controller.api"));
 		return config;
 	}
-
-	//TODO This is broken https://github.com/springdoc/springdoc-openapi/issues/2259
-	/*@Bean
-	public SwaggerUiConfigProperties swaggerUiConfigProperties(SwaggerUiConfigProperties config) {
-		config.setEnabled(false);
-		return config;
-	}*/
 }
