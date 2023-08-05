@@ -24,10 +24,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
@@ -92,7 +89,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	}
 
 	private boolean isArchiveChannel(long guildId, long channelId) {
-		return guildBotService.getGuildArchiveChannel(guildId) == channelId;
+		return Objects.equals(guildBotService.getGuildArchiveChannel(guildId), channelId);
 	}
 
 	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {
