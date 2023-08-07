@@ -36,7 +36,7 @@
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
-		<springdoc-openapi-ui.version>2.1.0</springdoc-openapi-ui.version>
+		<springdoc-openapi-ui.version>2.2.0</springdoc-openapi-ui.version>
 	</properties>
 
 	<dependencies>
