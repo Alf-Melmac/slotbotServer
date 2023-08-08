@@ -393,17 +393,20 @@ public class EventService {
 	}
 
 	/**
-	 * Adds the given slot to the squad found by squadPosition in the given event.
+	 * Adds a slot to the squad found by squadPosition in the given event.
 	 *
 	 * @param event         event
 	 * @param squadPosition Counted, starting by 0
-	 * @param slotDto       slot to add
-	 * @return event in which the slot has been added
+	 * @param slotNumber    optional number of new slot
+	 * @param slotName      name of new slot
 	 */
-	public Event addSlot(@NonNull Event event, int squadPosition, SlotDto slotDto) {
+	public void addSlot(@NonNull Event event, int squadPosition, Integer slotNumber, String slotName) {
 		final Squad squad = event.findSquadByPosition(squadPosition);
-		squad.addSlot(slotService.newSlot(slotDto));
-		return event;
+		squad.addSlot(slotService
+				.newSlot(SlotDto.builder()
+						.number(slotNumber != null ? slotNumber : event.findFirstUnusedSlotNumber())
+						.name(slotName)
+						.build()));
 	}
 
 	/**

@@ -47,7 +47,7 @@ class EventTest {
 		final Event sut = buildEventWithSquads();
 
 		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.findSquadByPosition(0));
-		assertMessageEquals("Couldn't find or rename the squad.", exception);
+		assertMessageEquals("Couldn't find a squad on position 0.", exception);
 	}
 
 	@Test
@@ -55,7 +55,7 @@ class EventTest {
 		final Event sut = buildEventWithSquads(Squad.builder().name("Squad").build());
 
 		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.findSquadByPosition(-1));
-		assertMessageEquals("Couldn't find or rename the squad.", exception);
+		assertMessageEquals("Couldn't find a squad on position -1.", exception);
 	}
 
 	@Test
@@ -63,7 +63,7 @@ class EventTest {
 		final Event sut = buildEventWithSquads(Squad.builder().name("Squad").build());
 
 		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, () -> sut.findSquadByPosition(1));
-		assertMessageEquals("Couldn't find or rename the squad.", exception);
+		assertMessageEquals("Couldn't find a squad on position 1.", exception);
 	}
 
 	private Event buildEventWithSquads(Squad... squads) {

@@ -4,7 +4,6 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
-import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.service.EventService;
@@ -89,8 +88,8 @@ public class EventBotService {
 		eventService.randomSlot(channel, userDtoWithId(userId));
 	}
 
-	public void addSlot(long channel, int squadNumber, int slotNumber, String slotName) {
-		eventService.addSlot(findByChannelOrThrow(channel), squadNumber, SlotDto.builder().number(slotNumber).name(slotName).build());
+	public void addSlot(long channel, int squadNumber, Integer slotNumber, String slotName) {
+		eventService.addSlot(findByChannelOrThrow(channel), squadNumber, slotNumber, slotName);
 	}
 
 	public void delSlot(long channel, int slotNumber) {

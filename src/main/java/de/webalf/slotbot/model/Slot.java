@@ -61,17 +61,6 @@ public class Slot extends AbstractSuperIdEntity {
 		return getSquad().isReserve();
 	}
 
-	/**
-	 * @return false if the squad of this slot is not known
-	 */
-	public boolean squadNullCheck() {
-		if (getSquad() == null) {
-			log.warn("Slot without squad: {}. Expected when adding a slot", getId());
-			return false;
-		}
-		return true;
-	}
-
 	boolean isSlotWithNumber(int slotNumber) {
 		return getNumber() == slotNumber;
 	}

@@ -3,9 +3,9 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
-import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
@@ -126,7 +126,7 @@ public class Event extends AbstractSuperIdEntity {
 	public Squad findSquadByPosition(int squadPosition) {
 		final List<Squad> squad = getSquadsExceptReserve();
 		if (squad.size() <= squadPosition || squadPosition < 0) {
-			throw BusinessRuntimeException.builder().title("Couldn't find or rename the squad.").build();
+			throw BusinessRuntimeException.builder().title("Couldn't find a squad on position " + squadPosition + ".").build();
 		}
 		return squad.get(squadPosition);
 	}
@@ -227,6 +227,22 @@ public class Event extends AbstractSuperIdEntity {
 	private int getDesiredReserveSize() {
 		int slotCount = getSlotCountWithoutReserve();
 		return slotCount < 4 ? 1 : (int) Math.ceil(slotCount / 4.);
+	}
+
+	/**
+	 * Finds the first unused slot number among all squads.
+	 *
+	 * @return the first unused slot number, starting from 1
+	 */
+	public int findFirstUnusedSlotNumber() {
+		final Set<Integer> slotNumbers = squadList.stream()
+				.flatMap(squad -> squad.getSlotList().stream().map(Slot::getNumber))
+				.collect(Collectors.toUnmodifiableSet());
+		int slotNumber = 1;
+		while (slotNumbers.contains(slotNumber)) {
+			slotNumber++;
+		}
+		return slotNumber;
 	}
 
 	/**
