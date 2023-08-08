@@ -58,15 +58,13 @@ class UpdateInterceptorService {
 	 * @return associated event update or null
 	 */
 	private EventUpdateSetting getEvent(Object entity) {
-		if (entity instanceof final Slot slot) {
-			if (!slot.isInReserve()) {
-				log.trace("Update onDelete slot");
-				return EventUpdateSetting.builder()
-						.event(slot.getSquad().getEvent())
-						.embed(false)
-						.slotlist(true)
-						.build();
-			}
+		if (entity instanceof final Slot slot && !slot.isInReserve()) {
+			log.trace("Update onDelete slot");
+			return EventUpdateSetting.builder()
+					.event(slot.getSquad().getEvent())
+					.embed(false)
+					.slotlist(true)
+					.build();
 		}
 		return null;
 	}
