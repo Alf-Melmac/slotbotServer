@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -414,12 +415,9 @@ public class EventService {
 	 *
 	 * @param event      event
 	 * @param slotNumber to delete
-	 * @return event in which the slot has been deleted
 	 */
-	public Event deleteSlot(@NonNull Event event, int slotNumber) {
-		Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
-		slotService.deleteSlot(slot);
-		return event;
+	public void deleteSlot(@NonNull Event event, int slotNumber) {
+		slotService.deleteSlot(event, slotNumber);
 	}
 
 	/**
@@ -441,7 +439,7 @@ public class EventService {
 	 * @return two slots
 	 */
 	public List<Slot> findSwapSlots(@NonNull Event event, List<UserDto> userDtos) {
-		if (org.springframework.util.CollectionUtils.isEmpty(userDtos) || userDtos.size() != 2) {
+		if (CollectionUtils.isEmpty(userDtos) || userDtos.size() != 2) {
 			throw BusinessRuntimeException.builder().title("Zum tauschen müssen zwei Nutzer angegeben werden.").build();
 		}
 

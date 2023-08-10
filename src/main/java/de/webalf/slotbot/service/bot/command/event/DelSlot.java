@@ -1,18 +1,21 @@
 package de.webalf.slotbot.service.bot.command.event;
 
-import de.webalf.slotbot.model.annotations.bot.Command;
+import de.webalf.slotbot.model.annotations.bot.SlashCommand;
+import de.webalf.slotbot.model.bot.TranslatableOptionData;
 import de.webalf.slotbot.service.bot.EventBotService;
-import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
+import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.StringUtils.onlyNumbers;
-import static de.webalf.slotbot.util.bot.MessageUtils.deleteMessagesInstant;
-import static de.webalf.slotbot.util.bot.MessageUtils.replyAndDelete;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
+import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
+import static de.webalf.slotbot.util.bot.SlashCommandUtils.getIntegerOption;
 
 /**
  * @author Alf
@@ -20,25 +23,30 @@ import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorizati
  */
 @RequiredArgsConstructor
 @Slf4j
-@Command(names = {"delSlot", "eventDelSlot", "deleteSlot", "removeSlot", "slotDel", "slotRemove"},
-		description = "Entfernt einen leeren Slot aus einem Event.",
-		usage = "<Slotnummer>",
-		argCount = {1},
-		authorization = EVENT_MANAGE)
-public class DelSlot implements DiscordCommand {
+@SlashCommand(name = "bot.slash.event.delSlot",
+		description = "bot.slash.event.delSlot.description",
+		authorization = Permission.MANAGE_CHANNEL,
+		optionPosition = 0)
+public class DelSlot implements DiscordSlashCommand {
 	private final EventBotService eventBotService;
 
+	private static final String OPTION_SLOT_NUMBER = "bot.slash.event.delSlot.option.slotNumber";
+	private static final List<List<TranslatableOptionData>> OPTIONS = List.of(
+			List.of(new TranslatableOptionData(OptionType.STRING, OPTION_SLOT_NUMBER, "bot.slash.event.delSlot.option.slotNumber.description", true))
+	);
+
 	@Override
-	public void execute(Message message, List<String> args) {
-		log.trace("Command: delslot");
+	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
+		log.trace("Slash command: delSlot");
 
-		final String slotNumber = args.get(0);
-		if (!onlyNumbers(slotNumber)) {
-			replyAndDelete(message, "Die Slotnummer muss eine Zahl sein.");
-			return;
-		}
+		final int slotNumber = getIntegerOption(event, OPTION_SLOT_NUMBER);
+		eventBotService.delSlot(event.getChannel().getIdLong(), slotNumber);
 
-		eventBotService.delSlot(message.getChannel().getIdLong(), Integer.parseInt(slotNumber));
-		deleteMessagesInstant(message);
+		finishedVisibleInteraction(event);
+	}
+
+	@Override
+	public List<TranslatableOptionData> getOptions(int optionPosition) {
+		return OPTIONS.get(optionPosition);
 	}
 }

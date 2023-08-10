@@ -143,13 +143,14 @@ public class SlotService {
 	}
 
 	/**
-	 * Removes the given slot
+	 * Removes the slot with the given slot number from the given event.
 	 *
-	 * @param slot to remove
+	 * @param event      event to which the slot belongs
+	 * @param slotNumber slot number
 	 */
-	void deleteSlot(@NonNull Slot slot) {
-		Squad squad = slot.getSquad();
-		squad.deleteSlot(slot);
+	public void deleteSlot(@NonNull Event event, int slotNumber) {
+		final Slot slot = slotRepository.findByNumberAndSquadEvent(slotNumber, event).orElseThrow(ResourceNotFoundException::new);
+		slot.getSquad().deleteSlot(slot);
 	}
 
 	/**
