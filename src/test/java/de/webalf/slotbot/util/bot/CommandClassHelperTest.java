@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.StringSelectInteraction;
@@ -21,16 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class CommandClassHelperTest {
 	@InjectMocks
 	CommandClassHelper sut;
-
-	@ParameterizedTest(name = "{0}")
-	@MethodSource("provideDiscordCommandClasses")
-	void getConstructorForAllDiscordCommandClasses(Class<?> command) {
-		assertDoesNotThrow(() -> sut.getConstructor(command));
-	}
-
-	private static Iterable<Class<?>> provideDiscordCommandClasses() {
-		return ClassIndex.getAnnotated(Command.class);
-	}
 
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("provideDiscordSlashCommandClasses")

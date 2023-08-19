@@ -1,7 +1,5 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.service.external.DiscordAuthenticationService;
-import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -16,12 +14,9 @@ import net.dv8tion.jda.api.interactions.Interaction;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-import static de.webalf.slotbot.service.external.DiscordAuthenticationService.KNOWN_ROLE_NAMES;
 import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 
 /**
@@ -33,49 +28,19 @@ import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 @UtilityClass
 @Slf4j
 public final class MessageUtils {
-	private static final int STANDARD_DELETION_TIME = 5; //In seconds
-
 	/**
-	 * Checks if the given message is not {@link Message#isFromGuild()}
-	 *
-	 * @param message to check
-	 * @return true if the message in not from guild
-	 */
-	public static boolean isDm(@NonNull Message message) {
-		return !message.isFromGuild();
-	}
-
-	/**
-	 * Deletes the given messages with no delay
+	 * Deletes the given messages with no delay.
+	 * <p>
+	 * <b>Only deletes messages that have been sent on a server.</b>
 	 *
 	 * @param messages to delete
 	 */
 	public static void deleteMessagesInstant(Message... messages) {
-		deleteMessages(0, messages);
-	}
-
-	/**
-	 * Deletes the given messages after the {@link #STANDARD_DELETION_TIME}
-	 *
-	 * @param messages to delete
-	 */
-	private static void deleteMessages(Message... messages) {
-		deleteMessages(STANDARD_DELETION_TIME, messages);
-	}
-
-	/**
-	 * Deletes the given messages after the given delay.
-	 * <b>Doesn't delete messages that have not been sent on a server.</b>
-	 *
-	 * @param delay    in seconds
-	 * @param messages to delete
-	 */
-	private static void deleteMessages(int delay, Message... messages) {
 		Arrays.stream(messages).forEach(message -> {
-			if (isDm(message)) {
+			if (!message.isFromGuild()) {
 				return;
 			}
-			message.delete().queueAfter(delay, TimeUnit.SECONDS);
+			message.delete().queueAfter(0, TimeUnit.SECONDS);
 		});
 	}
 
@@ -107,32 +72,6 @@ public final class MessageUtils {
 		for (long messageId : messageIds) {
 			channel.deleteMessageById(messageId).queue();
 		}
-	}
-
-	/**
-	 * Replies to the given message with the given reply.
-	 * Deletes the user message and the reply with {@link #deleteMessages(Message...)}
-	 *
-	 * @param message to reply to
-	 * @param reply   reply text
-	 */
-	public static void replyAndDelete(@NonNull Message message, @NotBlank String reply) {
-		reply(message, reply, replyMessage -> deleteMessages(message, replyMessage));
-	}
-
-	/**
-	 * Replies to the given message with the given reply.
-	 * Deletes only the reply with {@link #deleteMessages(Message...)}
-	 *
-	 * @param message to reply to
-	 * @param reply   reply text
-	 */
-	public static void replyAndDeleteOnlySend(@NonNull Message message, @NotBlank String reply) {
-		reply(message, reply, MessageUtils::deleteMessages);
-	}
-
-	private static void reply(@NonNull Message message, @NotBlank String reply, Consumer<Message> success) {
-		message.reply(reply).queue(success, fail -> log.warn("Failed to send message reply", fail));
 	}
 
 	/**
@@ -190,21 +129,6 @@ public final class MessageUtils {
 		sendMessage(interaction.getMessageChannel(), message);
 	}
 
-	/**
-	 * Sends the message author a direct message with the given text.
-	 * Deletes the message afterwards with {@link #deleteMessagesInstant(Message...)}
-	 *
-	 * @param message     to reply in direct message to
-	 * @param messageText message text
-	 */
-	public static void sendDmAndDeleteMessage(Message message, String messageText) {
-		sendDm(message.getAuthor(), message, messageText, unused -> deleteMessagesInstant(message), true);
-	}
-
-	private static void sendDm(@NonNull User user, @NonNull Message message, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure) {
-		sendDm(user, messageText, success, callSuccessOnFailure, reply -> replyAndDeleteOnlySend(message, reply));
-	}
-
 	public static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<? super Message> success, boolean callSuccessOnFailure, @NonNull Consumer<String> replyConsumer) {
 		final Consumer<? super Throwable> failure = fail -> {
 			dmFailure(user, success, callSuccessOnFailure, fail);
@@ -258,24 +182,5 @@ public final class MessageUtils {
 		if (callSuccessOnFailure) {
 			success.accept(null);
 		}
-	}
-
-	/**
-	 * Returns the known role {@link DiscordAuthenticationService#KNOWN_ROLE_NAMES} names of the message author in the message guild
-	 *
-	 * @param message to analyze
-	 * @return set of role names
-	 */
-	public static Set<Role> getKnownRoles(@NonNull Message message) {
-		return message.getGuild().retrieveMember(message.getAuthor()).complete()
-				.getRoles().stream()
-				.map(net.dv8tion.jda.api.entities.Role::getName)
-				.filter(KNOWN_ROLE_NAMES::contains)
-				.map(Role::getByDiscordRole)
-				.collect(Collectors.toUnmodifiableSet());
-	}
-
-	public static Consumer<Throwable> replyErrorMessage(Message message) {
-		return failure -> replyAndDeleteOnlySend(message, failure.getMessage());
 	}
 }

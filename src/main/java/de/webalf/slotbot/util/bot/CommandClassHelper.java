@@ -1,11 +1,12 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.model.annotations.bot.Command;
 import de.webalf.slotbot.model.annotations.bot.ContextMenu;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.SlashCommands;
-import de.webalf.slotbot.service.bot.*;
-import de.webalf.slotbot.service.bot.command.DiscordCommand;
+import de.webalf.slotbot.service.bot.EventBotService;
+import de.webalf.slotbot.service.bot.GuildBotService;
+import de.webalf.slotbot.service.bot.GuildUsersBotService;
+import de.webalf.slotbot.service.bot.SlotBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.service.bot.command.DiscordUserContext;
@@ -30,12 +31,11 @@ public class CommandClassHelper {
 	private final EventBotService eventBotService;
 	private final EventHelper eventHelper;
 	private final SlotBotService slotBotService;
-	private final UserBotService userBotService;
 	private final GuildBotService guildBotService;
 	private final GuildUsersBotService guildUsersBotService;
 
 	/**
-	 * Tries to create a new constructor instance for the given {@link DiscordCommand}, {@link DiscordSlashCommand}, {@link DiscordStringSelect} or {@link DiscordUserContext} class
+	 * Tries to create a new constructor instance for the given {@link DiscordSlashCommand}, {@link DiscordStringSelect} or {@link DiscordUserContext} class
 	 *
 	 * @param commandClass command to get constructor for
 	 * @return a new instance of the declared constructor
@@ -48,7 +48,7 @@ public class CommandClassHelper {
 			Class<?>[] parameterTypes = declaredConstructor.getParameterTypes();
 
 			if (parameterTypes.length == 0) {
-				//CopyEmbed, DonationEmbed, EditMessage, PostMessage, Vote
+				//CopyEmbed, PostMessage, Vote
 				try {
 					constructor = declaredConstructor.newInstance();
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -83,13 +83,6 @@ public class CommandClassHelper {
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for class {}", commandClass.getName(), e);
 				}
-			} else if (Arrays.equals(parameterTypes, new Class<?>[]{UserBotService.class})) {
-				//SteamId
-				try {
-					constructor = declaredConstructor.newInstance(userBotService);
-				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-					log.error("Failed to create new constructor instance with UserBotService parameter for class {}", commandClass.getName(), e);
-				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{GuildUsersBotService.class})) {
 				//AddUserToGuild
 				try {
@@ -105,10 +98,6 @@ public class CommandClassHelper {
 		}
 
 		return constructor;
-	}
-
-	public static Command getCommand(@NonNull Class<?> commandClass) {
-		return commandClass.getAnnotation(Command.class);
 	}
 
 	/**

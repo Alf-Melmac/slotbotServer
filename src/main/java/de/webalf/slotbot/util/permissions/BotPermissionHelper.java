@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.entities.Message;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
-import static de.webalf.slotbot.util.bot.MessageUtils.getKnownRoles;
 import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.*;
 import static de.webalf.slotbot.util.permissions.BotPermissionHelper.Authorization.EVENT_MANAGE;
 
@@ -53,17 +51,6 @@ public final class BotPermissionHelper {
 	 */
 	private static Set<String> getApplicationRoles(ApplicationPermissionHelper.Role[] roles) {
 		return Arrays.stream(roles).map(role -> ROLE_PREFIX + role.getApplicationRole()).collect(Collectors.toUnmodifiableSet());
-	}
-
-	/**
-	 * Checks if the message author has any of the authorized roles
-	 *
-	 * @param authorization Needed authorization
-	 * @param message       of the person that needs to be checked
-	 * @return true if authorized
-	 */
-	public static boolean isAuthorized(@NonNull Authorization authorization, Message message) {
-		return Arrays.stream(authorization.getRoles()).anyMatch(role -> getKnownRoles(message).contains(role));
 	}
 
 	/**
