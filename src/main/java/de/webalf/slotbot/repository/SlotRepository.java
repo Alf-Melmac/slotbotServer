@@ -17,4 +17,6 @@ public interface SlotRepository extends SuperIdEntityJpaRepository<Slot> {
 	long countByUserAndSquadEventDateTimeBefore(User user, LocalDateTime dateTime);
 
 	Optional<Slot> findByNumberAndSquadEvent(int number, Event event);
+
+	Optional<Slot> findByUserAndSquadEvent(User user, Event event);
 }

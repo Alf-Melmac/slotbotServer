@@ -1,12 +1,10 @@
 package de.webalf.slotbot.util.bot;
 
-import de.webalf.slotbot.model.annotations.bot.ContextMenu;
-import de.webalf.slotbot.model.annotations.bot.SlashCommand;
-import de.webalf.slotbot.model.annotations.bot.SlashCommands;
+import de.webalf.slotbot.model.annotations.bot.*;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.GuildBotService;
 import de.webalf.slotbot.service.bot.GuildUsersBotService;
-import de.webalf.slotbot.service.bot.SlotBotService;
+import de.webalf.slotbot.service.bot.SwapRequestBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.service.bot.command.DiscordUserContext;
@@ -30,8 +28,8 @@ import java.util.Arrays;
 public class CommandClassHelper {
 	private final EventBotService eventBotService;
 	private final EventHelper eventHelper;
-	private final SlotBotService slotBotService;
 	private final GuildBotService guildBotService;
+	private final SwapRequestBotService swapRequestBotService;
 	private final GuildUsersBotService guildUsersBotService;
 
 	/**
@@ -76,10 +74,10 @@ public class CommandClassHelper {
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService and GuildBotService parameter for class {}", commandClass.getName(), e);
 				}
-			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, SlotBotService.class})) {
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{SwapRequestBotService.class})) {
 				//Swap
 				try {
-					constructor = declaredConstructor.newInstance(eventBotService, slotBotService);
+					constructor = declaredConstructor.newInstance(swapRequestBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService and SlotBotService parameter for class {}", commandClass.getName(), e);
 				}
@@ -114,7 +112,25 @@ public class CommandClassHelper {
 		return new SlashCommand[]{slashCommand};
 	}
 
-	public static ContextMenu getContextMenu(@NonNull Class<?> commandClass) {
-		return commandClass.getAnnotation(ContextMenu.class);
+	public static ContextMenu getContextMenu(@NonNull Class<?> menuClass) {
+		return menuClass.getAnnotation(ContextMenu.class);
+	}
+
+	public static StringSelectInteraction getStringSelectInteraction(@NonNull Class<?> selectClass) {
+		return selectClass.getAnnotation(StringSelectInteraction.class);
+	}
+
+	/**
+	 * Get all {@link ButtonInteraction} annotations on the given class
+	 *
+	 * @param buttonClass button class
+	 * @return all button interactions
+	 */
+	public static ButtonInteraction[] getButtonInteraction(@NonNull Class<?> buttonClass) {
+		final ButtonInteraction buttonInteraction = buttonClass.getAnnotation(ButtonInteraction.class);
+		if (buttonInteraction == null) {
+			return buttonClass.getAnnotation(ButtonInteractions.class).value();
+		}
+		return new ButtonInteraction[]{buttonInteraction};
 	}
 }

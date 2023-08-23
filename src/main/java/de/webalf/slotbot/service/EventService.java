@@ -18,10 +18,8 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -429,22 +427,5 @@ public class EventService {
 	 */
 	public void renameSlot(@NonNull Event event, int slotNumber, String slotName) {
 		slotService.renameSlot(event, slotNumber, slotName);
-	}
-
-	/**
-	 * Returns the slots matching the two given users in the given event.
-	 *
-	 * @param event    event
-	 * @param userDtos slotted users
-	 * @return two slots
-	 */
-	public List<Slot> findSwapSlots(@NonNull Event event, List<UserDto> userDtos) {
-		if (CollectionUtils.isEmpty(userDtos) || userDtos.size() != 2) {
-			throw BusinessRuntimeException.builder().title("Zum tauschen müssen zwei Nutzer angegeben werden.").build();
-		}
-
-		ArrayList<Slot> slots = new ArrayList<>();
-		userDtos.forEach(userDto -> slots.add(event.findSlotOfUser(userService.find(userDto)).orElseThrow(ResourceNotFoundException::new)));
-		return slots;
 	}
 }

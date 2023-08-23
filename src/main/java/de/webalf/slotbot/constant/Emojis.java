@@ -13,8 +13,6 @@ import net.dv8tion.jda.api.entities.emoji.UnicodeEmoji;
 @AllArgsConstructor
 public enum Emojis {
 	//Codepoint notation
-	THUMBS_UP(Emoji.fromUnicode("U+1F44D")), //👍
-	THUMBS_DOWN(Emoji.fromUnicode("U+1F44E")), //👎
 	CHECKBOX(Emoji.fromUnicode("U+2611U+FE0F")), //☑️
 	CROSS_MARK(Emoji.fromUnicode("U+274C")); //❌
 

@@ -6,7 +6,6 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.UserSnowflake;
-import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 /**
  * @author Alf
@@ -14,18 +13,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
  */
 @UtilityClass
 public final class DiscordUserUtils {
-	/**
-	 * Returns the private channel for the given user
-	 *
-	 * @return the matching private channel or null if it doesn't exist
-	 */
-	public static PrivateChannel getPrivateChannel(User user) {
-		if (user != null && user.hasPrivateChannel()) {
-			return user.openPrivateChannel().complete();
-		}
-		return null;
-	}
-
 	/**
 	 * @see User#getEffectiveAvatarUrl()
 	 */

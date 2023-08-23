@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+import static de.webalf.slotbot.util.bot.CommandClassHelper.getContextMenu;
 import static de.webalf.slotbot.util.bot.DiscordLocaleHelper.DEFAULT_LOCALE;
 
 /**
@@ -21,9 +22,9 @@ public final class ContextMenuUtils {
 	private static final Map<String, Class<?>> commandToClassMap = new HashMap<>();
 
 	static {
-		final Iterable<Class<?>> commandList = ClassIndex.getAnnotated(ContextMenu.class);
-		StreamSupport.stream(commandList.spliterator(), false)
-				.forEach(command -> commandToClassMap.put(DEFAULT_LOCALE.t(CommandClassHelper.getContextMenu(command).name()).toLowerCase(), command));
+		final Iterable<Class<?>> annotated = ClassIndex.getAnnotated(ContextMenu.class);
+		StreamSupport.stream(annotated.spliterator(), false)
+				.forEach(menuClass -> commandToClassMap.put(DEFAULT_LOCALE.t(getContextMenu(menuClass).name()).toLowerCase(), menuClass));
 	}
 
 	/**

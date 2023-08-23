@@ -7,12 +7,12 @@ import net.dv8tion.jda.api.interactions.commands.CommandInteractionPayload;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.atteo.classindex.ClassIndex;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+import static de.webalf.slotbot.util.bot.CommandClassHelper.getSlashCommand;
 import static de.webalf.slotbot.util.bot.DiscordLocaleHelper.DEFAULT_LOCALE;
 
 /**
@@ -24,10 +24,13 @@ public final class SlashCommandUtils {
 	private static final Map<String, Class<?>> commandToClassMap = new HashMap<>();
 
 	static {
-		final Iterable<Class<?>> commandList = ClassIndex.getAnnotated(SlashCommand.class);
-		StreamSupport.stream(commandList.spliterator(), false)
-				.forEach(command -> Arrays.stream(CommandClassHelper.getSlashCommand(command))
-						.forEach(slashCommand -> commandToClassMap.put(DEFAULT_LOCALE.t(slashCommand.name()).toLowerCase(), command)));
+		final Iterable<Class<?>> annotated = ClassIndex.getAnnotated(SlashCommand.class);
+		StreamSupport.stream(annotated.spliterator(), false)
+				.forEach(commandClass -> {
+					for (SlashCommand slashCommand : getSlashCommand(commandClass)) {
+						commandToClassMap.put(DEFAULT_LOCALE.t(slashCommand.name()).toLowerCase(), commandClass);
+					}
+				});
 	}
 
 	/**

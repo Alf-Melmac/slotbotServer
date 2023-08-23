@@ -17,6 +17,7 @@ import de.webalf.slotbot.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class SlotService {
 	private final GuildService guildService;
 	private final UserService userService;
 	private final ActionLogService actionLogService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Returns the slot with the given id
@@ -45,6 +47,18 @@ public class SlotService {
 	 */
 	Slot findById(long id) {
 		return slotRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	/**
+	 * Returns the slot of the given user in the given event.
+	 *
+	 * @param user  user to find slot for
+	 * @param event event in which the user may be slotted
+	 * @return slot in the event in which the user is slotted
+	 * @throws ResourceNotFoundException if no slot matching the user and event is found
+	 */
+	Slot findByUserAndEvent(@NonNull User user, @NonNull Event event) {
+		return slotRepository.findByUserAndSquadEvent(user, event).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	/**
@@ -166,16 +180,9 @@ public class SlotService {
 	/**
 	 * Swaps the users of the given slots
 	 *
-	 * @param slotDtos list with two slots from which the users should be swapped
 	 * @return the event from the second slot
 	 */
-	public Event swap(@NonNull List<SlotDto> slotDtos) {
-		if (slotDtos.size() != 2) {
-			throw BusinessRuntimeException.builder().title("Es können nur zwei Slots getauscht werden").build();
-		}
-
-		Slot slot1 = slotRepository.findById(slotDtos.get(0).getId()).orElseThrow(ResourceNotFoundException::new);
-		Slot slot2 = slotRepository.findById(slotDtos.get(1).getId()).orElseThrow(ResourceNotFoundException::new);
+	public Event swap(@NonNull Slot slot1, @NonNull Slot slot2) {
 		slot1.swapUsers(slot2);
 
 		actionLogService.logEventAction(LogAction.SWAP, slot1.getEvent(), slot1.getUser(), slot2.getUser());

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+import static de.webalf.slotbot.util.bot.CommandClassHelper.getStringSelectInteraction;
+
 /**
  * @author Alf
  * @since 01.08.2021
@@ -20,11 +22,11 @@ public final class StringSelectUtils {
 	private static final Map<String, Class<?>> idToClassMap = new HashMap<>();
 
 	static {
-		final Iterable<Class<?>> classIterable = ClassIndex.getAnnotated(StringSelectInteraction.class);
-		StreamSupport.stream(classIterable.spliterator(), false)
-				.forEach(command -> {
-					for (String menuId : command.getAnnotation(StringSelectInteraction.class).value()) {
-						idToClassMap.put(menuId, command);
+		final Iterable<Class<?>> annotated = ClassIndex.getAnnotated(StringSelectInteraction.class);
+		StreamSupport.stream(annotated.spliterator(), false)
+				.forEach(selectClass -> {
+					for (String menuId : getStringSelectInteraction(selectClass).value()) {
+						idToClassMap.put(menuId, selectClass);
 					}
 				});
 	}

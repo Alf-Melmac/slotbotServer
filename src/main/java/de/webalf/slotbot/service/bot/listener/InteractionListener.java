@@ -11,8 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 
 import java.lang.reflect.InvocationTargetException;
@@ -89,25 +92,10 @@ public class InteractionListener extends ListenerAdapter {
 			aClass.getMethod("process", StringSelectInteractionEvent.class, DiscordLocaleHelper.class)
 					.invoke(commandClassHelper.getConstructor(aClass), event, locale);
 		} catch (InvocationTargetException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof BusinessRuntimeException || cause instanceof ForbiddenException || cause instanceof ResourceNotFoundException) {
-				if (StringUtils.isNotEmpty(cause.getMessage())) {
-					replyAndRemoveComponents(event, cause.getMessage());
-				} else {
-					replyAndRemoveComponents(event, locale.t("bot.interaction.response.notFound"));
-				}
-			} else {
-				unknownException(event, aClass, e);
-			}
+			handleInvocationTargetException(event, e, locale, aClass);
 		} catch (NoSuchMethodException | IllegalAccessException e) {
 			unknownException(event, aClass, e);
 		}
-	}
-
-	private void unknownException(@NonNull StringSelectInteractionEvent event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
-		final String errorCode = getErrorCode(e);
-		log.error("Failed to process string selection menu selection {} with id {} - {}", commandClass.getName(), event.getComponentId(), errorCode, e);
-		replyAndRemoveComponents(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
 
 	@Override
@@ -130,6 +118,50 @@ public class InteractionListener extends ListenerAdapter {
 		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 			unknownException(event, commandClass, e);
 		}
+	}
+
+	@Override
+	public void onButtonInteraction(@NonNull ButtonInteractionEvent event) {
+		final String componentId = event.getComponentId();
+		log.debug("Received button interaction event: '{}' from {}", componentId, event.getUser().getId());
+
+		final DiscordLocaleHelper locale = new DiscordLocaleHelper(event.getUserLocale(), messageSource);
+		final Class<?> aClass = ButtonUtils.get(componentId);
+		if (aClass == null) {
+			log.error("Received not known button id: {}", componentId);
+			reply(event, locale.t("bot.interaction.response.unknown", componentId));
+			return;
+		}
+
+		deferEdit(event);
+
+		try {
+			aClass.getMethod("handle", ButtonInteractionEvent.class, DiscordLocaleHelper.class)
+					.invoke(commandClassHelper.getConstructor(aClass), event, locale);
+		} catch (InvocationTargetException e) {
+			handleInvocationTargetException(event, e, locale, aClass);
+		} catch (NoSuchMethodException | IllegalAccessException e) {
+			unknownException(event, aClass, e);
+		}
+	}
+
+	private void handleInvocationTargetException(@NotNull ComponentInteraction event, InvocationTargetException e, DiscordLocaleHelper locale, Class<?> aClass) {
+		Throwable cause = e.getCause();
+		if (cause instanceof BusinessRuntimeException || cause instanceof ForbiddenException || cause instanceof ResourceNotFoundException) {
+			if (StringUtils.isNotEmpty(cause.getMessage())) {
+				replyAndRemoveComponents(event, cause.getMessage());
+			} else {
+				replyAndRemoveComponents(event, locale.t("bot.interaction.response.notFound"));
+			}
+		} else {
+			unknownException(event, aClass, e);
+		}
+	}
+
+	private void unknownException(@NonNull ComponentInteraction event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
+		final String errorCode = getErrorCode(e);
+		log.error("Failed to process component interaction {} with id {} - {}", commandClass.getName(), event.getComponentId(), errorCode, e);
+		replyAndRemoveComponents(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
 
 	private String getErrorCode(ReflectiveOperationException e) {

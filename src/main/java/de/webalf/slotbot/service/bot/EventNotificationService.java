@@ -9,7 +9,7 @@ import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.util.DateUtils;
-import de.webalf.slotbot.util.bot.MessageHelper;
+import de.webalf.slotbot.util.bot.DirectMessageHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -39,7 +39,7 @@ import static net.dv8tion.jda.api.utils.TimeFormat.RELATIVE;
 public class EventNotificationService {
 	private final SchedulerService schedulerService;
 	private final NotificationSettingsService notificationSettingsService;
-	private final MessageHelper messageHelper;
+	private final DirectMessageHelper directMessageHelper;
 	private final EventService eventService;
 	private final MessageSource messageSource;
 
@@ -83,7 +83,7 @@ public class EventNotificationService {
 			}
 			SCHEDULED_NOTIFICATIONS.computeIfAbsent(buildNotificationIdentifier(event, user, delay),
 					k -> schedulerService.schedule(
-							() -> messageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(DateUtils.getDateTimeZoned(event.getDateTime()))}, guildLocale)),
+							() -> directMessageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(DateUtils.getDateTimeZoned(event.getDateTime()))}, guildLocale)),
 							() -> SCHEDULED_NOTIFICATIONS.remove(k),
 							delay));
 		});

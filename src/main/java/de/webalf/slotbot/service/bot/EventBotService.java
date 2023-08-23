@@ -1,7 +1,6 @@
 package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.UserDto;
@@ -102,10 +101,6 @@ public class EventBotService {
 
 	public void renameSlot(long channel, int slotNumber, String slotName) {
 		eventService.renameSlot(findByChannelOrThrow(channel), slotNumber, slotName);
-	}
-
-	public List<Slot> findSwapSlots(long channel, String firstUserId, String secondUserId) {
-		return eventService.findSwapSlots(findByChannelOrThrow(channel), List.of(userDtoWithId(firstUserId), userDtoWithId(secondUserId)));
 	}
 
 	public List<Long> findAllParticipants(long channel) {
