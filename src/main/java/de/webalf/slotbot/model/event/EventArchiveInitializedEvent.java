@@ -15,5 +15,4 @@ import lombok.NonNull;
 @Builder
 public record EventArchiveInitializedEvent(@NonNull Event event,
                                            @NonNull de.webalf.slotbot.model.Guild guild,
-                                           @NonNull net.dv8tion.jda.api.entities.Guild discordGuild) {
-}
+                                           @NonNull net.dv8tion.jda.api.entities.Guild discordGuild) {}

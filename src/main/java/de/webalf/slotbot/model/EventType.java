@@ -17,6 +17,9 @@ import java.util.List;
 import static de.webalf.slotbot.util.ConstraintConstants.*;
 
 /**
+ * The ID of this entity does not matter. The main unique key is the name and the color.
+ * Entities are to be found and created using these values.
+ *
  * @author Alf
  * @since 07.04.2021
  */
@@ -28,9 +31,6 @@ import static de.webalf.slotbot.util.ConstraintConstants.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class EventType extends AbstractSuperIdEntity {
-	//The ID of this entity does not matter. The main unique key is the name and the colour.
-	//Entities are to be found and created using these values.
-
 	@Column(name = "event_type_name", length = TEXT_DB)
 	@NotBlank
 	@Size(max = TEXT)

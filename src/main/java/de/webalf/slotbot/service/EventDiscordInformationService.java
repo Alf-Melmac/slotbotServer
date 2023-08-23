@@ -5,14 +5,14 @@ import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
-import de.webalf.slotbot.repository.EventDiscordInformationRepository;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
-import jakarta.transaction.Transactional;
+import de.webalf.slotbot.repository.EventDiscordInformationRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;

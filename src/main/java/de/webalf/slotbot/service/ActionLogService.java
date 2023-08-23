@@ -24,14 +24,11 @@ import java.time.Duration;
 public class ActionLogService {
 	private final ActionLogRepository logRepository;
 
-	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User user) {
-		logAction(action, Duration.between(DateUtils.now(), event.getDateTime()), event.getId(), user);
-	}
-
-	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User user1, @NonNull User user2) {
+	void logEventAction(@NonNull LogAction action, @NonNull Event event, @NonNull User... users) {
 		Duration timeGap = Duration.between(DateUtils.now(), event.getDateTime());
-		logAction(action, timeGap, event.getId(), user1);
-		logAction(action, timeGap, event.getId(), user2);
+		for (User user : users) {
+			logAction(action, timeGap, event.getId(), user);
+		}
 	}
 
 	private void logAction(@NonNull LogAction action, @NonNull Duration timeGap, @NotEmpty long actionObjectId, @NonNull User user) {
