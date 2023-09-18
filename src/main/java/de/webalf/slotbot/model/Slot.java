@@ -73,7 +73,7 @@ public class Slot extends AbstractSuperIdEntity {
 		return getUser() == null;
 	}
 
-	boolean isNotEmpty() {
+	public boolean isNotEmpty() {
 		return !isEmpty();
 	}
 

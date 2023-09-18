@@ -60,6 +60,14 @@ class UpdateInterceptorService {
 	private EventUpdateSetting getEvent(Object entity) {
 		if (entity instanceof final Slot slot && !slot.isInReserve()) {
 			log.trace("Update onDelete slot");
+			if (slot.isNotEmpty()) {
+				eventPublisher.publishEvent(SlotUserChangedEvent.builder()
+						.event(slot.getSquad().getEvent())
+						.slot(slot)
+						.currentUser(null)
+						.previousUser(slot.getUser())
+						.build());
+			}
 			return EventUpdateSetting.builder()
 					.event(slot.getSquad().getEvent())
 					.embed(false)

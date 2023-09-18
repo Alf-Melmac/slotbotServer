@@ -377,7 +377,7 @@ public class Event extends AbstractSuperIdEntity {
 				//Fills empty slots with reservists
 				List<Slot> emptySlots = getSquadList().stream().flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty)).toList();
 				emptySlots.forEach(slot -> reserve.getSlotList().stream()
-						.filter(reserveSlot -> !reserveSlot.isEmpty()).findFirst()
+						.filter(Slot::isNotEmpty).findFirst()
 						.ifPresent(reserveSlot -> {
 							User reserveSlotUser = reserveSlot.getUser();
 							reserveSlot.unslotWithoutUpdate(reserveSlotUser);
@@ -386,7 +386,7 @@ public class Event extends AbstractSuperIdEntity {
 			}
 
 			List<Slot> reserveSlots = reserve.getSlotList();
-			List<User> reserveUsers = reserveSlots.stream().filter(reserveSlot -> !reserveSlot.isEmpty()).map(Slot::getUser).toList();
+			List<User> reserveUsers = reserveSlots.stream().filter(Slot::isNotEmpty).map(Slot::getUser).toList();
 
 			//Empty reserve
 			reserveSlots.forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));
