@@ -223,7 +223,7 @@ public class EventService {
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), pictureUrl -> {
-			if (!EmbedBuilder.URL_PATTERN.matcher(pictureUrl).matches()) {
+			if (pictureUrl != null && !EmbedBuilder.URL_PATTERN.matcher(pictureUrl).matches()) {
 				throw BusinessRuntimeException.builder().title("Invalid picture url pattern").build();
 			}
 			event.setPictureUrl(pictureUrl);

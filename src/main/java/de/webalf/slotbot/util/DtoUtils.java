@@ -36,9 +36,12 @@ public final class DtoUtils {
 		}
 	}
 
+	/**
+	 * Calls the consumer with the given value if the value is not null. Empty strings are treated as null.
+	 */
 	public static void ifPresentOrEmpty(String value, Consumer<String> consumer) {
 		if (isPresent((Object) value)) {
-			consumer.accept(value);
+			consumer.accept(value.isEmpty() ? null : value);
 		}
 	}
 
