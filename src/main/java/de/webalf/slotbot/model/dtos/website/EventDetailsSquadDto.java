@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
@@ -30,8 +29,4 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	List<EventDetailsSlotDto> slotList;
 
 	boolean notEmpty;
-
-	public boolean isReserve() {
-		return getName().equals(RESERVE_NAME);
-	}
 }

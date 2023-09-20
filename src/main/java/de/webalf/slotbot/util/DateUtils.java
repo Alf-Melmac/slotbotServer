@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Comparator;
 
 import static java.time.ZoneOffset.UTC;
 
@@ -17,13 +16,6 @@ import static java.time.ZoneOffset.UTC;
  */
 @UtilityClass
 public final class DateUtils {
-	public static Comparator<LocalDateTime> getLocalDateTimeComparator() {
-		return (dateTime1, dateTime2) -> {
-			final int before = dateTime1.isBefore(dateTime2) ? 1 : -1;
-			return dateTime1.isEqual(dateTime2) ? 0 : before;
-		};
-	}
-
 	/**
 	 * Returns the given date time in utc offset
 	 */

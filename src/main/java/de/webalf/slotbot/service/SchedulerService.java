@@ -27,13 +27,6 @@ public class SchedulerService {
 	}
 
 	/**
-	 * @see #schedule(Runnable, Runnable, long)
-	 */
-	public ScheduledFuture<?> schedule(Runnable runnable, long delay) {
-		return schedule(runnable, () -> {}, delay);
-	}
-
-	/**
 	 * Schedules the given {@link Runnable} to be executed after the given delay
 	 *
 	 * @param runnable task to execute after given delay

@@ -57,12 +57,6 @@ public final class DtoUtils {
 		}
 	}
 
-	public static <T extends Collection<?>> void ifPresent(T values, Consumer<T> consumer) {
-		if (isPresent(values)) {
-			consumer.accept(values);
-		}
-	}
-
 	public static void ifPresent(Boolean value, Consumer<Boolean> consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);

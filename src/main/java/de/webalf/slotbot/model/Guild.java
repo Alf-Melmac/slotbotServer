@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -59,12 +58,6 @@ public class Guild extends AbstractDiscordIdEntity {
 	private Long archiveChannel;
 
 	public static final long GUILD_PLACEHOLDER = -1L;
-
-	public boolean is() {
-		return urlPattern != null &&
-				urlPattern.matcher(ServletUriComponentsBuilder.fromCurrentContextPath().toUriString())
-						.matches();
-	}
 
 	public String getBaseRedirectUrl() {
 		return StringUtils.isNotEmpty(baseUrl) ? baseUrl : "https://armamachtbock.de";

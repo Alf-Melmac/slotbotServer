@@ -22,16 +22,4 @@ final class SquadAssembler {
 				.reservedFor(GuildAssembler.fromDto(squadDto.getReservedFor()))
 				.build();
 	}
-
-	/**
-	 * To be used if the focus relies on a slot
-	 */
-	static SquadDto toDto(Squad squad) {
-		return SquadDto.builder()
-				.id(squad.getId())
-				.name(squad.getName())
-				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
-				.event(EventAssembler.toAbstractDto(squad.getEvent()))
-				.build();
-	}
 }

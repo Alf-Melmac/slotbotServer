@@ -39,27 +39,4 @@ public final class SlotAssembler {
 				.map(SlotAssembler::fromDto)
 				.toList();
 	}
-
-	/**
-	 * To be used if the focus relies on the slot
-	 */
-	private static SlotDto toDto(Slot slot) {
-		return SlotDto.builder()
-				.id(slot.getId())
-				.name(slot.getName())
-				.number(slot.getNumber())
-				.squad(SquadAssembler.toDto(slot.getSquad()))
-				.reservedFor(GuildAssembler.toDto(slot.getReservedFor()))
-				.user(UserAssembler.toDto(slot.getUser()))
-				.replacementText(slot.getReplacementText())
-				.build();
-	}
-
-	/**
-	 * To be used if the focus relies on the slot
-	 */
-	public static List<SlotDto> toDtoList(List<Slot> slotList) {
-		return slotList.stream().map(SlotAssembler::toDto).toList();
-	}
-
 }
