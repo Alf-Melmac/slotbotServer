@@ -18,4 +18,8 @@ public class GuildUsersBotService {
 	public void add(long guildId, long userId) {
 		guildUsersService.add(guildId, userId);
 	}
+
+	public void remove(long guildId, long userId) {
+		guildUsersService.removeOptional(guildId, userId);
+	}
 }

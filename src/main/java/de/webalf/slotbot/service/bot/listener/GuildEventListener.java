@@ -2,12 +2,14 @@ package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.service.EventDiscordInformationService;
 import de.webalf.slotbot.service.bot.CommandsService;
+import de.webalf.slotbot.service.bot.GuildUsersBotService;
 import de.webalf.slotbot.util.bot.RoleUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.*;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
@@ -16,9 +18,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class GuildReadyListener extends ListenerAdapter {
+public class GuildEventListener extends ListenerAdapter {
 	private final CommandsService commandsService;
 	private final EventDiscordInformationService eventDiscordInformationService;
+	private final GuildUsersBotService guildUsersBotService;
 
 	@Override
 	public void onGuildReady(@NonNull GuildReadyEvent event) {
@@ -47,5 +50,10 @@ public class GuildReadyListener extends ListenerAdapter {
 		final Guild guild = event.getGuild();
 		log.info("Cleanup for guild: {}", guild.getName());
 		eventDiscordInformationService.removeByGuild(guild.getIdLong());
+	}
+
+	@Override
+	public void onGuildMemberRemove(@NonNull GuildMemberRemoveEvent event) {
+		guildUsersBotService.remove(event.getGuild().getIdLong(), event.getUser().getIdLong());
 	}
 }

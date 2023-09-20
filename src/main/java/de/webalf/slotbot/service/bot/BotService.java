@@ -3,7 +3,7 @@ package de.webalf.slotbot.service.bot;
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.service.EventDiscordInformationService;
 import de.webalf.slotbot.service.bot.listener.DeleteListener;
-import de.webalf.slotbot.service.bot.listener.GuildReadyListener;
+import de.webalf.slotbot.service.bot.listener.GuildEventListener;
 import de.webalf.slotbot.service.bot.listener.InteractionListener;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
 import jakarta.annotation.PreDestroy;
@@ -29,6 +29,7 @@ public class BotService {
 	private final DiscordProperties discordProperties;
 	private final CommandsService commandsService;
 	private final EventDiscordInformationService eventDiscordInformationService;
+	private final GuildUsersBotService guildUsersBotService;
 	private final CommandClassHelper commandClassHelper;
 	private final MessageSource messageSource;
 	private final GuildBotService guildBotService;
@@ -45,7 +46,7 @@ public class BotService {
 				.createLight(token)
 				.enableIntents(GUILD_MEMBERS, GUILD_MESSAGES)
 				.addEventListeners(
-						new GuildReadyListener(commandsService, eventDiscordInformationService),
+						new GuildEventListener(commandsService, eventDiscordInformationService, guildUsersBotService),
 						new InteractionListener(commandClassHelper, messageSource),
 						new DeleteListener(eventDiscordInformationService, guildBotService, messageSource))
 				.disableIntents(GUILD_MODERATION, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, DIRECT_MESSAGE_TYPING, MESSAGE_CONTENT, SCHEDULED_EVENTS, AUTO_MODERATION_CONFIGURATION, AUTO_MODERATION_EXECUTION)

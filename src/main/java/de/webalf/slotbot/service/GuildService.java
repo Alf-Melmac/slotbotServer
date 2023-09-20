@@ -81,6 +81,10 @@ public class GuildService {
 				.orElseGet(() -> guildRepository.save(Guild.builder().id(id).build()));
 	}
 
+	Optional<Guild> findExistingOptional(long guildId) {
+		return guildRepository.findById(guildId);
+	}
+
 	/**
 	 * Returns the guild associated with the given guildId
 	 *
@@ -89,7 +93,7 @@ public class GuildService {
 	 * @throws ResourceNotFoundException if no guild with this guildId could be found
 	 */
 	public Guild findExisting(long guildId) {
-		return guildRepository.findById(guildId).orElseThrow(ResourceNotFoundException::new);
+		return findExistingOptional(guildId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public Guild findByDiscordGuild(long discordGuild) {
