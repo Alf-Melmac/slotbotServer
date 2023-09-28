@@ -15,6 +15,8 @@ import de.webalf.slotbot.model.dtos.website.pagination.FrontendPageable;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
+import de.webalf.slotbot.util.StringUtils;
+import de.webalf.slotbot.util.permissions.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 /**
  * @author Alf
@@ -73,8 +77,14 @@ public class GuildController {
 	@GetMapping("/{id}/users")
 	public FrontendPageable<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId, Pageable pageRequest) {
 		final Guild guild = guildService.findByDiscordGuild(guildId);
-		return FrontendPageable.of(guildUsersService.getUsers(guild, pageRequest)
+		return FrontendPageable.of(guildUsersService.findGuildUsers(guild, pageRequest)
 				.map(user -> userInGuildAssembler.toDto(user, guild)));
+	}
+
+	@PutMapping(value = "/{id}/users/{userId}", consumes = TEXT_PLAIN_VALUE)
+	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	public void putGuildUserRole(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId, @RequestBody(required = false) String role) {
+		guildUsersService.setRole(guildId, userId, StringUtils.isEmpty(role) ? null : Role.valueOf(role));
 	}
 
 	@DeleteMapping("/{id}/users/{userId}")

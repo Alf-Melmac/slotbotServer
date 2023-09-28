@@ -231,7 +231,7 @@ class SlotTest {
 	void slotAllowsSlottingOnReservedSlot() {
 		final User userToSlot = User.builder().build();
 		final Guild guild = Guild.builder().id(1L).build();
-		userToSlot.setGuilds(Set.of(GuildUsers.builder().guild(guild).user(userToSlot).build()));
+		userToSlot.setGuilds(Set.of(GuildUser.builder().guild(guild).user(userToSlot).build()));
 
 		final Slot sut = Slot.builder()
 				.reservedFor(guild)
@@ -249,7 +249,7 @@ class SlotTest {
 	void slotAllowsSlottingInReservedSquad() {
 		final User userToSlot = User.builder().build();
 		final Guild guild = Guild.builder().id(1L).build();
-		userToSlot.setGuilds(Set.of(GuildUsers.builder().guild(guild).user(userToSlot).build()));
+		userToSlot.setGuilds(Set.of(GuildUser.builder().guild(guild).user(userToSlot).build()));
 
 		final Slot sut = Slot.builder()
 				.squad(Squad.builder()

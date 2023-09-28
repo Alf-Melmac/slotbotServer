@@ -2,8 +2,7 @@ package de.webalf.slotbot.configuration.authentication.website;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.webalf.slotbot.model.external.discord.DiscordOauthUser;
-import de.webalf.slotbot.service.external.DiscordAuthenticationService;
-import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role;
+import de.webalf.slotbot.service.GuildUsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,8 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
-
 /**
  * @author Alf
  * @since 29.10.2020
@@ -28,7 +25,7 @@ import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-	private final DiscordAuthenticationService discordAuthenticationService;
+	private final GuildUsersService guildUsersService;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) {
@@ -77,29 +74,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 		authorities.forEach(grantedAuthority -> {
 			if (grantedAuthority.getAuthority().equals("OAUTH2_USER")) {
-				mappedAuthorities.add(new OAuth2UserAuthority(ROLE_PREFIX + Role.EVERYONE.getApplicationRole(), attributes));
-				mappedAuthorities.addAll(getAuthorities(discordUser, attributes));
+				guildUsersService.getApplicationRoles(discordUser.getId())
+						.forEach(role -> mappedAuthorities.add(new OAuth2UserAuthority(role, attributes)));
 			} else {
 				mappedAuthorities.add(grantedAuthority);
 			}
 		});
 
 		return mappedAuthorities;
-	}
-
-	/**
-	 * Returns the matching application roles for the given discord {@link DiscordOauthUser} roles
-	 *
-	 * @param discordUser user to get roles for
-	 * @param attributes  of the user
-	 * @return set of granted authorities for known roles
-	 */
-	private Set<GrantedAuthority> getAuthorities(DiscordOauthUser discordUser, Map<String, Object> attributes) {
-		final Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-
-		discordAuthenticationService.getRoles(discordUser.getId())
-				.forEach(role -> grantedAuthorities.add(new OAuth2UserAuthority(role, attributes)));
-
-		return grantedAuthorities;
 	}
 }

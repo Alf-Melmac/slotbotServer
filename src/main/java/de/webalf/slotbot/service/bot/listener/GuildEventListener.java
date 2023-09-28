@@ -3,7 +3,6 @@ package de.webalf.slotbot.service.bot.listener;
 import de.webalf.slotbot.service.EventDiscordInformationService;
 import de.webalf.slotbot.service.bot.CommandsService;
 import de.webalf.slotbot.service.bot.GuildUsersBotService;
-import de.webalf.slotbot.util.bot.RoleUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,6 @@ public class GuildEventListener extends ListenerAdapter {
 	private void initializeGuild(@NonNull GenericGuildEvent event) {
 		final Guild guild = event.getGuild();
 		log.info("Initializing guild: {}", guild.getName());
-		RoleUtils.checkRequiredRoles(guild);
 		commandsService.updateCommands(guild);
 	}
 

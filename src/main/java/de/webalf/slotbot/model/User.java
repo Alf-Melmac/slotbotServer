@@ -27,7 +27,7 @@ public class User extends AbstractDiscordIdEntity {
 	private boolean externalCalendarIntegrationActive = false;
 
 	@OneToMany(mappedBy = "user")
-	private Set<GuildUsers> guilds = new HashSet<>();
+	private Set<GuildUser> guilds = new HashSet<>();
 
 	@OneToMany(mappedBy = "user")
 	private Set<GlobalRole> globalRoles = new HashSet<>();
@@ -45,6 +45,6 @@ public class User extends AbstractDiscordIdEntity {
 	}
 
 	public Set<Guild> getGuilds() {
-		return guilds.stream().map(GuildUsers::getGuild).collect(Collectors.toUnmodifiableSet());
+		return guilds.stream().map(GuildUser::getGuild).collect(Collectors.toUnmodifiableSet());
 	}
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
+import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 
 /**
  * @author Alf

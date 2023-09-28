@@ -1,6 +1,6 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.util.permissions.ApplicationPermissionHelper;
+import de.webalf.slotbot.util.permissions.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -25,5 +25,5 @@ public class GlobalRole extends AbstractSuperIdEntity {
 	@Column(name = "global_roles_role")
 	@Enumerated(EnumType.STRING)
 	@NotBlank
-	private ApplicationPermissionHelper.Role role;
+	private Role role;
 }

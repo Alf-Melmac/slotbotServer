@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
+import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 
 /**
  * @author Alf

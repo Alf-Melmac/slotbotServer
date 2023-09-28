@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.enums.DiscordUserObjectFields;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.Role.*;
+import static de.webalf.slotbot.util.permissions.Role.*;
 
 /**
  * @author Alf
@@ -53,12 +54,12 @@ public final class PermissionHelper {
 		return null;
 	}
 
-	public static String buildGuildAuthentication(String roleName, long guildId) {
-		return roleName + "_" + guildId;
+	public static String buildAuthenticationWithPrefix(@NotBlank String roleName) {
+		return ROLE_PREFIX + roleName;
 	}
 
-	public static String buildGuildAuthenticationWithPrefix(String roleName, long guildId) {
-		return ROLE_PREFIX + buildGuildAuthentication(roleName, guildId);
+	public static String buildGuildAuthenticationWithPrefix(@NotBlank String roleName, long guildId) {
+		return buildAuthenticationWithPrefix(roleName + "_" + guildId);
 	}
 
 	public static String buildGuildAuthenticationWithPrefix(String roleName, @NonNull Guild guild) {
@@ -90,7 +91,7 @@ public final class PermissionHelper {
 	 * @param guildId in which the permission should be present
 	 * @return true if allowed
 	 */
-	public static boolean hasPermissionInGuild(@NonNull ApplicationPermissionHelper.Role role, long guildId) {
+	public static boolean hasPermissionInGuild(@NonNull Role role, long guildId) {
 		final Stream<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream();
 		final Set<String> authorizedRoles = role.getAuthorizedRoles().stream().map(authorizedRole -> ROLE_PREFIX + authorizedRole.getApplicationRole()).collect(Collectors.toUnmodifiableSet());
 		if (guildId == GUILD_PLACEHOLDER) {
@@ -108,20 +109,20 @@ public final class PermissionHelper {
 	}
 
 	/**
-	 * Checks for the {@link ApplicationPermissionHelper.Role#ADMINISTRATOR} role
+	 * Checks for the {@link Role#ADMINISTRATOR} role
 	 *
-	 * @see #hasPermissionInGuild(ApplicationPermissionHelper.Role, long)
+	 * @see #hasPermissionInGuild(Role, long)
 	 */
 	static boolean hasAdministratorPermission(long guildId) {
 		return hasPermissionInGuild(ADMINISTRATOR, guildId);
 	}
 
 	/**
-	 * Checks for the {@link ApplicationPermissionHelper.Role#EVENT_MANAGE} role
+	 * Checks for the {@link Role#EVENT_MANAGE} role
 	 *
-	 * @see #hasPermissionInGuild(ApplicationPermissionHelper.Role, long)
+	 * @see #hasPermissionInGuild(Role, long)
 	 */
-	static boolean hasEventManagePermission(long guildId) {
+	public static boolean hasEventManagePermission(long guildId) {
 		return hasPermissionInGuild(EVENT_MANAGE, guildId);
 	}
 }

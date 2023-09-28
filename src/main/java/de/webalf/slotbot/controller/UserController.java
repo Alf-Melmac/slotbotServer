@@ -8,11 +8,11 @@ import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserOwnProfileDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
 import de.webalf.slotbot.model.external.discord.DiscordUser;
+import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.SlotService;
 import de.webalf.slotbot.service.UserUpdateService;
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.service.external.DiscordAuthenticationService;
 import de.webalf.slotbot.util.EventCalendarUtil;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static de.webalf.slotbot.assembler.NotificationSettingAssembler.toReferencelessDtoList;
 import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
-import static de.webalf.slotbot.util.permissions.ApplicationPermissionHelper.HAS_ROLE_EVERYONE;
+import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -40,7 +40,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Slf4j
 public class UserController {
 	private final DiscordApiService discordApiService;
-	private final DiscordAuthenticationService discordAuthenticationService;
+	private final GuildUsersService guildUsersService;
 	private final UserUpdateService userService;
 	private final SlotService slotService;
 	private final NotificationSettingsService notificationSettingsService;
@@ -56,7 +56,7 @@ public class UserController {
 		final boolean ownProfile = isLoggedInUser(userId);
 		return UserProfileDto.builder()
 				.user(DiscordUserAssembler.toDto(discordUser))
-				.roles("@" + String.join(", @", discordAuthenticationService.getRoles(userId)))
+				.roles(String.join(", ", guildUsersService.getApplicationRoles(userId)))
 				.participatedEventsCount(slotService.countByUserBeforeToday(user))
 				.ownProfile(ownProfile)
 				.build();

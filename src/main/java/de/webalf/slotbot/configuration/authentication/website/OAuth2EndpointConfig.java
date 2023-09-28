@@ -1,6 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
-import de.webalf.slotbot.service.external.DiscordAuthenticationService;
+import de.webalf.slotbot.service.GuildUsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -37,8 +38,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class OAuth2EndpointConfig {
-	private final DiscordAuthenticationService discordAuthenticationService;
+	private final GuildUsersService guildUsersService;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
+	private final SessionRegistry sessionRegistry;
 
 	@Bean
 	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
@@ -79,6 +81,10 @@ public class OAuth2EndpointConfig {
 						.userInfoEndpoint(userInfo -> userInfo
 								.userService(oAuthUserService())
 						)
+				)
+
+				.sessionManagement(session -> session
+						.maximumSessions(1).sessionRegistry(sessionRegistry)
 				);
 
 		return http.build();
@@ -106,7 +112,7 @@ public class OAuth2EndpointConfig {
 
 	@Bean
 	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
-		DefaultOAuth2UserService service = new CustomOAuth2UserService(discordAuthenticationService);
+		DefaultOAuth2UserService service = new CustomOAuth2UserService(guildUsersService);
 
 		service.setRequestEntityConverter(new OAuth2UserRequestEntityConverter() {
 			@Override

@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
-import static de.webalf.slotbot.util.permissions.BotPermissionHelper.hasEventManageRole;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
 
 /**
  * @author Alf
@@ -78,7 +78,7 @@ public class EventService {
 	}
 
 	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
-		return findAllBetween(start, end, hasEventManageRole());
+		return findAllBetween(start, end, hasEventManagePermission(guildService.getCurrentGuildId()));
 	}
 
 	/**
