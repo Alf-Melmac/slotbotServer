@@ -295,7 +295,8 @@ public class EventService {
 		slot.assertSlotIsPossible(user);
 		event.unslotIfAlreadySlotted(user);
 		eventRepository.saveAndFlush(event);
-		slotService.slot(slot, user);
+		//After the event was flushed the old slot can't be reused anymore
+		slotService.slot(slot.getId(), user);
 		return event;
 	}
 
@@ -373,8 +374,7 @@ public class EventService {
 		Event event = findByChannel(channel);
 		User user = userService.find(userDto);
 		Slot slot = event.randomSlot(user);
-		slotService.slot(slot, user);
-		return event;
+		return slot(event, slot, user);
 	}
 
 	/**

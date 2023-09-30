@@ -17,7 +17,6 @@ import de.webalf.slotbot.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,6 @@ public class SlotService {
 	private final GuildService guildService;
 	private final UserService userService;
 	private final ActionLogService actionLogService;
-	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Returns the slot with the given id
@@ -120,11 +118,12 @@ public class SlotService {
 	/**
 	 * Slots the given user to the given Slot. If the user is already slotted, it is removed from the other slot
 	 *
-	 * @param slot in which slot should be performed
-	 * @param user to be slotted
+	 * @param slotId id of slot in which slot should be performed
+	 * @param user   to be slotted
 	 * @return the updated slot
 	 */
-	Slot slot(@NonNull Slot slot, User user) {
+	Slot slot(long slotId, User user) {
+		final Slot slot = findById(slotId);
 		slot.slot(user);
 		actionLogService.logEventAction(LogAction.SLOT, slot.getEvent(), user);
 		return slot;
