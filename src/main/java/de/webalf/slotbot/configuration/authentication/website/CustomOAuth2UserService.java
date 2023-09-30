@@ -3,6 +3,7 @@ package de.webalf.slotbot.configuration.authentication.website;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.webalf.slotbot.model.external.discord.DiscordOauthUser;
 import de.webalf.slotbot.service.GuildUsersService;
+import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +27,7 @@ import java.util.Set;
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final GuildUsersService guildUsersService;
+	private final UserService userService;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) {
@@ -37,6 +39,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			return oAuth2User;
 		}
 
+		//Create user if not existing
+		userService.find(discordUser.getId());
 		final Collection<? extends GrantedAuthority> mappedAuthorities = mapAuthorities(attributes, discordUser, oAuth2User.getAuthorities());
 		oAuth2User = new DefaultOAuth2User(mappedAuthorities, attributes, "username");
 

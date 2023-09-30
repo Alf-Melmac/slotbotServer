@@ -1,6 +1,7 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
 import de.webalf.slotbot.service.GuildUsersService;
+import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 public class OAuth2EndpointConfig {
 	private final GuildUsersService guildUsersService;
+	private final UserService userService;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 	private final SessionRegistry sessionRegistry;
 
@@ -112,7 +114,7 @@ public class OAuth2EndpointConfig {
 
 	@Bean
 	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
-		DefaultOAuth2UserService service = new CustomOAuth2UserService(guildUsersService);
+		DefaultOAuth2UserService service = new CustomOAuth2UserService(guildUsersService, userService);
 
 		service.setRequestEntityConverter(new OAuth2UserRequestEntityConverter() {
 			@Override
