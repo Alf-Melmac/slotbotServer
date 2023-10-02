@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -64,6 +65,7 @@ public class FileService {
 	/**
 	 * Populates caches that need files from the file directories
 	 */
+	@Async
 	public void listFiles() {
 		Arma3FieldUtils.fillDownloadableModSets(listDownloadFilesAndFilter(Arma3FieldUtils.FILE_PATTERN));
 	}

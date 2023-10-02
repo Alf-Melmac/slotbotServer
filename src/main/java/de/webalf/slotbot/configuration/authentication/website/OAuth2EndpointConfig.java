@@ -21,15 +21,18 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequestEnti
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Objects;
 
 import static org.springframework.boot.web.server.Cookie.SameSite.STRICT;
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.COOKIES;
 
 /**
  * @author Alf
@@ -70,7 +73,7 @@ public class OAuth2EndpointConfig {
 				.logout(logout -> logout
 						.logoutSuccessUrl("/events")
 						.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-						.deleteCookies("JSESSIONID")
+						.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES)))
 				)
 
 				.oauth2Login(login -> login
@@ -86,9 +89,8 @@ public class OAuth2EndpointConfig {
 				)
 
 				.sessionManagement(session -> session
-						.maximumSessions(1).sessionRegistry(sessionRegistry)
+						.maximumSessions(2).sessionRegistry(sessionRegistry)
 				);
-
 		return http.build();
 	}
 

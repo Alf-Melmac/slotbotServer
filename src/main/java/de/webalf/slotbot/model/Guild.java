@@ -60,7 +60,7 @@ public class Guild extends AbstractDiscordIdEntity {
 	public static final long GUILD_PLACEHOLDER = -1L;
 
 	public String getBaseRedirectUrl() {
-		return StringUtils.isNotEmpty(baseUrl) ? baseUrl : "https://armamachtbock.de";
+		return StringUtils.isNotEmpty(baseUrl) ? baseUrl : "https://slotbot.de";
 	}
 
 	public String getGroupIdentifier() {
