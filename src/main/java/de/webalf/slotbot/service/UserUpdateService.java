@@ -1,13 +1,12 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.UserDto;
-import de.webalf.slotbot.util.DtoUtils;
 import de.webalf.slotbot.util.LongUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 
 /**
  * @author Alf
@@ -20,14 +19,19 @@ public class UserUpdateService {
 	private final UserServiceImpl userService;
 	private final EventCalendarService eventCalendarService;
 
-	public User update(@NonNull UserDto userDto) {
-		User user = userService.find(LongUtils.parseLong(userDto.getId()));
+	public User updateSteamId(String steamId) {
+		User user = userService.find(Long.parseLong(getLoggedInUserId()));
 
-		DtoUtils.ifPresentParse(userDto.getSteamId64(), user::setSteamId64);
-		DtoUtils.ifPresent(userDto.getExternalCalendarIntegrationActive(), externalCalendarIntegrationActive -> {
-			user.setExternalCalendarIntegrationActive(externalCalendarIntegrationActive);
-			eventCalendarService.rebuildCalendar(user);
-		});
+		user.setSteamId64(LongUtils.parseLongWrapper(steamId));
+
+		return user;
+	}
+
+	public User updateSettings(boolean externalCalendarIntegrationActive) {
+		User user = userService.find(Long.parseLong(getLoggedInUserId()));
+
+		user.setExternalCalendarIntegrationActive(externalCalendarIntegrationActive);
+		eventCalendarService.rebuildCalendar(user);
 
 		return user;
 	}

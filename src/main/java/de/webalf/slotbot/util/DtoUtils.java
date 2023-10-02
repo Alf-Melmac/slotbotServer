@@ -4,7 +4,6 @@ import de.webalf.slotbot.model.AbstractDiscordIdEntity;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -22,10 +21,6 @@ public final class DtoUtils {
 		return StringUtils.isNotEmpty(value);
 	}
 
-	private static <T extends Collection<?>> boolean isPresent(T value) {
-		return CollectionUtils.isNotEmpty(value);
-	}
-
 	private static boolean isPresent(Object value) {
 		return value != null;
 	}
@@ -37,17 +32,11 @@ public final class DtoUtils {
 	}
 
 	/**
-	 * Calls the consumer with the given value if the value is not null. Empty strings are treated as null.
+	 * Calls the consumer with the given value if the value is not null. Empty strings are presented but are treated as null.
 	 */
 	public static void ifPresentOrEmpty(String value, Consumer<String> consumer) {
 		if (isPresent((Object) value)) {
 			consumer.accept(value.isEmpty() ? null : value);
-		}
-	}
-
-	public static void ifPresentParse(String value, Consumer<Long> consumer) {
-		if (isPresent(value)) {
-			consumer.accept(LongUtils.parseLong(value));
 		}
 	}
 

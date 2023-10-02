@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "discord_user",
-		uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"user_steam_id"})},
-		schema = "public")
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"user_steam_id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter

@@ -4,7 +4,6 @@ import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
 import de.webalf.slotbot.controller.website.FileWebController;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserOwnProfileDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
 import de.webalf.slotbot.model.external.discord.DiscordUser;
@@ -75,19 +74,17 @@ public class UserController {
 				.build();
 	}
 
-	@PutMapping("/steamid/{steamId}")
+	@PutMapping(value = {"/steamid/", "/steamid/{steamId}"})
 	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public ResponseEntity<Void> updateSteamId(@PathVariable(name = "steamId") String steamId) {
-		final UserDto dto = UserDto.builder().id(getLoggedInUserId()).steamId64(steamId).build();
-		userService.update(dto);
+	public ResponseEntity<Void> updateSteamId(@PathVariable(name = "steamId", required = false) String steamId) {
+		userService.updateSteamId(steamId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@PutMapping("/externalcalendar/{integrationActive}")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public ResponseEntity<Void> updateExternalCalendarIntegration(@PathVariable(name = "integrationActive") boolean integrationActive) {
-		final UserDto dto = UserDto.builder().id(getLoggedInUserId()).externalCalendarIntegrationActive(integrationActive).build();
-		userService.update(dto);
+		userService.updateSettings(integrationActive);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
