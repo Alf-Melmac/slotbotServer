@@ -7,8 +7,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
@@ -41,6 +44,18 @@ public class GuildEventListener extends ListenerAdapter {
 		final Guild guild = event.getGuild();
 		log.info("Initializing guild: {}", guild.getName());
 		commandsService.updateCommands(guild);
+	}
+
+	@Override
+	public void onGuildMemberRoleAdd(@NonNull GuildMemberRoleAddEvent event) {
+		final Member member = event.getMember();
+		guildUsersBotService.memberRolesAdd(event.getGuild().getIdLong(), member.getIdLong(), event.getRoles(), member.getRoles());
+	}
+
+	@Override
+	public void onGuildMemberRoleRemove(@NonNull GuildMemberRoleRemoveEvent event) {
+		final Member member = event.getMember();
+		guildUsersBotService.memberRolesRemove(event.getGuild().getIdLong(), member.getIdLong(), event.getRoles(), member.getRoles());
 	}
 
 	@Override

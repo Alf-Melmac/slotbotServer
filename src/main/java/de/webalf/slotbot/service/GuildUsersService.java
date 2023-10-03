@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.repository.GlobalRoleRepository;
 import de.webalf.slotbot.repository.GuildUsersRepository;
 import de.webalf.slotbot.util.permissions.Role;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,22 +50,17 @@ public class GuildUsersService {
 		final Guild guild = guildService.find(guildId);
 		final User user = userService.find(userId);
 
+		invalidateSession(userId);
+
 		return guildUsersRepository.findByGuildAndUser(guild, user)
 				.orElseGet(() -> guildUsersRepository.save(GuildUser.builder().user(user).guild(guild).build()));
-	}
-
-	public void setRole(long guildId, long userId, Role role) {
-		sessionRegistry.getAllPrincipals().stream()
-				.flatMap(principal -> sessionRegistry.getAllSessions(principal, false).stream())
-				.filter(sessionInformation -> sessionInformation.getPrincipal() instanceof final DefaultOAuth2User user
-						&& user.getAttributes().get("id").equals(Long.toString(userId)))
-				.forEach(SessionInformation::expireNow);
-		guildUsersRepository.updateRoleByGuildAndUser(role, guildId, userId);
 	}
 
 	public void remove(long guildId, long userId) {
 		final User user = userService.findExisting(userId);
 		final Guild guild = guildService.findExisting(guildId);
+
+		invalidateSession(userId);
 
 		guildUsersRepository.deleteByGuildAndUser(guild, user);
 	}
@@ -101,5 +97,62 @@ public class GuildUsersService {
 				.forEach(roles::add);
 
 		return roles;
+	}
+
+	/**
+	 * Sets the given role for the given user in the given guild
+	 *
+	 * @param guildId guild to set role for
+	 * @param userId  user with role
+	 * @param role    to set
+	 */
+	public void setRole(long guildId, long userId, Role role) {
+		final Guild guild = guildService.find(guildId);
+		final User user = userService.find(userId);
+
+		invalidateSession(userId);
+
+		guildUsersRepository.findByGuildAndUser(guild, user)
+				.ifPresentOrElse(guildUser -> guildUser.setRole(role),
+						() -> guildUsersRepository.save(GuildUser.builder().guild(guild).user(user).role(role).build()));
+	}
+
+	private void invalidateSession(long userId) {
+		sessionRegistry.getAllPrincipals().stream()
+				.flatMap(principal -> sessionRegistry.getAllSessions(principal, false).stream())
+				.filter(sessionInformation -> sessionInformation.getPrincipal() instanceof final DefaultOAuth2User user
+						&& user.getAttributes().get("id").equals(Long.toString(userId)))
+				.forEach(SessionInformation::expireNow);
+	}
+
+	@Async
+	public void onRolesAdded(long guildId, long userId, Set<Long> addedRoles, Set<Long> memberRoles) {
+		guildService.findByIdAndAnyRoleIn(guildId, addedRoles).ifPresent(guild ->
+				setRole(guildId, userId, evaluateRole(guild, memberRoles)));
+	}
+
+	@Async
+	public void onRolesRemoved(long guildId, long userId, Set<Long> removedRoles, Set<Long> memberRoles) {
+		guildService.findByIdAndAnyRoleIn(guildId, removedRoles).ifPresent(guild -> {
+			final Role newRole = evaluateRole(guild, memberRoles);
+			//If a member role is configured and no role is left, remove user from guild
+			if (guild.getMemberRole() != null && !memberRoles.contains(guild.getMemberRole()) && newRole == null) {
+				remove(guildId, userId);
+				return;
+			}
+			setRole(guildId, userId, newRole);
+		});
+	}
+
+	/**
+	 * Evaluates which {@link Role} the user should have in the given guild based on the given member roles.
+	 */
+	private Role evaluateRole(@NonNull Guild guild, Set<Long> memberRoles) {
+		if (guild.getAdminRole() != null && memberRoles.contains(guild.getAdminRole())) {
+			return Role.ADMINISTRATOR;
+		} else if (guild.getEventManageRole() != null && memberRoles.contains(guild.getEventManageRole())) {
+			return Role.EVENT_MANAGE;
+		}
+		return null;
 	}
 }

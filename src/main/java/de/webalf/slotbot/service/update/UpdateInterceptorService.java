@@ -41,7 +41,15 @@ class UpdateInterceptorService {
 	 * @param propertyNames of the updated entity properties
 	 */
 	void update(Object entity, Object[] currentState, Object[] previousState, String[] propertyNames) {
-		eventUpdater.update(getEvent(entity, currentState, previousState, propertyNames));
+		final EventUpdateSetting eventUpdate = getEvent(entity, currentState, previousState, propertyNames);
+		if (eventUpdate != null) {
+			eventUpdater.update(eventUpdate);
+			return;
+		}
+		if (entity instanceof final GuildUser guildUser) {
+			log.info("Guild user update");
+			//TODO Update discord roles if role changed
+		}
 	}
 
 	/**

@@ -15,6 +15,9 @@ public final class GuildConfigAssembler {
 		return GuildConfigDto.builder()
 				.language(guild.getLanguage())
 				.archiveChannel(LongUtils.toString(guild.getArchiveChannel()))
+				.memberRole(LongUtils.toString(guild.getMemberRole()))
+				.eventManageRole(LongUtils.toString(guild.getEventManageRole()))
+				.adminRole(LongUtils.toString(guild.getAdminRole()))
 				.build();
 	}
 }

@@ -2,6 +2,7 @@ package de.webalf.slotbot.service.integration;
 
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.integration.DiscordCategory;
+import de.webalf.slotbot.model.integration.DiscordRole;
 import de.webalf.slotbot.model.integration.DiscordTextChannel;
 import de.webalf.slotbot.service.bot.BotService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,7 @@ public class GuildDiscordService {
 	}
 
 	public List<DiscordCategory> getGuildChannels(long guildId) {
-		final Guild guild = botService.getJda().getGuildById(guildId);
-		if (guild == null) {
-			throw BusinessRuntimeException.builder().title("Guild " + guildId + " couldn't be found.").build();
-		}
-		return guild.getCategoryCache().stream()
+		return getGuild(guildId).getCategoryCache().stream()
 				.map(category -> DiscordCategory.builder()
 						.name(category.getName())
 						.textChannels(category.getTextChannels().stream()
@@ -39,5 +36,23 @@ public class GuildDiscordService {
 								.toList())
 						.build())
 				.toList();
+	}
+
+	public List<DiscordRole> getGuildRoles(long guildId) {
+		return getGuild(guildId).getRoleCache().stream()
+				.filter(role -> !role.isPublicRole())
+				.map(role -> DiscordRole.builder()
+						.id(role.getId())
+						.name(role.getName())
+						.build())
+				.toList();
+	}
+
+	private Guild getGuild(long guildId) {
+		final Guild guild = botService.getJda().getGuildById(guildId);
+		if (guild == null) {
+			throw BusinessRuntimeException.builder().title("Guild " + guildId + " couldn't be found.").build();
+		}
+		return guild;
 	}
 }

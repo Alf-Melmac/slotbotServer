@@ -16,4 +16,7 @@ import java.util.Optional;
 public class GuildConfigPutDto {
 	private Optional<Language> language;
 	private Optional<String> archiveChannel;
+	private Optional<String> memberRole;
+	private Optional<String> eventManageRole;
+	private Optional<String> adminRole;
 }

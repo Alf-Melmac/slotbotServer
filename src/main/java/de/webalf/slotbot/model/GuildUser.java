@@ -36,10 +36,11 @@ public class GuildUser {
 	private Role role;
 
 	@Builder
-	private GuildUser(Guild guild, User user) {
+	private GuildUser(Guild guild, User user, Role role) {
+		this.id = GuildUserId.builder().guildId(guild.getId()).userId(user.getId()).build();
 		this.guild = guild;
 		this.user = user;
-		this.id = GuildUserId.builder().guildId(guild.getId()).userId(user.getId()).build();
+		this.role = role;
 	}
 
 	public String getApplicationRole() {

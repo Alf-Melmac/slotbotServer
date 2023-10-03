@@ -57,6 +57,15 @@ public class Guild extends AbstractDiscordIdEntity {
 	@Column(name = "discord_guild_archive_channel")
 	private Long archiveChannel;
 
+	@Column(name = "discord_guild_member_role")
+	private Long memberRole;
+
+	@Column(name = "discord_guild_event_manage_role")
+	private Long eventManageRole;
+
+	@Column(name = "discord_guild_admin_role")
+	private Long adminRole;
+
 	public static final long GUILD_PLACEHOLDER = -1L;
 
 	public String getBaseRedirectUrl() {

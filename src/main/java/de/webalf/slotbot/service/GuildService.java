@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 
@@ -104,6 +105,14 @@ public class GuildService {
 		return guildRepository.findByGroupIdentifier(name);
 	}
 
+	/**
+	 * Returns the guild with the given id if any of the given role ids is configured ({@link Guild#getMemberRole()},
+	 * {@link Guild#getEventManageRole()}, {@link Guild#getAdminRole()}) for this guild.
+	 */
+	public Optional<Guild> findByIdAndAnyRoleIn(long guildId, Set<Long> roles) {
+		return guildRepository.findByIdAndAnyRoleIn(guildId, roles);
+	}
+
 	public Guild evaluateReservedFor(String reservedFor) {
 		return StringUtils.isNotEmpty(reservedFor) ? findExisting(Long.parseLong(reservedFor)) : null;
 	}
@@ -120,6 +129,9 @@ public class GuildService {
 
 		DtoUtils.ifPresent(dto.getLanguage(), guild::setLanguage);
 		DtoUtils.ifPresent(dto.getArchiveChannel(), archiveChannelId -> guild.setArchiveChannel(LongUtils.parseLongWrapper(archiveChannelId)));
+		DtoUtils.ifPresent(dto.getMemberRole(), memberRoleId -> guild.setMemberRole(LongUtils.parseLongWrapper(memberRoleId)));
+		DtoUtils.ifPresent(dto.getEventManageRole(), eventManageRoleId -> guild.setEventManageRole(LongUtils.parseLongWrapper(eventManageRoleId)));
+		DtoUtils.ifPresent(dto.getAdminRole(), adminRoleId -> guild.setAdminRole(LongUtils.parseLongWrapper(adminRoleId)));
 
 		return guild;
 	}
