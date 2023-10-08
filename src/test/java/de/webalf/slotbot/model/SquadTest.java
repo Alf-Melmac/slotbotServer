@@ -75,11 +75,11 @@ class SquadTest {
 
 		final Squad sut = Squad.builder()
 				.name("Squad")
-				.slotList(new ArrayList<>(Collections.singletonList(slotToDelete)))
+				.slotList(new ArrayList<>(List.of(slotToDelete)))
 				.event(Event.builder().squadList(Collections.emptyList()).build())
 				.build();
 		final Event event = sut.getEvent();
-		event.setSquadList(new ArrayList<>(Collections.singletonList(sut)));
+		event.setSquadList(new ArrayList<>(List.of(sut)));
 
 		sut.deleteSlot(slotToDelete);
 

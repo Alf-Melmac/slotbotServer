@@ -20,7 +20,7 @@ public final class DiscordUserUtils {
 		if (avatar == null) {
 			return getDefaultAvatarUrl(id);
 		}
-		return String.format(User.AVATAR_URL, id, avatar, avatar.startsWith("a_") ? "gif" : "png");
+		return User.AVATAR_URL.formatted(id, avatar, avatar.startsWith("a_") ? "gif" : "png");
 	}
 
 	/**
@@ -30,7 +30,7 @@ public final class DiscordUserUtils {
 		if (avatar == null) {
 			return getDefaultAvatarUrl(id);
 		}
-		return String.format(Member.AVATAR_URL, guild, id, avatar, avatar.startsWith("a_") ? "gif" : "png");
+		return Member.AVATAR_URL.formatted(guild, id, avatar, avatar.startsWith("a_") ? "gif" : "png");
 	}
 
 	private static String getDefaultAvatarUrl(@NonNull String id) {

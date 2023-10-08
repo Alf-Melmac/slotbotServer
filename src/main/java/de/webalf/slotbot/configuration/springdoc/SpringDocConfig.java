@@ -17,7 +17,7 @@ import java.util.List;
 @Configuration
 public class SpringDocConfig {
 	@Bean
-	public SpringDocConfigProperties springDocConfigProperties(@NonNull SpringDocConfigProperties config) {
+	SpringDocConfigProperties springDocConfigProperties(@NonNull SpringDocConfigProperties config) {
 		config.setPackagesToScan(List.of("de.webalf.slotbot.controller.api"));
 		return config;
 	}

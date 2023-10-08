@@ -15,7 +15,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
-	@Value("${server.cors.allowedOrigins}")
+	@Value("${server.cors.allowed-origins}")
 	private String[] allowedOrigins;
 
 	@Override

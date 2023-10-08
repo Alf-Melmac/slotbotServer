@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionRegistrator {
 	@Bean
-	public SessionRegistry sessionRegistry() {
+	SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
 	}
 
@@ -23,7 +23,7 @@ public class SessionRegistrator {
 	 * @see SessionRegistryImpl
 	 */
 	@Bean
-	public HttpSessionEventPublisher httpSessionEventPublisher() {
+	HttpSessionEventPublisher httpSessionEventPublisher() {
 		return new HttpSessionEventPublisher();
 	}
 }

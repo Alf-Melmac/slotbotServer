@@ -48,7 +48,7 @@ public class OAuth2EndpointConfig {
 	private final SessionRegistry sessionRegistry;
 
 	@Bean
-	protected SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
 		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
 		final CookieCsrfTokenRepository tokenRepository = new CookieCsrfTokenRepository();
 		tokenRepository.setCookieCustomizer(cookie -> cookie
@@ -95,13 +95,13 @@ public class OAuth2EndpointConfig {
 	}
 
 	@Bean
-	public CookieSameSiteSupplier sameSiteSupplier() {
+	CookieSameSiteSupplier sameSiteSupplier() {
 		// Force JSESSIONID cookie to be SameSite=Lax
 		return CookieSameSiteSupplier.ofLax();
 	}
 
 	@Bean
-	public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
+	OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
 		DefaultAuthorizationCodeTokenResponseClient client = new DefaultAuthorizationCodeTokenResponseClient();
 
 		client.setRequestEntityConverter(new OAuth2AuthorizationCodeGrantRequestEntityConverter() {
@@ -115,7 +115,7 @@ public class OAuth2EndpointConfig {
 	}
 
 	@Bean
-	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
+	OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
 		DefaultOAuth2UserService service = new CustomOAuth2UserService(guildUsersService, userService);
 
 		service.setRequestEntityConverter(new OAuth2UserRequestEntityConverter() {

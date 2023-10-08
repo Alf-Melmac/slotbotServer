@@ -5,8 +5,8 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>3.1.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>3.1.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>de.webalf</groupId>
@@ -28,7 +28,7 @@
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>5.0.0-beta.13</jda.version>
+		<jda.version>5.0.0-beta.15</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.16.1</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->

@@ -46,7 +46,7 @@ public class OpenApiConfig {
 	public static final String SECURITY_KEY_ADMIN = API_AUTH_TOKEN_START + ApiTokenType.TypeRoleNames.ADMIN + END;
 
 	@Bean
-	public OpenAPI api() {
+	OpenAPI api() {
 		final String authTokenName = tokenAuthFilter.getTokenName();
 		return new OpenAPI()
 				.info(new Info()
@@ -69,7 +69,7 @@ public class OpenApiConfig {
 	}
 
 	@Bean
-	public OperationCustomizer customizeOperation() {
+	OperationCustomizer customizeOperation() {
 		return (operation, handlerMethod) -> {
 			if (handlerMethod.hasMethodAnnotation(SecurityRequirement.class) || handlerMethod.getMethod().getDeclaringClass().getAnnotation(SecurityRequirement.class) != null) {
 				operation.responses(operation.getResponses()
@@ -85,14 +85,14 @@ public class OpenApiConfig {
 								.content(new Content()
 										.addMediaType(APPLICATION_JSON_VALUE, new MediaType()
 												.schema(exceptionResponseSchema)
-												.example(String.format("""
+												.example("""
 																{
 																    "errorMessage": "Resource not found",
 																    "requestedURI": "%s"
-																}""",
-														servletContextPath +
-																handlerMethod.getMethod().getDeclaringClass().getAnnotation(RequestMapping.class).value()[0] +
-																handlerMethod.getMethodAnnotation(Resource.class).value())
+																}""".formatted(
+												servletContextPath +
+														handlerMethod.getMethod().getDeclaringClass().getAnnotation(RequestMapping.class).value()[0] +
+														handlerMethod.getMethodAnnotation(Resource.class).value())
 														.replaceAll("(?<!^)\\{[^}]*}", "123"))
 										))));
 			}

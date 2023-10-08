@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
@@ -42,7 +41,6 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 	private final TokenAuthProvider tokenAuthProvider;
 	private final HandlerExceptionResolver resolver;
 
-	@Autowired
 	public TokenAuthFilter(TokenAuthProvider tokenAuthProvider, @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
 		this.tokenAuthProvider = tokenAuthProvider;
 		this.resolver = resolver;

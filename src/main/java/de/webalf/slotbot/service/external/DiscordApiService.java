@@ -118,7 +118,7 @@ public class DiscordApiService {
 	private WebClient buildWebClient() {
 		return WebClient.builder()
 				.baseUrl("https://discord.com/api/v10")
-				.defaultHeader("Authorization", discordProperties.getToken())
+				.defaultHeader(HttpHeaders.AUTHORIZATION, discordProperties.getToken())
 				.build();
 	}
 }

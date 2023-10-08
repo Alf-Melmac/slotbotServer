@@ -47,6 +47,6 @@ public class ActionLog extends AbstractIdEntity {
 
 	public String getTimeGapString() {
 		long sec = getTimeGap().getSeconds();
-		return String.format("%02d:%02d", sec/3600, (sec%3600)/60);
+		return "%02d:%02d".formatted(sec / 3600, (sec % 3600) / 60);
 	}
 }

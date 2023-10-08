@@ -7,7 +7,7 @@
 	  "defaultValue": "slotbot-auth-token"
 	},
 	{
-	  "name": "server.cors.allowedOrigins",
+	  "name": "server.cors.allowed-origins",
 	  "type": "java.lang.String",
 	  "description": "Origins for which cross-origin requests are allowed from a browser."
 	},
