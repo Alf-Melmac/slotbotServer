@@ -49,13 +49,13 @@ public class GuildController {
 
 	@GetMapping("/{id}")
 	public GuildDetailsDto getGuild(@PathVariable(value = "id") long guildId) {
-		return GuildDetailsAssembler.toDto(guildService.findByDiscordGuild(guildId));
+		return GuildDetailsAssembler.toDto(guildService.findExisting(guildId));
 	}
 
 	@GetMapping("/{id}/config")
 	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
 	public GuildConfigDto getGuildConfig(@PathVariable(value = "id") long guildId) {
-		return GuildConfigAssembler.toDto(guildService.findByDiscordGuild(guildId));
+		return GuildConfigAssembler.toDto(guildService.findExisting(guildId));
 	}
 
 	@PutMapping("/{id}/config")
@@ -77,7 +77,7 @@ public class GuildController {
 
 	@GetMapping("/{id}/users")
 	public FrontendPageable<UserInGuildDto> getGuildUsers(@PathVariable(value = "id") long guildId, Pageable pageRequest) {
-		final Guild guild = guildService.findByDiscordGuild(guildId);
+		final Guild guild = guildService.findExisting(guildId);
 		return FrontendPageable.of(guildUsersService.findGuildUsers(guild, pageRequest)
 				.map(user -> userInGuildAssembler.toDto(user, guild)));
 	}

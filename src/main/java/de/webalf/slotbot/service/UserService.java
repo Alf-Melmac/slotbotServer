@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
-import java.util.Optional;
-
 /**
  * @author Alf
  * @since 06.09.2020
@@ -42,10 +40,6 @@ public class UserService {
 		return userServiceImpl.find(id);
 	}
 
-	Optional<User> findExistingOptional(long id) {
-		return userRepository.findById(id);
-	}
-
 	/**
 	 * Returns the user associated with the given userId
 	 *
@@ -54,7 +48,7 @@ public class UserService {
 	 * @throws ResourceNotFoundException if no user with this userId could be found
 	 */
 	User findExisting(long id) {
-		return findExistingOptional(id).orElseThrow(ResourceNotFoundException::new);
+		return userRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	/**

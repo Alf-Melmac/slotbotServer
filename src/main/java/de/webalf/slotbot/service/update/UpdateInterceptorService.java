@@ -2,7 +2,9 @@ package de.webalf.slotbot.service.update;
 
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.event.EventMetadataUpdateEvent;
+import de.webalf.slotbot.model.event.GuildUserRoleUpdateEvent;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
+import de.webalf.slotbot.util.permissions.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.collection.spi.PersistentList;
@@ -33,9 +35,9 @@ class UpdateInterceptorService {
 	}
 
 	/**
-	 * Informs the discord bot about an update in an event
+	 * Informs the discord bot about an update in an event or a guild user role change
 	 *
-	 * @param entity        that may be an event related object
+	 * @param entity        that may be an event related or guild user object
 	 * @param currentState  of the entity
 	 * @param previousState of the entity
 	 * @param propertyNames of the updated entity properties
@@ -47,8 +49,16 @@ class UpdateInterceptorService {
 			return;
 		}
 		if (entity instanceof final GuildUser guildUser) {
-			log.info("Guild user update");
-			//TODO Update discord roles if role changed
+			for (int i = 0; i < propertyNames.length; i++) {
+				if (propertyNames[i].equals(GuildUser_.ROLE)) {
+					final Role oldRole = (Role) previousState[i];
+					final Role newRole = guildUser.getRole();
+					if (oldRole != newRole) {
+						eventPublisher.publishEvent(new GuildUserRoleUpdateEvent(guildUser, oldRole));
+					}
+					break;
+				}
+			}
 		}
 	}
 

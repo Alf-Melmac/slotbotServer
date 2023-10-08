@@ -20,7 +20,7 @@ public interface GuildRepository extends DiscordIdEntityJpaRepository<Guild> {
 	List<Guild> findByUrlPatternIsNotNull();
 
 	@Query("""
-			SELECT g FROM Guild g
+			SELECT COUNT(g) > 0 FROM Guild g
 			WHERE g.id = :id AND (g.memberRole IN :roles OR g.eventManageRole IN :roles OR g.adminRole IN :roles)""")
-	Optional<Guild> findByIdAndAnyRoleIn(@Param("id") long id, @Param("roles") Collection<Long> roles);
+	boolean existsByIdAndAnyRoleIn(@Param("id") long id, @Param("roles") Collection<Long> roles);
 }

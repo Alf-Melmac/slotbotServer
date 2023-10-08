@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import de.webalf.slotbot.converter.persistence.PatternPersistenceConverter;
 import de.webalf.slotbot.model.enums.Language;
 import de.webalf.slotbot.util.StringUtils;
+import de.webalf.slotbot.util.permissions.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -86,5 +87,24 @@ public class Guild extends AbstractDiscordIdEntity {
 
 	public Locale getLocale() {
 		return Locale.forLanguageTag(getLanguage().name());
+	}
+
+	/**
+	 * Returns the configured discord role for the given {@link Role}
+	 *
+	 * @param role to get discord role for
+	 * @return discord role id or null if not configured
+	 */
+	public Long getDiscordRole(Role role) {
+		if (role == Role.ADMINISTRATOR) {
+			return getAdminRole();
+		}
+		if (role == Role.EVENT_MANAGE) {
+			return getEventManageRole();
+		}
+		if (role == null) {
+			return getMemberRole();
+		}
+		return null;
 	}
 }

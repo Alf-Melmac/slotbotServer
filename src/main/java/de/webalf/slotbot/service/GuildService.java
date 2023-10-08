@@ -82,10 +82,6 @@ public class GuildService {
 				.orElseGet(() -> guildRepository.save(Guild.builder().id(id).build()));
 	}
 
-	Optional<Guild> findExistingOptional(long guildId) {
-		return guildRepository.findById(guildId);
-	}
-
 	/**
 	 * Returns the guild associated with the given guildId
 	 *
@@ -94,11 +90,7 @@ public class GuildService {
 	 * @throws ResourceNotFoundException if no guild with this guildId could be found
 	 */
 	public Guild findExisting(long guildId) {
-		return findExistingOptional(guildId).orElseThrow(ResourceNotFoundException::new);
-	}
-
-	public Guild findByDiscordGuild(long discordGuild) {
-		return guildRepository.findById(discordGuild).orElseThrow(ResourceNotFoundException::new);
+		return guildRepository.findById(guildId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public Optional<Guild> findByName(String name) {
@@ -106,11 +98,11 @@ public class GuildService {
 	}
 
 	/**
-	 * Returns the guild with the given id if any of the given role ids is configured ({@link Guild#getMemberRole()},
-	 * {@link Guild#getEventManageRole()}, {@link Guild#getAdminRole()}) for this guild.
+	 * Checks if there is any guild with the given id and any of the given role ids is configured
+	 * ({@link Guild#getMemberRole()}, {@link Guild#getEventManageRole()}, {@link Guild#getAdminRole()}) for this guild.
 	 */
-	public Optional<Guild> findByIdAndAnyRoleIn(long guildId, Set<Long> roles) {
-		return guildRepository.findByIdAndAnyRoleIn(guildId, roles);
+	public boolean existsByIdAndAnyRoleIn(long guildId, Set<Long> roles) {
+		return guildRepository.existsByIdAndAnyRoleIn(guildId, roles);
 	}
 
 	public Guild evaluateReservedFor(String reservedFor) {
