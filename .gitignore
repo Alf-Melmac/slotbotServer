@@ -6,6 +6,7 @@ logs/
 /download/
 /img/
 /calendar/
+/userContent/
 
 ### STS ###
 .apt_generated

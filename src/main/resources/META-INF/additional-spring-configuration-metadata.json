@@ -19,11 +19,20 @@
 	{
 	  "name": "storage.download",
 	  "type": "java.lang.String",
-	  "description": "Path from which the /download endpoint obtains files."
+	  "description": "Path from which the /download endpoint obtains files.",
+	  "defaultValue": "./download"
 	},
 	{
 	  "name": "storage.calendarOutput",
 	  "type": "java.lang.String",
-	  "description": "Path to which calendar ics files can be written to and retrieved from."
+	  "description": "Path to which calendar ics files can be written to and retrieved from.",
+	  "defaultValue": "./calendar"
+	},
+	{
+	  "name": "storage.userContent",
+	  "type": "java.lang.String",
+	  "description": "Path to which user provided files can be written to and retrieved from.",
+	  "defaultValue": "./userContent"
 	}
-  ] }
+  ]
+}

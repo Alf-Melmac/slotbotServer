@@ -62,6 +62,13 @@ public class FileService {
 		return getResource(filename, file);
 	}
 
+	@Cacheable("userContentLoader")
+	public Resource loadUserContentAsResource(String userId, String filename) {
+		final Path path = Paths.get(storageProperties.getUserContent(), userId, filename);
+
+		return getResource(filename, path);
+	}
+
 	/**
 	 * Populates caches that need files from the file directories
 	 */

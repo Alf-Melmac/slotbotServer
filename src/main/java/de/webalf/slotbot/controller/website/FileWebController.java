@@ -5,7 +5,9 @@ import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
 
@@ -27,6 +31,8 @@ import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
 public class FileWebController {
 	private final FileService fileService;
 	private final GuildService guildService;
+
+	private final Tika tika = new Tika();
 
 	@GetMapping("/download/{filename:.+}")
 	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
@@ -47,6 +53,19 @@ public class FileWebController {
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.body(file);
+	}
+
+	@GetMapping("/userContent/{userId}/{filename:.+}")
+	public ResponseEntity<Resource> getUserContent(@PathVariable String userId, @PathVariable String filename) throws IOException {
+		final Resource file = fileService.loadUserContentAsResource(userId, filename);
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl
+						.maxAge(30, TimeUnit.DAYS)
+						.cachePublic()
+						.immutable()
+						.staleWhileRevalidate(31, TimeUnit.DAYS))
+				.contentType(MediaType.valueOf(tika.detect(file.getInputStream(), file.getFilename())))
 				.body(file);
 	}
 }
