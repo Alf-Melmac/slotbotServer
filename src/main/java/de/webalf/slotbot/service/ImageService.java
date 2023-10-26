@@ -37,7 +37,7 @@ public class ImageService {
 	public String writeImage(@NonNull MultipartFile file) throws IOException {
 		final String originalFilename = file.getOriginalFilename();
 		final String mediaType = tika.detect(file.getInputStream(), originalFilename);
-		if (!(mediaType.equals(MediaType.IMAGE_JPEG_VALUE) || mediaType.equals(MediaType.IMAGE_PNG_VALUE))) {
+		if (!(mediaType.equals(MediaType.IMAGE_JPEG_VALUE) || mediaType.equals(MediaType.IMAGE_PNG_VALUE)) || file.getSize() == 0) {
 			throw BusinessRuntimeException.builder().title("File is not an image").build();
 		}
 		if (originalFilename == null) {
