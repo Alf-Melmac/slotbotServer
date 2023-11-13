@@ -16,7 +16,7 @@ import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 @Getter
 @AllArgsConstructor
 public enum Role {
-	SYSTEM_ADMIN(ApplicationRole.SYS_ADMIN),
+	SYSTEM_ADMIN(ApplicationRole.SYS_ADMIN), //Asserted as a global role
 	ADMINISTRATOR(ApplicationRole.ADMIN),
 	EVENT_MANAGE(ApplicationRole.EVENT_MANAGE);
 
