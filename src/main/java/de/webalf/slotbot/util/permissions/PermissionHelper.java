@@ -92,12 +92,9 @@ public final class PermissionHelper {
 	 * @return true if allowed
 	 */
 	public static boolean hasPermissionInGuild(@NonNull Role role, long guildId) {
-		if (role == SYSTEM_ADMIN) { //global role
-			return true;
-		}
 		final Stream<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream();
 		final Set<String> authorizedRoles = role.getAuthorizedRoles().stream().map(authorizedRole -> ROLE_PREFIX + authorizedRole.getApplicationRole()).collect(Collectors.toUnmodifiableSet());
-		if (guildId == GUILD_PLACEHOLDER) {
+		if (guildId == GUILD_PLACEHOLDER || role == SYSTEM_ADMIN) {
 			return authorities.anyMatch(grantedAuthority -> {
 				final String authority = grantedAuthority.getAuthority();
 				return authorizedRoles.stream().anyMatch(authority::equals);
