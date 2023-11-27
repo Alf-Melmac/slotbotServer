@@ -109,7 +109,7 @@ class EventHelperEmbedTest {
 
 		final MessageEmbed result = sut.buildDetailsEmbed(event, TEST_LOCALE);
 
-		assertEquals("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg", result.getImage().getUrl());
+		assertEquals("https://slotbot.de/backend/userContent/1/hidden_event.jpg", result.getImage().getUrl());
 	}
 
 	@Test

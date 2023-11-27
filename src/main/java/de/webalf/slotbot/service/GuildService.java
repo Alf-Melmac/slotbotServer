@@ -138,9 +138,10 @@ public class GuildService {
 		}
 	}
 
-	private static final String SLOTBOT_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899740543603589130/AM-name-slotbot-small.png";
-	private static final String AMB_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/885282179796566046/AM-Blau-small.jpg";
-	private static final String DAA_LOGO = "https://cdn.discordapp.com/attachments/759147249325572097/899747640634376272/DAA_transparent.gif";
+	private static final String SLOTBOT_LOGO = "https://slotbot.de/backend/userContent/1/AM-name-slotbot-small.png";
+	private static final String AMB_LOGO = "https://events.armamachtbock.de/backend/userContent/1/AM-Blau-small.jpg";
+	private static final String DAA_LOGO = "https://events.deutsche-arma-allianz.de/backend/userContent/1/DAA_transparent.gif";
+	private static final String TTT_LOGO = "https://events.tacticalteam.de/backend/userContent/1/TTT_Logo.png";
 
 	public static String getLogo(@NonNull Guild guild) {
 		return getLogo(guild.getId());
@@ -151,6 +152,8 @@ public class GuildService {
 			return AMB_LOGO;
 		} else if (GuildService.isDAA(guildId)) {
 			return DAA_LOGO;
+		} else if (GuildService.isTTT(guildId)) {
+			return TTT_LOGO;
 		}
 		return SLOTBOT_LOGO;
 	}
@@ -166,6 +169,7 @@ public class GuildService {
 
 	private static final long AMB = 706254758721224707L;
 	private static final long DAA = 874650742089203792L;
+	private static final long TTT = 121399943393968128L;
 
 	public static boolean isAMB(@NonNull Guild guild) {
 		return isAMB(guild.getId());
@@ -175,7 +179,11 @@ public class GuildService {
 		return is(AMB, guildId);
 	}
 
-	public static boolean isDAA(long guildId) {
+	private static boolean isDAA(long guildId) {
 		return is(DAA, guildId);
+	}
+
+	private static boolean isTTT(long guildId) {
+		return is(TTT, guildId);
 	}
 }

@@ -82,7 +82,7 @@ public class Guild extends AbstractDiscordIdEntity {
 	}
 
 	public String getSpacerUrl() {
-		return StringUtils.isNotEmpty(spacerUrl) ? spacerUrl : "https://cdn.discordapp.com/attachments/759147249325572097/1084262121761677322/Discord_Missionstrenner_Slotbot.png";
+		return StringUtils.isNotEmpty(spacerUrl) ? spacerUrl : "https://slotbot.de/backend/userContent/1/Discord_Missionstrenner_Slotbot.png";
 	}
 
 	public Locale getLocale() {

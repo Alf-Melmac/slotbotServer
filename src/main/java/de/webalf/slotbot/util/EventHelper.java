@@ -43,7 +43,7 @@ public class EventHelper {
 				.setTimestamp(Instant.now());
 
 		if (event.isHidden()) {
-			embedBuilder.setImage("https://cdn.discordapp.com/attachments/759147249325572097/789151354920632330/hidden_event.jpg");
+			embedBuilder.setImage("https://slotbot.de/backend/userContent/1/hidden_event.jpg");
 		}
 
 		addFields(embedBuilder, event, guildLocale);
