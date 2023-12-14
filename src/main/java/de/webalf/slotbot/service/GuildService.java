@@ -141,7 +141,7 @@ public class GuildService {
 	private static final String SLOTBOT_LOGO = "https://slotbot.de/backend/userContent/1/AM-name-slotbot-small.png";
 	private static final String AMB_LOGO = "https://events.armamachtbock.de/backend/userContent/1/AM-Blau-small.jpg";
 	private static final String DAA_LOGO = "https://events.deutsche-arma-allianz.de/backend/userContent/1/DAA_transparent.gif";
-	private static final String TTT_LOGO = "https://events.tacticalteam.de/backend/userContent/1/TTT_Logo.png";
+	private static final String TTT_LOGO = "https://events.tacticalteam.de/backend/userContent/1/slotbot_ttt-eventplatzhalter.png";
 
 	public static String getLogo(@NonNull Guild guild) {
 		return getLogo(guild.getId());
