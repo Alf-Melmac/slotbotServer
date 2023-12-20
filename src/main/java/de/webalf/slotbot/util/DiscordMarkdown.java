@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Util class to work with discord formatting
- * @see <a href="https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-" target"_top">https://support.discord.com/hc/en-us/articles/210298617-Markdown-Text-101-Chat-Formatting-Bold-Italic-Underline-</a>
+ * @see <a href="https://support.discord.com/hc/en-us/articles/210298617" target"_top">https://support.discord.com/hc/en-us/articles/210298617</a>
  *
  * @author Alf
  * @since 12.11.2020
@@ -34,7 +34,7 @@ public final class DiscordMarkdown {
 	private static final Safelist SAFELIST = Safelist.none();
 
 	static {
-		SAFELIST.addTags("br", HTML_STRIKETHROUGH, HTML_UNDERLINE, HTML_STRONG, HTML_ITALIC);
+		SAFELIST.addTags("br", HTML_STRIKETHROUGH, HTML_UNDERLINE, HTML_STRONG, HTML_ITALIC, "h1", "h2", "h3");
 	}
 
 	/**
@@ -48,7 +48,8 @@ public final class DiscordMarkdown {
 		}
 
 		String markdown;
-		markdown = s.replace("\n", HTML_BREAK);
+		markdown = replaceHeadings(s);
+		markdown = markdown.replace("\n", HTML_BREAK);
 		markdown = replace(markdown, "~~", STRIKETHROUGH, HTML_STRIKETHROUGH);
 		markdown = replace(markdown, "__", UNDERLINE, HTML_UNDERLINE);
 		markdown = replaceMix(markdown, "***", BOLD_ITALICS, HTML_STRONG, HTML_ITALIC);
@@ -57,6 +58,18 @@ public final class DiscordMarkdown {
 		markdown = replace(markdown, "_", UNDERSCORE_ITALICS, HTML_ITALIC);
 
 		return Jsoup.clean(markdown, SAFELIST);
+	}
+
+	/**
+	 * Replaces the Markdown headings with html tags
+	 *
+	 * @param s string to be formatted
+	 */
+	private static String replaceHeadings(String s) {
+		return s
+				.replaceAll("(?m)^###\\s(.+)(\n|$)", "<h3>$1</h3>$2")
+				.replaceAll("(?m)^##\\s(.+)(\n|$)", "<h2>$1</h2>$2")
+				.replaceAll("(?m)^#\\s(.+)(\n|$)", "<h1>$1</h1>$2");
 	}
 
 	private static String replace(String s, String symbol, String matcher, String tag) {
