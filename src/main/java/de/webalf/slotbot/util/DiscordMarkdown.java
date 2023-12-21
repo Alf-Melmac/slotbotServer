@@ -67,9 +67,9 @@ public final class DiscordMarkdown {
 	 */
 	private static String replaceHeadings(String s) {
 		return s
-				.replaceAll("(?m)^###\\s(.+)(\n|$)", "<h3>$1</h3>$2")
-				.replaceAll("(?m)^##\\s(.+)(\n|$)", "<h2>$1</h2>$2")
-				.replaceAll("(?m)^#\\s(.+)(\n|$)", "<h1>$1</h1>$2");
+				.replaceAll("(?m)^###\\s(.+)(\n|$)", "<h3>$1</h3>")
+				.replaceAll("(?m)^##\\s(.+)(\n|$)", "<h2>$1</h2>")
+				.replaceAll("(?m)^#\\s(.+)(\n|$)", "<h1>$1</h1>");
 	}
 
 	private static String replace(String s, String symbol, String matcher, String tag) {
