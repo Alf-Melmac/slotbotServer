@@ -68,7 +68,7 @@ public final class MessageUtils {
 	 * @param suppressNotifications suppress notifications for this message
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressNotifications) {
-		sendMessage(channel, message, suppressNotifications, doNothing());
+		sendMessage(channel, message, suppressNotifications, null);
 	}
 
 	/**
@@ -81,10 +81,5 @@ public final class MessageUtils {
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressedNotifications, Consumer<Message> success) {
 		channel.sendMessage(message).setSuppressedNotifications(suppressedNotifications).queue(success);
-	}
-
-	static <T> Consumer<T> doNothing() {
-		return unused -> {
-		};
 	}
 }

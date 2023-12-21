@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static de.webalf.slotbot.util.bot.MessageUtils.doNothing;
 import static net.dv8tion.jda.api.requests.ErrorResponse.CANNOT_SEND_TO_USER;
 
 /**
@@ -89,7 +88,7 @@ public class DirectMessageHelper {
 	}
 
 	private <T> void inPrivateChannel(long userId, Function<PrivateChannel, RestAction<T>> action) {
-		inPrivateChannel(userId, action, doNothing());
+		inPrivateChannel(userId, action, null);
 	}
 
 	/**
@@ -102,15 +101,15 @@ public class DirectMessageHelper {
 		botService.getJda().retrieveUserById(userId)
 				.flatMap(User::openPrivateChannel)
 				.flatMap(action)
-				.queue(doNothing(), failure);
+				.queue(null, failure);
 	}
 
 	private static <T> void inPrivateChannel(@NonNull User user, Function<PrivateChannel, RestAction<T>> action) {
-		inPrivateChannel(user, action, doNothing());
+		inPrivateChannel(user, action, null);
 	}
 
 	private static <T> void inPrivateChannel(@NonNull User user, Function<PrivateChannel, RestAction<T>> action, Consumer<? super Throwable> failure) {
-		inPrivateChannel(user, action, doNothing(), failure);
+		inPrivateChannel(user, action, null, failure);
 	}
 
 	private static <T> void inPrivateChannel(@NonNull User user, Function<PrivateChannel, RestAction<T>> action, Consumer<T> success, Consumer<? super Throwable> failure) {

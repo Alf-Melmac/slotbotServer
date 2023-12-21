@@ -14,9 +14,6 @@ import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 
-import java.util.function.Consumer;
-
-import static de.webalf.slotbot.util.bot.MessageUtils.doNothing;
 import static net.dv8tion.jda.api.EmbedBuilder.ZERO_WIDTH_SPACE;
 
 /**
@@ -53,11 +50,7 @@ public final class InteractionUtils {
 	 * @param reply       reply text
 	 */
 	public static void reply(@NonNull IDeferrableCallback interaction, @NotBlank String reply) {
-		reply(interaction, reply, doNothing());
-	}
-
-	private static void reply(@NonNull IDeferrableCallback interaction, @NotBlank String reply, Consumer<Message> success) {
-		interaction.getHook().sendMessage(reply).queue(success, fail -> log.warn("Failed to send interaction reply", fail));
+		interaction.getHook().sendMessage(reply).queue(null, fail -> log.warn("Failed to send interaction reply", fail));
 	}
 
 	/**

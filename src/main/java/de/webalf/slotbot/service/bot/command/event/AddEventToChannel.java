@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -165,7 +166,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			discordInformation.setSlotListMsgPartOne(slotListMsg.getId());
 
 			//Pin slotlist msg
-			slotListMsg.pin().queue();
+			pinSlotListMsg(slotListMsg, null);
 
 			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true,
 					slotListMsgLastConsumer(channel, eventId, discordInformation));
@@ -181,9 +182,17 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			discordInformation.setSlotListMsgPartTwo(slotListMsg.getId());
 
 			//Pin second slotlist msg and remove pin information
-			slotListMsg.pin().queue(unused -> deletePinAddedMessages(channel));
+			pinSlotListMsg(slotListMsg, unused -> deletePinAddedMessages(channel));
 
 			eventBotService.addDiscordInformation(eventId, discordInformation);
 		};
+	}
+
+	private void pinSlotListMsg(Message slotListMsg, Consumer<Void> success) {
+		try {
+			slotListMsg.pin().queue(success);
+		} catch (InsufficientPermissionException ignored) {
+			log.warn("Failed to pin slotlist message {}", slotListMsg.getId());
+		}
 	}
 }
