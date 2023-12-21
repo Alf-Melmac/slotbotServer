@@ -9,7 +9,7 @@ import de.webalf.slotbot.util.ListUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class EventUpdateBotListener {
 		final Event event = eventBotService.findById(updateEvent.event());
 
 		event.getDiscordInformation().forEach(discordInformation -> {
-			final TextChannel eventChannel = botService.getJda().getTextChannelById(discordInformation.getChannel());
+			final MessageChannel eventChannel = botService.getJda().getChannelById(MessageChannel.class, discordInformation.getChannel());
 			if (eventChannel == null) {
 				throw new IllegalStateException("Channel " + discordInformation.getChannel() + " couldn't be found.");
 			}

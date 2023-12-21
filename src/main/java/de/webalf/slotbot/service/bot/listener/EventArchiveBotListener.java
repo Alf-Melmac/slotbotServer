@@ -1,16 +1,16 @@
 package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
+import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.ChannelUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class EventArchiveBotListener {
 	private static void onEventArchive(@NotNull Event event, @NonNull de.webalf.slotbot.model.Guild guild, Guild discordGuild) {
 		final Long archiveChannelId = guild.getArchiveChannel();
 		if (archiveChannelId != null) {
-			final TextChannel archiveChannel = ChannelUtils.getChannel(archiveChannelId, discordGuild, "archive");
+			final MessageChannel archiveChannel = ChannelUtils.getChannel(archiveChannelId, discordGuild, "archive");
 			if (archiveChannel == null) {
 				return;
 			}

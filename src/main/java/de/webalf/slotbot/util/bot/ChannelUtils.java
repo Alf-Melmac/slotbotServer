@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 /**
  * Util class to work with discord channels
@@ -16,19 +16,19 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 @Slf4j
 public final class ChannelUtils {
 	/**
-	 * Returns the channel for the given channelId in the given guild
+	 * Returns the message channel for the given channelId in the given guild
 	 *
 	 * @param channelId   channel to get
 	 * @param guild       in which the channel is located
 	 * @param channelType information added to error output
 	 * @return channel found by id or null
 	 */
-	public static TextChannel getChannel(Long channelId, @NonNull Guild guild, String channelType) {
+	public static MessageChannel getChannel(Long channelId, @NonNull Guild guild, String channelType) {
 		if (channelId == null) {
 			log.warn("Channel {} not configured.", channelType);
 			return null;
 		}
-		final TextChannel channel = guild.getTextChannelById(channelId);
+		final MessageChannel channel = guild.getChannelById(MessageChannel.class, channelId);
 		if (channel == null) {
 			log.error("Configured channel {} with id {} doesn't exist.", channelType, channelId);
 			return null;
