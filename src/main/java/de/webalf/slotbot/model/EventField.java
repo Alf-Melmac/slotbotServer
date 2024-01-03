@@ -40,7 +40,7 @@ public class EventField extends AbstractSuperIdEntity {
 	private Event event;
 
 	/**
-	 * Returns a linkt if the field references something.
+	 * Returns a link if the field references something.
 	 *
 	 * @return link or null
 	 */
