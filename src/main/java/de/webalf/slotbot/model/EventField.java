@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
+import de.webalf.slotbot.util.Arma3ModsetUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -40,13 +40,13 @@ public class EventField extends AbstractSuperIdEntity {
 	private Event event;
 
 	/**
-	 * Returns a linkt if the field references something.
+	 * Returns a link if the field references something.
 	 *
 	 * @return link or null
 	 */
 	public String getLink() {
 		if ("Modset".equalsIgnoreCase(getTitle())) {
-			return Arma3FieldUtils.getModSetUrl(getText(), getEvent().getOwnerGuild().getBaseRedirectUrl());
+			return Arma3ModsetUtils.getModSetUrl(getText(), getEvent().getOwnerGuild().getBaseRedirectUrl());
 		}
 
 		return null;

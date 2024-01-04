@@ -2,6 +2,7 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
+import de.webalf.slotbot.assembler.website.event.EventDetailsDefaultAssembler;
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.assembler.website.event.edit.EventEditAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
@@ -11,6 +12,7 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
+import de.webalf.slotbot.service.EventDetailsDefaultService;
 import de.webalf.slotbot.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static de.webalf.slotbot.util.eventfield.EventFieldUtils.getDefault;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 
@@ -38,6 +39,7 @@ import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYO
 public class EventController {
 	private final EventService eventService;
 	private final EventDetailsAssembler eventDetailsAssembler;
+	private final EventDetailsDefaultService eventDetailsDefaultService;
 
 	@GetMapping(value = "/list")
 	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
@@ -93,7 +95,7 @@ public class EventController {
 	@GetMapping ("/fields")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
-		return getDefault(eventTypeName);
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.getDefault(eventTypeName));
 	}
 
 	@PutMapping("/slotting/{id}")
