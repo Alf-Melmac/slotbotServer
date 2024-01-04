@@ -1,4 +1,4 @@
-package de.webalf.slotbot.util.eventfield;
+package de.webalf.slotbot.util;
 
 import de.webalf.slotbot.controller.website.FileWebController;
 import lombok.NonNull;
@@ -20,7 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @UtilityClass
 @Slf4j
-public final class Arma3FieldUtils {
+public final class Arma3ModsetUtils {
 
 	public static final Pattern FILE_PATTERN = Pattern.compile("^(Arma_3_Preset_)?(.+)\\.html");
 	private static final Map<String, String> DOWNLOADABLE_MOD_SETS = new HashMap<>();

@@ -2,7 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
+import de.webalf.slotbot.util.Arma3ModsetUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,7 @@ public class FileService {
 	 */
 	@Async
 	public void listFiles() {
-		Arma3FieldUtils.fillDownloadableModSets(listDownloadFilesAndFilter(Arma3FieldUtils.FILE_PATTERN));
+		Arma3ModsetUtils.fillDownloadableModSets(listDownloadFilesAndFilter(Arma3ModsetUtils.FILE_PATTERN));
 	}
 
 	/**

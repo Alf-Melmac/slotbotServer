@@ -4,7 +4,6 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.util.eventfield.Arma3FieldUtils;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -215,8 +214,8 @@ class EventHelperEmbedTest {
 		event.setBackReferences();
 
 		final MessageEmbed result;
-		try (MockedStatic<Arma3FieldUtils> fieldUtils = Mockito.mockStatic(Arma3FieldUtils.class)) {
-			fieldUtils.when(() -> Arma3FieldUtils.getModSetUrl(eventFieldText, GUILD_BASE_URL))
+		try (MockedStatic<Arma3ModsetUtils> fieldUtils = Mockito.mockStatic(Arma3ModsetUtils.class)) {
+			fieldUtils.when(() -> Arma3ModsetUtils.getModSetUrl(eventFieldText, GUILD_BASE_URL))
 					.thenReturn(eventFieldLink);
 
 			result = sut.buildDetailsEmbed(event, TEST_LOCALE);
