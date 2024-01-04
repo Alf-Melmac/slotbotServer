@@ -12,8 +12,5 @@ import java.util.Optional;
  */
 @Repository
 public interface EventDetailsDefaultRepository extends SuperIdEntityJpaRepository<EventDetailsDefault> {
-	Optional<EventDetailsDefault> findByEventTypeName(String eventTypeName);
-
 	Optional<EventDetailsDefault> findByEventTypeNameAndGuild(String eventTypeName, Guild guild);
-
 }
