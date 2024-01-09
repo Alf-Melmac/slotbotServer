@@ -11,12 +11,12 @@
 
 	<groupId>de.webalf</groupId>
 	<artifactId>slotbotServer</artifactId>
-	<version>2.9.0</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>slotbot</name>
 	<description>Slotbot Server</description>
 	<scm>
 		<developerConnection>scm:git:https://github.com/Alf-Melmac/slotbotServer.git</developerConnection>
-		<tag>v2.9.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
