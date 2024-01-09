@@ -18,16 +18,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
 import static de.webalf.slotbot.util.bot.MessageUtils.deletePinAddedMessages;
@@ -53,7 +54,13 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Slash command: addEventToChannel");
 
-		final long channelId = event.getChannel().getIdLong();
+		final MessageChannelUnion eventChannel = event.getChannel();
+		if (!eventChannel.canTalk() || !botHasPermission(eventChannel.asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS)) {
+			reply(event, locale.t("bot.interaction.response.cannotTalk"));
+			return;
+		}
+
+		final long channelId = eventChannel.getIdLong();
 		if (existingEventInThisChannel(channelId)) {
 			reply(event, locale.t("bot.select.event.addEventToChannel.response.alreadyAnotherAssigned"));
 			return;
@@ -120,11 +127,11 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			return;
 		}
 
-		addEventAndPrint(event, selectMenuEvent.getChannel(), guildId);
+		addEventAndPrint(event, selectMenuEvent.getChannel().asGuildMessageChannel(), guildId);
 		finishedVisibleInteraction(selectMenuEvent);
 	}
 
-	private void addEventAndPrint(@NonNull Event event, @NonNull MessageChannelUnion channel, long guildId) {
+	private void addEventAndPrint(@NonNull Event event, GuildMessageChannel channel, long guildId) {
 		//Set event channel and guild
 		final EventDiscordInformationDto newInformation = EventDiscordInformationDto.builder()
 				.channel(channel.getId())
@@ -139,7 +146,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	/**
 	 * Called after the event details have been sent, to then send the first part of the slot list
 	 */
-	private Consumer<Message> infoMsgConsumer(@NonNull MessageChannelUnion channel, @NonNull Event event, @NonNull EventDiscordInformationDto discordInformation, long guildId, @NonNull Locale guildLocale) {
+	private Consumer<Message> infoMsgConsumer(GuildMessageChannel channel, @NonNull Event event, @NonNull EventDiscordInformationDto discordInformation, long guildId, @NonNull Locale guildLocale) {
 		return infoMsg -> {
 			//Set info msg
 			discordInformation.setInfoMsg(infoMsg.getId());
@@ -158,41 +165,41 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	}
 
 	/**
-	 * Must be called after {@link #infoMsgConsumer(MessageChannelUnion, Event, EventDiscordInformationDto, long, Locale)} to update the event with both message ids
+	 * Must be called after {@link #infoMsgConsumer(GuildMessageChannel, Event, EventDiscordInformationDto, long, Locale)} to update the event with both message ids
 	 */
-	private Consumer<Message> slotListMsgConsumer(@NonNull MessageChannelUnion channel, long eventId, @NonNull EventDiscordInformationDto discordInformation, List<String> slotListMessages) {
+	private Consumer<Message> slotListMsgConsumer(GuildMessageChannel channel, long eventId, @NonNull EventDiscordInformationDto discordInformation, List<String> slotListMessages) {
 		return slotListMsg -> {
 			//Set slot list msg part one
 			discordInformation.setSlotListMsgPartOne(slotListMsg.getId());
 
-			//Pin slotlist msg
-			pinSlotListMsg(slotListMsg, null);
+			boolean allowedToPin = true;
+			if (botHasPermission(channel, Permission.MESSAGE_MANAGE)) {
+				//Pin slotlist msg
+				slotListMsg.pin().queue();
+			} else {
+				log.trace("Missing permission to pin messages in channel {} of guild {}", channel.getId(), channel.getGuild().getId());
+				allowedToPin = false;
+			}
 
 			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true,
-					slotListMsgLastConsumer(channel, eventId, discordInformation));
+					slotListMsgLastConsumer(channel, eventId, discordInformation, allowedToPin));
 		};
 	}
 
 	/**
-	 * Must be called after {@link #slotListMsgConsumer(MessageChannelUnion, long, EventDiscordInformationDto, List)} to update the event with the last message id
+	 * Must be called after {@link #slotListMsgConsumer(GuildMessageChannel, long, EventDiscordInformationDto, List)} to update the event with the last message id
 	 */
-	private Consumer<Message> slotListMsgLastConsumer(@NonNull MessageChannelUnion channel, long eventId, @NonNull EventDiscordInformationDto discordInformation) {
+	private Consumer<Message> slotListMsgLastConsumer(GuildMessageChannel channel, long eventId, @NonNull EventDiscordInformationDto discordInformation, boolean allowedToPin) {
 		return slotListMsg -> {
 			//Set slot list msg part two
 			discordInformation.setSlotListMsgPartTwo(slotListMsg.getId());
 
-			//Pin second slotlist msg and remove pin information
-			pinSlotListMsg(slotListMsg, unused -> deletePinAddedMessages(channel));
+			if (allowedToPin) {
+				//Pin second slotlist msg and remove pin information
+				slotListMsg.pin().queue(unused -> deletePinAddedMessages(channel));
+			}
 
 			eventBotService.addDiscordInformation(eventId, discordInformation);
 		};
-	}
-
-	private void pinSlotListMsg(Message slotListMsg, Consumer<Void> success) {
-		try {
-			slotListMsg.pin().queue(success);
-		} catch (InsufficientPermissionException ignored) {
-			log.warn("Failed to pin slotlist message {}", slotListMsg.getId());
-		}
 	}
 }

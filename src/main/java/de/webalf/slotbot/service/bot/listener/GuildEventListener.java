@@ -13,8 +13,14 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
+ * This requires Intents
+ * <ul>
+ *     <li>{@link GatewayIntent#GUILD_MEMBERS} to check for added or removed roles of a member</li>
+ * </ul>
+ *
  * @author Alf
  * @since 15.07.2021
  */

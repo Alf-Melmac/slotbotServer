@@ -8,11 +8,17 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
 /**
+ * This requires Intents
+ * <ul>
+ *     <li>{@link GatewayIntent#GUILD_MESSAGES} to check for deleted messages</li>
+ * </ul>
+ *
  * @author Alf
  * @since 03.04.2023
  */

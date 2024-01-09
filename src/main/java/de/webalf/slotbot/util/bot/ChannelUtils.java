@@ -3,7 +3,9 @@ package de.webalf.slotbot.util.bot;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 
 /**
@@ -34,5 +36,16 @@ public final class ChannelUtils {
 			return null;
 		}
 		return channel;
+	}
+
+	/**
+	 * Checks if the bot has the given permission in the given guild channel
+	 *
+	 * @param channel    to check effective permission in
+	 * @param permission to check
+	 * @return true if permission is granted
+	 */
+	public static boolean botHasPermission(@NonNull GuildMessageChannel channel, @NonNull Permission... permission) {
+		return channel.getGuild().getSelfMember().hasPermission(channel, permission);
 	}
 }

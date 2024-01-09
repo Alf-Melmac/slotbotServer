@@ -15,7 +15,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DiscordProperties {
 	@NotBlank
 	private String token;
-
-	@NotBlank
-	private String prefix = "!";
 }

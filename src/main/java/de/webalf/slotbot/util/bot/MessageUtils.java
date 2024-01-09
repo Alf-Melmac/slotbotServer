@@ -4,13 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.interactions.Interaction;
 import org.springframework.util.CollectionUtils;
 
 import java.util.function.Consumer;
+
+import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
 
 /**
  * Util class to work with {@link Message}s
@@ -26,7 +30,11 @@ public final class MessageUtils {
 	 *
 	 * @param channel in which the latest messages should be deleted
 	 */
-	public static void deletePinAddedMessages(@NonNull MessageChannel channel) {
+	public static void deletePinAddedMessages(@NonNull GuildMessageChannel channel) {
+		if (!botHasPermission(channel, Permission.MESSAGE_HISTORY, Permission.MESSAGE_MANAGE)) {
+			log.trace("Missing permission to delete pin added messages in channel {} of guild {}", channel.getId(), channel.getGuild().getId());
+			return;
+		}
 		channel.getHistory().retrievePast(4).queue(messages -> {
 			if (CollectionUtils.isEmpty(messages)) {
 				return;
