@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.failedInteraction;
@@ -41,7 +41,7 @@ public class RebuildArchive implements DiscordSlashCommand {
 			failedInteraction(event, locale.t("bot.slash.event.rebuildArchive.response.configMissing"));
 			return;
 		}
-		final MessageChannel archiveChannel = ChannelUtils.getChannel(guildArchiveChannel, guild, "archive");
+		final TextChannel archiveChannel = ChannelUtils.getChannel(guildArchiveChannel, guild, "archive");
 		if (archiveChannel == null) {
 			failedInteraction(event, locale.t("bot.slash.event.rebuildArchive.response.channelMissing"));
 			return;
