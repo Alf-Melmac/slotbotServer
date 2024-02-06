@@ -1,93 +1,102 @@
 package de.webalf.slotbot.util;
 
+import jakarta.annotation.Nullable;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
-import org.springframework.util.StringUtils;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Util class to work with discord formatting
- * @see <a href="https://support.discord.com/hc/en-us/articles/210298617" target"_top">https://support.discord.com/hc/en-us/articles/210298617</a>
  *
  * @author Alf
+ * @see <a href="https://support.discord.com/hc/en-us/articles/210298617" target"_top">https://support.discord.com/hc/en-us/articles/210298617</a>
  * @since 12.11.2020
  */
 @UtilityClass
 public final class DiscordMarkdown {
-	private static final String ONE_TIMES = "{1}";
-	private static final String TWO_TIMES = "{2}";
-	private static final String THREE_TIMES = "{3}";
+    private static final Map<Pattern, HTML_TAG> MARKDOWN_TO_HTML_TAG_MAPPINGS = new LinkedHashMap<>();
+    private static final Safelist SAFELIST = Safelist.none();
 
-	private static final String STAR_ITALICS = "\\*" + ONE_TIMES;
-	private static final String UNDERSCORE_ITALICS = "_" + ONE_TIMES;
-	private static final String BOLD = "\\*" + TWO_TIMES;
-	private static final String BOLD_ITALICS = "\\*" + THREE_TIMES;
-	private static final String UNDERLINE = "_" + TWO_TIMES;
-	private static final String STRIKETHROUGH = "~" + TWO_TIMES;
+    static {
+        // The order matters (hence a LinkedHashMap).
+        // Markdown formatting that consists of multiple characters (eg. __underline__) needs to be processed
+        // before formatting that consists of lesser characters (eg. _italic_).
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("(?m)^#{3}\\s(?<content>.+?)(\n|$)"), HTML_TAG.HTML_HEADING_3);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("(?m)^#{2}\\s(?<content>.+?)(\n|$)"), HTML_TAG.HTML_HEADING_2);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("(?m)^#\\s(?<content>.+?)(\n|$)"), HTML_TAG.HTML_HEADING_1);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("\n"), HTML_TAG.HTML_BREAK);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("\\*{3}(?<content>.+?)\\*{3}"), HTML_TAG.HTML_STRONG_ITALIC);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("\\*{2}(?<content>.+?)\\*{2}"), HTML_TAG.HTML_STRONG);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("_{2}(?<content>.+?)_{2}"), HTML_TAG.HTML_UNDERLINE);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("~{2}(?<content>.+?)~{2}"), HTML_TAG.HTML_STRIKETHROUGH);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("\\*(?<content>.+?)\\*"), HTML_TAG.HTML_ITALIC);
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.put(Pattern.compile("_(?<content>.+?)_"), HTML_TAG.HTML_ITALIC);
 
-	private static final String HTML_BREAK = "<br>";
-	private static final String HTML_STRIKETHROUGH = "s";
-	private static final String HTML_UNDERLINE = "u";
-	private static final String HTML_STRONG = "strong";
-	private static final String HTML_ITALIC = "em";
+        SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3");
+    }
 
-	private static final Safelist SAFELIST = Safelist.none();
+    /**
+     * Imitates the discord markup by replacing the style symbols with html tags
+     *
+     * @return marked down string
+     */
+    public static String toHtml(String s) {
+        if (de.webalf.slotbot.util.StringUtils.isEmpty(s)) {
+            return null;
+        }
 
-	static {
-		SAFELIST.addTags("br", HTML_STRIKETHROUGH, HTML_UNDERLINE, HTML_STRONG, HTML_ITALIC, "h1", "h2", "h3");
-	}
+        AtomicReference<String> result = new AtomicReference<>(s);
 
-	/**
-	 * Imitates the discord markup by replacing the style symbols with html tags
-	 *
-	 * @return marked down string
-	 */
-	public static String toHtml(String s) {
-		if (de.webalf.slotbot.util.StringUtils.isEmpty(s)) {
-			return null;
-		}
+        MARKDOWN_TO_HTML_TAG_MAPPINGS.forEach((pattern, htmlTag) -> {
+            Matcher matcher = pattern.matcher(result.get());
+            result.set(matcher.replaceAll(matchResult -> {
+                        String content = "";
+                        try {
+                            content = matchResult.group("content");
+                        } catch (IllegalArgumentException e) {
+                            // Do nothing, this is fine, group "content" does not exist
+                        }
+                        return htmlTag.getOpeningTag() +
+                                content +
+                                htmlTag.getClosingTag()
+                                        .orElse("");
+                    }
+            ));
+        });
 
-		String markdown;
-		markdown = replaceHeadings(s);
-		markdown = markdown.replace("\n", HTML_BREAK);
-		markdown = replace(markdown, "~~", STRIKETHROUGH, HTML_STRIKETHROUGH);
-		markdown = replace(markdown, "__", UNDERLINE, HTML_UNDERLINE);
-		markdown = replaceMix(markdown, "***", BOLD_ITALICS, HTML_STRONG, HTML_ITALIC);
-		markdown = replace(markdown, "**", BOLD, HTML_STRONG);
-		markdown = replace(markdown, "*", STAR_ITALICS, HTML_ITALIC);
-		markdown = replace(markdown, "_", UNDERSCORE_ITALICS, HTML_ITALIC);
+        return Jsoup.clean(result.get(), SAFELIST);
+    }
 
-		return Jsoup.clean(markdown, SAFELIST);
-	}
+    private enum HTML_TAG {
+        HTML_BREAK("<br>", null),
+        HTML_STRIKETHROUGH("<s>", "</s>"),
+        HTML_UNDERLINE("<u>", "</u>"),
+        HTML_STRONG("<strong>", "</strong>"),
+        HTML_ITALIC("<em>", "</em>"),
+        HTML_STRONG_ITALIC("<strong><em>", "</strong></em>"),
+        HTML_HEADING_1("<h1>", "</h1>"),
+        HTML_HEADING_2("<h2>", "</h2>"),
+        HTML_HEADING_3("<h3>", "</h3>");
 
-	/**
-	 * Replaces the Markdown headings with html tags
-	 *
-	 * @param s string to be formatted
-	 */
-	private static String replaceHeadings(String s) {
-		return s
-				.replaceAll("(?m)^###\\s(.+)(\n|$)", "<h3>$1</h3>")
-				.replaceAll("(?m)^##\\s(.+)(\n|$)", "<h2>$1</h2>")
-				.replaceAll("(?m)^#\\s(.+)(\n|$)", "<h1>$1</h1>");
-	}
+        @Getter
+        private final String openingTag;
+        private final String closingTag;
 
-	private static String replace(String s, String symbol, String matcher, String tag) {
-		while (StringUtils.countOccurrencesOf(s, symbol) >= 2) {
-			s = replace(s, matcher, tag);
-		}
-		return s;
-	}
+        HTML_TAG(String openingTag, @Nullable String closingTag) {
+            this.openingTag = openingTag;
+            this.closingTag = closingTag;
+        }
 
-	private static String replace(String s, String matcher, String tag) {
-		return s.replaceFirst(matcher, "<" + tag + ">").replaceFirst(matcher, "</" + tag + ">");
-	}
-
-	private static String replaceMix(String s, String symbol, String matcher, String tag1, String tag2) {
-		while (StringUtils.countOccurrencesOf(s, symbol) >= 2) {
-			s = s.replaceFirst(matcher, "<" + tag1 + "><" + tag2 + ">")
-					.replaceFirst(matcher, "</" + tag1 + "></" + tag2 + ">");
-		}
-		return s;
-	}
+        public Optional<String> getClosingTag() {
+            return Optional.ofNullable(closingTag);
+        }
+    }
 }
