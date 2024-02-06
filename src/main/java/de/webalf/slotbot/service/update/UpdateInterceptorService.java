@@ -225,7 +225,7 @@ class UpdateInterceptorService {
 	void onCollectionUpdate(Object collection) {
 		if (collection instanceof final PersistentList<?> persistentList) {
 			if (persistentList.isEmpty()) return;
-			final Object el = persistentList.get(0);
+			final Object el = persistentList.getFirst();
 
 			if (el instanceof final Squad squad) {
 				if (!squad.isReserve()) {

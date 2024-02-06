@@ -117,7 +117,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	public void process(@NonNull StringSelectInteractionEvent selectMenuEvent, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Selection menu: addEventToChannel");
 
-		final Event event = eventBotService.findById(Long.parseLong(selectMenuEvent.getValues().get(0)));
+		final Event event = eventBotService.findById(Long.parseLong(selectMenuEvent.getValues().getFirst()));
 
 		//noinspection DataFlowIssue Guild only command
 		final long guildId = selectMenuEvent.getGuild().getIdLong();

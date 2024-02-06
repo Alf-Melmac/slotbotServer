@@ -23,6 +23,6 @@ public final class ListUtils {
 		if (list.isEmpty()) {
 			return null;
 		}
-		return list.remove(0);
+		return list.removeFirst();
 	}
 }

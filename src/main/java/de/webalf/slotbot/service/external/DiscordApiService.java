@@ -88,9 +88,9 @@ public class DiscordApiService {
 		final HttpHeaders headers = response.getHeaders();
 		List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
 		List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
-		if (!CollectionUtils.isEmpty(remainingHeaders) && !CollectionUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.get(0))) {
+		if (!CollectionUtils.isEmpty(remainingHeaders) && !CollectionUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.getFirst())) {
 			wait = true;
-			waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.get(0));
+			waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.getFirst());
 		}
 		final DiscordGuildMember guildMember = response.getBody();
 		if (guildMember != null) guildMember.setGuild(guildId);

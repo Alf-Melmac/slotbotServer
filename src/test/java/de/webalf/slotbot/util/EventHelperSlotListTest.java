@@ -51,7 +51,7 @@ class EventHelperSlotListTest {
 
 		final List<String> slotList = sut.buildSlotList(event, 1L, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**" + TITLE + "**__\n\n**Squad**\n1 Slot: <@1234>");
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad**\n1 Slot: <@1234>");
 	}
 
 	@Test
@@ -71,7 +71,7 @@ class EventHelperSlotListTest {
 
 		final List<String> slotList = sut.buildSlotList(event, 1L, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**" + TITLE + "**__\n\n**Squad**\n1 Slot: *Replacement*");
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad**\n1 Slot: *Replacement*");
 	}
 
 	@Test
@@ -81,7 +81,7 @@ class EventHelperSlotListTest {
 
 		final List<String> slotList = sut.buildSlotList(event, g1, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1** [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n**4 Slot free** [g1]:\n**5 Slot g1** [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n**8 Slot g1** [g1]:\n9 Slot g2 [g2]:");
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1** [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n**4 Slot free** [g1]:\n**5 Slot g1** [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n**8 Slot g1** [g1]:\n9 Slot g2 [g2]:");
 	}
 
 	@Test
@@ -91,7 +91,7 @@ class EventHelperSlotListTest {
 
 		final List<String> slotList = sut.buildSlotList(event, g2, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n**3 Slot g2** [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n**6 Slot g2** [g2]:\n\n**Squad g2 [g2]**\n**7 Slot free** [g2]:\n8 Slot g1 [g1]:\n**9 Slot g2** [g2]:");
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n**3 Slot g2** [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n**6 Slot g2** [g2]:\n\n**Squad g2 [g2]**\n**7 Slot free** [g2]:\n8 Slot g1 [g1]:\n**9 Slot g2** [g2]:");
 	}
 
 	@Test
@@ -100,7 +100,7 @@ class EventHelperSlotListTest {
 
 		final List<String> slotList = sut.buildSlotList(event, 3L, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.get(0)).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n8 Slot g1 [g1]:\n9 Slot g2 [g2]:");
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1 [g1]**\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2 [g2]**\n7 Slot free [g2]:\n8 Slot g1 [g1]:\n9 Slot g2 [g2]:");
 	}
 
 	private Event buildEvent(long guild1, long guild2) {
