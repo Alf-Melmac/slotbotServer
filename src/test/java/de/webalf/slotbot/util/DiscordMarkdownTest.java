@@ -56,7 +56,10 @@ class DiscordMarkdownTest {
 						h3""", "<h1>Heading 1</h1>h1%1$s<h2>Heading 2</h2>h2%1$s%2$s\n<h3>Heading 3</h3>h3".formatted(FORMATTED_BREAK, HTML_BREAK), "headings"),
 				Arguments.of("Text # Hello World", "Text # Hello World", "inline heading"),
 				Arguments.of("Evil <script>alert('Hello World');</script> <a href=\"https://example.com\">Link</a>",
-						"Evil  Link", "filters other html tags")
+						"Evil  Link", "filters other html tags"),
+				Arguments.of("\\*Lorem\\* \\_ipsum\\_ \\`dolor\\` \\~sit\\~ \\\\amet\\\\",
+						"*Lorem* _ipsum_ `dolor` ~sit~ \\amet\\",
+						"unescape escaped characters")
 		);
 	}
 }
