@@ -60,18 +60,18 @@ public final class DiscordMarkdown {
         MARKDOWN_TO_HTML_TAG_MAPPINGS.forEach((pattern, htmlTag) -> {
             Matcher matcher = pattern.matcher(result.get());
             result.set(matcher.replaceAll(matchResult -> {
-                        String content = "";
+                        Optional<String> content = Optional.empty();
                         try {
-                            content = matchResult.group("content");
+                            content = Optional.ofNullable(matchResult.group("content"));
                             // Funnily enough, if the escape character (backslash) is matched, we need to escape it again, otherwise replacing it will not work
-                            if ("\\".equals(content)) {
-                                content = "\\\\";
+                            if (content.isPresent() && "\\".equals(content.get())) {
+                                content = Optional.of("\\\\");
                             }
                         } catch (IllegalArgumentException e) {
                             // Do nothing, this is fine, group "content" does not exist
                         }
                         return htmlTag.getOpeningTag() +
-                                content +
+                                content.orElse("") +
                                 htmlTag.getClosingTag()
                                         .orElse("");
                     }
