@@ -1,6 +1,7 @@
 package de.webalf.slotbot.converter;
 
 import de.webalf.slotbot.util.StringUtils;
+import lombok.NonNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class LocalDateTimeConverter implements Converter<String, LocalDateTime> {
 	@Override
-	public LocalDateTime convert(String source) {
+	public LocalDateTime convert(@NonNull String source) {
 		if (StringUtils.isEmpty(source)) {
 			return null;
 		}

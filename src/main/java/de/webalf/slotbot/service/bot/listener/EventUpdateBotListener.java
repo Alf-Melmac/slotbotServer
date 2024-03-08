@@ -50,7 +50,6 @@ public class EventUpdateBotListener {
 			if (updateEvent.slotlistChanged()) {
 				log.trace("Edit slotlist of {} in {}", event.getId(), discordInformation.getChannel());
 				final List<String> slotList = eventHelper.buildSlotList(event, discordInformation.getGuild().getId(),guildLocale);
-				//noinspection ConstantConditions SlotList can't be null here
 				eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
 				eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
 			}

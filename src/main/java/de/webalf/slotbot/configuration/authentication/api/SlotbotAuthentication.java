@@ -13,13 +13,12 @@ import java.util.Collection;
  * @author Alf
  * @since 23.09.2020
  */
+@Getter
 @Component
 @NoArgsConstructor
 @AllArgsConstructor
 public class SlotbotAuthentication implements Authentication {
-	@Getter
 	private String credentials;
-	@Getter
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public SlotbotAuthentication(String token) {
