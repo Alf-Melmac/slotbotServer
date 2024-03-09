@@ -31,21 +31,27 @@ class DiscordMarkdownTest {
 		return Stream.of(
 				Arguments.of("Hello World", "Hello World", "no markdown"),
 				Arguments.of("*italics* or _italics_ **bold** ***bold italics*** __underline__ __*underline italics*__ __**underline bold**__ __***underline bold italics***__ ~~strikethrough~~",
-						"<%1$s>italics</%1$s> or <%1$s>italics</%1$s> <%2$s>bold</%2$s> <%2$s><%1$s>bold italics</%1$s></%2$s> <%3$s>underline</%3$s> <%3$s><%1$s>underline italics</%1$s></%3$s> <%3$s><%2$s>underline bold</%2$s></%3$s> <%3$s><%2$s><%1$s>underline bold italics</%1$s></%2$s></%3$s> <%4$s>strikethrough</%4$s>".formatted(
-								HTML_ITALIC, HTML_STRONG, HTML_UNDERLINE, HTML_STRIKETHROUGH),
+						"<%1$s>italics</%1$s> or <%1$s>italics</%1$s> <%2$s>bold</%2$s> <%2$s><%1$s>bold italics</%1$s></%2$s> <%3$s>underline</%3$s> <%3$s><%1$s>underline italics</%1$s></%3$s> <%3$s><%2$s>underline bold</%2$s></%3$s> <%3$s><%2$s><%1$s>underline bold italics</%1$s></%2$s></%3$s> <%4$s>strikethrough</%4$s>"
+								.formatted(HTML_ITALIC, HTML_STRONG, HTML_UNDERLINE, HTML_STRIKETHROUGH),
 						"text styles"),
 				Arguments.of("""
 						Hello
-						World""", "Hello%sWorld".formatted(FORMATTED_BREAK), "line break"),
+						World""",
+						"Hello%sWorld".formatted(FORMATTED_BREAK),
+						"line break"),
 				Arguments.of("# Hello World", "<h1>Hello World</h1>", "Heading 1"),
 				Arguments.of("## Hello World", "<h2>Hello World</h2>", "Heading 2"),
 				Arguments.of("### Hello World", "<h3>Hello World</h3>", "Heading 3"),
 				Arguments.of("""
 						# Hello World
-						Text""", "<h1>Hello World</h1>Text", "heading with text"),
+						Text""",
+						"<h1>Hello World</h1>Text",
+						"heading with text"),
 				Arguments.of("""
 						Text
-						# Hello World""", "Text%s<h1>Hello World</h1>".formatted(FORMATTED_BREAK), "text followed by heading"),
+						# Hello World""",
+						"Text%s<h1>Hello World</h1>".formatted(FORMATTED_BREAK),
+						"text followed by heading"),
 				Arguments.of("""
 						# Heading 1
 						h1
@@ -53,13 +59,28 @@ class DiscordMarkdownTest {
 						h2
 
 						### Heading 3
-						h3""", "<h1>Heading 1</h1>h1%1$s<h2>Heading 2</h2>h2%1$s%2$s\n<h3>Heading 3</h3>h3".formatted(FORMATTED_BREAK, HTML_BREAK), "headings"),
+						h3""",
+						"<h1>Heading 1</h1>h1%1$s<h2>Heading 2</h2>h2%1$s%2$s\n<h3>Heading 3</h3>h3".formatted(FORMATTED_BREAK, HTML_BREAK),
+						"headings"),
 				Arguments.of("Text # Hello World", "Text # Hello World", "inline heading"),
-				Arguments.of("Evil <script>alert('Hello World');</script> <a href=\"https://example.com\">Link</a>",
-						"Evil  Link", "filters other html tags"),
+				Arguments.of("""
+								\\# Escaped
+								# \\# One heading
+								#\\# Missing space
+								\\## First escaped
+								\\# # First with space escaped
+								\\#\\# Both escaped
+								\\# \\# More escaped""",
+						"# Escaped%1$s<h1># One heading</h1>## Missing space%1$s## First escaped%1$s# # First with space escaped%1$s## Both escaped%1$s# # More escaped".formatted(FORMATTED_BREAK),
+						"escaped headings"),
 				Arguments.of("\\*Lorem\\* \\_ipsum\\_ \\`dolor\\` \\~sit\\~ \\\\amet\\\\",
 						"*Lorem* _ipsum_ `dolor` ~sit~ \\amet\\",
-						"unescape escaped characters")
+						"unescape escaped characters"),
+				Arguments.of("\\\\\\\\ \\\\", "\\\\ \\", "escaped backslashes"),
+				Arguments.of("**", "**", "empty stars"),
+				Arguments.of("**** **", "<%1$s>** </%1$s>".formatted(HTML_STRONG), "bold stars"),
+				Arguments.of("Evil <script>alert('Hello World');</script> <a href=\"https://example.com\">Link</a>",
+						"Evil  Link", "filters other html tags")
 		);
 	}
 }
