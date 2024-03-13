@@ -35,7 +35,9 @@ public class EventDetailDefault extends AbstractSuperIdEntity {
 	private EventFieldType type;
 
 	@ElementCollection
-	@CollectionTable(name = "event_detail_default_selection", joinColumns = @JoinColumn(name = "event_detail_default_id"))
+	@CollectionTable(name = "event_detail_default_selection",
+			joinColumns = @JoinColumn(name = "event_detail_default_id"),
+			uniqueConstraints = {@UniqueConstraint(name = "detail_default_selection_unique", columnNames = {"event_detail_default_id", "selection"})})
 	private List<String> selection;
 
 	@Column(name = "event_detail_default_text", length = EMBEDDABLE_VALUE_DB)
