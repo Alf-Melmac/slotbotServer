@@ -5,11 +5,15 @@ import de.webalf.slotbot.model.integration.DiscordCategory;
 import de.webalf.slotbot.model.integration.DiscordRole;
 import de.webalf.slotbot.model.integration.DiscordTextChannel;
 import de.webalf.slotbot.service.bot.BotService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static net.dv8tion.jda.api.Permission.MANAGE_ROLES;
 
 /**
  * @author Alf
@@ -22,6 +26,14 @@ public class GuildDiscordService {
 
 	public boolean isConnected(long guildId) {
 		return botService.getJda().getGuildById(guildId) != null;
+	}
+
+	public boolean isAllowedToManageRoles(long guildId) {
+		return isAllowedToManageRoles(getGuild(guildId));
+	}
+
+	public boolean isAllowedToManageRoles(@NonNull Guild guild) {
+		return guild.getSelfMember().hasPermission(MANAGE_ROLES);
 	}
 
 	public List<DiscordCategory> getGuildChannels(long guildId) {
@@ -39,8 +51,10 @@ public class GuildDiscordService {
 	}
 
 	public List<DiscordRole> getGuildRoles(long guildId) {
-		return getGuild(guildId).getRoleCache().stream()
-				.filter(role -> !role.isPublicRole())
+		final Guild guild = getGuild(guildId);
+		final Member selfMember = guild.getSelfMember();
+		return guild.getRoleCache().stream()
+				.filter(role -> !role.isPublicRole() && selfMember.canInteract(role))
 				.map(role -> DiscordRole.builder()
 						.id(role.getId())
 						.name(role.getName())

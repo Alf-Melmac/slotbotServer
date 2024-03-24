@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.event.GuildUserDeleteEvent;
 import de.webalf.slotbot.model.event.GuildUserRoleUpdateEvent;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.BotService;
+import de.webalf.slotbot.service.integration.GuildDiscordService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.Set;
 public class GuildUserEventListener {
 	private final GuildService guildService;
 	private final BotService botService;
+	private final GuildDiscordService guildDiscordService;
 
 	@EventListener
 	@Async
@@ -57,6 +59,10 @@ public class GuildUserEventListener {
 			return;
 		}
 		final net.dv8tion.jda.api.entities.Guild discordGuild = getGuildById(guildId);
+		if (!guildDiscordService.isAllowedToManageRoles(discordGuild)) {
+			log.debug("Bot is not allowed to manage roles in guild {}", guildId);
+			return;
+		}
 		final Role oldDiscordRole = getRoleById(discordGuild, oldDiscordRoleId);
 		final Role newDiscordRole = getRoleById(discordGuild, newDiscordRoleId);
 		log.trace("Updating roles for user {} in guild {}. Old role {}, new role {}", event.userId(), guildId, oldDiscordRole, newDiscordRole);

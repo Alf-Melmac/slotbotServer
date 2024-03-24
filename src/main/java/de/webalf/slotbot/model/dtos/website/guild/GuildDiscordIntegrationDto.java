@@ -13,4 +13,5 @@ import java.util.List;
 @Builder
 public record GuildDiscordIntegrationDto(boolean connected,
                                          List<DiscordCategory> categories,
+										 boolean allowedToManageRoles,
                                          List<DiscordRole> roles) {}

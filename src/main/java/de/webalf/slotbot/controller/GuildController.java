@@ -71,6 +71,7 @@ public class GuildController {
 		return GuildDiscordIntegrationDto.builder()
 				.connected(connected)
 				.categories(connected ? guildDiscordService.getGuildChannels(guildId) : Collections.emptyList())
+				.allowedToManageRoles(connected && guildDiscordService.isAllowedToManageRoles(guildId))
 				.roles(connected ? guildDiscordService.getGuildRoles(guildId) : Collections.emptyList())
 				.build();
 	}
