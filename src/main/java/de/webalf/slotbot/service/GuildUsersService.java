@@ -57,7 +57,7 @@ public class GuildUsersService {
 		final Guild guild = guildService.find(guildId);
 		final User user = userService.find(userId);
 
-		log.error("Adding user {} to guild {}", user, guild);
+		log.trace("Adding user {} to guild {}", userId, guildId);
 		return guildUsersRepository.findByGuildAndUser(guild, user)
 				.orElseGet(() -> create(guild, user, null));
 	}
@@ -72,7 +72,7 @@ public class GuildUsersService {
 		final User user = userService.findExisting(userId);
 		final Guild guild = guildService.findExisting(guildId);
 
-		log.trace("Removing user {} from guild {}", user, guild);
+		log.trace("Removing user {} from guild {}", userId, guildId);
 		guildUsersRepository.findByGuildAndUser(guild, user)
 				.ifPresent(guildUser -> {
 					eventPublisher.publishEvent(new GuildUserDeleteEvent(guildUser));
@@ -97,7 +97,7 @@ public class GuildUsersService {
 		final Guild guild = guildService.find(guildId);
 		final User user = userService.find(userId);
 
-		log.trace("Setting role {} for user {} in guild {}", role, user, guild);
+		log.trace("Setting role {} for user {} in guild {}", role, userId, guildId);
 		guildUsersRepository.findByGuildAndUser(guild, user)
 				.ifPresentOrElse(guildUser -> guildUser.setRole(role),
 						() -> create(guild, user, role));
