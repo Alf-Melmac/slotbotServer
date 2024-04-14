@@ -26,11 +26,11 @@
 		<!--Versions-->
 		<java.version>21</java.version>
 		<!--https://github.com/apache/tika/blob/main/CHANGES.txt -->
-		<apache.tika.version>2.9.1</apache.tika.version>
+		<apache.tika.version>2.9.2</apache.tika.version>
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>5.0.0-beta.21</jda.version>
+		<jda.version>5.0.0-beta.22</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.17.2</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
@@ -38,7 +38,7 @@
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
-		<springdoc-openapi-ui.version>2.4.0</springdoc-openapi-ui.version>
+		<springdoc-openapi-ui.version>2.5.0</springdoc-openapi-ui.version>
 	</properties>
 
 	<dependencies>

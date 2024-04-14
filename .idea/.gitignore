@@ -20,7 +20,4 @@ sonarlint/
 discord.xml
 
 #JPA Buddy
-jpa-buddy.xml
-
-# GitHub Copilot persisted chat sessions
-/copilot/chatSessions
+jpa*.xml
