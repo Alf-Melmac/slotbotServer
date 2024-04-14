@@ -158,6 +158,16 @@ public class EventService {
 	}
 
 	/**
+	 * Searches for the last event before today the given user was slotted in.
+	 *
+	 * @param user to search for
+	 * @return Optional containing the last event of the user, or empty if no event is found
+	 */
+	public Optional<Event> findLastEvent(@NonNull User user) {
+		return eventRepository.findFirstBySquadList_SlotList_UserAndDateTimeBeforeOrderByDateTimeDesc(user, DateUtils.now());
+	}
+
+	/**
 	 * Returns all ids of the {@link User}s slotted in the event associated with the given channelId.
 	 * {@link User#DEFAULT_USER_ID} is filtered out.
 	 *

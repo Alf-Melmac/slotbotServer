@@ -94,4 +94,6 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	Optional<Event> findFirstByOwnerGuildAndSquadListSlotListUserOrderByDateTimeDesc(Guild ownerGuild, User user);
 
 	List<Event> findBySquadListSlotListUser(User user);
+
+	Optional<Event> findFirstBySquadList_SlotList_UserAndDateTimeBeforeOrderByDateTimeDesc(User user, LocalDateTime dateTime);
 }

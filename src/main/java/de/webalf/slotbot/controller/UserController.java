@@ -1,17 +1,12 @@
 package de.webalf.slotbot.controller;
 
-import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
+import de.webalf.slotbot.assembler.website.profile.UserProfileDtoAssembler;
 import de.webalf.slotbot.controller.website.FileWebController;
-import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.website.profile.UserOwnProfileDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
-import de.webalf.slotbot.model.external.discord.DiscordUser;
-import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.NotificationSettingsService;
-import de.webalf.slotbot.service.SlotService;
 import de.webalf.slotbot.service.UserUpdateService;
-import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.EventCalendarUtil;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static de.webalf.slotbot.assembler.NotificationSettingAssembler.toReferencelessDtoList;
-import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -38,27 +31,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-	private final DiscordApiService discordApiService;
-	private final GuildUsersService guildUsersService;
+	private final UserProfileDtoAssembler userProfileDtoAssembler;
 	private final UserUpdateService userService;
-	private final SlotService slotService;
 	private final NotificationSettingsService notificationSettingsService;
 
 	@GetMapping("{userId}")
 	public UserProfileDto getProfileInfo(@PathVariable long userId) {
-		final DiscordUser discordUser = discordApiService.getUser(Long.toString(userId));
-		if (isUnknownUser(discordUser)) {
-			throw new ResourceNotFoundException("Unknown discord user " + userId);
-		}
-
-		final User user = userService.find(userId);
-		final boolean ownProfile = isLoggedInUser(userId);
-		return UserProfileDto.builder()
-				.user(DiscordUserAssembler.toDto(discordUser))
-				.roles(String.join(", ", guildUsersService.getApplicationRoles(userId)))
-				.participatedEventsCount(slotService.countByUserBeforeToday(user))
-				.ownProfile(ownProfile)
-				.build();
+		return userProfileDtoAssembler.toDto(userId);
 	}
 
 	@GetMapping("/own")
