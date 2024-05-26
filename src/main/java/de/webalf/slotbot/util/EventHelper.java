@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.LongSupplier;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
@@ -30,6 +32,7 @@ import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventHelper {
 	private final MessageSource messageSource;
 
@@ -37,7 +40,7 @@ public class EventHelper {
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
 				.setTitle(event.getName(), EventUtils.buildUrl(event))
-				.setDescription(event.getDescription())
+				.setDescription(buildDescription(event.getDescription(), event::getId))
 				.setThumbnail(event.getPictureUrl())
 				.setFooter(messageSource.getMessage("bot.embed.event.footer", new String[]{event.getEventType().getName(), event.getCreator()}, guildLocale))
 				.setTimestamp(Instant.now());
@@ -49,6 +52,18 @@ public class EventHelper {
 		addFields(embedBuilder, event, guildLocale);
 
 		return embedBuilder.build();
+	}
+
+	private String buildDescription(String description, LongSupplier eventId) {
+		final String markdown = DiscordMarkdown.toMarkdown(description);
+		if (markdown == null) {
+			return null;
+		}
+		if (markdown.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH) {
+			log.warn("Event description too long {}", eventId.getAsLong());
+			return markdown.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH);
+		}
+		return markdown;
 	}
 
 	private void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull Event event, @NonNull Locale guildLocale) {

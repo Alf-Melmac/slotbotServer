@@ -26,6 +26,4 @@ public class SquadDto extends AbstractIdEntityDto {
 	List<SlotDto> slotList;
 
 	GuildDto reservedFor;
-
-	EventDto event;
 }

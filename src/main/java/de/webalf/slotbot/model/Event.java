@@ -67,8 +67,7 @@ public class Event extends AbstractSuperIdEntity {
 	@NotNull
 	private EventType eventType;
 
-	@Column(name = "event_description", length = EMBEDDABLE_DESCRIPTION_DB)
-	@Size(max = EMBEDDABLE_DESCRIPTION)
+	@Column(name = "event_description")
 	private String description;
 
 	@Column(name = "event_mission_type", length = TEXT_DB)

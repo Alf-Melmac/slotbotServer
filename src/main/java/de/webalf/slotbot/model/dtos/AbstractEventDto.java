@@ -12,7 +12,8 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.URL;
 
 /**
  * @author Alf
@@ -41,7 +42,6 @@ public abstract class AbstractEventDto extends AbstractIdEntityDto {
 	@NotNull
 	private EventTypeDto eventType;
 
-	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
 
 	@Size(max = TEXT)

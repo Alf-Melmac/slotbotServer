@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.dtos.api.event.creation.EventApiDto;
 import de.webalf.slotbot.model.dtos.api.event.view.EventApiIdDto;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,7 @@ public final class EventApiAssembler {
 				.dateTime(dto.getDateTime())
 				.creator(dto.getCreator().trim())
 				.eventType(eventTypeService.find(dto.getEventType(), ownerGuild))
-				.description(trim(dto.getDescription()))
+				.description(EventUtils.sanitize(dto.getDescription()))
 				.missionType(dto.getMissionType())
 				.missionLength(trim(dto.getMissionLength()))
 				.pictureUrl(trim(dto.getPictureUrl()))

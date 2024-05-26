@@ -11,7 +11,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
+import static de.webalf.slotbot.util.ConstraintConstants.URL;
 
 /**
  * Abstract dto for creating or editing events. Doesn't include details and squad list.
@@ -41,7 +42,6 @@ public abstract class EventActionDto {
 	@NotNull
 	private EventTypeDto eventType;
 
-	@Size(max = EMBEDDABLE_DESCRIPTION)
 	private String description;
 
 	@Size(max = TEXT)

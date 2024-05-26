@@ -37,7 +37,6 @@ public abstract class EventActionApiDto {
 	@NotNull
 	EventTypeApiDto eventType;
 
-	@Size(max = EMBEDDABLE_DESCRIPTION)
 	String description;
 
 	@Size(max = TEXT)

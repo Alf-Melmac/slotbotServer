@@ -13,6 +13,7 @@ import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -229,7 +230,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getDateTime(), event::setDateTime);
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(dto.getEventType(), event.getOwnerGuild())));
-		DtoUtils.ifPresentOrEmpty(dto.getDescription(), event::setDescription);
+		DtoUtils.ifPresentOrEmpty(EventUtils.sanitize(dto.getDescription()), event::setDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), pictureUrl -> {

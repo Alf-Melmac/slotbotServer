@@ -7,6 +7,7 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class EventPostAssembler {
 				.dateTime(dto.getDateTime())
 				.creator(trimAndNullify(dto.getCreator()))
 				.eventType(eventTypeService.find(dto.getEventType(), ownerGuild))
-				.description(trimAndNullify(dto.getDescription()))
+				.description(EventUtils.sanitize(dto.getDescription()))
 				.missionType(trimAndNullify(dto.getMissionType()))
 				.missionLength(trimAndNullify(dto.getMissionLength()))
 				.pictureUrl(trimAndNullify(dto.getPictureUrl()))

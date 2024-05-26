@@ -13,7 +13,6 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.service.UserService;
 import de.webalf.slotbot.service.external.DiscordApiService;
 import de.webalf.slotbot.util.DateUtils;
-import de.webalf.slotbot.util.DiscordMarkdown;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
@@ -46,7 +45,7 @@ public class EventDetailsAssembler {
 				.name(event.getName())
 				.dateTime(event.getDateTime())
 				.missionLength(event.getMissionLength())
-				.descriptionAsHtml(DiscordMarkdown.toHtml(event.getDescription()))
+				.descriptionAsHtml(event.getDescription())
 				.creator(event.getCreator())
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.details(eventFieldReferencelessAssembler.toDtoList(event))

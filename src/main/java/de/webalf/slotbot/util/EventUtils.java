@@ -6,11 +6,14 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.context.MessageSource;
 
 import java.util.List;
 import java.util.Locale;
 
+import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasReadPermission;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.isCurrentGuild;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
@@ -101,5 +104,19 @@ public final class EventUtils {
 
 	public static String getDateTimeInDiscordFormat(@NonNull Event event) {
 		return DATE_TIME_SHORT.format(DateUtils.getDateTimeZoned(event.getDateTime()));
+	}
+
+	private static final Safelist SAFELIST = Safelist.none();
+
+	static {
+		SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p");
+	}
+
+	public static String sanitize(String s) {
+		final String out = trimAndNullify(s);
+		if (out == null) {
+			return null;
+		}
+		return Jsoup.clean(out, SAFELIST);
 	}
 }

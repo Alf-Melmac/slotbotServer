@@ -14,9 +14,6 @@ public final class ConstraintConstants {
 	public static final int TEXT = 80;
 	public static final int TEXT_DB = (int) (TEXT * 1.25);
 
-	public static final int EMBEDDABLE_DESCRIPTION = MessageEmbed.DESCRIPTION_MAX_LENGTH;
-	public static final int EMBEDDABLE_DESCRIPTION_DB = (int) (MessageEmbed.DESCRIPTION_MAX_LENGTH * 1.25);
-
 	public static final int EMBEDDABLE_TITLE = MessageEmbed.TITLE_MAX_LENGTH;
 	public static final int EMBEDDABLE_TITLE_DB = (int) (MessageEmbed.TITLE_MAX_LENGTH * 1.25);
 
