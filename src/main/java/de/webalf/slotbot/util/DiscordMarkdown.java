@@ -17,7 +17,6 @@ import static de.webalf.slotbot.util.StringUtils.isEmpty;
  * Util class to work with discord formatting
  *
  * @author Alf
- * @author TheConen
  * @see <a href="https://support.discord.com/hc/en-us/articles/210298617" target"_top">https://support.discord.com/hc/en-us/articles/210298617</a>
  * @since 12.11.2020
  */
@@ -25,15 +24,10 @@ import static de.webalf.slotbot.util.StringUtils.isEmpty;
 @Slf4j
 public final class DiscordMarkdown {
 	/**
-	 * Imitates the discord markup by replacing the style symbols with html tags
+	 * Imitates the discord markup by replacing html with discord markdown
 	 *
 	 * @return marked down string
 	 */
-	@Deprecated
-	public static String toHtml(String s) {
-		return null;
-	}
-
 	public static String toMarkdown(String s) {
 		if (isEmpty(s)) {
 			return null;
@@ -52,27 +46,13 @@ public final class DiscordMarkdown {
 		public void head(@NonNull Node node, int depth) {
 			if (node instanceof final Element element) {
 				switch (element.tagName()) {
-					case "h1":
-						result.append("# ");
-						break;
-					case "h2":
-						result.append("## ");
-						break;
-					case "h3":
-						result.append("### ");
-						break;
-					case "strong":
-						result.append("**");
-						break;
-					case "em":
-						result.append("*");
-						break;
-					case "u":
-						result.append("__");
-						break;
-					case "s":
-						result.append("~~");
-						break;
+					case "h1" -> result.append("# ");
+					case "h2" -> result.append("## ");
+					case "h3" -> result.append("### ");
+					case "strong" -> result.append("**");
+					case "em" -> result.append("*");
+					case "u" -> result.append("__");
+					case "s" -> result.append("~~");
 				}
 			}
 		}
@@ -81,18 +61,11 @@ public final class DiscordMarkdown {
 		public void tail(@NonNull Node node, int depth) {
 			if (node instanceof final Element element) {
 				switch (element.tagName()) {
-					case "strong":
-						result.append("**");
-						break;
-					case "em":
-						result.append("*");
-						break;
-					case "u":
-						result.append("__");
-						break;
-					case "s":
-						result.append("~~");
-						break;
+					case "h1", "h2", "h3", "p" -> result.append("\n");
+					case "strong" -> result.append("**");
+					case "em" -> result.append("*");
+					case "u" -> result.append("__");
+					case "s" -> result.append("~~");
 				}
 			} else if (node instanceof final TextNode textNode) {
 				result.append(escape(textNode.getWholeText()));
@@ -100,11 +73,15 @@ public final class DiscordMarkdown {
 		}
 
 		public String getResult() {
+			//Remove the last \n if it exists
+			if (!result.isEmpty() && result.charAt(result.length() - 1) == '\n') {
+				result.deleteCharAt(result.length() - 1);
+			}
 			return result.toString();
 		}
 
 		private static String escape(String s) {
-			return s.replaceAll("([*_~\\\\])", "\\\\$1")
+			return s.replaceAll("([*_`~\\\\])", "\\\\$1")
 					.replaceFirst("^#", "\\\\#");
 		}
 	}

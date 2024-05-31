@@ -13,74 +13,59 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 10.04.2023
  */
 class DiscordMarkdownTest {
-	private static final String HTML_BREAK = "<br>";
-	private static final String HTML_STRIKETHROUGH = "s";
-	private static final String HTML_UNDERLINE = "u";
-	private static final String HTML_STRONG = "strong";
-	private static final String HTML_ITALIC = "em";
-
-	private static final String FORMATTED_BREAK = "\n" + HTML_BREAK + "\n";
-
 	@ParameterizedTest(name = "{2}")
 	@MethodSource
-	void toHtml(String input, String expected, String name) {
-		assertEquals(expected, DiscordMarkdown.toHtml(input));
+	void toMarkdown(String input, String expected, String name) {
+		assertEquals(expected, DiscordMarkdown.toMarkdown(input));
 	}
 
-	private static Stream<Arguments> toHtml() {
+	private static Stream<Arguments> toMarkdown() {
 		return Stream.of(
 				Arguments.of("Hello World", "Hello World", "no markdown"),
-				Arguments.of("*italics* or _italics_ **bold** ***bold italics*** __underline__ __*underline italics*__ __**underline bold**__ __***underline bold italics***__ ~~strikethrough~~",
-						"<%1$s>italics</%1$s> or <%1$s>italics</%1$s> <%2$s>bold</%2$s> <%2$s><%1$s>bold italics</%1$s></%2$s> <%3$s>underline</%3$s> <%3$s><%1$s>underline italics</%1$s></%3$s> <%3$s><%2$s>underline bold</%2$s></%3$s> <%3$s><%2$s><%1$s>underline bold italics</%1$s></%2$s></%3$s> <%4$s>strikethrough</%4$s>"
-								.formatted(HTML_ITALIC, HTML_STRONG, HTML_UNDERLINE, HTML_STRIKETHROUGH),
+				Arguments.of("<p><em>italics</em> <strong>bold</strong> <strong><em>bold italics</em></strong> <u>underline</u> <em><u>underline italics</u></em> <strong><u>underline bold</u></strong> <strong><em><u>underline bold italics</u></em></strong> <s>strikethrough</s></p>",
+						"*italics* **bold** ***bold italics*** __underline__ *__underline italics__* **__underline bold__** ***__underline bold italics__*** ~~strikethrough~~",
 						"text styles"),
-				Arguments.of("""
+				Arguments.of("<p><em>Italic</em></p>", "*Italic*", "italic"),
+				Arguments.of("<p><strong>Bold</strong></p>", "**Bold**", "bold"),
+				Arguments.of("<p><strong><em>bold italics</strong></em></p>", "***bold italics***", "bold italics"),
+				Arguments.of("<p><u>underline</u></p>", "__underline__", "underline"),
+				Arguments.of("<p><u><em>underline italics</em></u></p>", "__*underline italics*__", "underline italics"),
+				Arguments.of("<p><u><strong>underline bold</strong></u></p>", "__**underline bold**__", "underline bold"),
+				Arguments.of("<p><u><strong><em>underline bold italics</strong></em></u></p>", "__***underline bold italics***__", "underline bold italics"),
+				Arguments.of("<p><s>strikethrough</s></p>", "~~strikethrough~~", "strikethrough"),
+				Arguments.of("<p>Hello</p><p>World</p>", """
 						Hello
-						World""",
-						"Hello%sWorld".formatted(FORMATTED_BREAK),
-						"line break"),
-				Arguments.of("# Hello World", "<h1>Hello World</h1>", "Heading 1"),
-				Arguments.of("## Hello World", "<h2>Hello World</h2>", "Heading 2"),
-				Arguments.of("### Hello World", "<h3>Hello World</h3>", "Heading 3"),
-				Arguments.of("""
+						World""", "line break"),
+				Arguments.of("<h1>Heading 1</h1>", "# Heading 1", "Heading 1"),
+				Arguments.of("<h2>Heading 2</h2>", "## Heading 2", "Heading 2"),
+				Arguments.of("<h3>Heading 3</h3>", "### Heading 3", "Heading 3"),
+				Arguments.of("<h1>Hello World</h1><p>Text</p>", """
 						# Hello World
-						Text""",
-						"<h1>Hello World</h1>Text",
-						"heading with text"),
-				Arguments.of("""
+						Text""", "heading with text"),
+				Arguments.of("<p>Text</p><h1>Hello World</h1>", """
 						Text
-						# Hello World""",
-						"Text%s<h1>Hello World</h1>".formatted(FORMATTED_BREAK),
-						"text followed by heading"),
-				Arguments.of("""
+						# Hello World""", "text followed by heading"),
+				Arguments.of("<h1>Heading 1</h1><p>h1</p><h2>Heading 2</h2><p>h2</p><p></p><h3>Heading 3</h3><p>h3</p>", """
 						# Heading 1
 						h1
 						## Heading 2
 						h2
 
 						### Heading 3
-						h3""",
-						"<h1>Heading 1</h1>h1%1$s<h2>Heading 2</h2>h2%1$s%2$s\n<h3>Heading 3</h3>h3".formatted(FORMATTED_BREAK, HTML_BREAK),
-						"headings"),
-				Arguments.of("Text # Hello World", "Text # Hello World", "inline heading"),
-				Arguments.of("""
+						h3""", "headings"),
+				Arguments.of("<p>Text # Hello World</p>", "Text # Hello World", "inline heading"),
+				Arguments.of("<p># Escaped</p><h1># One heading</h1><p>## First escaped</p><p># # First with space escaped</p>", """
 								\\# Escaped
 								# \\# One heading
-								#\\# Missing space
 								\\## First escaped
-								\\# # First with space escaped
-								\\#\\# Both escaped
-								\\# \\# More escaped""",
-						"# Escaped%1$s<h1># One heading</h1>## Missing space%1$s## First escaped%1$s# # First with space escaped%1$s## Both escaped%1$s# # More escaped".formatted(FORMATTED_BREAK),
+								\\# # First with space escaped""",
 						"escaped headings"),
-				Arguments.of("\\*Lorem\\* \\_ipsum\\_ \\`dolor\\` \\~sit\\~ \\\\amet\\\\",
-						"*Lorem* _ipsum_ `dolor` ~sit~ \\amet\\",
+				Arguments.of("<p>*Lorem* _ipsum_ `dolor` ~sit~ \\amet\\</p>",
+						"\\*Lorem\\* \\_ipsum\\_ \\`dolor\\` \\~sit\\~ \\\\amet\\\\",
 						"unescape escaped characters"),
-				Arguments.of("\\\\\\\\ \\\\", "\\\\ \\", "escaped backslashes"),
-				Arguments.of("**", "**", "empty stars"),
-				Arguments.of("**** **", "<%1$s>** </%1$s>".formatted(HTML_STRONG), "bold stars"),
-				Arguments.of("Evil <script>alert('Hello World');</script> <a href=\"https://example.com\">Link</a>",
-						"Evil  Link", "filters other html tags")
+				Arguments.of("<p>\\\\ \\</p>", "\\\\\\\\ \\\\", "escaped backslashes"),
+				Arguments.of("<p>**</p>", "\\*\\*", "empty stars"),
+				Arguments.of("<p><strong>** </strong></p>", "**\\*\\* **", "bold stars")
 		);
 	}
 }
