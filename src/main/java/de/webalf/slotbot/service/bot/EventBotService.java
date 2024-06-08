@@ -57,6 +57,10 @@ public class EventBotService {
 		eventService.addDiscordInformation(eventId, dto);
 	}
 
+	public void archiveEvent(Guild guild, long channel) {
+		guildBotService.archiveByChannel(guild.getIdLong(), channel);
+	}
+
 	public void retriggerArchiveEvents(Guild guild) {
 		final de.webalf.slotbot.model.Guild persistentGuild = guildBotService.find(guild.getIdLong());
 		eventService.findAllInPast(persistentGuild)
