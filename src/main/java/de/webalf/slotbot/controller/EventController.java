@@ -47,6 +47,11 @@ public class EventController {
 		return CalendarEventAssembler.toDtoList(eventService.findAllBetween(start, end));
 	}
 
+	@GetMapping(value = "/around-today")
+	public List<CalendarEventDto> getAroundToday() {
+		return CalendarEventAssembler.toDtoList(eventService.findAllAroundToday());
+	}
+
 	@GetMapping("/{id}/details")
 	public EventDetailsDto getEventDetails(@PathVariable(value = "id") long eventId) {
 		return eventDetailsAssembler.toDto(eventService.findById(eventId));
@@ -92,7 +97,7 @@ public class EventController {
 		return EventEditAssembler.toDto(eventService.updateEvent(eventId, dto));
 	}
 
-	@GetMapping ("/fields")
+	@GetMapping("/fields")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
 	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
 		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.getDefault(eventTypeName));

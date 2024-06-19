@@ -17,6 +17,9 @@ import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
@@ -90,15 +94,55 @@ public class EventService {
 	 */
 	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end, boolean canReadHidden) {
 		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
-		if (ownerGuild.getId() == GUILD_PLACEHOLDER) {
-			return canReadHidden ?
-					eventRepository.findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(start, end) :
-					eventRepository.findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(start, end);
-		}
-
 		return canReadHidden ?
-				eventRepository.findAllByGuildAndDateTimeBetween(ownerGuild, start, end) :
-				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end);
+				findAllByDateTimeBetween(ownerGuild, start, end) :
+				findAllByDateTimeBetweenAndHiddenFalse(ownerGuild, start, end, null);
+	}
+
+	/**
+	 * Returns the two most recent events and up to 15 upcoming events. Only 30 days in the past and future are considered.
+	 *
+	 * @return list of events around today
+	 */
+	public List<Event> findAllAroundToday() {
+		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
+
+		final LocalDateTime now = DateUtils.now();
+		final LocalDateTime pastStartDateTime = now.minusDays(30);
+		final LocalDateTime futureEndDateTime = now.plusDays(30);
+
+		// Fetch the two most recent events from the past 30 days
+		final List<Event> recentEvents = findAllByDateTimeBetweenAndHiddenFalse(ownerGuild, pastStartDateTime, now, PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, Event_.DATE_TIME)));
+		// Fetch up to 15 upcoming events in the next 30 days
+		final List<Event> upcomingEvents = findAllByDateTimeBetweenAndHiddenFalse(ownerGuild, now, futureEndDateTime, PageRequest.of(0, 15, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
+
+		return Stream.concat(recentEvents.reversed().stream(), upcomingEvents.stream()).toList();
+	}
+
+	/**
+	 * Returns all publicly visible events of the given guild in the given period.
+	 * For the placeholder guild all shareable events and public events are returned.
+	 *
+	 * @return all events in given period
+	 * @see #findAllByDateTimeBetween(Guild, LocalDateTime, LocalDateTime)
+	 */
+	private List<Event> findAllByDateTimeBetweenAndHiddenFalse(@NonNull Guild ownerGuild, LocalDateTime start, LocalDateTime end, Pageable pageable) {
+		return ownerGuild.getId() == GUILD_PLACEHOLDER ?
+				eventRepository.findAllByDateTimeBetweenAndHiddenFalseAndShareableTrueOrPlaceholderGuild(start, end, pageable) :
+				eventRepository.findAllByGuildAndDateTimeBetweenAndHiddenFalse(ownerGuild, start, end, pageable);
+	}
+
+	/**
+	 * Returns all events of the given guild in the given period.
+	 * For the placeholder guild all shareable events and public events are returned.
+	 *
+	 * @return all events in given period
+	 * @see #findAllByDateTimeBetweenAndHiddenFalse(Guild, LocalDateTime, LocalDateTime, Pageable)
+	 */
+	private List<Event> findAllByDateTimeBetween(@NonNull Guild ownerGuild, LocalDateTime start, LocalDateTime end) {
+		return ownerGuild.getId() == GUILD_PLACEHOLDER ?
+				eventRepository.findAllByDateTimeBetweenAndShareableTrueOrPlaceholderGuild(start, end) :
+				eventRepository.findAllByGuildAndDateTimeBetween(ownerGuild, start, end);
 	}
 
 	public List<Event> findAllPublicByGuild(Guild ownerGuild) {
