@@ -53,19 +53,19 @@ public class GuildController {
 	}
 
 	@GetMapping("/{id}/config")
-	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public GuildConfigDto getGuildConfig(@PathVariable(value = "id") long guildId) {
 		return GuildConfigAssembler.toDto(guildService.findExisting(guildId));
 	}
 
 	@PutMapping("/{id}/config")
-	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public GuildConfigDto putGuildConfig(@PathVariable(value = "id") long guildId, @RequestBody GuildConfigPutDto guildConfig) {
 		return GuildConfigAssembler.toDto(guildService.updateGuild(guildId, guildConfig));
 	}
 
 	@GetMapping("/{id}/discord")
-	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public GuildDiscordIntegrationDto getDiscordIntegration(@PathVariable(value = "id") long guildId) {
 		final boolean connected = guildDiscordService.isConnected(guildId);
 		return GuildDiscordIntegrationDto.builder()
@@ -84,13 +84,13 @@ public class GuildController {
 	}
 
 	@PutMapping(value = "/{id}/users/{userId}", consumes = TEXT_PLAIN_VALUE)
-	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public void putGuildUserRole(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId, @RequestBody(required = false) String role) {
 		guildUsersService.setRole(guildId, userId, StringUtils.isEmpty(role) ? null : Role.valueOf(role));
 	}
 
 	@DeleteMapping("/{id}/users/{userId}")
-	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public void deleteGuildUser(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId) {
 		guildUsersService.remove(guildId, userId);
 	}

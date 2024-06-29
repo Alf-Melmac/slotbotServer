@@ -15,7 +15,7 @@ public class PermissionChecker {
 	private final GuildService guildService;
 	private final EventService eventService;
 
-	public boolean hasEventManagePermissionInCurrentOwnerGuild() {
+	public boolean hasEventManagePermissionInCurrentGuild() {
 		return PermissionHelper.hasEventManagePermission(guildService.getCurrentGuildId());
 	}
 
@@ -23,7 +23,11 @@ public class PermissionChecker {
 		return PermissionHelper.hasEventManagePermission(eventService.getGuildByEventId(eventId).getId());
 	}
 
-	public boolean hasGuildAdminPrivileges(long guildId) {
+	public boolean hasAdminPermissionInCurrentGuild() {
+		return PermissionHelper.hasAdministratorPermission(guildService.getCurrentGuildId());
+	}
+
+	public boolean hasAdminPermission(long guildId) {
 		return PermissionHelper.hasAdministratorPermission(guildId);
 	}
 }

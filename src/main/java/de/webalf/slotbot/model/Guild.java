@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,10 @@ public class Guild extends AbstractDiscordIdEntity {
 
 	@Column(name = "discord_guild_admin_role")
 	private Long adminRole;
+
+	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderColumn
+	private List<BlogPost> blogPosts;
 
 	public static final long GUILD_PLACEHOLDER = -1L;
 

@@ -58,7 +58,7 @@ public class EventController {
 	}
 
 	@PostMapping
-	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentOwnerGuild()")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentGuild()")
 	public long postEvent(@Valid @RequestBody EventPostDto event) {
 		return eventService.createEvent(event).getId();
 	}

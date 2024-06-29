@@ -29,7 +29,7 @@ public class EventTypeController {
 	}
 
 	@GetMapping("/{guildId}")
-	@PreAuthorize("@permissionChecker.hasGuildAdminPrivileges(#guildId)")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public List<EventTypeDto> getEventTypes(@PathVariable(value = "guildId") long guildId) {
 		return EventTypeAssembler.toDtoList(eventTypeService.findAllOrdered(guildService.findExisting(guildId)));
 	}
