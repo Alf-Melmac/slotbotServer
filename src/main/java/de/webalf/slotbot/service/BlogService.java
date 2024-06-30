@@ -34,8 +34,11 @@ public class BlogService {
 				.addEnforcedAttribute("a", "rel", "noopener noreferrer nofollow");
 	}
 
+	/**
+	 * Returns the blog posts of the {@link GuildService#findCurrentNonNullGuild() current guild} in order
+	 */
 	public List<BlogPost> findAll() {
-		return guildService.findCurrentNonNullGuild().getBlogPosts();
+		return blogPostRepository.findByGuildOrderByPinnedDescTimestampDesc(guildService.findCurrentNonNullGuild());
 	}
 
 	public void post(String content) {

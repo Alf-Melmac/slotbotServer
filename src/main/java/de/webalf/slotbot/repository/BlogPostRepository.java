@@ -1,7 +1,10 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.BlogPost;
+import de.webalf.slotbot.model.Guild;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Alf
@@ -9,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BlogPostRepository extends SuperIdEntityJpaRepository<BlogPost> {
+	List<BlogPost> findByGuildOrderByPinnedDescTimestampDesc(Guild guild);
 }

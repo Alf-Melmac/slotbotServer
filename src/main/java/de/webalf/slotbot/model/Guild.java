@@ -69,7 +69,6 @@ public class Guild extends AbstractDiscordIdEntity {
 	private Long adminRole;
 
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)
-	@OrderColumn
 	private List<BlogPost> blogPosts;
 
 	public static final long GUILD_PLACEHOLDER = -1L;
