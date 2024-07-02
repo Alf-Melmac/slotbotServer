@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.BlogPost;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.repository.BlogPostRepository;
@@ -41,12 +42,29 @@ public class BlogService {
 		return blogPostRepository.findByGuildOrderByPinnedDescTimestampDesc(guildService.findCurrentNonNullGuild());
 	}
 
-	public void post(String content) {
+	public BlogPost post(String content) {
 		final Guild guild = guildService.findCurrentNonNullGuild();
 		final BlogPost post = BlogPost.builder()
 				.content(Jsoup.clean(content, SAFELIST))
 				.guild(guild)
 				.build();
 		guild.getBlogPosts().addFirst(post);
+		return blogPostRepository.save(post);
+	}
+
+	public void pin(long postId) {
+		final BlogPost post = blogPostRepository.findById(postId).orElseThrow(ResourceNotFoundException::new);
+		final Guild guild = guildService.findCurrentNonNullGuild();
+		blogPostRepository.updateAllPinnedToFalseByGuild(guild);
+		post.setPinned(true);
+	}
+
+	public void unpin(long id) {
+		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		post.setPinned(false);
+	}
+
+	public void delete(long id) {
+		blogPostRepository.deleteById(id);
 	}
 }

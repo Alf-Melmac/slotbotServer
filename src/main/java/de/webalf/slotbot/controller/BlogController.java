@@ -28,7 +28,25 @@ public class BlogController {
 
 	@PostMapping(consumes = TEXT_PLAIN_VALUE)
 	@PreAuthorize("@permissionChecker.hasAdminPermissionInCurrentGuild()")
-	public void postBlogPost(@RequestBody String content) {
-		blogService.post(content);
+	public BlogPostDto postBlogPost(@RequestBody String content) {
+		return BlogPostAssembler.toDto(blogService.post(content));
+	}
+
+	@PutMapping("/{id}/pin")
+	@PreAuthorize("@permissionChecker.hasAdminPermissionInCurrentGuild()")
+	public void putBlogPostPin(@PathVariable long id) {
+		blogService.pin(id);
+	}
+
+	@PutMapping("/{id}/unpin")
+	@PreAuthorize("@permissionChecker.hasAdminPermissionInCurrentGuild()")
+	public void putBlogPostUnpin(@PathVariable long id) {
+		blogService.unpin(id);
+	}
+
+	@DeleteMapping("/{id}")
+	@PreAuthorize("@permissionChecker.hasAdminPermissionInCurrentGuild()")
+	public void deleteBlogPost(@PathVariable long id) {
+		blogService.delete(id);
 	}
 }

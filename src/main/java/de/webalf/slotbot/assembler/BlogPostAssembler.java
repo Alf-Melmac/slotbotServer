@@ -14,7 +14,7 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class BlogPostAssembler {
-	private static BlogPostDto toDto(@NonNull BlogPost blogPost) {
+	public static BlogPostDto toDto(@NonNull BlogPost blogPost) {
 		return BlogPostDto.builder()
 				.id(blogPost.getId())
 				.content(blogPost.getContent())
