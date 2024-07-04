@@ -32,6 +32,12 @@ public class BlogController {
 		return BlogPostAssembler.toDto(blogService.post(content));
 	}
 
+	@PutMapping(value = "/{id}", consumes = TEXT_PLAIN_VALUE)
+	@PreAuthorize("@permissionChecker.hasAdminPermissionInCurrentGuild()")
+	public BlogPostDto updateBlogPost(@PathVariable long id, @RequestBody String content) {
+		return BlogPostAssembler.toDto(blogService.update(id, content));
+	}
+
 	@PutMapping("/{id}/pin")
 	@PreAuthorize("@permissionChecker.hasAdminPermissionInCurrentGuild()")
 	public void putBlogPostPin(@PathVariable long id) {

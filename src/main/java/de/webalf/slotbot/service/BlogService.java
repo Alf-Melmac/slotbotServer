@@ -52,8 +52,19 @@ public class BlogService {
 		return blogPostRepository.save(post);
 	}
 
-	public void pin(long postId) {
-		final BlogPost post = blogPostRepository.findById(postId).orElseThrow(ResourceNotFoundException::new);
+	public BlogPost update(long id, String content) {
+		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		final Guild guild = guildService.findCurrentNonNullGuild();
+		if (!post.getGuild().equals(guild)) {
+			throw new IllegalArgumentException();
+		}
+
+		post.setContent(Jsoup.clean(content, SAFELIST));
+		return post;
+	}
+
+	public void pin(long id) {
+		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 		final Guild guild = guildService.findCurrentNonNullGuild();
 		blogPostRepository.updateAllPinnedToFalseByGuild(guild);
 		post.setPinned(true);
