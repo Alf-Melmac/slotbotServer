@@ -2,12 +2,12 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.BlogPostAssembler;
 import de.webalf.slotbot.model.dtos.BlogPostDto;
+import de.webalf.slotbot.model.dtos.website.pagination.FrontendPageable;
 import de.webalf.slotbot.service.BlogService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
@@ -22,8 +22,9 @@ public class BlogController {
 	private final BlogService blogService;
 
 	@GetMapping
-	public List<BlogPostDto> getBlogPosts() {
-		return BlogPostAssembler.toDtoList(blogService.findAll());
+	public FrontendPageable<BlogPostDto> getBlogPosts(Pageable pageRequest) {
+		return FrontendPageable.of(blogService.findAll(pageRequest)
+				.map(BlogPostAssembler::toDto));
 	}
 
 	@PostMapping(consumes = TEXT_PLAIN_VALUE)

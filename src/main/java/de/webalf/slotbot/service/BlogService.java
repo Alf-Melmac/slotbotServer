@@ -7,10 +7,10 @@ import de.webalf.slotbot.repository.BlogPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * @author Alf
@@ -38,8 +38,8 @@ public class BlogService {
 	/**
 	 * Returns the blog posts of the {@link GuildService#findCurrentNonNullGuild() current guild} in order
 	 */
-	public List<BlogPost> findAll() {
-		return blogPostRepository.findByGuildOrderByPinnedDescTimestampDesc(guildService.findCurrentNonNullGuild());
+	public Page<BlogPost> findAll(Pageable pageable) {
+		return blogPostRepository.findByGuildOrderByPinnedDescTimestampDesc(guildService.findCurrentNonNullGuild(), pageable);
 	}
 
 	public BlogPost post(String content) {
