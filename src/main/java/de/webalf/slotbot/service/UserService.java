@@ -53,9 +53,24 @@ public class UserService {
 
 	/**
 	 * Return the currently {@link PermissionHelper#getLoggedInUserId() logged in user}
+	 *
+	 * @see #getPotentialLoggedIn()
 	 */
 	public User getLoggedIn() {
 		return findExisting(Long.parseLong(PermissionHelper.getLoggedInUserId()));
+	}
+
+	/**
+	 * Finds the currently logged-in user or null if no user is logged in
+	 *
+	 * @see #getLoggedIn()
+	 */
+	public User getPotentialLoggedIn() {
+		final String loggedInUserId = PermissionHelper.getLoggedInUserId();
+		if (loggedInUserId.isEmpty()) {
+			return null;
+		}
+		return findExisting(Long.parseLong(loggedInUserId));
 	}
 
 	public User getDefaultUser() {
