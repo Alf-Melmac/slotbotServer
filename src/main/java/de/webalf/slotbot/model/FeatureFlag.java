@@ -1,6 +1,9 @@
 package de.webalf.slotbot.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @author Alf
@@ -8,7 +11,9 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "feature_flag", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
-public class FeatureFlag extends AbstractIdEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
+public class FeatureFlag extends AbstractSuperIdEntity {
 	@Column(name = "feature_flag_feature")
 	private String feature;
 
