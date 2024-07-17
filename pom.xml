@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>3.3.0</version>
+		<version>3.3.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -30,15 +30,15 @@
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>5.0.0-beta.24</jda.version>
+		<jda.version>5.0.1</jda.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.17.2</jsoup.version>
+		<jsoup.version>1.18.1</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
-		<ical4j.version>4.0.0-rc6</ical4j.version>
+		<ical4j.version>4.0.1</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
-		<springdoc-openapi-ui.version>2.5.0</springdoc-openapi-ui.version>
+		<springdoc-openapi-ui.version>2.6.0</springdoc-openapi-ui.version>
 	</properties>
 
 	<dependencies>
