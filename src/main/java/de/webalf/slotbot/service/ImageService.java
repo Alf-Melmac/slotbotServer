@@ -27,6 +27,8 @@ public class ImageService {
 
 	private final Tika tika = new Tika();
 
+	public static final String ALLOWED_FILE_NAME_CHARS = "a-zA-Z0-9()\\[\\]\\s._-";
+
 	/**
 	 * Saves the given file to the userContent folder of the logged-in user
 	 *
@@ -46,7 +48,7 @@ public class ImageService {
 		final String extension = FilenameUtils.getSuffixFromPath(originalFilename);
 		final String filename = originalFilename
 				.substring(0, originalFilename.length() - extension.length())
-				.replaceAll("[^a-zA-Z0-9()\\[\\]\\s._-]", "");
+				.replaceAll("[^"+ ALLOWED_FILE_NAME_CHARS + "]", "");
 		if (filename.isBlank()) {
 			throw BusinessRuntimeException.builder().title("File name is invalid").build();
 		}
