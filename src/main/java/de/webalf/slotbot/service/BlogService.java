@@ -36,6 +36,9 @@ public class BlogService {
 	static {
 		SAFELIST.addTags("p", "br", "strong", "em", "u", "s", "mark", "h1", "h2", "h3", "ul", "li", "ol", "blockquote", "hr", "a", "img")
 				.addAttributes("p", "style")
+				.addAttributes("h1", "style")
+				.addAttributes("h2", "style")
+				.addAttributes("h3", "style")
 				.addAttributes("a", "href", "target", "rel")
 				.addAttributes("img", "src")
 
