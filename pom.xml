@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>3.3.1</version>
+		<version>3.3.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -34,7 +34,7 @@
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.18.1</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/tags -->
-		<ical4j.version>4.0.1</ical4j.version>
+		<ical4j.version>4.0.2</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
