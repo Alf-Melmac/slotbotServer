@@ -19,6 +19,7 @@ public final class BlogPostAssembler {
 				.id(blogPost.getId())
 				.content(blogPost.getContent())
 				.pinned(blogPost.isPinned())
+				.timestamp(blogPost.getTimestamp())
 				.build();
 	}
 
