@@ -63,6 +63,8 @@ public class BotService {
 
 	@PreDestroy
 	private void cleanUp() {
-		jda.shutdownNow();
+		if (jda != null) {
+			jda.shutdownNow();
+		}
 	}
 }

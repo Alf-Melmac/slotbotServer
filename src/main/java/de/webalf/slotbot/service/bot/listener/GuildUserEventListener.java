@@ -42,6 +42,7 @@ public class GuildUserEventListener {
 			return;
 		}
 		final net.dv8tion.jda.api.entities.Guild discordGuild = getGuildById(guildId);
+		log.trace("Trying to add role {} to user {} in guild {}", discordRoleId, event.userId(), guildId);
 		final Role discordRole = getRoleById(discordGuild, discordRoleId);
 		log.trace("Adding role {} to user {} in guild {}", discordRole, event.userId(), guildId);
 		discordGuild.addRoleToMember(getMemberById(discordGuild, event.userId()), discordRole).queue();

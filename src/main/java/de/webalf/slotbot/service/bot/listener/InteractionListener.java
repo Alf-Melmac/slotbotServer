@@ -9,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.GenericContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -118,6 +119,12 @@ public class InteractionListener extends ListenerAdapter {
 		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 			unknownException(event, commandClass, e);
 		}
+	}
+
+	private void unknownException(@NonNull GenericContextInteractionEvent<?> event, @NonNull Class<?> commandClass, ReflectiveOperationException e) {
+		final String errorCode = getErrorCode(e);
+		log.error("Failed to execute user context interaction {} with target '{}' - {}", commandClass.getName(), event.getTarget(), errorCode, e);
+		failedInteraction(event, "Sorry. Error Code: `" + errorCode + "`");
 	}
 
 	@Override
