@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
@@ -35,6 +36,7 @@ public class OAuth2EndpointConfig {
 	private final UserService userService;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 	private final SessionRegistry sessionRegistry;
+	private final SessionIpFilter sessionIpFilter;
 
 	@Bean
 	SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
@@ -75,7 +77,9 @@ public class OAuth2EndpointConfig {
 
 				.sessionManagement(session -> session
 						.maximumSessions(2).sessionRegistry(sessionRegistry)
-				);
+				)
+
+				.addFilterBefore(sessionIpFilter, OAuth2LoginAuthenticationFilter.class);
 		return http.build();
 	}
 
