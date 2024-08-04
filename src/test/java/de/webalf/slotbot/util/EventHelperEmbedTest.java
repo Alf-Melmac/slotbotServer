@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EventHelperEmbedTest {
 	private static final String EVENT_TYPE_COLOR = "#000000";
 	private static final String EVENT_TYPE_NAME = "event type name";
-	private final EventType EVENT_TYPE = EventType.builder().color(EVENT_TYPE_COLOR).name(EVENT_TYPE_NAME).build();
+	private static final EventType EVENT_TYPE = EventType.builder().color(EVENT_TYPE_COLOR).name(EVENT_TYPE_NAME).build();
 	private static final String NAME = "name";
 	private static final int ID = -123;
 	private static final String GUILD_BASE_URL = "https://example.net";
@@ -49,15 +49,15 @@ class EventHelperEmbedTest {
 	private static final String CREATOR = "creator";
 	private static final LocalDateTime DATE = LocalDateTime.of(2023, 4, 26, 12, 38);
 	private static final String FOOTER = "footer";
-	private final Event.EventBuilder<?, ?> MINIMAL_EVENT = Event.builder()
+	private static final Event.EventBuilder<?, ?> MINIMAL_EVENT = Event.builder()
 			.eventType(EVENT_TYPE)
 			.ownerGuild(OWNER_GUILD)
 			.creator(CREATOR)
 			.dateTime(DATE)
 			.details(Collections.emptyList());
-	private final String FIELD_NAME_SCHEDULE = "schedule";
-	private final String FIELD_NAME_MISSION_TYPE = "missionType";
-	private final String FIELD_NAME_RESERVE = "reserve";
+	private static final String FIELD_NAME_SCHEDULE = "schedule";
+	private static final String FIELD_NAME_MISSION_TYPE = "missionType";
+	private static final String FIELD_NAME_RESERVE = "reserve";
 
 	@Mock
 	MessageSource messageSource;

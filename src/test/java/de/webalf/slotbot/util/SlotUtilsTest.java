@@ -24,19 +24,19 @@ class SlotUtilsTest {
 	}
 
 	private static Stream<Arguments> getEffectiveReservedForDisplay() {
-		final Guild GUILD = Guild.builder().id(1L).build();
-		final Guild GUILD_2 = Guild.builder().id(2L).build();
+		final Guild guild1 = Guild.builder().id(1L).build();
+		final Guild guild2 = Guild.builder().id(2L).build();
 
-		final Squad SQUAD_AND_ALL_SLOTS = Squad.builder().reservedFor(GUILD).slotList(List.of(buildSlot(GUILD), buildSlot(GUILD))).build();
-		final Squad SQUAD_AND_DIFFERENT_SLOTS = Squad.builder().reservedFor(GUILD).slotList(List.of(buildSlot(GUILD), buildSlot(GUILD_2))).build();
+		final Squad squadAndAllSlots = Squad.builder().reservedFor(guild1).slotList(List.of(buildSlot(guild1), buildSlot(guild1))).build();
+		final Squad squadAndDifferentSlots = Squad.builder().reservedFor(guild1).slotList(List.of(buildSlot(guild1), buildSlot(guild2))).build();
 
 		return Stream.of(
-				Arguments.of("Slot and complete Squad reserved for the same guild", GUILD, SQUAD_AND_ALL_SLOTS, null),
-				Arguments.of("Slot and Squad partial reserved", GUILD, SQUAD_AND_DIFFERENT_SLOTS, GUILD),
-				Arguments.of("Slot and Squad differently reserved", GUILD, Squad.builder().reservedFor(GUILD_2).build(), GUILD),
-				Arguments.of("Slot reserved, Squad not", GUILD, Squad.builder().build(), GUILD),
-				Arguments.of("Slot not reserved and Squad completely", null, SQUAD_AND_ALL_SLOTS, null),
-				Arguments.of("Slot not reserved and Squad partial", null, SQUAD_AND_DIFFERENT_SLOTS, SQUAD_AND_DIFFERENT_SLOTS.getReservedFor()),
+				Arguments.of("Slot and complete Squad reserved for the same guild", guild1, squadAndAllSlots, null),
+				Arguments.of("Slot and Squad partial reserved", guild1, squadAndDifferentSlots, guild1),
+				Arguments.of("Slot and Squad differently reserved", guild1, Squad.builder().reservedFor(guild2).build(), guild1),
+				Arguments.of("Slot reserved, Squad not", guild1, Squad.builder().build(), guild1),
+				Arguments.of("Slot not reserved and Squad completely", null, squadAndAllSlots, null),
+				Arguments.of("Slot not reserved and Squad partial", null, squadAndDifferentSlots, squadAndDifferentSlots.getReservedFor()),
 				Arguments.of("Slot and Squad not reserved", null, Squad.builder().build(), null)
 		);
 	}
@@ -52,19 +52,19 @@ class SlotUtilsTest {
 	}
 
 	private static Stream<Arguments> getEffectiveReservedForDisplayWithDto() {
-		final Guild GUILD = Guild.builder().id(1).build();
-		final Guild GUILD_2 = Guild.builder().id(2).build();
+		final Guild guild1 = Guild.builder().id(1).build();
+		final Guild guild2 = Guild.builder().id(2).build();
 
-		final List<Slot> ALL_SLOTS = List.of(buildSlot(GUILD), buildSlot(GUILD));
-		final List<Slot> DIFFERENT_SLOTS = List.of(buildSlot(GUILD), buildSlot(GUILD_2));
+		final List<Slot> allSlots = List.of(buildSlot(guild1), buildSlot(guild1));
+		final List<Slot> differentSlots = List.of(buildSlot(guild1), buildSlot(guild2));
 
 		return Stream.of(
-				Arguments.of("Slot and complete Squad reserved for the same guild", GUILD, GUILD, ALL_SLOTS, null),
-				Arguments.of("Slot and Squad partial reserved", GUILD, GUILD, DIFFERENT_SLOTS, GUILD),
-				Arguments.of("Slot and Squad differently reserved", GUILD, GUILD_2, null, GUILD),
-				Arguments.of("Slot reserved, Squad not", GUILD, null, null, GUILD),
-				Arguments.of("Slot not reserved and Squad completely", null, GUILD, ALL_SLOTS, null),
-				Arguments.of("Slot not reserved and Squad partial", null, GUILD, DIFFERENT_SLOTS, GUILD),
+				Arguments.of("Slot and complete Squad reserved for the same guild", guild1, guild1, allSlots, null),
+				Arguments.of("Slot and Squad partial reserved", guild1, guild1, differentSlots, guild1),
+				Arguments.of("Slot and Squad differently reserved", guild1, guild2, null, guild1),
+				Arguments.of("Slot reserved, Squad not", guild1, null, null, guild1),
+				Arguments.of("Slot not reserved and Squad completely", null, guild1, allSlots, null),
+				Arguments.of("Slot not reserved and Squad partial", null, guild1, differentSlots, guild1),
 				Arguments.of("Slot and Squad not reserved", null, null, null, null)
 		);
 	}
