@@ -1,10 +1,20 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.model.EventDetailDefault;
 import de.webalf.slotbot.model.EventDetailsDefault;
+import de.webalf.slotbot.model.Guild;
+import de.webalf.slotbot.model.dtos.EventDetailDefaultDto;
+import de.webalf.slotbot.repository.EventDetailDefaultRepository;
 import de.webalf.slotbot.repository.EventDetailsDefaultRepository;
+import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.StringUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alf
@@ -15,10 +25,50 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EventDetailsDefaultService {
 	private final EventDetailsDefaultRepository eventDetailsDefaultRepository;
+	private final EventDetailDefaultRepository eventDetailDefaultRepository;
 	private final GuildService guildService;
 
-	public EventDetailsDefault getDefault(String eventTypeName) {
+	public EventDetailsDefault findByName(String eventTypeName) {
 		return eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guildService.findCurrentNonNullGuild())
 				.orElse(null);
+	}
+
+	public EventDetailsDefault updateDefaults(String eventTypeName, List<EventDetailDefaultDto> eventDetails) {
+		final Guild guild = guildService.findCurrentNonNullGuild();
+		if (eventDetails.isEmpty()) {
+			eventDetailsDefaultRepository.deleteByEventTypeNameAndGuild(eventTypeName, guild);
+			return null;
+		}
+
+		final EventDetailsDefault detailsDefault = eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guild)
+				.orElseGet(() -> EventDetailsDefault.builder()
+						.eventTypeName(eventTypeName)
+						.guild(guild)
+						.eventFieldDefaults(new ArrayList<>())
+						.build());
+
+		DtoUtils.ifPresentObject(eventDetails, eventDetailDtos -> {
+			final List<EventDetailDefault> existingDefaults = detailsDefault.getEventFieldDefaults();
+			existingDefaults.clear();
+
+			final List<EventDetailDefault> detailDefaults = new ArrayList<>();
+			eventDetails.forEach(eventDetail -> detailDefaults.add(updateOrCreateEventField(eventDetail, detailsDefault)));
+			existingDefaults.addAll(detailDefaults);
+		});
+
+		return eventDetailsDefaultRepository.save(detailsDefault);
+	}
+
+	private EventDetailDefault updateOrCreateEventField(@NonNull EventDetailDefaultDto dto, @NonNull EventDetailsDefault eventDetailsDefault) {
+		EventDetailDefault eventDetailDefault = eventDetailDefaultRepository.findById(dto.getId())
+				.orElseGet(() -> EventDetailDefault.builder().eventDetailsDefault(eventDetailsDefault).build());
+
+		DtoUtils.ifPresent(dto.getTitle(), eventDetailDefault::setTitle);
+		DtoUtils.ifPresentObject(dto.getType(), eventDetailDefault::setType);
+		DtoUtils.ifPresentObject(dto.getSelection(), eventDetailDefault::setSelection);
+		final String text = dto.getText();
+		eventDetailDefault.setText(StringUtils.isEmpty(text) ? null : text); //Always set the text so that it can be emptied
+
+		return eventDetailDefault;
 	}
 }

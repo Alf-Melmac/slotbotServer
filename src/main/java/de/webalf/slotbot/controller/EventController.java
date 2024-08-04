@@ -6,7 +6,7 @@ import de.webalf.slotbot.assembler.website.event.EventDetailsDefaultAssembler;
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.assembler.website.event.edit.EventEditAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.model.dtos.EventFieldDefaultDto;
+import de.webalf.slotbot.model.dtos.EventDetailDefaultDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
@@ -99,8 +99,8 @@ public class EventController {
 
 	@GetMapping("/fields")
 	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	public List<EventFieldDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
-		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.getDefault(eventTypeName));
+	public List<EventDetailDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName));
 	}
 
 	@PutMapping("/slotting/{id}")

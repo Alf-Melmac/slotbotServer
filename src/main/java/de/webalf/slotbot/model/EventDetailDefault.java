@@ -1,13 +1,14 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.model.enums.EventFieldType;
+import de.webalf.slotbot.model.enums.EventDetailType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.*;
 @Entity
 @Table(name = "event_detail_default", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class EventDetailDefault extends AbstractSuperIdEntity {
@@ -31,8 +33,8 @@ public class EventDetailDefault extends AbstractSuperIdEntity {
 
 	@Column(name = "event_detail_default_type")
 	@Enumerated(EnumType.STRING)
-	@NonNull
-	private EventFieldType type;
+	@NotNull
+	private EventDetailType type;
 
 	@ElementCollection
 	@CollectionTable(name = "event_detail_default_selection",

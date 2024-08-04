@@ -15,7 +15,7 @@ public class ApplicationRole {
 	static final String EVENT_MANAGE = "EVENT_MANAGE";
 
 	public static final String HAS_ROLE_SYS_ADMIN = HAS_ROLE + ROLE_PREFIX + SYS_ADMIN + HAS_ROLE_CLOSE;
-	public static final String HAS_ROLE_ADMIN = HAS_ROLE + ROLE_PREFIX + ADMIN + HAS_ROLE_CLOSE;
+	public static final String HAS_POTENTIALLY_ROLE_ADMIN = HAS_ROLE + ROLE_PREFIX + ADMIN + HAS_ROLE_CLOSE;
 	public static final String HAS_POTENTIALLY_ROLE_EVENT_MANAGE = HAS_ANY_ROLE + ADMIN + HAS_ANY_ROLE_NEXT + ROLE_PREFIX + EVENT_MANAGE + HAS_ROLE_CLOSE;
 	public static final String HAS_ROLE_EVERYONE = IS_AUTHENTICATED;
 
