@@ -20,4 +20,6 @@ public interface FeatureFlagRepository extends SuperIdEntityJpaRepository<Featur
 	Set<String> findFeaturesByUserOrGuild(@Param("user") User user, @Param("guild") Guild guild);
 
 	Optional<FeatureFlag> findByFeatureAndUser(String feature, User user);
+
+	Optional<FeatureFlag> findByFeatureAndUserNullAndGuildNull(String feature);
 }

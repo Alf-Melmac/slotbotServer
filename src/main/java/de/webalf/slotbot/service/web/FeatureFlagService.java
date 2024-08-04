@@ -38,4 +38,8 @@ public class FeatureFlagService {
 			return true;
 		}
 	}
+
+	public boolean getGlobal(@NonNull String feature) {
+		return featureFlagRepository.findByFeatureAndUserNullAndGuildNull(feature).isPresent();
+	}
 }

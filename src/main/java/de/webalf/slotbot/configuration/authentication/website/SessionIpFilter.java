@@ -1,5 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
+import de.webalf.slotbot.service.web.FeatureFlagService;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class SessionIpFilter extends OncePerRequestFilter {
+	private final FeatureFlagService featureFlagService;
+
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,8 +39,10 @@ public class SessionIpFilter extends OncePerRequestFilter {
 				final String remoteAddress = details.getRemoteAddress();
 				if (!remoteAddress.equals(request.getRemoteAddr())) {
 					log.warn("Session of {} invalidated due to ip change: {} -> {}", PermissionHelper.getLoggedInUserId(), remoteAddress, request.getRemoteAddr());
-					session.invalidate();
-					return;
+					if (featureFlagService.getGlobal("sessionIpFilter")) {
+						session.invalidate();
+						return;
+					}
 				}
 			}
 		}
