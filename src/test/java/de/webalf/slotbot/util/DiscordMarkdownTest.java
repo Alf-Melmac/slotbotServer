@@ -54,12 +54,59 @@ class DiscordMarkdownTest {
 						### Heading 3
 						h3""", "headings"),
 				Arguments.of("<p>Text # Hello World</p>", "Text # Hello World", "inline heading"),
-				Arguments.of("<p># Escaped</p><h1># One heading</h1><p>## First escaped</p><p># # First with space escaped</p>", """
+				Arguments.of("<p># Escaped</p><p>#No space</p><h1># One heading</h1><p>## First escaped</p><p># # First with space escaped</p>", """
 								\\# Escaped
+								#No space
 								# \\# One heading
 								\\## First escaped
 								\\# # First with space escaped""",
 						"escaped headings"),
+				Arguments.of("<ul><li><p>List</p></li><li><p>Items</p></li></ul>", """
+						- List
+						- Items""", "unordered list"),
+				Arguments.of("<ol><li><p>List</p></li><li><p>Items</p></li></ol>", """
+						1. List
+						1. Items""", "ordered list"),
+				Arguments.of("""
+						<ul>
+						 <li>
+						  <p>List</p>
+						  <ul>
+						   <li>
+						    <p>Nested</p></li>
+						  </ul></li>
+						 <li>
+						  <p>Items</p>
+						  <ol>
+						   <li>
+						    <p>Nested numbered</p></li>
+						  </ol></li>
+						</ul>""", """
+						- List
+						 - Nested
+						- Items
+						 1. Nested numbered""", "nested list"),
+				Arguments.of("""
+						<p>- Unordered</p>
+						<p>1. Ordered</p>
+						<p>-No space unordered</p>
+						<p>1.No space ordered</p>
+						<ul>
+						 <li>
+						  <p>- Minus</p></li>
+						 <li>
+						  <p>1. Number</p></li>
+						</ul>""", """
+						\\- Unordered
+
+						1\\. Ordered
+
+						-No space unordered
+
+						1.No space ordered
+
+						- \\- Minus
+						- 1\\. Number""", "escaped lists"),
 				Arguments.of("<p>*Lorem* _ipsum_ `dolor` ~sit~ \\amet\\</p>",
 						"\\*Lorem\\* \\_ipsum\\_ \\`dolor\\` \\~sit\\~ \\\\amet\\\\",
 						"unescape escaped characters"),

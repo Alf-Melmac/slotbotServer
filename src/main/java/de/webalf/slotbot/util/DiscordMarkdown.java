@@ -11,7 +11,11 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import static de.webalf.slotbot.util.StringUtils.isEmpty;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Util class to work with discord formatting
@@ -41,6 +45,11 @@ public final class DiscordMarkdown {
 
 	private static class DiscordVisitor implements NodeVisitor {
 		private final StringBuilder result = new StringBuilder();
+		/**
+		 * Stack to keep track of the potentially nested lists.
+		 * The top of the stack describes the list type of the current level
+		 */
+		private final Deque<Boolean> unorderedListStack = new ArrayDeque<>();
 
 		@Override
 		public void head(@NonNull Node node, int depth) {
@@ -49,6 +58,21 @@ public final class DiscordMarkdown {
 					case "h1" -> result.append("# ");
 					case "h2" -> result.append("## ");
 					case "h3" -> result.append("### ");
+					case "ul" -> {
+						if (!unorderedListStack.isEmpty()) { // Add a line break before starting a nested list
+							result.append("\n");
+						}
+						unorderedListStack.push(true);
+					}
+					case "ol" -> {
+						if (!unorderedListStack.isEmpty()) { // Add a line break before starting a nested list
+							result.append("\n");
+						}
+						unorderedListStack.push(false);
+					}
+					case "li" -> result
+							.append(" ".repeat(unorderedListStack.size() - 1))
+							.append(TRUE.equals(unorderedListStack.peek()) ? "- " : "1. ");
 					case "strong" -> result.append("**");
 					case "em" -> result.append("*");
 					case "u" -> result.append("__");
@@ -61,14 +85,29 @@ public final class DiscordMarkdown {
 		public void tail(@NonNull Node node, int depth) {
 			if (node instanceof final Element element) {
 				switch (element.tagName()) {
-					case "h1", "h2", "h3", "p" -> result.append("\n");
+					case "h1", "h2", "h3", "p" -> {
+						if (unorderedListStack.isEmpty()) { // Do not add line breaks inside lists
+							result.append("\n");
+						}
+					}
+					case "ul", "ol" -> unorderedListStack.remove();
+					case "li" -> {
+						// Don't add a line break if the last item was already a closing list item
+						if (result.charAt(result.length() - 1) != '\n') {
+							result.append("\n");
+						}
+					}
 					case "strong" -> result.append("**");
 					case "em" -> result.append("*");
 					case "u" -> result.append("__");
 					case "s" -> result.append("~~");
 				}
 			} else if (node instanceof final TextNode textNode) {
-				result.append(escape(textNode.getWholeText()));
+				String wholeText = textNode.getWholeText();
+				if (!unorderedListStack.isEmpty()) { //Remove potential line breaks from the list wrapper items
+					wholeText = wholeText.replaceAll("\n\\s*", "");
+				}
+				result.append(escape(wholeText));
 			}
 		}
 
@@ -82,7 +121,8 @@ public final class DiscordMarkdown {
 
 		private static String escape(String s) {
 			return s.replaceAll("([*_`~\\\\])", "\\\\$1")
-					.replaceFirst("^#", "\\\\#");
+					.replaceFirst("^((?:#+|-)\\s)", "\\\\$1")
+					.replaceFirst("^(\\d)(\\.\\s)", "$1\\\\$2");
 		}
 	}
 }

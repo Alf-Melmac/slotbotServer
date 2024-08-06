@@ -109,7 +109,7 @@ public final class EventUtils {
 	private static final Safelist SAFELIST = Safelist.none();
 
 	static {
-		SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p");
+		SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p", "ul", "ol", "li");
 	}
 
 	public static String sanitize(String s) {
