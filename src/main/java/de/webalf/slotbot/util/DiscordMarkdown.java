@@ -58,6 +58,7 @@ public final class DiscordMarkdown {
 					case "h1" -> result.append("# ");
 					case "h2" -> result.append("## ");
 					case "h3" -> result.append("### ");
+					case "small" -> result.append("-# ");
 					case "ul" -> {
 						if (!unorderedListStack.isEmpty()) { // Add a line break before starting a nested list
 							result.append("\n");
@@ -85,7 +86,7 @@ public final class DiscordMarkdown {
 		public void tail(@NonNull Node node, int depth) {
 			if (node instanceof final Element element) {
 				switch (element.tagName()) {
-					case "h1", "h2", "h3", "p" -> {
+					case "h1", "h2", "h3", "small", "p" -> {
 						if (unorderedListStack.isEmpty()) { // Do not add line breaks inside lists
 							result.append("\n");
 						}
@@ -121,7 +122,7 @@ public final class DiscordMarkdown {
 
 		private static String escape(String s) {
 			return s.replaceAll("([*_`~\\\\])", "\\\\$1")
-					.replaceFirst("^((?:#+|-)\\s)", "\\\\$1")
+					.replaceFirst("^((?:#+|-|-#)\\s)", "\\\\$1")
 					.replaceFirst("^(\\d)(\\.\\s)", "$1\\\\$2");
 		}
 	}

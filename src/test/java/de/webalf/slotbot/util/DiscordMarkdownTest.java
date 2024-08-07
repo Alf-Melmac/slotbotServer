@@ -61,6 +61,8 @@ class DiscordMarkdownTest {
 								\\## First escaped
 								\\# # First with space escaped""",
 						"escaped headings"),
+				Arguments.of("<small>Small</small>", "-# Small", "subtext"),
+				Arguments.of("<p>-# Small</p>", "\\-# Small", "escaped subtext"),
 				Arguments.of("<ul><li><p>List</p></li><li><p>Items</p></li></ul>", """
 						- List
 						- Items""", "unordered list"),
