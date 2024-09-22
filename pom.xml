@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>3.3.2</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>de.webalf</groupId>
@@ -30,11 +31,11 @@
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>5.0.2</jda.version>
+		<jda.version>5.1.1</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.18.1</jsoup.version>
-		<!--https://github.com/ical4j/ical4j/tags -->
-		<ical4j.version>4.0.2</ical4j.version>
+		<!--https://github.com/ical4j/ical4j/releases -->
+		<ical4j.version>4.0.4</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
@@ -139,6 +140,10 @@
 				<exclusion>
 					<groupId>club.minnced</groupId>
 					<artifactId>opus-java</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.crypto.tink</groupId>
+					<artifactId>tink</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
