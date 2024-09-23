@@ -2,8 +2,9 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
 import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
+import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,7 @@ import static de.webalf.slotbot.util.permissions.Role.getByApplicationRole;
 @RequiredArgsConstructor
 public class AuthenticationController {
 	private final GuildService guildService;
+	private final EventService eventService;
 
 	@GetMapping
 	public DiscordUserDto getAuthenticatedUser(@AuthenticationPrincipal OAuth2User oAuth2User) {
@@ -29,10 +31,21 @@ public class AuthenticationController {
 
 	@GetMapping("/access/{requiredApplicationRole}")
 	public boolean getAllowedToAccess(@PathVariable String requiredApplicationRole,
-	                                  @RequestParam(required = false) String guild) {
-		return PermissionHelper.hasPermissionInGuild(
-				getByApplicationRole(requiredApplicationRole),
-				LongUtils.parseLong(guild, guildService.getCurrentGuildId())
-		);
+	                                  @RequestParam(required = false) String guildId,
+	                                  @RequestParam(required = false) String eventId) {
+		if (StringUtils.isNotEmpty(guildId) && StringUtils.isNotEmpty(eventId)) {
+			throw new IllegalArgumentException("Only one of guild and eventId can be set");
+		}
+
+		long guildIdLong;
+		if (StringUtils.isNotEmpty(guildId)) {
+			guildIdLong = Long.parseLong(guildId);
+		} else if (StringUtils.isNotEmpty(eventId)) {
+			guildIdLong = eventService.getGuildByEventId(Long.parseLong(eventId)).getId();
+		} else {
+			guildIdLong = guildService.getCurrentGuildId();
+		}
+
+		return PermissionHelper.hasPermissionInGuild(getByApplicationRole(requiredApplicationRole), guildIdLong);
 	}
 }

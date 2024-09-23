@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.ActionLogRepository;
 import de.webalf.slotbot.util.DateUtils;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,11 @@ public class ActionLogService {
 		}
 	}
 
-	private void logAction(@NonNull LogAction action, @NonNull Duration timeGap, @NotEmpty long actionObjectId, @NonNull User user) {
+	void logAction(@NonNull LogAction action, long actionObjectId, @NonNull User user) {
+		logAction(action, null, actionObjectId, user);
+	}
+
+	private void logAction(@NonNull LogAction action, Duration timeGap, long actionObjectId, @NonNull User user) {
 		if (user.isDefaultUser()) {
 			return;
 		}
@@ -43,5 +46,9 @@ public class ActionLogService {
 				.user(user)
 				.build();
 		logRepository.save(actionLog);
+	}
+
+	void removeActionLogsByObjectId(long objectId) {
+		logRepository.deleteByActionObjectId(objectId);
 	}
 }

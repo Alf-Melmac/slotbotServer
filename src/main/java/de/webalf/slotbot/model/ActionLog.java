@@ -3,7 +3,11 @@ package de.webalf.slotbot.model;
 import de.webalf.slotbot.converter.persistence.DurationPersistenceConverter;
 import de.webalf.slotbot.model.enums.LogAction;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Duration;
 
@@ -13,9 +17,10 @@ import java.time.Duration;
  */
 @Entity
 @Table(name = "log", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ActionLog extends AbstractIdEntity {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
+public class ActionLog extends AbstractSuperIdEntity {
 	@Column(name = "action")
 	@Enumerated(EnumType.STRING)
 	@NonNull
@@ -23,7 +28,6 @@ public class ActionLog extends AbstractIdEntity {
 
 	@Column(name = "time_gap")
 	@Convert(converter = DurationPersistenceConverter.class)
-	@NonNull
 	private Duration timeGap;
 
 	@ManyToOne
@@ -33,17 +37,6 @@ public class ActionLog extends AbstractIdEntity {
 
 	@Column(name = "action_object_id")
 	private long actionObjectId;
-
-	@Builder
-	ActionLog(@NonNull LogAction action,
-	          @NonNull Duration timeGap,
-	          @NonNull User user,
-	          long actionObjectId) {
-		this.action = action;
-		this.timeGap = timeGap;
-		this.user = user;
-		this.actionObjectId = actionObjectId;
-	}
 
 	public String getTimeGapString() {
 		long sec = getTimeGap().getSeconds();

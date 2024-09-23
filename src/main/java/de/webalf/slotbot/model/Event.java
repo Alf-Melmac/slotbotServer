@@ -62,7 +62,7 @@ public class Event extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String creator;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "event_type")
 	@NotNull
 	private EventType eventType;

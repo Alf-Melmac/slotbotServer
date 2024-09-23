@@ -10,6 +10,7 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
+import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
@@ -49,6 +50,7 @@ public class EventService {
 	private final EventFieldService eventFieldService;
 	private final EventDiscordInformationService eventDiscordInformationService;
 	private final GuildService guildService;
+	private final ActionLogService actionLogService;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -310,8 +312,10 @@ public class EventService {
 	/**
 	 * Deletes the given event
 	 */
-	public void deleteEvent(Event event) {
-		eventRepository.delete(event);
+	public void deleteEvent(long eventId) {
+		actionLogService.logAction(LogAction.EVENT_DELETE, eventId, userService.getLoggedIn());
+		eventRepository.deleteById(eventId);
+		actionLogService.removeActionLogsByObjectId(eventId);
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class EventApiService {
 	}
 
 	public void delete(long eventId) {
-		eventService.deleteEvent(eventService.findById(eventId));
+		eventService.deleteEvent(eventId);
 	}
 
 	public Event slot(long eventId, int slotNumber, String userId) {

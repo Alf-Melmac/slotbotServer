@@ -89,12 +89,18 @@ public class EventController {
 		try {
 			ReflectionUtils.setField(dto.getClass().getSuperclass().getDeclaredField(name), dto, field.getValue().trim());
 		} catch (NoSuchFieldException e) {
-			log.error("Can't find field " + name + " while trying to edit it.", e);
+			log.error("Can't find field {} while trying to edit it.", name, e);
 			throw BusinessRuntimeException.builder().title(name + " nicht gefunden").cause(e).build();
 		} catch (NullPointerException e) {
 			throw BusinessRuntimeException.builder().title(name + " darf nicht leer sein").cause(e).build();
 		}
 		return EventEditAssembler.toDto(eventService.updateEvent(eventId, dto));
+	}
+
+	@DeleteMapping("/{id}")
+	@PreAuthorize("@permissionChecker.hasAdminPermissionForEvent(#eventId)")
+	public void deleteEvent(@PathVariable(value = "id") long eventId) {
+		eventService.deleteEvent(eventId);
 	}
 
 	@GetMapping("/fields")

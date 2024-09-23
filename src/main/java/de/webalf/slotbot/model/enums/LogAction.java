@@ -7,5 +7,6 @@ package de.webalf.slotbot.model.enums;
 public enum LogAction {
 	SLOT,
 	UNSLOT,
-	SWAP
+	SWAP,
+	EVENT_DELETE
 }
