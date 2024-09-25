@@ -7,6 +7,7 @@ import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,12 +19,14 @@ import java.util.Set;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeatureFlagService {
 	private final FeatureFlagRepository featureFlagRepository;
 	private final UserService userService;
 	private final GuildService guildService;
 
 	public Set<String> findAll() {
+		log.warn("Tenant: {}", TenantContext.getTenant());
 		return featureFlagRepository.findFeaturesByUserOrGuild(userService.getPotentialLoggedIn(), guildService.findCurrentNonNullGuild());
 	}
 
