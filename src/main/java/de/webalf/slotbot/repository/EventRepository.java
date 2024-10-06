@@ -67,24 +67,26 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	List<Event> findByDateTimeGreaterThan(LocalDateTime dateTime);
 
 
-	@Query(value = "SELECT e " +
-			"FROM Event e " +
-			"WHERE e.dateTime > :dateTime " +
-			"AND e.ownerGuild.id = :ownerGuild " +
-			"AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild.id = :ownerGuild) " +
-			"ORDER BY e.dateTime")
-	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("ownerGuild") long guildId);
+	@Query("""
+			SELECT e
+			FROM Event e
+			WHERE e.dateTime > :dateTime
+			AND e.ownerGuild.id = :ownerGuild
+			AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild.id = :ownerGuild)""")
+	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuild(@Param("dateTime") LocalDateTime dateTime, @Param("ownerGuild") long guildId, Pageable pageable);
 
-	@Query(value = "SELECT e " +
-			"FROM Event e " +
-			"WHERE e.dateTime > :dateTime AND e.ownerGuild.id <> :guild AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild.id = :guild) " +
-			"AND (" +
-			"e.shareable = true " +
-			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE sq.reservedFor.id = :guild) " +
-			"OR EXISTS(SELECT sq FROM e.squadList sq WHERE EXISTS(SELECT sl FROM sq.slotList sl WHERE sl.reservedFor.id = :guild))" +
-			") " +
-			"ORDER BY e.dateTime")
-	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(@Param("dateTime") LocalDateTime dateTime, @Param("guild") long guildId);
+	@Query("""
+			SELECT e
+			FROM Event e
+			WHERE e.dateTime > :dateTime
+			AND e.ownerGuild.id <> :guild
+			AND NOT EXISTS(SELECT di FROM EventDiscordInformation di WHERE di.event = e AND di.guild.id = :guild)
+			AND (
+			e.shareable = true
+			OR EXISTS(SELECT sq FROM e.squadList sq WHERE sq.reservedFor.id = :guild)
+			OR EXISTS(SELECT sq FROM e.squadList sq WHERE EXISTS(SELECT sl FROM sq.slotList sl WHERE sl.reservedFor.id = :guild))
+			)""")
+	List<Event> findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuild(@Param("dateTime") LocalDateTime dateTime, @Param("guild") long guildId, Pageable pageable);
 
 	@Query("""
 			SELECT s.user.id FROM Slot s INNER JOIN s.squad.event.discordInformation discordInformation

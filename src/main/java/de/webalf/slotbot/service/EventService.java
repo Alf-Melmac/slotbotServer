@@ -170,23 +170,25 @@ public class EventService {
 	}
 
 	/**
-	 * Returns all events of the given owner guild that are scheduled in the future and have no discord information
+	 * Returns events of the given owner guild that are scheduled in the future and have no discord information
 	 *
-	 * @param guildId to find events for
+	 * @param guildId   to find events for
+	 * @param maxAmount maximum amount of events to return
 	 * @return all events in the future that have no channel
 	 */
-	public List<Event> findAllNotAssignedInFuture(long guildId) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuildAndOrderByDateTime(DateUtils.now(), guildId);
+	public List<Event> findNotAssignedInFutureForSelect(long guildId, int maxAmount) {
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuild(DateUtils.now(), guildId, PageRequest.of(0, maxAmount, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
 	}
 
 	/**
-	 * Returns all events that the given guild is not owner of, that are scheduled in the future and have no discord information
+	 * Returns events that the given guild is not owner of, that are scheduled in the future and have no discord information
 	 *
-	 * @param guildId to exclude as owner guild
+	 * @param guildId   to exclude as owner guild
+	 * @param maxAmount maximum amount of events to return
 	 * @return all events in the future that have no channel
 	 */
-	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuildAndOrderByDateTime(DateUtils.now(), guildId);
+	public List<Event> findForeignNotAssignedInFutureForSelect(long guildId, int maxAmount) {
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuild(DateUtils.now(), guildId, PageRequest.of(0, maxAmount, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
 	}
 
 	/**

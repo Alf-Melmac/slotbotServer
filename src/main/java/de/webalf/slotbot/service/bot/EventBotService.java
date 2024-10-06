@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static net.dv8tion.jda.api.interactions.components.selections.SelectMenu.OPTIONS_MAX_AMOUNT;
+
 /**
  * Wrapper for {@link EventService} to be used by discord bot
  *
@@ -41,12 +43,12 @@ public class EventBotService {
 		return eventService.findByChannel(channel);
 	}
 
-	public List<Event> findAllNotAssignedInFuture(long guildId) {
-		return eventService.findAllNotAssignedInFuture(guildId);
+	public List<Event> findNotAssignedInFutureForSelect(long guildId) {
+		return eventService.findNotAssignedInFutureForSelect(guildId, OPTIONS_MAX_AMOUNT);
 	}
 
-	public List<Event> findAllForeignNotAssignedInFuture(long guildId) {
-		return eventService.findAllForeignNotAssignedInFuture(guildId);
+	public List<Event> findForeignNotAssignedInFutureForSelect(long guildId) {
+		return eventService.findForeignNotAssignedInFutureForSelect(guildId, OPTIONS_MAX_AMOUNT);
 	}
 
 	public Optional<Event> findLastEventOfUser(User user, de.webalf.slotbot.model.Guild guild) {

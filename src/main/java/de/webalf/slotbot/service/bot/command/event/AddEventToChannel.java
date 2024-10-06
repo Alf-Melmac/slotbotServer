@@ -72,8 +72,8 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			return;
 		}
 
-		final List<Event> events = eventBotService.findAllNotAssignedInFuture(guildId);
-		final List<Event> foreignEvents = eventBotService.findAllForeignNotAssignedInFuture(guildId);
+		final List<Event> events = eventBotService.findNotAssignedInFutureForSelect(guildId);
+		final List<Event> foreignEvents = eventBotService.findForeignNotAssignedInFutureForSelect(guildId);
 		final boolean eventsEmpty = events.isEmpty();
 		final boolean foreignEventsEmpty = foreignEvents.isEmpty();
 		if (eventsEmpty && foreignEventsEmpty) {
