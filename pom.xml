@@ -30,7 +30,7 @@
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>5.1.1</jda.version>
+		<jda.version>5.1.2</jda.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.18.1</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/releases -->
