@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,46 +39,29 @@ public class GuildService {
 		return guildRepository.findAllByOrderByGroupIdentifier().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).toList();
 	}
 
-	private List<Guild> findAllWithUrlPattern() {
-		return guildRepository.findByUrlPatternIsNotNull();
-	}
-
-	/**
-	 * Finds the current guild matching the current context path
-	 *
-	 * @return guild or null
-	 */
-	private Guild findCurrentGuild() {
-		final String currentUri = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
-
-		for (Guild guild : findAllWithUrlPattern()) {
-			if (guild.getUrlPattern().matcher(currentUri).matches()) {
-				return guild;
-			}
-		}
-
-		log.warn("Searched for unknown group with uri '{}'", currentUri);
-		return null;
-	}
-
-	/**
-	 * Finds the {@link #findCurrentGuild() current guild} or {@link #getDefault() default guild with placeholder id} as a fallback
-	 *
-	 * @return current guild
-	 */
-	public Guild findCurrentNonNullGuild() {
-		final Guild currentGuild = findCurrentGuild();
-		return currentGuild != null ? currentGuild : getDefault();
-	}
-
-	public long getCurrentGuildId() {
-		final Guild currentGuild = findCurrentGuild();
-		return currentGuild != null ? currentGuild.getId() : GUILD_PLACEHOLDER;
-	}
-
 	public Guild find(long id) {
 		return guildRepository.findById(id)
 				.orElseGet(() -> guildRepository.save(Guild.builder().id(id).build()));
+	}
+
+	public Guild findByIdentifier(@NonNull String identifier) {
+		return findByName(identifier).orElseThrow(ResourceNotFoundException::new);
+	}
+
+	public Guild findByIdentifier(Optional<String> identifier) {
+		return identifier
+				.map(this::findByIdentifier)
+				.orElseGet(this::getDefault);
+	}
+
+	public long getIdByIdentifier(@NonNull String identifier) {
+		return findByName(identifier).orElseThrow(ResourceNotFoundException::new).getId();
+	}
+
+	public long getIdByIdentifier(Optional<String> identifier) {
+		return identifier
+				.map(this::getIdByIdentifier)
+				.orElse(GUILD_PLACEHOLDER);
 	}
 
 	/**
@@ -103,6 +85,10 @@ public class GuildService {
 	 */
 	public boolean existsByIdAndAnyRoleIn(long guildId, Set<Long> roles) {
 		return guildRepository.existsByIdAndAnyRoleIn(guildId, roles);
+	}
+
+	public boolean isAdvanced(@NonNull String identifier) {
+		return guildRepository.isAdvancedByIdentifier(identifier);
 	}
 
 	public Guild evaluateReservedFor(String reservedFor) {

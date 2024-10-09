@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/events/types")
@@ -22,10 +21,10 @@ public class EventTypeController {
 	private final EventTypeService eventTypeService;
 	private final GuildService guildService;
 
-	@GetMapping
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	public List<EventTypeDto> getEventTypes() {
-		return EventTypeAssembler.toDtoList(eventTypeService.findAllOrdered(guildService.findCurrentNonNullGuild()));
+	@GetMapping({"", "/guild/{guild}"})
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionIn(#guild)")
+	public List<EventTypeDto> getEventTypes(@PathVariable(required = false) Optional<String> guild) {
+		return EventTypeAssembler.toDtoList(eventTypeService.findAllOrdered(guildService.findByIdentifier(guild)));
 	}
 
 	@GetMapping("/{guildId}")

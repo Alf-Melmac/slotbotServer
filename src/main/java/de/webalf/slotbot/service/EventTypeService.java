@@ -49,7 +49,7 @@ public class EventTypeService {
 	}
 
 	/**
-	 * Finds all global and {@link GuildService#findCurrentNonNullGuild() guild specific} {@link EventType}s
+	 * Finds all global and guild specific {@link EventType}s
 	 *
 	 * @param guild to find event types for
 	 * @return event types ordered by name
