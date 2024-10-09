@@ -1,11 +1,9 @@
 package de.webalf.slotbot.util.permissions;
 
-import de.webalf.slotbot.constant.AuthorizationCheckValues;
-import de.webalf.slotbot.model.Guild;
+import de.webalf.slotbot.configuration.authentication.api.SlotbotAuthentication;
 import de.webalf.slotbot.model.authentication.ApiTokenType;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Set;
@@ -39,11 +37,11 @@ public final class ApiPermissionHelper {
 	/**
 	 * Checks if the currently logged-in is allowed to write in the given guild
 	 *
-	 * @param guild to check write permission for
+	 * @param guildId guild to check write permission for
 	 * @return true if permission is given
 	 */
-	public static boolean hasWritePermission(Guild guild) {
-		return hasPermissionForGuild(ApiTokenType.WRITE, guild);
+	public static boolean hasWritePermission(long guildId) {
+		return hasPermissionForGuild(ApiTokenType.WRITE, guildId);
 	}
 
 	/**
@@ -66,32 +64,19 @@ public final class ApiPermissionHelper {
 	}
 
 	/**
-	 * @see #hasPermissionForGuild(ApiTokenType, long)
-	 */
-	private static boolean hasPermissionForGuild(@NonNull ApiTokenType apiTokenType, @NonNull Guild guild) {
-		return hasPermissionForGuild(apiTokenType, guild.getId());
-	}
-
-	/**
 	 * @param guild to check
-	 * @return true if currently logged-in token is identical to the given guild
+	 * @return true if currently logged-in token guild is identical to the given guild
 	 */
 	public static boolean isCurrentGuild(long guild) {
-		return guild == getCurrentGuild();
+		return guild == getTokenGuild();
 	}
 
 	/**
-	 * Fetches the guildId of the currently logged-in token via the {@link AuthorizationCheckValues#GUILD} authorization
+	 * Fetches the guildId of the active token via {@link SlotbotAuthentication#getDetails()}
 	 *
 	 * @return current guild id
 	 */
-	private static long getCurrentGuild() {
-		return Long.parseLong(
-				SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-						.map(GrantedAuthority::getAuthority)
-						.filter(authority -> authority.contains("_" + GUILD + "_"))
-						.map(authority -> authority.substring(authority.lastIndexOf("_") + 1))
-						.findAny().orElseThrow()
-		);
+	public static long getTokenGuild() {
+		return (long) SecurityContextHolder.getContext().getAuthentication().getDetails();
 	}
 }

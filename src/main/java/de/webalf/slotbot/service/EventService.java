@@ -84,18 +84,17 @@ public class EventService {
 		return eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end) {
-		return findAllBetween(start, end, hasEventManagePermission(guildService.getCurrentGuildId()));
+	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end, Optional<String> guild) {
+		final Guild currentGuild = guildService.findByIdentifier(guild);
+		return findAllBetween(start, end, hasEventManagePermission(currentGuild.getId()), currentGuild);
 	}
 
 	/**
-	 * Returns all events in the given period.
-	 * Events are filtered by the {@link GuildService#findCurrentNonNullGuild() current guild}.
+	 * Returns all events for the given owner guild in the given period.
 	 *
 	 * @return all events in given period
 	 */
-	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end, boolean canReadHidden) {
-		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
+	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end, boolean canReadHidden, Guild ownerGuild) {
 		return canReadHidden ?
 				findAllByDateTimeBetween(ownerGuild, start, end) :
 				findAllByDateTimeBetweenAndHiddenFalse(ownerGuild, start, end, null);
@@ -106,8 +105,8 @@ public class EventService {
 	 *
 	 * @return list of events around today
 	 */
-	public List<Event> findAllAroundToday() {
-		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
+	public List<Event> findAllAroundToday(String guild) {
+		final Guild ownerGuild = guildService.findByIdentifier(guild);
 
 		final LocalDateTime now = DateUtils.now();
 		final LocalDateTime pastStartDateTime = now.minusDays(30);
@@ -251,13 +250,14 @@ public class EventService {
 
 	/**
 	 * Creates a new event with values from the {@link EventDto}
-	 * {@link Event#setOwnerGuild(Guild)} is set by current request uri ({@link GuildService#findCurrentNonNullGuild()})
+	 * {@link Event#setOwnerGuild(Guild)} will be overwritten by the given owner identifier
 	 *
-	 * @param eventDto new event
+	 * @param eventDto        new event
+	 * @param ownerIdentifier event owner
 	 * @return saved new event
 	 */
-	public Event createEvent(@NonNull EventPostDto eventDto) {
-		return save(eventPostAssembler.fromDto(eventDto));
+	public Event createEvent(@NonNull EventPostDto eventDto, Optional<String> ownerIdentifier) {
+		return save(eventPostAssembler.fromDto(eventDto, guildService.findByIdentifier(ownerIdentifier)));
 	}
 
 	/**

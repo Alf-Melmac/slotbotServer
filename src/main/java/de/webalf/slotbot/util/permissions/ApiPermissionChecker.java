@@ -2,11 +2,8 @@ package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.service.GuildService;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.experimental.UtilityClass;
 
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasWritePermission;
 
@@ -14,16 +11,13 @@ import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasWritePer
  * @author Alf
  * @since 07.01.2022
  */
-@Service
-@RequiredArgsConstructor
-public class ApiPermissionChecker {
-	private final GuildService guildService;
-
+@UtilityClass
+public final class ApiPermissionChecker {
 	/**
-	 * Checks if write permission is given for the {@link GuildService#findCurrentNonNullGuild() current guild}
+	 * Checks if write permission is given for the {@link ApiPermissionHelper#getTokenGuild() current guild}
 	 */
-	public boolean assertApiWriteAccess() {
-		assertApiWriteAccessAllowed(guildService.findCurrentNonNullGuild());
+	public static boolean assertApiWriteAccess() {
+		assertApiWriteAccessAllowed(ApiPermissionHelper.getTokenGuild());
 		return true;
 	}
 
@@ -33,17 +27,17 @@ public class ApiPermissionChecker {
 	 * @param event to check owner guild write permission for
 	 */
 	public static void assertApiWriteAccess(@NonNull Event event) {
-		assertApiWriteAccessAllowed(event.getOwnerGuild());
+		assertApiWriteAccessAllowed(event.getOwnerGuild().getId());
 	}
 
 	/**
-	 * Checks if write permission is given for the given event.
+	 * Checks if write permission is given in the given guild.
 	 *
-	 * @param ownerGuild event owner guild
+	 * @param ownerGuildId guild to check for permission in
 	 * @throws ForbiddenException if write permission is not given
 	 */
-	private static void assertApiWriteAccessAllowed(Guild ownerGuild) throws ForbiddenException {
-		if (!hasWritePermission(ownerGuild)) {
+	private static void assertApiWriteAccessAllowed(long ownerGuildId) throws ForbiddenException {
+		if (!hasWritePermission(ownerGuildId)) {
 			throw new ForbiddenException("Not allowed to write here.");
 		}
 	}

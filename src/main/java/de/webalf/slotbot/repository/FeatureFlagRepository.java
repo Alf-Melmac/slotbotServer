@@ -1,7 +1,6 @@
 package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.FeatureFlag;
-import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,10 +15,10 @@ import java.util.Set;
  */
 @Repository
 public interface FeatureFlagRepository extends SuperIdEntityJpaRepository<FeatureFlag> {
-	@Query("SELECT DISTINCT f.feature from FeatureFlag f WHERE f.user = :user OR f.guild = :guild")
-	Set<String> findFeaturesByUserOrGuild(@Param("user") User user, @Param("guild") Guild guild);
+	@Query("SELECT DISTINCT f.feature from FeatureFlag f WHERE f.user = :user")
+	Set<String> findDistinctFeaturesByUser(@Param("user") User user);
 
 	Optional<FeatureFlag> findByFeatureAndUser(String feature, User user);
 
-	Optional<FeatureFlag> findByFeatureAndUserNullAndGuildNull(String feature);
+	Optional<FeatureFlag> findByFeatureAndUserNull(String feature);
 }

@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.service.EventTypeService;
-import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +23,8 @@ import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 public class EventPostAssembler {
 	private final EventTypeService eventTypeService;
 	private final MinimalSquadAssembler squadAssembler;
-	private final GuildService guildService;
 
-	public Event fromDto(@NonNull EventPostDto dto) {
-		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
+	public Event fromDto(@NonNull EventPostDto dto, @NonNull Guild ownerGuild) {
 		final Event event = Event.builder()
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))

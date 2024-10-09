@@ -3,7 +3,6 @@ package de.webalf.slotbot.service.web;
 import de.webalf.slotbot.model.FeatureFlag;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.repository.FeatureFlagRepository;
-import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +20,9 @@ import java.util.Set;
 public class FeatureFlagService {
 	private final FeatureFlagRepository featureFlagRepository;
 	private final UserService userService;
-	private final GuildService guildService;
 
 	public Set<String> findAll() {
-		return featureFlagRepository.findFeaturesByUserOrGuild(userService.getPotentialLoggedIn(), guildService.findCurrentNonNullGuild());
+		return featureFlagRepository.findDistinctFeaturesByUser(userService.getPotentialLoggedIn());
 	}
 
 	public boolean toggle(@NonNull String feature) {
@@ -40,6 +38,6 @@ public class FeatureFlagService {
 	}
 
 	public boolean getGlobal(@NonNull String feature) {
-		return featureFlagRepository.findByFeatureAndUserNullAndGuildNull(feature).isPresent();
+		return featureFlagRepository.findByFeatureAndUserNull(feature).isPresent();
 	}
 }

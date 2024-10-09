@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
-import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
 import static de.webalf.slotbot.util.permissions.Role.*;
 
@@ -85,7 +84,6 @@ public final class PermissionHelper {
 
 	/**
 	 * Checks if the currently logged-in user has the given permission in the given guild.
-	 * If the guild is the {@link de.webalf.slotbot.model.Guild#GUILD_PLACEHOLDER} the "potential permission" is checked
 	 *
 	 * @param role    to check
 	 * @param guildId in which the permission should be present
@@ -94,7 +92,7 @@ public final class PermissionHelper {
 	public static boolean hasPermissionInGuild(@NonNull Role role, long guildId) {
 		final Stream<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream();
 		final Set<String> authorizedRoles = role.getAuthorizedRoles().stream().map(authorizedRole -> ROLE_PREFIX + authorizedRole.getApplicationRole()).collect(Collectors.toUnmodifiableSet());
-		if (guildId == GUILD_PLACEHOLDER || role == SYSTEM_ADMIN) {
+		if (role == SYSTEM_ADMIN) {
 			return authorities.anyMatch(grantedAuthority -> {
 				final String authority = grantedAuthority.getAuthority();
 				return authorizedRoles.stream().anyMatch(authority::equals);
@@ -113,7 +111,7 @@ public final class PermissionHelper {
 	 *
 	 * @see #hasPermissionInGuild(Role, long)
 	 */
-	static boolean hasAdministratorPermission(long guildId) {
+	public static boolean hasAdministratorPermission(long guildId) {
 		return hasPermissionInGuild(ADMINISTRATOR, guildId);
 	}
 

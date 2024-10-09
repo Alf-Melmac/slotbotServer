@@ -2,17 +2,14 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
-import de.webalf.slotbot.assembler.website.event.EventDetailsDefaultAssembler;
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.assembler.website.event.edit.EventEditAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.model.dtos.EventDetailDefaultDto;
 import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
-import de.webalf.slotbot.service.EventDetailsDefaultService;
 import de.webalf.slotbot.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 
 /**
@@ -39,17 +36,18 @@ import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYO
 public class EventController {
 	private final EventService eventService;
 	private final EventDetailsAssembler eventDetailsAssembler;
-	private final EventDetailsDefaultService eventDetailsDefaultService;
 
-	@GetMapping(value = "/list")
-	public List<CalendarEventDto> getBetween(@RequestParam LocalDateTime start,
+	@GetMapping({"/list", "/{guild}/list"})
+	public List<CalendarEventDto> getBetween(@PathVariable(required = false) Optional<String> guild,
+	                                         @RequestParam LocalDateTime start,
 	                                         @RequestParam LocalDateTime end) {
-		return CalendarEventAssembler.toDtoList(eventService.findAllBetween(start, end));
+		return CalendarEventAssembler.toDtoList(eventService.findAllBetween(start, end, guild));
 	}
 
-	@GetMapping(value = "/around-today")
-	public List<CalendarEventDto> getAroundToday() {
-		return CalendarEventAssembler.toDtoList(eventService.findAllAroundToday());
+	@GetMapping("/{guild}/around-today")
+	@PreAuthorize("@permissionChecker.isAdvancedGuild(#guild)")
+	public List<CalendarEventDto> getAroundToday(@PathVariable String guild) {
+		return CalendarEventAssembler.toDtoList(eventService.findAllAroundToday(guild));
 	}
 
 	@GetMapping("/{id}/details")
@@ -57,10 +55,11 @@ public class EventController {
 		return eventDetailsAssembler.toDto(eventService.findById(eventId));
 	}
 
-	@PostMapping
-	@PreAuthorize("@permissionChecker.hasEventManagePermissionInCurrentGuild()")
-	public long postEvent(@Valid @RequestBody EventPostDto event) {
-		return eventService.createEvent(event).getId();
+	@PostMapping({"", "/{guild}"})
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionIn(#guild)")
+	public long postEvent(@PathVariable(required = false) Optional<String> guild,
+	                      @Valid @RequestBody EventPostDto event) {
+		return eventService.createEvent(event, guild).getId();
 	}
 
 	@GetMapping("/{id}/copy")
@@ -101,12 +100,6 @@ public class EventController {
 	@PreAuthorize("@permissionChecker.hasAdminPermissionForEvent(#eventId)")
 	public void deleteEvent(@PathVariable(value = "id") long eventId) {
 		eventService.deleteEvent(eventId);
-	}
-
-	@GetMapping("/fields")
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	public List<EventDetailDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
-		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName));
 	}
 
 	@PutMapping("/slotting/{id}")

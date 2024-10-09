@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.api.event.creation.EventApiDto;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import de.webalf.slotbot.util.permissions.ApiPermissionChecker;
@@ -35,7 +34,7 @@ public class EventApiService {
 	private final EventService eventService;
 	private final EventApiAssembler eventApiAssembler;
 	private final MessageSource messageSource;
-	private final GuildService guildService;
+	private final GuildApiService guildApiService;
 
 	/**
 	 * In addition to {@link EventService#findById(long)}, the API access rights for the event are checked
@@ -48,13 +47,13 @@ public class EventApiService {
 
 	public List<Event> findAllBetween(@NonNull LocalDateTime start, @NonNull LocalDateTime end) {
 		final long requestedDays = Duration.between(start, end).toDays();
-		final Guild guild = guildService.findCurrentNonNullGuild();
+		final Guild guild = guildApiService.getTokenGuild();
 		if (requestedDays > 30) {
 			throw BusinessRuntimeException.builder()
 					.title(messageSource.getMessage("api.events.error.tooManyDays", new Long[]{requestedDays}, guild.getLocale()))
 					.build();
 		}
-		return eventService.findAllBetween(start, end, hasReadPermission(false, guild.getId()));
+		return eventService.findAllBetween(start, end, hasReadPermission(false, guild.getId()), guild);
 	}
 
 	/**

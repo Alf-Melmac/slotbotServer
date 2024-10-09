@@ -7,7 +7,7 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.api.event.creation.EventApiDto;
 import de.webalf.slotbot.model.dtos.api.event.view.EventApiIdDto;
 import de.webalf.slotbot.service.EventTypeService;
-import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.service.api.GuildApiService;
 import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +27,11 @@ import static de.webalf.slotbot.util.StringUtils.trim;
 @RequiredArgsConstructor
 public final class EventApiAssembler {
 	private final EventTypeService eventTypeService;
-	private final GuildService guildService;
+	private final GuildApiService guildApiService;
 	private final SquadApiAssembler squadApiAssembler;
 
 	public Event fromDto(@NonNull EventApiDto dto) {
-		final Guild ownerGuild = guildService.findCurrentNonNullGuild();
+		final Guild ownerGuild = guildApiService.getTokenGuild();
 		final Event event = Event.builder()
 				.hidden(parseBoolean(dto.getHidden(), false))
 				.shareable(parseBoolean(dto.getShareable(), false))

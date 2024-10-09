@@ -85,7 +85,7 @@ public class EventApiController {
 	}
 
 	@PostMapping
-	@PreAuthorize("@apiPermissionChecker.assertApiWriteAccess()")
+	@PreAuthorize("T(de.webalf.slotbot.util.permissions.ApiPermissionChecker).assertApiWriteAccess()")
 	@Operation(summary = "Create an event",
 			responses = {
 					@ApiResponse(responseCode = "200"),

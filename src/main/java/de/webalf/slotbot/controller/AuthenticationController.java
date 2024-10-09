@@ -11,6 +11,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import static de.webalf.slotbot.util.permissions.Role.getByApplicationRole;
 
 /**
@@ -29,8 +31,9 @@ public class AuthenticationController {
 		return DiscordUserAssembler.toDto(oAuth2User);
 	}
 
-	@GetMapping("/access/{requiredApplicationRole}")
-	public boolean getAllowedToAccess(@PathVariable String requiredApplicationRole,
+	@GetMapping({"/access/{requiredApplicationRole}", "/{guild}/access/{requiredApplicationRole}"})
+	public boolean getAllowedToAccess(@PathVariable(required = false) Optional<String> guild,
+	                                  @PathVariable String requiredApplicationRole,
 	                                  @RequestParam(required = false) String guildId,
 	                                  @RequestParam(required = false) String eventId) {
 		if (StringUtils.isNotEmpty(guildId) && StringUtils.isNotEmpty(eventId)) {
@@ -43,7 +46,7 @@ public class AuthenticationController {
 		} else if (StringUtils.isNotEmpty(eventId)) {
 			guildIdLong = eventService.getGuildByEventId(Long.parseLong(eventId)).getId();
 		} else {
-			guildIdLong = guildService.getCurrentGuildId();
+			guildIdLong = guildService.getIdByIdentifier(guild);
 		}
 
 		return PermissionHelper.hasPermissionInGuild(getByApplicationRole(requiredApplicationRole), guildIdLong);
