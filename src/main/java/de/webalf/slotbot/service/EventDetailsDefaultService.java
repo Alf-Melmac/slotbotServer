@@ -30,7 +30,15 @@ public class EventDetailsDefaultService {
 	private final GuildService guildService;
 
 	public EventDetailsDefault findByName(String eventTypeName, Optional<String> guild) {
-		return eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guildService.findByIdentifier(guild))
+		return findByName(eventTypeName, guildService.findByIdentifier(guild));
+	}
+
+	public EventDetailsDefault findByName(String eventTypeName, long guildId) {
+		return findByName(eventTypeName, guildService.findExisting(guildId));
+	}
+
+	private EventDetailsDefault findByName(String eventTypeName, Guild guild) {
+		return eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guild)
 				.orElse(null);
 	}
 

@@ -22,11 +22,15 @@ public class PermissionChecker {
 		return guildService.isAdvanced(identifier);
 	}
 
+	public boolean hasEventManagePermission(long guildId) {
+		return PermissionHelper.hasEventManagePermission(guildId);
+	}
+
 	public boolean hasEventManagePermissionIn(Optional<String> identifier) {
 		return PermissionHelper.hasEventManagePermission(guildService.getIdByIdentifier(identifier));
 	}
 
-	public boolean hasEventManagePermission(long eventId) {
+	public boolean hasEventManagePermissionForEvent(long eventId) {
 		return PermissionHelper.hasEventManagePermission(eventService.getGuildByEventId(eventId).getId());
 	}
 

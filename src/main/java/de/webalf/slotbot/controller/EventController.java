@@ -63,25 +63,25 @@ public class EventController {
 	}
 
 	@GetMapping("/{id}/copy")
-	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionForEvent(#eventId)")
 	public EventPostDto getEventForCopy(@PathVariable(value = "id") long eventId) {
 		return EventPostAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@GetMapping("/{id}/edit")
-	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionForEvent(#eventId)")
 	public EventEditDto getEventForEdit(@PathVariable(value = "id") long eventId) {
 		return EventEditAssembler.toDto(eventService.findById(eventId));
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionForEvent(#eventId)")
 	public EventEditDto updateEvent(@PathVariable(value = "id") long eventId, @RequestBody EventUpdateDto event) {
 		return EventEditAssembler.toDto(eventService.updateEvent(eventId, event));
 	}
 
 	@PutMapping("/{id}/edit/text")
-	@PreAuthorize("@permissionChecker.hasEventManagePermission(#eventId)")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionForEvent(#eventId)")
 	public EventEditDto updateEventField(@PathVariable(value = "id") long eventId, @RequestBody Map.Entry<String, String> field) {
 		final String name = field.getKey();
 		EventUpdateDto dto = EventUpdateDto.builder().build();

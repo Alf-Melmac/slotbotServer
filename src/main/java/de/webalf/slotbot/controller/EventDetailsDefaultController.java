@@ -20,11 +20,18 @@ import java.util.Optional;
 public class EventDetailsDefaultController {
 	private final EventDetailsDefaultService eventDetailsDefaultService;
 
-	@GetMapping({"", "/{guild}"})
+	@GetMapping({"", "/guild/{guild}"})
 	@PreAuthorize("@permissionChecker.hasEventManagePermissionIn(#guild)")
 	public List<EventDetailDefaultDto> getEventFieldDefaults(@PathVariable(required = false) Optional<String> guild,
 	                                                         @RequestParam String eventTypeName) {
 		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName, guild));
+	}
+
+	@GetMapping("/{guildId}")
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#guildId)")
+	public List<EventDetailDefaultDto> getEventFieldDefaults(@PathVariable(value = "guildId") long guildId,
+	                                                         @RequestParam String eventTypeName) {
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName, guildId));
 	}
 
 	@PutMapping("/{guildId}")
