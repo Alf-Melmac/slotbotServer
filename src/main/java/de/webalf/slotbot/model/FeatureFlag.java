@@ -20,8 +20,4 @@ public class FeatureFlag extends AbstractSuperIdEntity {
 	@ManyToOne
 	@JoinColumn(name = "feature_flag_user", foreignKey = @ForeignKey(name = "feature_flag_user_fk"))
 	private User user;
-
-	@ManyToOne
-	@JoinColumn(name = "feature_flag_guild", foreignKey = @ForeignKey(name = "feature_flag_guild_fk"))
-	private Guild guild;
 }

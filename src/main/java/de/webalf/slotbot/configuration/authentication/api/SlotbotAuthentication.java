@@ -20,6 +20,7 @@ import java.util.Collection;
 public class SlotbotAuthentication implements Authentication {
 	private String credentials;
 	private Collection<? extends GrantedAuthority> authorities;
+	private long guildId;
 
 	public SlotbotAuthentication(String token) {
 		credentials = token;
@@ -32,7 +33,7 @@ public class SlotbotAuthentication implements Authentication {
 
 	@Override
 	public Object getDetails() {
-		return null;
+		return guildId;
 	}
 
 	@Override

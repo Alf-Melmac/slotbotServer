@@ -8,9 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_ADMIN;
-import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -22,15 +20,25 @@ import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY
 public class EventDetailsDefaultController {
 	private final EventDetailsDefaultService eventDetailsDefaultService;
 
-	@GetMapping
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_EVENT_MANAGE)
-	public List<EventDetailDefaultDto> getEventFieldDefaults(@RequestParam String eventTypeName) {
-		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName));
+	@GetMapping({"", "/guild/{guild}"})
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionIn(#guild)")
+	public List<EventDetailDefaultDto> getEventFieldDefaults(@PathVariable(required = false) Optional<String> guild,
+	                                                         @RequestParam String eventTypeName) {
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName, guild));
 	}
 
-	@PutMapping
-	@PreAuthorize(HAS_POTENTIALLY_ROLE_ADMIN)
-	public List<EventDetailDefaultDto> putEventFieldDefaults(@RequestParam String eventTypeName, @RequestBody List<EventDetailDefaultDto> eventDetails) {
-		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.updateDefaults(eventTypeName, eventDetails));
+	@GetMapping("/{guildId}")
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#guildId)")
+	public List<EventDetailDefaultDto> getEventFieldDefaults(@PathVariable(value = "guildId") long guildId,
+	                                                         @RequestParam String eventTypeName) {
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByName(eventTypeName, guildId));
+	}
+
+	@PutMapping("/{guildId}")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
+	public List<EventDetailDefaultDto> putEventFieldDefaults(@PathVariable(value = "guildId") long guildId,
+	                                                         @RequestParam String eventTypeName,
+	                                                         @RequestBody List<EventDetailDefaultDto> eventDetails) {
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.updateDefaults(eventTypeName, eventDetails, guildId));
 	}
 }

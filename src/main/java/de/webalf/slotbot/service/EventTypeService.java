@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventTypeService {
 	private final EventTypeRepository eventTypeRepository;
+	private final GuildService guildService;
 
 	/**
 	 * Finds a {@link EventType} by name and color of given dto or creates a new one with values from given dto for the
@@ -49,12 +51,26 @@ public class EventTypeService {
 	}
 
 	/**
-	 * Finds all global and {@link GuildService#findCurrentNonNullGuild() guild specific} {@link EventType}s
+	 * @see #findAllOrdered(Guild)
+	 */
+	public List<EventType> findAllOrdered(Optional<String> guild) {
+		return findAllOrdered(guildService.findByIdentifier(guild));
+	}
+
+	/**
+	 * @see #findAllOrdered(Guild)
+	 */
+	public List<EventType> findAllOrdered(long guildId) {
+		return findAllOrdered(guildService.findExisting(guildId));
+	}
+
+	/**
+	 * Finds all global and guild specific {@link EventType}s
 	 *
 	 * @param guild to find event types for
 	 * @return event types ordered by name
 	 */
-	public List<EventType> findAllOrdered(@NonNull Guild guild) {
+	private List<EventType> findAllOrdered(@NonNull Guild guild) {
 		return eventTypeRepository.findByGuildNullOrGuildOrderByName(guild);
 	}
 

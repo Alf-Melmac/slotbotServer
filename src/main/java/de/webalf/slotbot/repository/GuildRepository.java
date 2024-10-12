@@ -17,7 +17,8 @@ public interface GuildRepository extends DiscordIdEntityJpaRepository<Guild> {
 
 	List<Guild> findAllByOrderByGroupIdentifier();
 
-	List<Guild> findByUrlPatternIsNotNull();
+	@Query("SELECT g.advanced FROM Guild g WHERE g.groupIdentifier = :identifier")
+	boolean isAdvancedByIdentifier(@Param("identifier") String identifier);
 
 	@Query("""
 			SELECT COUNT(g) > 0 FROM Guild g

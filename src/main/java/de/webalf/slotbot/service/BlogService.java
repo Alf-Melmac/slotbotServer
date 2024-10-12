@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.BlogPost;
 import de.webalf.slotbot.model.Guild;
@@ -69,14 +70,27 @@ public class BlogService {
 	}
 
 	/**
-	 * Returns the blog posts of the {@link GuildService#findCurrentNonNullGuild() current guild} in order
+	 * Returns the blog posts of the given guild in order
 	 */
-	public Page<BlogPost> findAll(Pageable pageable) {
-		return blogPostRepository.findByGuildOrderByPinnedDescTimestampDesc(guildService.findCurrentNonNullGuild(), pageable);
+	public Page<BlogPost> findAll(String guild, Pageable pageable) {
+		return blogPostRepository.findByGuildOrderByPinnedDescTimestampDesc(guildService.findByIdentifier(guild), pageable);
 	}
 
-	public BlogPost post(String content) {
-		final Guild guild = guildService.findCurrentNonNullGuild();
+	/**
+	 * Returns the blog post with the given id if the user has admin permissions
+	 *
+	 * @throws ForbiddenException if the user does not have {@link PermissionHelper#hasAdministratorPermission(long) admin permissions}
+	 */
+	private BlogPost findForAdmin(long id) {
+		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		if (!PermissionHelper.hasAdministratorPermission(post.getGuild().getId())) {
+			throw new ForbiddenException("Not an admin");
+		}
+		return post;
+	}
+
+	public BlogPost post(String identifier, String content) {
+		final Guild guild = guildService.findByIdentifier(identifier);
 		final BlogPost post = BlogPost.builder()
 				.content(cleanContent(content))
 				.guild(guild)
@@ -86,29 +100,24 @@ public class BlogService {
 	}
 
 	public BlogPost update(long id, String content) {
-		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-		final Guild guild = guildService.findCurrentNonNullGuild();
-		if (!post.getGuild().equals(guild)) {
-			throw new IllegalArgumentException();
-		}
-
+		final BlogPost post = findForAdmin(id);
 		post.setContent(cleanContent(content));
 		return post;
 	}
 
 	public void pin(long id) {
-		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-		final Guild guild = guildService.findCurrentNonNullGuild();
-		blogPostRepository.updateAllPinnedToFalseByGuild(guild);
+		final BlogPost post = findForAdmin(id);
+		blogPostRepository.updateAllPinnedToFalseByGuild(post.getGuild());
 		post.setPinned(true);
 	}
 
 	public void unpin(long id) {
-		final BlogPost post = blogPostRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		final BlogPost post = findForAdmin(id);
 		post.setPinned(false);
 	}
 
 	public void delete(long id) {
-		blogPostRepository.deleteById(id);
+		final BlogPost post = findForAdmin(id);
+		blogPostRepository.delete(post);
 	}
 }

@@ -18,6 +18,7 @@ public final class EventEditAssembler {
 		return builder
 				.details(MinimalEventFieldIdAssembler.toDtoList(event.getDetails()))
 				.squadList(MinimalSquadIdAssembler.toDtoList(event.getSquadList()))
+				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))
 				.canRevokeShareable(event.canRevokeShareable())
 				.canUploadSlotlist(event.isEmpty())
 				.build();

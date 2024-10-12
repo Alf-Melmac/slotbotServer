@@ -26,6 +26,9 @@ import static de.webalf.slotbot.util.ConstraintConstants.URL;
 public class EventDetailsDto extends AbstractIdEntityDto {
 	boolean hidden;
 
+	@NotNull
+	String ownerGuildIdentifier;
+
 	@Size(max = TEXT)
 	String missionType;
 

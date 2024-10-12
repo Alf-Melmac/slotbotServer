@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -28,13 +29,21 @@ public class EventDetailsDefaultService {
 	private final EventDetailDefaultRepository eventDetailDefaultRepository;
 	private final GuildService guildService;
 
-	public EventDetailsDefault findByName(String eventTypeName) {
-		return eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guildService.findCurrentNonNullGuild())
+	public EventDetailsDefault findByName(String eventTypeName, Optional<String> guild) {
+		return findByName(eventTypeName, guildService.findByIdentifier(guild));
+	}
+
+	public EventDetailsDefault findByName(String eventTypeName, long guildId) {
+		return findByName(eventTypeName, guildService.findExisting(guildId));
+	}
+
+	private EventDetailsDefault findByName(String eventTypeName, Guild guild) {
+		return eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guild)
 				.orElse(null);
 	}
 
-	public EventDetailsDefault updateDefaults(String eventTypeName, List<EventDetailDefaultDto> eventDetails) {
-		final Guild guild = guildService.findCurrentNonNullGuild();
+	public EventDetailsDefault updateDefaults(String eventTypeName, List<EventDetailDefaultDto> eventDetails, long guildId) {
+		final Guild guild = guildService.findExisting(guildId);
 		if (eventDetails.isEmpty()) {
 			eventDetailsDefaultRepository.deleteByEventTypeNameAndGuild(eventTypeName, guild);
 			return null;

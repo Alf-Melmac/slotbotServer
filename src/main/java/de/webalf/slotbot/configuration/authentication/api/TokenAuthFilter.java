@@ -6,12 +6,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,7 +22,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 import java.util.Set;
 
-import static de.webalf.slotbot.constant.AuthorizationCheckValues.GUILD;
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.ROLE_PREFIX;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.buildGuildAuthenticationWithPrefix;
 
@@ -54,15 +52,16 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 		// if there is an auth token, create an Authentication object
 		if (authToken != null) {
 			log.info("{} API request to '{}' with token '{}' from: {}", request.getMethod(), request.getRequestURL(), authToken, request.getHeader("user-agent"));
-			Set<GrantedAuthority> grantedAuthorities;
+			final ApiToken apiToken;
 			try {
-				grantedAuthorities = mapAuthorities(authToken);
+				apiToken = tokenAuthProvider.getApiToken(authToken);
 			} catch (ForbiddenException ex) {
 				resolver.resolveException(request, response, null, ex);
 				return;
 			}
+			final Set<GrantedAuthority> grantedAuthorities = mapAuthorities(apiToken);
 			log.debug("Token '{}' granted {}", authToken, grantedAuthorities);
-			final Authentication auth = new SlotbotAuthentication(authToken, grantedAuthorities);
+			final Authentication auth = new SlotbotAuthentication(authToken, grantedAuthorities, apiToken.getGuild().getId());
 			SecurityContextHolder.getContext().setAuthentication(auth);
 		}
 
@@ -70,11 +69,9 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	private Set<GrantedAuthority> mapAuthorities(@NotBlank String token) throws ForbiddenException {
-		final ApiToken apiToken = tokenAuthProvider.getApiToken(token);
+	private Set<GrantedAuthority> mapAuthorities(@NonNull ApiToken apiToken) {
 		final String tokenTypeName = apiToken.getType().name();
 		return Set.of(new SimpleGrantedAuthority(ROLE_PREFIX + tokenTypeName),
-				new SimpleGrantedAuthority(buildGuildAuthenticationWithPrefix(tokenTypeName, apiToken.getGuild())),
-				new SimpleGrantedAuthority(buildGuildAuthenticationWithPrefix(GUILD, apiToken.getGuild())));
+				new SimpleGrantedAuthority(buildGuildAuthenticationWithPrefix(tokenTypeName, apiToken.getGuild())));
 	}
 }
