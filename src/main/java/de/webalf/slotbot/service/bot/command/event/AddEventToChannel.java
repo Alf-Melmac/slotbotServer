@@ -56,7 +56,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 		final MessageChannelUnion eventChannel = event.getChannel();
 		if (!eventChannel.canTalk() || !botHasPermission(eventChannel.asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS)) {
-			reply(event, locale.t("bot.interaction.response.cannotTalk"));
+			reply(event, locale.t("bot.interaction.response.cannotTalkOrEmbed"));
 			return;
 		}
 

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.StringUtils.splitEveryNth;
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
+import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
 import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getStringOption;
 
@@ -44,7 +46,13 @@ public class EventPing implements DiscordSlashCommand {
 	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Slash command: eventPing");
 
-		final String mentions = eventBotService.findAllParticipants(event.getChannel().getIdLong()).stream()
+		final MessageChannelUnion eventChannel = event.getChannel();
+		if (!eventChannel.canTalk()) {
+			reply(event, locale.t("bot.interaction.response.cannotTalk"));
+			return;
+		}
+
+		final String mentions = eventBotService.findAllParticipants(eventChannel.getIdLong()).stream()
 				.map(userId -> User.fromId(userId).getAsMention())
 				.collect(Collectors.joining(" "));
 

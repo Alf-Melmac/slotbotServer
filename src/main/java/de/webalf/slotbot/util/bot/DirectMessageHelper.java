@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
@@ -97,8 +98,12 @@ public class DirectMessageHelper {
 	 * @param userId id of the recipient
 	 * @param action action to execute in the private channel
 	 */
-	public <T> void inPrivateChannel(long userId, Function<PrivateChannel, RestAction<T>> action, Consumer<? super Throwable> failure) {
-		botService.getJda().retrieveUserById(userId)
+	private <T> void inPrivateChannel(long userId, Function<PrivateChannel, RestAction<T>> action, Consumer<? super Throwable> failure) {
+		final JDA jda = botService.getJda();
+		if (jda.getSelfUser().getId().equals(Long.toString(userId))) {
+			return; //Don't open a private channel with the bot
+		}
+		jda.retrieveUserById(userId)
 				.flatMap(User::openPrivateChannel)
 				.flatMap(action)
 				.queue(null, failure);
