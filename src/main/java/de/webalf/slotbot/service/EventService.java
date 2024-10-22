@@ -2,6 +2,7 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
@@ -51,6 +52,7 @@ public class EventService {
 	private final EventDiscordInformationService eventDiscordInformationService;
 	private final GuildService guildService;
 	private final ActionLogService actionLogService;
+	private final BanService banService;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -332,6 +334,9 @@ public class EventService {
 	public Event slot(@NonNull Event event, int slotNumber, long userId) {
 		final Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		final User user = userService.find(userId);
+		if (banService.isBanned(user, event.getOwnerGuild(), slot.getEffectiveReservedFor())) {
+			throw new ForbiddenException("You're banned.");
+		}
 		return slot(event, slot, user);
 	}
 

@@ -1,7 +1,10 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.webalf.slotbot.exception.ForbiddenException;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.external.discord.DiscordOauthUser;
+import de.webalf.slotbot.service.BanService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import java.util.Set;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final GuildUsersService guildUsersService;
 	private final UserService userService;
+	private final BanService banService;
 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) {
@@ -40,7 +44,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 
 		//Create user if not existing
-		userService.find(discordUser.getId());
+		final User user = userService.find(discordUser.getId());
+
+		if (banService.isBanned(user)) {
+			throw new ForbiddenException("You're banned.");
+		}
+
 		final Collection<? extends GrantedAuthority> mappedAuthorities = mapAuthorities(attributes, discordUser, oAuth2User.getAuthorities());
 		oAuth2User = new DefaultOAuth2User(mappedAuthorities, attributes, "username");
 

@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Boolean.TRUE;
+
 /**
  * @author Alf
  * @since 27.07.2020
@@ -35,6 +37,7 @@ public class SlotService {
 	private final GuildService guildService;
 	private final UserService userService;
 	private final ActionLogService actionLogService;
+	private final BanService banService;
 
 	/**
 	 * Returns the slot with the given id
@@ -113,6 +116,18 @@ public class SlotService {
 		}
 
 		return slot;
+	}
+
+	public Boolean isSlottable(@NonNull Slot slot) {
+		final User loggedIn = userService.getPotentialLoggedIn();
+		final Event slotEvent = slot.getEvent();
+		final Boolean slottable = loggedIn == null || !DateUtils.isInFuture(slotEvent.getDateTime())
+				? null
+				: slot.slotIsPossible(loggedIn);
+		if (TRUE.equals(slottable) && banService.isBanned(loggedIn, slotEvent.getOwnerGuild(), slot.getEffectiveReservedFor())) {
+			return null;
+		}
+		return slottable;
 	}
 
 	/**

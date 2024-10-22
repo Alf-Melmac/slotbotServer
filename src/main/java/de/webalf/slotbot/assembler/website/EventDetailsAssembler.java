@@ -10,11 +10,9 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
-import de.webalf.slotbot.service.UserService;
+import de.webalf.slotbot.service.SlotService;
 import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.LongUtils;
-import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,7 +31,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser
 public class EventDetailsAssembler {
 	private final DiscordApiService discordApiService;
 	private final EventFieldReferencelessAssembler eventFieldReferencelessAssembler;
-	private final UserService userService;
+	private final SlotService slotService;
 
 	public EventDetailsDto toDto(@NonNull Event event) {
 		return EventDetailsDto.builder()
@@ -100,7 +98,7 @@ public class EventDetailsAssembler {
 				.occupied(occupied)
 				.blocked(blocked)
 				.own(user != null && isLoggedInUser(user.getId()))
-				.slottable(PermissionHelper.getLoggedIn() == null || !DateUtils.isInFuture(slot.getEvent().getDateTime()) ? null : slot.slotIsPossible(userService.getLoggedIn()))
+				.slottable(slotService.isSlottable(slot))
 				.build();
 	}
 }
