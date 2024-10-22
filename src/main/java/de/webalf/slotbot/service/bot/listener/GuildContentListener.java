@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
+import net.dv8tion.jda.api.events.channel.update.ChannelUpdateLockedEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -24,7 +25,7 @@ import java.util.Locale;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class DeleteListener extends ListenerAdapter {
+public class GuildContentListener extends ListenerAdapter {
 	private final EventDiscordInformationService eventDiscordInformationService;
 	private final GuildBotService guildBotService;
 	private final MessageSource messageSource;
@@ -35,6 +36,19 @@ public class DeleteListener extends ListenerAdapter {
 		final long guildId = event.getGuild().getIdLong();
 		final long removedChannelId = event.getChannel().getIdLong();
 		log.trace("Channel {} deleted in guild {}", removedChannelId, guildId);
+		channelAccessRemoved(guildId, removedChannelId);
+	}
+
+	@Override
+	public void onChannelUpdateLocked(@NonNull ChannelUpdateLockedEvent event) {
+		if (!Boolean.TRUE.equals(event.getNewValue())) return;
+		final long guildId = event.getGuild().getIdLong();
+		final long channelId = event.getChannel().getIdLong();
+		log.trace("Channel {} locked in guild {}", channelId, guildId);
+		channelAccessRemoved(guildId, channelId);
+	}
+
+	private void channelAccessRemoved(long guildId, long removedChannelId) {
 		eventDiscordInformationService.removeByChannel(guildId, removedChannelId);
 		guildBotService.removeArchiveChannelByChannel(guildId, removedChannelId);
 	}

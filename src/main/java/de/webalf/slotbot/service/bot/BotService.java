@@ -2,7 +2,7 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
 import de.webalf.slotbot.service.EventDiscordInformationService;
-import de.webalf.slotbot.service.bot.listener.DeleteListener;
+import de.webalf.slotbot.service.bot.listener.GuildContentListener;
 import de.webalf.slotbot.service.bot.listener.GuildEventListener;
 import de.webalf.slotbot.service.bot.listener.InteractionListener;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
@@ -52,7 +52,7 @@ public class BotService {
 				.addEventListeners(
 						new GuildEventListener(commandsService, eventDiscordInformationService, guildUsersBotService),
 						new InteractionListener(commandClassHelper, messageSource),
-						new DeleteListener(eventDiscordInformationService, guildBotService, messageSource))
+						new GuildContentListener(eventDiscordInformationService, guildBotService, messageSource))
 				.disableIntents(GUILD_MODERATION, GUILD_EMOJIS_AND_STICKERS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, DIRECT_MESSAGE_TYPING, MESSAGE_CONTENT, SCHEDULED_EVENTS, AUTO_MODERATION_CONFIGURATION, AUTO_MODERATION_EXECUTION)
 				.disableCache(ACTIVITY, VOICE_STATE, EMOJI, STICKER, CLIENT_STATUS, ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
 				.setMemberCachePolicy(MemberCachePolicy.ALL)
