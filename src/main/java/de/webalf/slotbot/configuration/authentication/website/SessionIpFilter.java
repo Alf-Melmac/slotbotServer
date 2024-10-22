@@ -37,13 +37,16 @@ public class SessionIpFilter extends OncePerRequestFilter {
 			final HttpSession session = request.getSession(false);
 			if (session != null && authentication.getDetails() instanceof final WebAuthenticationDetails details) {
 				final String remoteAddress = details.getRemoteAddress();
-				if (!remoteAddress.equals(request.getRemoteAddr())) {
-					log.warn("Session of {} invalidated due to ip change: {} -> {}", PermissionHelper.getLoggedInUserId(), remoteAddress, request.getRemoteAddr());
-					if (featureFlagService.getGlobal("sessionIpFilter")) {
+				if (!remoteAddress.equals(request.getRemoteAddr()) && featureFlagService.getGlobal("sessionIpFilter")) {
+					try {
 						session.invalidate();
-						return;
+						log.warn("Session of {} invalidated due to ip change: {} -> {}", PermissionHelper.getLoggedInUserId(), remoteAddress, request.getRemoteAddr());
+					} catch (IllegalStateException ignored) {
+						// Session already invalidated
 					}
+					return;
 				}
+
 			}
 		}
 		filterChain.doFilter(request, response);
