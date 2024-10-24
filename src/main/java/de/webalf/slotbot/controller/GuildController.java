@@ -94,4 +94,10 @@ public class GuildController {
 	public void deleteGuildUser(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId) {
 		guildUsersService.remove(guildId, userId);
 	}
+
+	@PutMapping(value = "/{id}/users/{userId}/ban", consumes = TEXT_PLAIN_VALUE)
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
+	public void putGuildUserBan(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId, @RequestBody(required = false) String reason) {
+		guildUsersService.ban(guildId, userId, reason);
+	}
 }

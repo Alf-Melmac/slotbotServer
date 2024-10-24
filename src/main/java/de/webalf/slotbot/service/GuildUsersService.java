@@ -3,6 +3,7 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.GuildUser;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.event.BanEvent;
 import de.webalf.slotbot.model.event.GuildUserCreatedEvent;
 import de.webalf.slotbot.model.event.GuildUserDeleteEvent;
 import de.webalf.slotbot.model.event.GuildUserRoleUpdateEvent;
@@ -44,6 +45,7 @@ public class GuildUsersService {
 	private final GlobalRoleRepository globalRoleRepository;
 	private final SessionRegistry sessionRegistry;
 	private final ApplicationEventPublisher eventPublisher;
+	private final BanService banService;
 
 	public Page<GuildUser> findGuildUsers(Guild guild, Pageable pageable) {
 		return guildUsersRepository.findByGuild(guild, pageable);
@@ -68,11 +70,18 @@ public class GuildUsersService {
 		return guildUser;
 	}
 
+	/**
+	 * @see #remove(Guild, User)
+	 */
 	public void remove(long guildId, long userId) {
 		final User user = userService.findExisting(userId);
 		final Guild guild = guildService.findExisting(guildId);
 
-		log.trace("Removing user {} from guild {}", userId, guildId);
+		remove(guild, user);
+	}
+
+	private void remove(@NonNull Guild guild, @NonNull User user) {
+		log.trace("Removing user {} from guild {}", user.getId(), guild.getId());
 		guildUsersRepository.findByGuildAndUser(guild, user)
 				.ifPresent(guildUser -> {
 					eventPublisher.publishEvent(new GuildUserDeleteEvent(guildUser));
@@ -82,22 +91,33 @@ public class GuildUsersService {
 
 	@Async
 	public void removeOptional(long guildId, long userId) {
-		invalidateSession(userId);
 		guildUsersRepository.deleteById_GuildIdAndId_UserId(guildId, userId);
+		invalidateSession(userId);
+	}
+
+	public void ban(long guildId, long userId, String reason) {
+		banService.ban(userId, guildId, reason);
+		remove(guildId, userId);
+	}
+
+	/**
+	 * @see #setRole(Guild, User, Role)
+	 */
+	public void setRole(long guildId, long userId, Role role) {
+		final Guild guild = guildService.find(guildId);
+		final User user = userService.find(userId);
+		setRole(guild, user, role);
 	}
 
 	/**
 	 * Sets the given role for the given user in the given guild
 	 *
-	 * @param guildId guild to set role for
-	 * @param userId  user with role
-	 * @param role    to set
+	 * @param guild guild to set role for
+	 * @param user  user with role
+	 * @param role  to set
 	 */
-	public void setRole(long guildId, long userId, Role role) {
-		final Guild guild = guildService.find(guildId);
-		final User user = userService.find(userId);
-
-		log.trace("Setting role {} for user {} in guild {}", role, userId, guildId);
+	private void setRole(@NonNull Guild guild, @NonNull User user, Role role) {
+		log.trace("Setting role {} for user {} in guild {}", role, user.getId(), guild.getId());
 		guildUsersRepository.findByGuildAndUser(guild, user)
 				.ifPresentOrElse(guildUser -> guildUser.setRole(role),
 						() -> create(guild, user, role));
@@ -122,13 +142,19 @@ public class GuildUsersService {
 	 */
 	public void onRolesChanged(long guildId, long userId, Set<Long> memberRoles) {
 		final Guild guild = guildService.findExisting(guildId);
+		final User user = userService.find(userId);
+
+		if (banService.isBanned(user, guild)) {
+			return;
+		}
+
 		final Role newRole = evaluateRole(guild, memberRoles);
 		//If a member role is configured and no role is left, remove user from guild
 		if (guild.getMemberRole() != null && !memberRoles.contains(guild.getMemberRole()) && newRole == null) {
-			remove(guildId, userId);
+			remove(guild, user);
 			return;
 		}
-		setRole(guildId, userId, newRole);
+		setRole(guild, userService.find(userId), newRole);
 	}
 
 	/**
@@ -159,6 +185,16 @@ public class GuildUsersService {
 	@Async
 	public void onGuildUserDeleteEvent(@NonNull GuildUserDeleteEvent event) {
 		invalidateSession(event.userId());
+	}
+
+	@EventListener
+	@Async
+	public void onBanEvent(@NonNull BanEvent event) {
+		if (event.guildId() != null) return; // This has been triggered by #ban(long, long, String)
+
+		final long userId = event.userId();
+		guildUsersRepository.deleteById_UserId(userId);
+		invalidateSession(userId);
 	}
 
 	private void invalidateSession(long userId) {

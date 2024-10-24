@@ -3,13 +3,11 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
 import de.webalf.slotbot.model.enums.LogAction;
+import de.webalf.slotbot.model.event.BanEvent;
 import de.webalf.slotbot.repository.SlotRepository;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
@@ -17,6 +15,8 @@ import de.webalf.slotbot.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -212,5 +212,19 @@ public class SlotService {
 	 */
 	public long countByUserBeforeToday(@NonNull User user) {
 		return slotRepository.countByUserAndSquadEventDateTimeBefore(user, DateUtils.now());
+	}
+
+	@EventListener
+	@Async
+	public void onBanEvent(@NonNull BanEvent event) {
+		final User user = userService.findExisting(event.userId());
+		final List<Slot> slotsToBeEmptied;
+		if (event.guildId() == null) {
+			slotsToBeEmptied = slotRepository.findByUserAndEventAfter(user, DateUtils.now());
+		} else {
+			final Guild guild = guildService.findExisting(event.guildId());
+			slotsToBeEmptied = slotRepository.findByUserAndForGuildAndEventAfter(user, guild, DateUtils.now());
+		}
+		slotsToBeEmptied.forEach(slot -> unslot(slot, user));
 	}
 }

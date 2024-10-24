@@ -8,5 +8,6 @@ public enum LogAction {
 	SLOT,
 	UNSLOT,
 	SWAP,
-	EVENT_DELETE
+	EVENT_DELETE,
+	BAN
 }

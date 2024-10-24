@@ -25,4 +25,6 @@ public interface GuildUsersRepository extends JpaRepository<GuildUser, GuildUser
 	Optional<GuildUser> findByGuildAndUser(Guild guild, User user);
 
 	void deleteById_GuildIdAndId_UserId(long guildId, long userId);
+
+	void deleteById_UserId(long userId);
 }

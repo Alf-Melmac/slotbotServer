@@ -4,12 +4,16 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.util.DateUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+
+import static de.webalf.slotbot.util.ConstraintConstants.REASON;
+import static de.webalf.slotbot.util.ConstraintConstants.REASON_DB;
 
 /**
  * @author Alf
@@ -30,7 +34,8 @@ public class Ban extends AbstractSuperIdEntity {
 	@JoinColumn(name = "ban_guild", foreignKey = @ForeignKey(name = "ban_guild_fk"))
 	private Guild guild;
 
-	@Column(name = "ban_reason", columnDefinition = "text")
+	@Column(name = "ban_reason", length = REASON_DB)
+	@Size(max = REASON)
 	private String reason;
 
 	@Column(name = "ban_timestamp", nullable = false)
