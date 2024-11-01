@@ -116,7 +116,14 @@ public class InteractionListener extends ListenerAdapter {
 		try {
 			commandClass.getMethod("perform", UserContextInteractionEvent.class, DiscordLocaleHelper.class)
 					.invoke(commandClassHelper.getConstructor(commandClass), event, locale);
-		} catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
+			final Throwable cause = e.getCause();
+			if (cause instanceof BusinessRuntimeException && StringUtils.isNotEmpty(cause.getMessage())) {
+				reply(event, cause.getMessage());
+			} else {
+				unknownException(event, commandClass, e);
+			}
+		} catch (NoSuchMethodException | IllegalAccessException e) {
 			unknownException(event, commandClass, e);
 		}
 	}

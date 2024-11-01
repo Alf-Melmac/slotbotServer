@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.GuildUser;
 import de.webalf.slotbot.model.User;
@@ -58,6 +59,11 @@ public class GuildUsersService {
 	public GuildUser add(long guildId, long userId) {
 		final Guild guild = guildService.find(guildId);
 		final User user = userService.find(userId);
+		if (banService.isBanned(user, guild)) {
+			throw BusinessRuntimeException.builder()
+					.title("Um dieses Mitglied der Community hinzufügen zu können, muss erst der Ban aufgehoben werden.")
+					.build();
+		}
 
 		log.trace("Adding user {} to guild {}", userId, guildId);
 		return guildUsersRepository.findByGuildAndUser(guild, user)
@@ -145,6 +151,7 @@ public class GuildUsersService {
 		final User user = userService.find(userId);
 
 		if (banService.isBanned(user, guild)) {
+			log.trace("Skipping role change because user {} is banned in guild {}", userId, guildId);
 			return;
 		}
 
