@@ -66,4 +66,21 @@ public class DiscordBotService {
 		log.warn("Failed to retrieve user {}", userId);
 		return null;
 	}
+
+	@Cacheable("botUser")
+	public DiscordUser getUser(long userId) {
+		final JDA jda = botService.getJda();
+		if (jda == null) {
+			log.debug("JDA not available, fallback to own api call");
+			return discordApiService.getUser(Long.toString(userId));
+		}
+		try {
+			final User user = jda.retrieveUserById(userId).complete();
+			return DiscordUser.fromJda(user);
+		} catch (ErrorResponseException e) {
+			//TODO
+		}
+		log.warn("Failed to retrieve user {}", userId);
+		return null;
+	}
 }

@@ -1,8 +1,9 @@
-package de.webalf.slotbot.assembler.website;
+package de.webalf.slotbot.assembler.website.guild;
 
+import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.GuildUser;
-import de.webalf.slotbot.model.dtos.website.UserInGuildDto;
+import de.webalf.slotbot.model.dtos.website.guild.UserInGuildDto;
 import de.webalf.slotbot.model.external.discord.DiscordGuildMember;
 import de.webalf.slotbot.service.external.DiscordBotService;
 import lombok.NonNull;

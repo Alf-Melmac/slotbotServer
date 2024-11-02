@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -22,6 +23,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.REASON_DB;
 @Entity
 @Table(name = "ban", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}),
 		@UniqueConstraint(columnNames = {"ban_user", "ban_guild"}, name = "user_guild_unique")})
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class Ban extends AbstractSuperIdEntity {

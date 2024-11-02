@@ -2,16 +2,15 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.GuildAssembler;
 import de.webalf.slotbot.assembler.website.GuildDetailsAssembler;
-import de.webalf.slotbot.assembler.website.UserInGuildAssembler;
+import de.webalf.slotbot.assembler.website.guild.GuildBanAssembler;
 import de.webalf.slotbot.assembler.website.guild.GuildConfigAssembler;
+import de.webalf.slotbot.assembler.website.guild.UserInGuildAssembler;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.website.GuildDetailsDto;
-import de.webalf.slotbot.model.dtos.website.UserInGuildDto;
-import de.webalf.slotbot.model.dtos.website.guild.GuildConfigDto;
-import de.webalf.slotbot.model.dtos.website.guild.GuildConfigPutDto;
-import de.webalf.slotbot.model.dtos.website.guild.GuildDiscordIntegrationDto;
+import de.webalf.slotbot.model.dtos.website.guild.*;
 import de.webalf.slotbot.model.dtos.website.pagination.FrontendPageable;
+import de.webalf.slotbot.service.BanService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
@@ -41,6 +40,8 @@ public class GuildController {
 	private final GuildDiscordService guildDiscordService;
 	private final GuildUsersService guildUsersService;
 	private final UserInGuildAssembler userInGuildAssembler;
+	private final GuildBanAssembler guildBanAssembler;
+	private final BanService banService;
 
 	@GetMapping
 	public List<GuildDto> getGuilds() {
@@ -93,6 +94,13 @@ public class GuildController {
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public void deleteGuildUser(@PathVariable(value = "id") long guildId, @PathVariable(value = "userId") long userId) {
 		guildUsersService.remove(guildId, userId);
+	}
+
+	@GetMapping("/{id}/bans")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
+	public List<GuildBanDto> getGuildBans(@PathVariable(value = "id") long guildId) {
+		final Guild guild = guildService.findExisting(guildId);
+		return guildBanAssembler.toDtoList(banService.findByGuild(guild));
 	}
 
 	@PutMapping(value = "/{id}/users/{userId}/ban", consumes = TEXT_PLAIN_VALUE)

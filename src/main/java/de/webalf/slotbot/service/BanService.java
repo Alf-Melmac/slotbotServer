@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Alf
  * @since 13.10.24
@@ -25,6 +27,10 @@ public class BanService {
 	private final GuildService guildService;
 	private final ApplicationEventPublisher eventPublisher;
 	private final ActionLogService actionLogService;
+
+	public List<Ban> findByGuild(@NonNull Guild guild) {
+		return banRepository.findByGuild(guild);
+	}
 
 	/**
 	 * Checks if the given user is banned globally

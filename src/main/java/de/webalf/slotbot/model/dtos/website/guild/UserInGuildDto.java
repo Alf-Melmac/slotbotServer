@@ -1,5 +1,6 @@
-package de.webalf.slotbot.model.dtos.website;
+package de.webalf.slotbot.model.dtos.website.guild;
 
+import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
 import de.webalf.slotbot.util.permissions.Role;
 import lombok.Builder;
 import lombok.Value;
