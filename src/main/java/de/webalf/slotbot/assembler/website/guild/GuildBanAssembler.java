@@ -22,7 +22,14 @@ public class GuildBanAssembler {
 	private final DiscordBotService discordBotService;
 
 	private GuildBanDto toDto(@NonNull Ban ban) {
-		final DiscordUser user = discordBotService.getUser(ban.getUser().getId());
+		final long banUserId = ban.getUser().getId();
+		DiscordUser user = discordBotService.getUser(banUserId);
+		if (user == null) {
+			user = DiscordUser.builder()
+					.id(banUserId)
+					.global_name(Long.toString(banUserId))
+					.build();
+		}
 
 		return GuildBanDto.builder()
 				.user(DiscordUserAssembler.toDto(user))

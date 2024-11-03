@@ -29,7 +29,7 @@ public class BanService {
 	private final ActionLogService actionLogService;
 
 	public List<Ban> findByGuild(@NonNull Guild guild) {
-		return banRepository.findByGuild(guild);
+		return banRepository.findByGuildOrderByTimestampDesc(guild);
 	}
 
 	/**

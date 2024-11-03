@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Repository
 public interface BanRepository extends SuperIdEntityJpaRepository<Ban> {
-	List<Ban> findByGuild(Guild guild);
+	List<Ban> findByGuildOrderByTimestampDesc(Guild guild);
 
 	@Query("""
 			SELECT (COUNT(b) > 0) FROM Ban b
