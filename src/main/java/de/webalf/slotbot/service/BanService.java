@@ -71,4 +71,15 @@ public class BanService {
 		actionLogService.logAction(LogAction.BAN, userId, userService.getLoggedIn());
 		eventPublisher.publishEvent(new BanEvent(userId, guildId));
 	}
+
+	/**
+	 * Lifts the ban of the given user in the given guild
+	 *
+	 * @param guildId in which the ban should be removed
+	 * @param userId  to unban
+	 */
+	public void unban(long guildId, long userId) {
+		banRepository.deleteByUser_IdAndGuild_Id(userId, guildId);
+		actionLogService.logAction(LogAction.UNBAN, userId, userService.getLoggedIn());
+	}
 }

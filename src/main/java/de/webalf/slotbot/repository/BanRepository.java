@@ -23,4 +23,6 @@ public interface BanRepository extends SuperIdEntityJpaRepository<Ban> {
 	boolean existsByUserAndGuildInOrUser(@Param("user") User user, @Param("guilds") Guild[] guilds);
 
 	boolean existsByUserAndGuildNull(User user);
+
+	void deleteByUser_IdAndGuild_Id(long userId, long guildId);
 }
