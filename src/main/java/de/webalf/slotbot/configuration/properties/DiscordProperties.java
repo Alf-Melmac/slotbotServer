@@ -13,6 +13,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 public class DiscordProperties {
+	/**
+	 * The token of the discord bot. Found in the <a href="https://discord.com/developers/applications">Discord Developer Portal</a>
+	 */
 	@NotBlank
 	private String token;
+
+	/**
+	 * The public key of the discord application. Found in the <a href="https://discord.com/developers/applications">Discord Developer Portal</a>
+	 */
+	@NotBlank
+	private String publicKey;
 }

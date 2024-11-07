@@ -57,6 +57,10 @@ public class GuildUsersService {
 	}
 
 	public GuildUser add(long guildId, long userId) {
+		return add(guildId, userId, null);
+	}
+
+	public GuildUser add(long guildId, long userId, Role role) {
 		final Guild guild = guildService.find(guildId);
 		final User user = userService.find(userId);
 		if (banService.isBanned(user, guild)) {
@@ -65,9 +69,9 @@ public class GuildUsersService {
 					.build();
 		}
 
-		log.trace("Adding user {} to guild {}", userId, guildId);
+		log.trace("Adding user {} to guild {} with role {}", userId, guildId, role);
 		return guildUsersRepository.findByGuildAndUser(guild, user)
-				.orElseGet(() -> create(guild, user, null));
+				.orElseGet(() -> create(guild, user, role));
 	}
 
 	private GuildUser create(@NonNull Guild guild, @NonNull User user, Role role) {

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
 		<version>3.3.4</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>de.webalf</groupId>
@@ -31,6 +32,8 @@
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
 		<jda.version>5.1.2</jda.version>
+		<!--https://github.com/NeilMadden/salty-coffee/releases -->
+		<salty-coffee.version>1.1.1</salty-coffee.version>
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.18.1</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/releases -->
@@ -68,6 +71,12 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
+		<!--Discord security checks-->
+		<dependency>
+			<groupId>software.pando.crypto</groupId>
+			<artifactId>salty-coffee</artifactId>
+			<version>${salty-coffee.version}</version>
 		</dependency>
 
 		<!--Database-->

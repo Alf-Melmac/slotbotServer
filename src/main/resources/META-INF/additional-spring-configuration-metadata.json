@@ -12,11 +12,6 @@
 	  "description": "Origins for which cross-origin requests are allowed from a browser."
 	},
 	{
-	  "name": "discord.token",
-	  "type": "java.lang.String",
-	  "description": "The token of the discord bot. Found under https://discord.com/developers/applications."
-	},
-	{
 	  "name": "storage.download",
 	  "type": "java.lang.String",
 	  "description": "Path from which the /download endpoint obtains files.",

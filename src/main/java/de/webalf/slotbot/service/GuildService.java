@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
  * @author Alf
@@ -30,6 +31,11 @@ import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 @Slf4j
 public class GuildService {
 	private final GuildRepository guildRepository;
+
+	public Guild create(long id, String name) {
+		final Guild guild = Guild.builder().id(id).groupIdentifier(name.substring(0, Math.min(name.length(), TEXT))).build();
+		return guildRepository.saveAndFlush(guild);
+	}
 
 	public List<Guild> findAll() {
 		return guildRepository.findAll();
