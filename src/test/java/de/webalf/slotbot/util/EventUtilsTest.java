@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EventUtilsTest {
 	private static final long OWN_GUILD = 123;
 	private static final long FOREIGN_GUILD = 456;
-	private final String GUILD_ROLE = ROLE_PREFIX + GUILD + "_" + OWN_GUILD;
-	private final String READ_PUBLIC_GUILD = READ_PUBLIC + "_" + OWN_GUILD;
-	private final String READ_GUILD = READ + "_" + OWN_GUILD;
-	private final String READ_PUBLIC_ANY = READ_PUBLIC;
-	private final String READ_ANY = READ;
+	private static final String GUILD_ROLE = ROLE_PREFIX + GUILD + "_" + OWN_GUILD;
+	private static final String READ_PUBLIC_GUILD = READ_PUBLIC + "_" + OWN_GUILD;
+	private static final String READ_GUILD = READ + "_" + OWN_GUILD;
+	private static final String READ_PUBLIC_ANY = READ_PUBLIC;
+	private static final String READ_ANY = READ;
 
 	//Own event
 	@Test
