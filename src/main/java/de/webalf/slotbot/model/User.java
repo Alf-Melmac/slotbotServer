@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.feature.requirement.Requirement;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,12 @@ public class User extends AbstractDiscordIdEntity {
 
 	@OneToMany(mappedBy = "user")
 	private Set<GlobalRole> globalRoles = new HashSet<>();
+
+	@ManyToMany
+	@JoinTable(name = "user_fulfilled_requirement",
+			joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_fk")),
+			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
+	private Set<Requirement> fulfilledRequirements = new HashSet<>();
 
 	public static final long DEFAULT_USER_ID = 11111;
 

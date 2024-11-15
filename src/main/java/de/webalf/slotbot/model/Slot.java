@@ -2,6 +2,7 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.feature.requirement.Requirement;
 import de.webalf.slotbot.util.SlotUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
@@ -10,6 +11,8 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
@@ -50,6 +53,12 @@ public class Slot extends AbstractSuperIdEntity {
 	@Column(name = "slot_replacement", length = TEXT_DB)
 	@Size(max = TEXT)
 	private String replacementText;
+
+	@ManyToMany
+	@JoinTable(name = "slot_requirement",
+			joinColumns = @JoinColumn(name = "slot_id", foreignKey = @ForeignKey(name = "slot_fk")),
+			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
+	private Set<Requirement> requirements;
 
 	// Getter
 

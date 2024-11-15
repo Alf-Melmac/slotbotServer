@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
+import de.webalf.slotbot.feature.requirement.Requirement;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;
@@ -92,6 +93,12 @@ public class Event extends AbstractSuperIdEntity {
 	@OrderColumn
 	@JsonManagedReference
 	private List<Squad> squadList;
+
+	@ManyToMany
+	@JoinTable(name = "event_requirement",
+			joinColumns = @JoinColumn(name = "event_id", foreignKey = @ForeignKey(name = "event_fk")),
+			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
+	private Set<Requirement> requirements;
 
 	@Column(name = "event_reserve_participating")
 	private Boolean reserveParticipating;
