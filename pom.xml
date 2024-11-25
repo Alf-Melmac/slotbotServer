@@ -290,7 +290,12 @@
 					<jsonLibrary>jackson2</jsonLibrary>
 					<classPatterns>
 						<pattern>de.webalf.slotbot.model.dtos.**</pattern>
+						<pattern>de.webalf.slotbot.feature.*.dto.*</pattern>
 					</classPatterns>
+					<excludeClassPatterns>
+						<pattern>**Builder</pattern>
+						<pattern>**BuilderImpl</pattern>
+					</excludeClassPatterns>
 					<outputKind>global</outputKind>
 				</configuration>
 			</plugin>

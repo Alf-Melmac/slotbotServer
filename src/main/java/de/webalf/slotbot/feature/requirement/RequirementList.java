@@ -10,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.List;
+
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
 
@@ -35,6 +37,9 @@ public class RequirementList extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String name;
 
+	@OneToMany(mappedBy = "requirementList", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<Requirement> requirements;
+
 	/**
 	 * Whether members themselves can decide whether they fulfil a requirement
 	 */
@@ -48,4 +53,12 @@ public class RequirementList extends AbstractSuperIdEntity {
 	@Column(name = "requirement_list_enforced", nullable = false)
 	@Builder.Default
 	private boolean enforced = false;
+
+	/**
+	 * Set parents in child objects
+	 */
+	public void setBackReferences() {
+		getRequirements()
+				.forEach(requirement -> requirement.setRequirementList(this));
+	}
 }
