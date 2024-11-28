@@ -2,10 +2,9 @@ package de.webalf.slotbot.feature.requirement;
 
 import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListPostDto;
-import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.model.Guild;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -14,14 +13,11 @@ import java.util.stream.StreamSupport;
  * @author Alf
  * @since 15.11.2024
  */
-@Component
-@RequiredArgsConstructor
-class RequirementListAssembler {
-	private final GuildService guildService;
-
-	RequirementList fromDto(@NonNull RequirementListPostDto requirementList, long guildId) {
+@UtilityClass
+final class RequirementListAssembler {
+	static RequirementList fromDto(@NonNull RequirementListPostDto requirementList, @NonNull Guild guild) {
 		final RequirementList list = RequirementList.builder()
-				.guild(guildService.findExisting(guildId))
+				.guild(guild)
 				.name(requirementList.name())
 				.requirements(RequirementAssembler.fromDtoList(requirementList.requirements()))
 				.memberAssignable(requirementList.memberAssignable())

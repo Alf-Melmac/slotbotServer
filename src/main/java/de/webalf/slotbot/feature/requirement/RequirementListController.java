@@ -24,9 +24,9 @@ public class RequirementListController {
 		return RequirementListAssembler.toDtoList(requirementListService.findAll(guildId));
 	}
 
-	@PostMapping("/{guildId}")
+	@PutMapping("/{guildId}")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
-	public RequirementListDto postRequirementList(@PathVariable(value = "guildId") long guildId, @RequestBody RequirementListPostDto requirementList) {
-		return RequirementListAssembler.toDto(requirementListService.create(guildId, requirementList));
+	public RequirementListDto putRequirementList(@PathVariable(value = "guildId") long guildId, @RequestBody RequirementListPostDto requirementList) {
+		return RequirementListAssembler.toDto(requirementListService.createOrUpdate(guildId, requirementList));
 	}
 }

@@ -14,7 +14,8 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
  * @author Alf
  * @since 15.11.2024
  */
-public record RequirementListPostDto(@Size(max = TEXT) @NotBlank String name,
+public record RequirementListPostDto(Long id,
+                                     @Size(max = TEXT) @NotBlank String name,
                                      List<RequirementPostDto> requirements,
                                      boolean memberAssignable,
                                      boolean enforced) {}
