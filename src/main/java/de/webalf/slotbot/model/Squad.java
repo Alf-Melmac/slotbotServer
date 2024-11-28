@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.exception.ForbiddenException;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
@@ -42,9 +44,15 @@ public class Squad extends AbstractSuperIdEntity {
 	@JsonManagedReference
 	private List<Slot> slotList;
 
-	@ManyToOne(targetEntity = Guild.class)
+	@ManyToOne
 	@JoinColumn(name = "squad_reserved_for")
 	private Guild reservedFor;
+
+	@ManyToMany
+	@JoinTable(name = "squad_requirement",
+			joinColumns = @JoinColumn(name = "squad_id", foreignKey = @ForeignKey(name = "squad_fk")),
+			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
+	private Set<Requirement> requirements;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")

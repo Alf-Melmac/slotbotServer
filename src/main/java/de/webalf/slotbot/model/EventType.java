@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model;
 
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.*;
 
@@ -25,7 +27,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.*;
  */
 @Entity
 @Table(name = "event_type", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}),
-		@UniqueConstraint(columnNames = {"event_type_name", "event_color"})})
+		@UniqueConstraint(columnNames = {"event_type_name", "event_color"}, name = "event_type_name_color_unique")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,10 +44,16 @@ public class EventType extends AbstractSuperIdEntity {
 	@Pattern(regexp = HEX_COLOR_PATTERN)
 	private String color;
 
-	@ManyToOne(targetEntity = Guild.class)
+	@ManyToOne
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "event_type_guild")
 	private Guild guild;
+
+	@ManyToMany
+	@JoinTable(name = "event_type_requirement_list",
+			joinColumns = @JoinColumn(name = "event_type_id", foreignKey = @ForeignKey(name = "event_type_fk")),
+			inverseJoinColumns = @JoinColumn(name = "requirement_list_id", foreignKey = @ForeignKey(name = "requirement_list_fk")))
+	private Set<RequirementList> requirementList;
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;
