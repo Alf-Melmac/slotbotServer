@@ -2,6 +2,7 @@ package de.webalf.slotbot.feature.requirement;
 
 import de.webalf.slotbot.feature.requirement.dto.RequirementDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementPostDto;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 

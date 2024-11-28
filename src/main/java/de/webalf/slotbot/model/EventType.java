@@ -1,6 +1,6 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.feature.requirement.RequirementList;
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

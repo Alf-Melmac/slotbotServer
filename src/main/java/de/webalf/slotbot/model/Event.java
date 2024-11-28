@@ -3,7 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.feature.requirement.Requirement;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.bot.EventNotificationService;

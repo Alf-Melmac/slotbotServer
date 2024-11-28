@@ -2,7 +2,7 @@ package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.feature.requirement.Requirement;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.util.SlotUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;

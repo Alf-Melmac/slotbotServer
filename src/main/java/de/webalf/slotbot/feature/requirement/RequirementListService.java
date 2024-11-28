@@ -4,6 +4,8 @@ import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListPostDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementPostDto;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.GuildService;
 import jakarta.transaction.Transactional;

@@ -1,4 +1,4 @@
-package de.webalf.slotbot.feature.requirement;
+package de.webalf.slotbot.feature.requirement.model;
 
 import de.webalf.slotbot.model.AbstractSuperIdEntity;
 import jakarta.persistence.*;

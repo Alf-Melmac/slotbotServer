@@ -1,6 +1,6 @@
 package de.webalf.slotbot.feature.requirement.dto;
 
-import de.webalf.slotbot.feature.requirement.Requirement;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 

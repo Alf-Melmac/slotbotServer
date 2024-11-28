@@ -3,7 +3,7 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.exception.ForbiddenException;
-import de.webalf.slotbot.feature.requirement.Requirement;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

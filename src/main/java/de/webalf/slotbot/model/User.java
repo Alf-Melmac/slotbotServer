@@ -1,6 +1,6 @@
 package de.webalf.slotbot.model;
 
-import de.webalf.slotbot.feature.requirement.Requirement;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import jakarta.persistence.*;
 import lombok.*;
 
