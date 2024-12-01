@@ -32,7 +32,7 @@ public final class MinimalEventFieldAssembler {
 				.toList();
 	}
 
-	static <C extends MinimalEventFieldDto, B extends MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>> MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>
+	static <C extends MinimalEventFieldDto, B extends MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B>> B
 	toDto(MinimalEventFieldDto.MinimalEventFieldDtoBuilder<C, B> builder, @NonNull EventField eventField) {
 		return builder
 				.title(eventField.getTitle())

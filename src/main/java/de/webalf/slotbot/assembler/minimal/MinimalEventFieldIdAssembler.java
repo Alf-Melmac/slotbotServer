@@ -15,9 +15,7 @@ import java.util.stream.StreamSupport;
 @UtilityClass
 public final class MinimalEventFieldIdAssembler {
 	private static MinimalEventFieldIdDto toDto(@NonNull EventField eventField) {
-		MinimalEventFieldIdDto.MinimalEventFieldIdDtoBuilder<?, ?> builder = MinimalEventFieldIdDto.builder();
-		MinimalEventFieldAssembler.toDto(builder, eventField);
-		return builder
+		return MinimalEventFieldAssembler.toDto(MinimalEventFieldIdDto.builder(), eventField)
 				.id(eventField.getId())
 				.build();
 	}

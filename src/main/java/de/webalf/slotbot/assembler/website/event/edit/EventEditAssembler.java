@@ -13,9 +13,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class EventEditAssembler {
 	public static EventEditDto toDto(Event event) {
-		final EventEditDto.EventEditDtoBuilder<?, ?> builder = EventEditDto.builder();
-		EventActionAssembler.toDto(builder, event);
-		return builder
+		return EventActionAssembler.toDto(EventEditDto.builder(), event)
 				.details(MinimalEventFieldIdAssembler.toDtoList(event.getDetails()))
 				.squadList(MinimalSquadIdAssembler.toDtoList(event.getSquadList()))
 				.ownerGuild(Long.toString(event.getOwnerGuild().getId()))

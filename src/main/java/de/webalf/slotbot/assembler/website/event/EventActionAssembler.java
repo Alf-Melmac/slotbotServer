@@ -12,7 +12,7 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public final class EventActionAssembler {
-	public static <C extends EventActionDto, B extends EventActionDto.EventActionDtoBuilder<C, B>> EventActionDto.EventActionDtoBuilder<C, B>
+	public static <C extends EventActionDto, B extends EventActionDto.EventActionDtoBuilder<C, B>> B
 	toDto(EventActionDto.EventActionDtoBuilder<C, B> builder, @NonNull Event event) {
 		return builder
 				.hidden(event.isHidden())

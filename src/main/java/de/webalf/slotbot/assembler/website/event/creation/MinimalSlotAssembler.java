@@ -50,7 +50,7 @@ public final class MinimalSlotAssembler {
 				.toList();
 	}
 
-	public static <C extends MinimalSlotDto, B extends MinimalSlotDto.MinimalSlotDtoBuilder<C, B>> MinimalSlotDto.MinimalSlotDtoBuilder<C, B>
+	public static <C extends MinimalSlotDto, B extends MinimalSlotDto.MinimalSlotDtoBuilder<C, B>> B
 	toDto(MinimalSlotDto.MinimalSlotDtoBuilder<C, B> builder, @NonNull Slot slot) {
 		return builder
 				.name(slot.getName())

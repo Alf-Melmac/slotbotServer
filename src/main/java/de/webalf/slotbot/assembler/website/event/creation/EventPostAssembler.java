@@ -46,9 +46,7 @@ public class EventPostAssembler {
 	}
 
 	public static EventPostDto toDto(Event event) {
-		final EventPostDto.EventPostDtoBuilder<?, ?> builder = EventPostDto.builder();
-		EventActionAssembler.toDto(builder, event);
-		return builder
+		return EventActionAssembler.toDto(EventPostDto.builder(), event)
 				.details(MinimalEventFieldAssembler.toDtoList(event.getDetails()))
 				.squadList(MinimalSquadAssembler.toDtoList(event.getSquadList()))
 				.build();

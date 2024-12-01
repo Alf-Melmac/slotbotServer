@@ -15,9 +15,7 @@ import java.util.stream.StreamSupport;
 @UtilityClass
 final class MinimalSlotIdAssembler {
 	private static MinimalSlotIdDto toDto(Slot slot) {
-		MinimalSlotIdDto.MinimalSlotIdDtoBuilder<?, ?> builder = MinimalSlotIdDto.builder();
-		MinimalSlotAssembler.toDto(builder, slot);
-		return builder
+		return MinimalSlotAssembler.toDto(MinimalSlotIdDto.builder(), slot)
 				.id(slot.getId())
 				.build();
 	}
