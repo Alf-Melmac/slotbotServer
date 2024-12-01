@@ -23,13 +23,17 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-class RequirementListService {
+public class RequirementListService {
 	private final RequirementListRepository requirementListRepository;
 	private final RequirementRepository requirementRepository;
 	private final GuildService guildService;
 
+	public RequirementList find(long id) {
+		return requirementListRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	}
+
 	List<RequirementList> findAll(long guildId) {
-		return requirementListRepository.findByGuild_IdOrGuildNull(guildId);
+		return requirementListRepository.findByGuild_IdOrGuildNullOrderByName(guildId);
 	}
 
 	RequirementList createOrUpdate(long guildId, RequirementListPostDto dto) {

@@ -2,10 +2,9 @@ package de.webalf.slotbot.model.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 import static de.webalf.slotbot.util.ConstraintConstants.HEX_COLOR;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
@@ -14,12 +13,11 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
  * @author Alf
  * @since 08.04.2021
  */
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(callSuper = true)
 @Value
-@Builder
-public class EventTypeDto {
-	//The ID of this entity does not matter. The unique key is the name and the colour.
-	//Entities are to be found and created using these values.
+@SuperBuilder
+public class EventTypeDto extends AbstractIdEntityDto {
+	//Former implementation ignored the id of the entity. Most places use the name and color to identify the entity.
 
 	@NotBlank
 	@Size(max = TEXT)
