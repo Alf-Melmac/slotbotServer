@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!--https://github.com/spring-projects/spring-boot/releases -->
-		<version>3.3.5</version>
+		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -35,13 +35,13 @@
 		<!--https://github.com/NeilMadden/salty-coffee/releases -->
 		<salty-coffee.version>1.1.1</salty-coffee.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.18.1</jsoup.version>
+		<jsoup.version>1.18.2</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/releases -->
-		<ical4j.version>4.0.5</ical4j.version>
+		<ical4j.version>4.0.6</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
-		<springdoc-openapi-ui.version>2.6.0</springdoc-openapi-ui.version>
+		<springdoc-openapi-ui.version>2.7.0</springdoc-openapi-ui.version>
 	</properties>
 
 	<dependencies>
@@ -128,11 +128,6 @@
 		</dependency>
 
 		<!--Compilation-->
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-jpamodelgen</artifactId>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.atteo.classindex</groupId>
 			<artifactId>classindex</artifactId>

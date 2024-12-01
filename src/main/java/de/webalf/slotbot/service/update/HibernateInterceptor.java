@@ -22,9 +22,9 @@ public class HibernateInterceptor implements Interceptor {
 	}
 
 	@Override
-	public void onDelete(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) throws CallbackException {
+	public void onRemove(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) throws CallbackException {
 		updateInterceptorService.onDelete(entity);
-		Interceptor.super.onDelete(entity, id, state, propertyNames, types);
+		Interceptor.super.onRemove(entity, id, state, propertyNames, types);
 	}
 
 	@Override
