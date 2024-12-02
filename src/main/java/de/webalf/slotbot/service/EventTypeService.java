@@ -31,8 +31,19 @@ public class EventTypeService {
 	private final GuildService guildService;
 	private final RequirementListService requirementListService;
 
-	public EventType find(long id) {
-		return eventTypeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	/**
+	 * Finds a {@link EventType} by id and validates that it belongs to the given guild
+	 *
+	 * @param id      event type id to find
+	 * @param guildId guild the event type should belong to
+	 * @return found event type
+	 */
+	public EventType find(long id, long guildId) {
+		final EventType eventType = eventTypeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		if (eventType.getGuild().getId() != guildId) {
+			throw new ForbiddenException("Event type does not belong to this guild");
+		}
+		return eventType;
 	}
 
 	/**
