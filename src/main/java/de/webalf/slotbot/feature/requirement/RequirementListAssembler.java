@@ -35,7 +35,8 @@ final class RequirementListAssembler {
 				.name(requirementList.getName())
 				.requirements(RequirementAssembler.toDtoList(requirementList.getRequirements()))
 				.memberAssignable(requirementList.isMemberAssignable())
-				.enforced(requirementList.isEnforced());
+				.enforced(requirementList.isEnforced())
+				.global(requirementList.getGuild() == null);
 	}
 
 	static RequirementListDto toDto(@NonNull RequirementList requirementList) {

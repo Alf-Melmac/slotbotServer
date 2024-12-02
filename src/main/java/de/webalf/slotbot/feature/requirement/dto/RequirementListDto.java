@@ -28,4 +28,6 @@ public class RequirementListDto extends AbstractIdEntityDto {
 	private final boolean memberAssignable;
 
 	private final boolean enforced;
+
+	private final boolean global;
 }
