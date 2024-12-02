@@ -2,9 +2,6 @@ package de.webalf.slotbot.repository;
 
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
-import jakarta.transaction.NotSupportedException;
-import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,19 +16,4 @@ public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventTyp
 	Optional<EventType> findEventTypeByNameAndColor(String name, String color);
 
 	List<EventType> findByGuildNullOrGuildOrderByName(Guild guild);
-
-	/**
-	 * @see #findEventTypeByNameAndColor(String, String)
-	 */
-	@SneakyThrows(NotSupportedException.class)
-	@Override
-	default @NotNull Optional<EventType> findById(@NotNull Long l) {
-		throw new NotSupportedException("Id shouldn't be used to get entity. Use findEventTypeByNameAndColor");
-	}
-
-	@SneakyThrows(NotSupportedException.class)
-	@Override
-	default @NotNull List<EventType> findAllById(@NotNull Iterable<Long> iterable) {
-		throw new NotSupportedException("Id shouldn't be used to get entity.");
-	}
 }
