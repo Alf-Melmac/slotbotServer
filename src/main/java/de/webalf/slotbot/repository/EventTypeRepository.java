@@ -16,4 +16,8 @@ public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventTyp
 	Optional<EventType> findByNameAndColorAndGuild(String name, String color, Guild guild);
 
 	List<EventType> findByGuildNullOrGuildOrderByName(Guild guild);
+
+	Optional<EventType> findByNameAndGuild(String name, Guild guild);
+
+	List<EventType> findByGuildNull();
 }

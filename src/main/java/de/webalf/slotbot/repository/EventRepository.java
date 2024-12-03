@@ -1,6 +1,9 @@
 package de.webalf.slotbot.repository;
 
+import de.webalf.slotbot.feature.event_type_defaults.EventInfo;
+import de.webalf.slotbot.feature.event_type_defaults.EventInfoWithId;
 import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,4 +103,8 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	List<Event> findBySquadListSlotListUser(User user);
 
 	Optional<Event> findFirstBySquadList_SlotList_UserAndDateTimeBeforeOrderByDateTimeDesc(User user, LocalDateTime dateTime);
+
+	List<EventInfo> findDistinctByEventType(EventType eventType);
+
+	List<EventInfoWithId> findByEventTypeIn(Collection<EventType> eventTypes);
 }
