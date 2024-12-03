@@ -27,7 +27,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.*;
  */
 @Entity
 @Table(name = "event_type", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}),
-		@UniqueConstraint(columnNames = {"event_type_name", "event_color"}, name = "event_type_name_color_unique")})
+		@UniqueConstraint(columnNames = {"event_type_name", "event_color", "event_type_guild"}, name = "event_type_name_color_guild_unique")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
