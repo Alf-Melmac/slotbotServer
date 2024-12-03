@@ -1,9 +1,12 @@
-package de.webalf.slotbot.model.dtos;
+package de.webalf.slotbot.feature.event_type_defaults.dto;
 
+import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.enums.EventDetailType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -16,9 +19,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_VALUE;
  * @since 27.04.2021
  */
 @EqualsAndHashCode(callSuper = true)
-@Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Value
 @SuperBuilder
 public class EventDetailDefaultDto extends AbstractIdEntityDto {
 	@NotBlank

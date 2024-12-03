@@ -31,9 +31,9 @@ public class EventTypeController {
 	@PutMapping("/{guildId}/{id}/requirement-list/{requirementListId}/{listActive}")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public void putEventTypeRequirementList(@PathVariable(value = "guildId") long guildId,
-	                                                @PathVariable(value = "id") long id,
-	                                                @PathVariable(value = "requirementListId") long requirementListId,
-	                                                @PathVariable(value = "listActive") boolean listActive) {
+	                                        @PathVariable(value = "id") long id,
+	                                        @PathVariable(value = "requirementListId") long requirementListId,
+	                                        @PathVariable(value = "listActive") boolean listActive) {
 		eventTypeService.setRequirementList(guildId, id, requirementListId, listActive);
 	}
 }

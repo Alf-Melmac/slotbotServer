@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 @Repository
 public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventType> {
-	Optional<EventType> findEventTypeByNameAndColor(String name, String color);
+	Optional<EventType> findByNameAndColorAndGuild(String name, String color, Guild guild);
 
 	List<EventType> findByGuildNullOrGuildOrderByName(Guild guild);
 }

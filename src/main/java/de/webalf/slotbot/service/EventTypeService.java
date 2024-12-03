@@ -31,31 +31,42 @@ public class EventTypeService {
 	private final GuildService guildService;
 	private final RequirementListService requirementListService;
 
-	public EventType find(long id) {
-		return eventTypeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	/**
+	 * Finds a {@link EventType} by id and validates that it belongs to the given guild
+	 *
+	 * @param id      event type id to find
+	 * @param guildId guild the event type should belong to
+	 * @return found event type
+	 */
+	public EventType find(long id, long guildId) {
+		final EventType eventType = eventTypeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		if (eventType.getGuild().getId() != guildId) {
+			throw new ForbiddenException("Event type does not belong to this guild");
+		}
+		return eventType;
 	}
 
 	/**
-	 * Finds a {@link EventType} by name and color of given dto or creates a new one with values from given dto for the
-	 * given {@link Guild}
+	 * Finds a {@link EventType} by name and color of given dto or creates a new one with values from given dto
 	 *
 	 * @param eventTypeDto to find
+	 * @param guild        to find event type for
 	 * @return found eventType or new eventType
 	 */
-	public EventType find(@NonNull EventTypeDto eventTypeDto, Guild guild) {
-		return eventTypeRepository.findEventTypeByNameAndColor(eventTypeDto.getName(), eventTypeDto.getColor())
+	public EventType find(@NonNull EventTypeDto eventTypeDto, @NonNull Guild guild) {
+		return eventTypeRepository.findByNameAndColorAndGuild(eventTypeDto.getName(), eventTypeDto.getColor(), guild)
 				.orElseGet(() -> eventTypeRepository.save(EventTypeAssembler.fromDto(eventTypeDto, guild)));
 	}
 
 	/**
-	 * Finds a {@link EventType} by name and color of given dto or creates a new one with values from given dto for the
-	 * given {@link Guild}
+	 * Finds a {@link EventType} by name and color of given dto or creates a new one with values from given dto
 	 *
 	 * @param eventTypeDto to find
+	 * @param guild        to find event type for
 	 * @return found eventType or new eventType
 	 */
 	public EventType find(@NonNull EventTypeApiDto eventTypeDto, Guild guild) {
-		return eventTypeRepository.findEventTypeByNameAndColor(eventTypeDto.getName(), eventTypeDto.getColor())
+		return eventTypeRepository.findByNameAndColorAndGuild(eventTypeDto.getName(), eventTypeDto.getColor(), guild)
 				.orElseGet(() -> eventTypeRepository.save(EventTypeApiAssembler.fromDto(eventTypeDto, guild)));
 	}
 

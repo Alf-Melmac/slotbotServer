@@ -1,10 +1,9 @@
-package de.webalf.slotbot.assembler.website.event;
+package de.webalf.slotbot.feature.event_type_defaults;
 
-import de.webalf.slotbot.model.EventDetailsDefault;
-import de.webalf.slotbot.model.dtos.EventDetailDefaultDto;
+import de.webalf.slotbot.feature.event_type_defaults.dto.EventDetailDefaultDto;
+import de.webalf.slotbot.feature.event_type_defaults.model.EventDetailDefault;
 import lombok.experimental.UtilityClass;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,13 +11,9 @@ import java.util.List;
  * @since 03.01.2024
  */
 @UtilityClass
-public final class EventDetailsDefaultAssembler {
-	public List<EventDetailDefaultDto> toDto(EventDetailsDefault eventDetailsDefault) {
-		if (eventDetailsDefault == null) {
-			return Collections.emptyList();
-		}
-
-		return eventDetailsDefault.getEventFieldDefaults().stream()
+final class EventDetailsDefaultAssembler {
+	List<EventDetailDefaultDto> toDto(List<EventDetailDefault> eventDetailDefaults) {
+		return eventDetailDefaults.stream()
 				//Introducing the id required to type the map method. Not sure why
 				.<EventDetailDefaultDto>map(detailDefault -> EventDetailDefaultDto.builder()
 						.id(detailDefault.getId())
