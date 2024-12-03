@@ -25,6 +25,13 @@ public class EventTypeDefaultsController {
 		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByEventTypeId(guildId, eventTypeId));
 	}
 
+	@GetMapping("/guild/{guild}/{eventTypeId}/defaults")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionIn(#guild)")
+	public List<EventDetailDefaultDto> getEventTypeDefaults(@PathVariable(value = "guild") String guild,
+	                                                        @PathVariable(value = "eventTypeId") long eventTypeId) {
+		return EventDetailsDefaultAssembler.toDto(eventDetailsDefaultService.findByEventTypeId(guild, eventTypeId));
+	}
+
 	@PutMapping("/{guildId}/{eventTypeId}/defaults")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public List<EventDetailDefaultDto> putEventTypeDefaults(@PathVariable(value = "guildId") long guildId,

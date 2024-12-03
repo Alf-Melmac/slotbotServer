@@ -3,7 +3,6 @@ package de.webalf.slotbot.feature.event_type_defaults;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.feature.event_type_defaults.dto.EventDetailDefaultPostDto;
 import de.webalf.slotbot.feature.event_type_defaults.model.EventDetailDefault;
-import de.webalf.slotbot.model.EventDetailsDefault;
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.EventTypeService;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +27,6 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class EventDetailsDefaultService {
-	private final EventDetailsDefaultRepository eventDetailsDefaultRepository;
 	private final EventDetailDefaultRepository eventDetailDefaultRepository;
 	private final GuildService guildService;
 	private final EventTypeService eventTypeService;
@@ -37,6 +34,11 @@ public class EventDetailsDefaultService {
 	List<EventDetailDefault> findByEventTypeId(long guildId, long eventTypeId) {
 		final EventType eventType = eventTypeService.find(eventTypeId, guildId);
 		return eventDetailDefaultRepository.findAllByEventType(eventType);
+	}
+
+	List<EventDetailDefault> findByEventTypeId(String guildIdentifier, long eventTypeId) {
+		final Guild guild = guildService.findByIdentifier(guildIdentifier);
+		return findByEventTypeId(guild.getId(), eventTypeId);
 	}
 
 	List<EventDetailDefault> updateDefaults(long guildId, long eventTypeId, List<EventDetailDefaultPostDto> eventDetails) {
@@ -68,18 +70,4 @@ public class EventDetailsDefaultService {
 		detail.setText(StringUtils.isEmpty(text) ? null : text); //Always set the text so that it can be emptied
 		return eventDetailDefaultRepository.save(detail);
 	}
-
-	public EventDetailsDefault findByName(String eventTypeName, Optional<String> guild) {
-		return findByName(eventTypeName, guildService.findByIdentifier(guild));
-	}
-
-	public EventDetailsDefault findByName(String eventTypeName, long guildId) {
-		return findByName(eventTypeName, guildService.findExisting(guildId));
-	}
-
-	private EventDetailsDefault findByName(String eventTypeName, Guild guild) {
-		return eventDetailsDefaultRepository.findByEventTypeNameAndGuild(eventTypeName, guild)
-				.orElse(null);
-	}
-
 }

@@ -16,7 +16,7 @@ import java.util.Set;
  * @since 04.08.2024
  */
 @Repository
-public interface EventDetailDefaultRepository extends SuperIdEntityJpaRepository<EventDetailDefault> {
+interface EventDetailDefaultRepository extends SuperIdEntityJpaRepository<EventDetailDefault> {
 	List<EventDetailDefault> findAllByEventType(EventType eventType);
 
 	@Modifying
