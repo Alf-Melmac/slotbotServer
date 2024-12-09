@@ -34,7 +34,7 @@
 		<!--https://github.com/NeilMadden/salty-coffee/releases -->
 		<salty-coffee.version>1.1.1</salty-coffee.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.18.2</jsoup.version>
+		<jsoup.version>1.18.3</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/releases -->
 		<ical4j.version>4.0.6</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
