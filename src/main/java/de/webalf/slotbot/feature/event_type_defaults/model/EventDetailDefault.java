@@ -48,9 +48,6 @@ public class EventDetailDefault extends AbstractSuperIdEntity {
 	@Size(max = EMBEDDABLE_VALUE)
 	private String text;
 
-	@Column(name = "event_details_default_id")
-	private long eventDetailsDefault;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_type_id", foreignKey = @ForeignKey(name = "event_detail_default_event_type_fk"))
 	private EventType eventType;

@@ -11,8 +11,8 @@ import java.util.List;
  * @since 03.01.2024
  */
 @UtilityClass
-final class EventDetailsDefaultAssembler {
-	List<EventDetailDefaultDto> toDto(List<EventDetailDefault> eventDetailDefaults) {
+final class EventDetailDefaultAssembler {
+	List<EventDetailDefaultDto> toDtoList(List<EventDetailDefault> eventDetailDefaults) {
 		return eventDetailDefaults.stream()
 				//Introducing the id required to type the map method. Not sure why
 				.<EventDetailDefaultDto>map(detailDefault -> EventDetailDefaultDto.builder()
