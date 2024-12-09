@@ -3,6 +3,7 @@ package de.webalf.slotbot.repository;
 import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,7 @@ public interface EventTypeRepository extends SuperIdEntityJpaRepository<EventTyp
 	Optional<EventType> findByNameAndGuild(String name, Guild guild);
 
 	List<EventType> findByGuildNull();
+
+	@Transactional
+	void deleteByGuildNull();
 }

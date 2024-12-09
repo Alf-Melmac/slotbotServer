@@ -53,21 +53,30 @@ public class EventDetailDefaultMigrationApiController {
 
 		//For every event referencing a global event type replace it with the guild event type
 		eventRepository.findByEventTypeIn(globalEventTypes).forEach(event -> {
-			log.info("Migrating event {} with type {} of guild {} to new event type", event.getId(), event.getEventType().getName(), event.getOwnerGuild().getGroupIdentifier());
-			final EventType eventType = eventTypeRepository.findByNameAndGuild(event.getEventType().getName(), event.getOwnerGuild())
+			log.info("Migrating event {} with type {} of guild {} to new event type", event.id(), event.eventType().getName(), event.ownerGuild().getGroupIdentifier());
+			final EventType eventType = eventTypeRepository.findByNameAndGuild(event.eventType().getName(), event.ownerGuild())
 					.orElseThrow(() -> new ResourceNotFoundException("eventType1"));
-			event.setEventType(eventType);
+			eventRepository.updateEventTypeById(eventType, event.id());
 		});
 
 		eventDetailDefaultRepository.findAll().forEach(eventDetailDefault -> {
-			log.info("Migrating event detail default {} - {}", eventDetailDefault.getId(), eventDetailDefault.getTitle());
 			final long detailsId = eventDetailDefault.getEventDetailsDefault();
+			if (detailsId == 0) { //Failsafe for new details already in the new format
+				return;
+			}
+			log.info("Migrating event detail default {} - {}", eventDetailDefault.getId(), eventDetailDefault.getTitle());
 			final EventDetailsDefault details = eventDetailsDefaultRepository.findById(detailsId)
 					.orElseThrow(() -> new ResourceNotFoundException("details"));
 			final EventType eventType = eventTypeRepository.findByNameAndGuild(details.getEventTypeName(), details.getGuild())
 					.orElseThrow(() -> new ResourceNotFoundException("eventType"));
 			eventDetailDefault.setEventType(eventType);
 			eventDetailDefault.setEventDetailsDefault(null);
+			eventDetailDefaultRepository.save(eventDetailDefault);
 		});
+
+		log.info("Dropping event details");
+		eventDetailsDefaultRepository.deleteAll();
+		log.info("Dropping global event types");
+		eventTypeRepository.deleteByGuildNull();
 	}
 }

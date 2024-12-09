@@ -7,9 +7,11 @@ import de.webalf.slotbot.model.EventType;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -107,4 +109,9 @@ public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
 	List<EventInfo> findDistinctByEventType(EventType eventType);
 
 	List<EventInfoWithId> findByEventTypeIn(Collection<EventType> eventTypes);
+
+	@Transactional
+	@Modifying
+	@Query("update Event e set e.eventType = ?1 where e.id = ?2")
+	void updateEventTypeById(EventType eventType, long id);
 }
