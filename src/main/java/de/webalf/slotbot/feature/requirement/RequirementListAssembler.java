@@ -29,18 +29,14 @@ final class RequirementListAssembler {
 		return list;
 	}
 
-	private static <C extends RequirementListDto, B extends RequirementListDto.RequirementListDtoBuilder<C, B>> B toDto(RequirementListDto.RequirementListDtoBuilder<C, B> builder, @NonNull RequirementList requirementList) {
-		return builder
+	static RequirementListDto toDto(@NonNull RequirementList requirementList) {
+		return RequirementListDto.builder()
 				.id(requirementList.getId())
 				.name(requirementList.getName())
 				.requirements(RequirementAssembler.toDtoList(requirementList.getRequirements()))
 				.memberAssignable(requirementList.isMemberAssignable())
 				.enforced(requirementList.isEnforced())
-				.global(requirementList.getGuild() == null);
-	}
-
-	static RequirementListDto toDto(@NonNull RequirementList requirementList) {
-		return toDto(RequirementListDto.builder(), requirementList)
+				.global(requirementList.getGuild() == null)
 				.build();
 	}
 
@@ -51,7 +47,10 @@ final class RequirementListAssembler {
 	}
 
 	static EventTypeRequirementListDto toEventTypeDto(@NonNull RequirementList requirementList, boolean active) {
-		return toDto(EventTypeRequirementListDto.builder(), requirementList)
+		return EventTypeRequirementListDto.builder()
+				.id(requirementList.getId())
+				.name(requirementList.getName())
+				.requirements(RequirementAssembler.toDtoList(requirementList.getRequirements()))
 				.active(active)
 				.build();
 	}
