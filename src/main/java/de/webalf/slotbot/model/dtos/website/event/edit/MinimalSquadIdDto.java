@@ -3,10 +3,7 @@ package de.webalf.slotbot.model.dtos.website.event.edit;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -19,6 +16,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
  */
 @EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE) //Allow jackson to serialize this class
 @Value
 @SuperBuilder
 public class MinimalSquadIdDto extends AbstractIdEntityDto {
