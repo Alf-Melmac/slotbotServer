@@ -23,6 +23,8 @@ public class DiscordUser {
 	private String global_name;
 	private String avatar;
 
+	public static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
+
 	/**
 	 * @see User#getEffectiveName()
 	 */

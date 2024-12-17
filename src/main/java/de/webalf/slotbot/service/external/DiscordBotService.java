@@ -12,6 +12,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,10 +22,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Slf4j
 public class DiscordBotService {
 	private final BotService botService;
 	private final DiscordApiService discordApiService;
+	private final DiscordBotService self;
 
 	/**
 	 * Tries to build a {@link DiscordGuildMember}. If the {@link Guild#retrieveMemberById(long) member in the given guild}
@@ -81,5 +85,21 @@ public class DiscordBotService {
 			log.warn("Failed to retrieve user {}", userId, e);
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the name of the user in the given guild.
+	 * If no user can be found it returns {@link DiscordUser#UNKNOWN_USER_NAME}
+	 *
+	 * @param userId  user to get name for
+	 * @param guildId guild to get name in
+	 * @return name of the user in the guild
+	 */
+	public String getName(long userId, long guildId) {
+		final DiscordGuildMember guildMember = self.getGuildMember(userId, guildId);
+		if (guildMember != null) {
+			return guildMember.getEffectiveName();
+		}
+		return DiscordUser.UNKNOWN_USER_NAME;
 	}
 }

@@ -11,8 +11,7 @@ import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSlotDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsSquadDto;
 import de.webalf.slotbot.service.SlotService;
-import de.webalf.slotbot.service.external.DiscordApiService;
-import de.webalf.slotbot.util.LongUtils;
+import de.webalf.slotbot.service.external.DiscordBotService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser
 @Component
 @RequiredArgsConstructor
 public class EventDetailsAssembler {
-	private final DiscordApiService discordApiService;
+	private final DiscordBotService discordBotService;
 	private final EventFieldReferencelessAssembler eventFieldReferencelessAssembler;
 	private final SlotService slotService;
 
@@ -84,7 +83,7 @@ public class EventDetailsAssembler {
 				text = slot.getReplacementTextOrDefault();
 				blocked = true;
 			} else {
-				text = discordApiService.getName(LongUtils.toString(user.getId()), slot.getSquad().getEvent().getOwnerGuild().getId());
+				text = discordBotService.getName(user.getId(), slot.getSquad().getEvent().getOwnerGuild().getId());
 				occupied = true;
 			}
 		}

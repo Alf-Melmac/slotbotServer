@@ -7,7 +7,7 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.UserNameDto;
 import de.webalf.slotbot.repository.UserRepository;
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordBotService;
 import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
@@ -25,7 +25,7 @@ import org.springframework.util.ReflectionUtils;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
-	private final DiscordApiService discordApiService;
+	private final DiscordBotService discordBotService;
 	private final UserServiceImpl userServiceImpl;
 
 	User find(@NonNull UserDto userDto) {
@@ -82,8 +82,7 @@ public class UserService {
 			return null;
 		}
 
-		final String userId = LongUtils.toString(user.getId());
-		return toUserNameDto(user, discordApiService.getName(userId, guild.getId()));
+		return toUserNameDto(user, discordBotService.getName(user.getId(), guild.getId()));
 	}
 
 	private UserNameDto toUserNameDto(@NonNull User user, String name) {

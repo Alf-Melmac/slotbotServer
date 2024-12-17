@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -30,19 +31,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DiscordApiService {
 	private final DiscordProperties discordProperties;
-
-	/**
-	 * Returns the nickname for the given user on the server
-	 *
-	 * @param userId  user to get name for
-	 * @param guildId server to get name on
-	 * @return nickname on server or username if not set
-	 */
-	@Cacheable("discordNicknames")
-	public String getName(String userId, long guildId) {
-		DiscordGuildMember guildMember = getGuildMemberWithUser(userId, guildId);
-		return guildMember.getEffectiveName();
-	}
 
 	private static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
 
@@ -83,16 +71,21 @@ public class DiscordApiService {
 			wait = false;
 		}
 
-		final ResponseEntity<DiscordGuildMember> response = RestTemplatesUtil
-				.get("https://discord.com/api/v10" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), DiscordGuildMember.class);
-		final HttpHeaders headers = response.getHeaders();
-		List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
-		List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
-		if (!CollectionUtils.isEmpty(remainingHeaders) && !CollectionUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.getFirst())) {
-			wait = true;
-			waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.getFirst());
+		DiscordGuildMember guildMember;
+		try {
+			final ResponseEntity<DiscordGuildMember> response = RestTemplatesUtil
+					.get("https://discord.com/api/v10" + url, discordProperties.getToken(), new IgnoreErrorResponseErrorHandler(), DiscordGuildMember.class);
+			final HttpHeaders headers = response.getHeaders();
+			final List<String> remainingHeaders = headers.get("x-ratelimit-remaining");
+			final List<String> resetAfterHeaders = headers.get("x-ratelimit-reset-after");
+			if (!CollectionUtils.isEmpty(remainingHeaders) && !CollectionUtils.isEmpty(resetAfterHeaders) && "0".equals(remainingHeaders.getFirst())) {
+				wait = true;
+				waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.getFirst());
+			}
+			guildMember = response.getBody();
+		} catch (HttpClientErrorException e) { //Catch member not found exception
+			guildMember = null;
 		}
-		final DiscordGuildMember guildMember = response.getBody();
 		if (guildMember != null) guildMember.setGuild(guildId);
 		return guildMember;
 	}
@@ -107,9 +100,8 @@ public class DiscordApiService {
 	@Cacheable("guildMember")
 	public DiscordGuildMember getGuildMemberWithUser(String userId, long guildId) {
 		DiscordGuildMember member = getGuildMember(userId, guildId);
-		if (member.getUser() == null) {
-			log.warn("Fetching user of id " + userId);
-			DiscordUser user = getUser(userId);
+		if (member == null) {
+			final DiscordUser user = getUser(userId);
 			member = DiscordGuildMember.builder().user(user).roles(Collections.emptySet()).build();
 		}
 		return member;
