@@ -3,6 +3,7 @@ package de.webalf.slotbot.model;
 import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -47,6 +48,7 @@ public class EventType extends AbstractSuperIdEntity {
 	@ManyToOne
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "event_type_guild")
+	@NotNull
 	private Guild guild;
 
 	@ManyToMany

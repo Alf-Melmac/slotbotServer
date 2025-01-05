@@ -32,7 +32,7 @@ public final class GuildAssembler {
 		}
 
 		return GuildDto.builder()
-				.id(Long.toString(guild.getId()))
+				.id(guild.getIdString())
 				.groupIdentifier(guild.getGroupIdentifier())
 				.emojiUrl(guild.buildEmojiUrl())
 				.build();

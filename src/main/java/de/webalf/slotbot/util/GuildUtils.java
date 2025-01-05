@@ -23,6 +23,6 @@ public final class GuildUtils {
 		if (reservedFor == null) {
 			return null;
 		}
-		return Long.toString(reservedFor.getId());
+		return reservedFor.getIdString();
 	}
 }

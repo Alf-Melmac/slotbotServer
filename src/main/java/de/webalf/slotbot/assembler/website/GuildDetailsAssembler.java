@@ -12,7 +12,7 @@ import lombok.experimental.UtilityClass;
 public final class GuildDetailsAssembler {
 	public GuildDetailsDto toDto(Guild guild) {
 		return GuildDetailsDto.builder()
-				.id(Long.toString(guild.getId()))
+				.id(guild.getIdString())
 				.advanced(guild.isAdvanced())
 				.baseUrl(guild.getBaseUrl())
 				.groupIdentifier(guild.getGroupIdentifier())

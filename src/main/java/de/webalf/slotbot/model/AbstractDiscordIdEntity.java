@@ -21,4 +21,14 @@ public abstract class AbstractDiscordIdEntity {
 	@Id
 	@Column(name = "id", nullable = false, unique = true, updatable = false)
 	protected long id;
+
+	/**
+	 * Discord snowflakes exceed the <a href="https://stackoverflow.com/questions/1379934/large-numbers-erroneously-rounded-in-javascript">
+	 * maximum size of a JavaScript number</a>. Therefore, this method returns the id as string.
+	 *
+	 * @return id as string
+	 */
+	public String getIdString() {
+		return Long.toString(id);
+	}
 }
