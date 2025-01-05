@@ -282,6 +282,10 @@ public class Event extends AbstractSuperIdEntity {
 		return getOwnerGuild().getLocale();
 	}
 
+	public Set<Long> getRequirementsIds() {
+		return requirements.stream().map(Requirement::getId).collect(Collectors.toUnmodifiableSet());
+	}
+
 	// Validator
 
 	/**

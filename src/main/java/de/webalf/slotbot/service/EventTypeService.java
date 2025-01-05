@@ -108,10 +108,10 @@ public class EventTypeService {
 	 * @param listActive        true if requirement list should be activated, false if it should be deactivated
 	 */
 	public void setRequirementList(long guildId, long id, long requirementListId, boolean listActive) {
-		final EventType eventType = eventTypeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		final EventType eventType = find(id, guildId);
 		final RequirementList requirementList = requirementListService.find(requirementListId);
-		if (eventType.getGuild().getId() != guildId || (requirementList.getGuild() != null && requirementList.getGuild().getId() != guildId)) {
-			throw new ForbiddenException("Event type or requirement list does not belong to this guild");
+		if (requirementList.getGuild() != null && requirementList.getGuild().getId() != guildId) {
+			throw new ForbiddenException("Requirement list does not belong to this guild");
 		}
 		if (listActive) {
 			eventType.getRequirementList().add(requirementList);

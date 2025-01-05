@@ -4,6 +4,7 @@ import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.EventDto;
@@ -53,6 +54,7 @@ public class EventService {
 	private final GuildService guildService;
 	private final ActionLogService actionLogService;
 	private final BanService banService;
+	private final RequirementService requirementService;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -296,6 +298,7 @@ public class EventService {
 			squadService.updateSquadList(squadlist, event);
 			event.removeReservedForDefaultGuild();
 		});
+		DtoUtils.ifPresentObject(dto.getRequirements(), requirements -> event.setRequirements(requirementService.find(requirements)));
 
 		return event;
 	}

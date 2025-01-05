@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.website.event.creation;
 
 import de.webalf.slotbot.assembler.minimal.MinimalEventFieldAssembler;
 import de.webalf.slotbot.assembler.website.event.EventActionAssembler;
+import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
@@ -23,6 +24,7 @@ import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 public class EventPostAssembler {
 	private final EventTypeService eventTypeService;
 	private final MinimalSquadAssembler squadAssembler;
+	private final RequirementService requirementService;
 
 	public Event fromDto(@NonNull EventPostDto dto, @NonNull Guild ownerGuild) {
 		final Event event = Event.builder()
@@ -38,6 +40,7 @@ public class EventPostAssembler {
 				.pictureUrl(trimAndNullify(dto.getPictureUrl()))
 				.details(MinimalEventFieldAssembler.fromDtoIterable(dto.getDetails()))
 				.squadList(squadAssembler.fromDtoList(dto.getSquadList()))
+				.requirements(requirementService.find(dto.getRequirements()))
 				.reserveParticipating(dto.getReserveParticipating())
 				.ownerGuild(ownerGuild)
 				.build();

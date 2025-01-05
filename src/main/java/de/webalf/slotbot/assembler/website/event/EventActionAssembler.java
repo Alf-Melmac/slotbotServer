@@ -25,6 +25,7 @@ public final class EventActionAssembler {
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.pictureUrl(event.getPictureUrl())
-				.reserveParticipating(event.getReserveParticipating());
+				.reserveParticipating(event.getReserveParticipating())
+				.requirements(event.getRequirementsIds());
 	}
 }

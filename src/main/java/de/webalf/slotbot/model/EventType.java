@@ -15,7 +15,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
-import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.*;
 
@@ -55,7 +54,8 @@ public class EventType extends AbstractSuperIdEntity {
 	@JoinTable(name = "event_type_requirement_list",
 			joinColumns = @JoinColumn(name = "event_type_id", foreignKey = @ForeignKey(name = "event_type_fk")),
 			inverseJoinColumns = @JoinColumn(name = "requirement_list_id", foreignKey = @ForeignKey(name = "requirement_list_fk")))
-	private Set<RequirementList> requirementList;
+	@OrderBy("name")
+	private List<RequirementList> requirementList;
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;

@@ -38,6 +38,7 @@ public class RequirementList extends AbstractSuperIdEntity {
 	private String name;
 
 	@OneToMany(mappedBy = "requirementList", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OrderBy("name")
 	private List<Requirement> requirements;
 
 	/**

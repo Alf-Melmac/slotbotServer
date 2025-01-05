@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.URL;
@@ -54,4 +55,6 @@ public abstract class EventActionDto {
 	private String pictureUrl;
 
 	private Boolean reserveParticipating;
+
+	private Set<Long> requirements;
 }

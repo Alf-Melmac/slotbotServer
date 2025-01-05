@@ -1,6 +1,5 @@
 package de.webalf.slotbot.feature.requirement;
 
-import de.webalf.slotbot.feature.requirement.dto.EventTypeRequirementListDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListPostDto;
 import de.webalf.slotbot.feature.requirement.model.RequirementList;
@@ -44,14 +43,5 @@ final class RequirementListAssembler {
 		return StreamSupport.stream(requirements.spliterator(), false)
 				.map(RequirementListAssembler::toDto)
 				.toList();
-	}
-
-	static EventTypeRequirementListDto toEventTypeDto(@NonNull RequirementList requirementList, boolean active) {
-		return EventTypeRequirementListDto.builder()
-				.id(requirementList.getId())
-				.name(requirementList.getName())
-				.requirements(RequirementAssembler.toDtoList(requirementList.getRequirements()))
-				.active(active)
-				.build();
 	}
 }

@@ -34,7 +34,22 @@ public class RequirementListController {
 
 	@GetMapping("/{guildId}/event-type/{eventTypeId}")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
-	public List<EventTypeRequirementListDto> getRequirementLists(@PathVariable(value = "guildId") long guildId, @PathVariable(value = "eventTypeId") long eventTypeId) {
+	public List<EventTypeRequirementListDto> getRequirementLists(@PathVariable(value = "guildId") long guildId,
+	                                                             @PathVariable(value = "eventTypeId") long eventTypeId) {
 		return eventTypeRequirementListService.findAll(guildId, eventTypeId);
+	}
+
+	@GetMapping("/{guildId}/event-type/{eventTypeId}/active")
+	@PreAuthorize("@permissionChecker.hasEventManagePermission(#guildId)")
+	public List<EventTypeRequirementListDto> getRequirementListsActive(@PathVariable(value = "guildId") long guildId,
+	                                                                   @PathVariable(value = "eventTypeId") long eventTypeId) {
+		return EventTypeRequirementListAssembler.toDtoList(eventTypeRequirementListService.findAllActive(guildId, eventTypeId));
+	}
+
+	@GetMapping("/guild/{guild}/event-type/{eventTypeId}/active")
+	@PreAuthorize("@permissionChecker.hasEventManagePermissionIn(#guild)")
+	public List<EventTypeRequirementListDto> getRequirementListsActive(@PathVariable(value = "guild") String guild,
+	                                                                   @PathVariable(value = "eventTypeId") long eventTypeId) {
+		return EventTypeRequirementListAssembler.toDtoList(eventTypeRequirementListService.findAllActive(guild, eventTypeId));
 	}
 }
