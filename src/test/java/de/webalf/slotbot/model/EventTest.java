@@ -1,7 +1,7 @@
 package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.service.bot.EventNotificationService;
+import de.webalf.slotbot.feature.notifications.EventNotificationService;
 import de.webalf.slotbot.util.bot.MentionUtils;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,6 @@ import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
-import de.webalf.slotbot.model.dtos.EventDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
@@ -253,7 +252,7 @@ public class EventService {
 	}
 
 	/**
-	 * Creates a new event with values from the {@link EventDto}
+	 * Creates a new event with values from the {@link EventPostDto}
 	 * {@link Event#setOwnerGuild(Guild)} will be overwritten by the given owner identifier
 	 *
 	 * @param eventDto        new event
@@ -265,7 +264,7 @@ public class EventService {
 	}
 
 	/**
-	 * Updates the event found by id with values from the {@link EventDto}.
+	 * Updates the event found by id with values from the {@link EventUpdateDto}.
 	 * <p>
 	 * For updating discord information see {@link #addDiscordInformation(long, EventDiscordInformationDto)}
 	 *

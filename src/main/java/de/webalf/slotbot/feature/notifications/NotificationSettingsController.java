@@ -1,9 +1,6 @@
-package de.webalf.slotbot.controller;
+package de.webalf.slotbot.feature.notifications;
 
-import de.webalf.slotbot.assembler.NotificationSettingAssembler;
-import de.webalf.slotbot.model.dtos.NotificationSettingDto;
-import de.webalf.slotbot.model.dtos.referenceless.NotificationSettingsReferencelessDto;
-import de.webalf.slotbot.service.NotificationSettingsService;
+import de.webalf.slotbot.feature.notifications.dto.NotificationSettingDto;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +26,7 @@ public class NotificationSettingsController {
 
 	@PutMapping("/own")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public List<NotificationSettingsReferencelessDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
+	public List<NotificationSettingDto> updateNotificationSettings(@RequestBody List<NotificationSettingDto> notificationSettings) {
 		return NotificationSettingAssembler.toReferencelessDtoList(
 				notificationSettingsService.updateGlobalNotificationSettings(userService.getLoggedIn(), notificationSettings)
 		);

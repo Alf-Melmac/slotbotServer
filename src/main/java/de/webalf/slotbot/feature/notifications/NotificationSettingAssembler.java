@@ -1,7 +1,7 @@
-package de.webalf.slotbot.assembler;
+package de.webalf.slotbot.feature.notifications;
 
-import de.webalf.slotbot.model.NotificationSetting;
-import de.webalf.slotbot.model.dtos.referenceless.NotificationSettingsReferencelessDto;
+import de.webalf.slotbot.feature.notifications.dto.NotificationSettingDto;
+import de.webalf.slotbot.feature.notifications.model.NotificationSetting;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -13,15 +13,15 @@ import java.util.stream.StreamSupport;
  */
 @UtilityClass
 public final class NotificationSettingAssembler {
-	private static NotificationSettingsReferencelessDto toReferencelessDto(NotificationSetting notificationSetting) {
-		return NotificationSettingsReferencelessDto.builder()
+	private static NotificationSettingDto toReferencelessDto(NotificationSetting notificationSetting) {
+		return NotificationSettingDto.builder()
 				.id(notificationSetting.getId())
 				.hoursBeforeEvent(notificationSetting.getHoursBeforeEvent())
 				.minutesBeforeEvent(notificationSetting.getMinutesBeforeEvent())
 				.build();
 	}
 
-	public static List<NotificationSettingsReferencelessDto> toReferencelessDtoList(Iterable<? extends NotificationSetting> notificationSettings) {
+	public static List<NotificationSettingDto> toReferencelessDtoList(Iterable<? extends NotificationSetting> notificationSettings) {
 		return StreamSupport.stream(notificationSettings.spliterator(), false)
 				.map(NotificationSettingAssembler::toReferencelessDto)
 				.toList();

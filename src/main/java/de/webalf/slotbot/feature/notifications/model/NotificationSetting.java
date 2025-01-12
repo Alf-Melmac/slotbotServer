@@ -1,5 +1,8 @@
-package de.webalf.slotbot.model;
+package de.webalf.slotbot.feature.notifications.model;
 
+import de.webalf.slotbot.model.AbstractSuperIdEntity;
+import de.webalf.slotbot.model.Event;
+import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.util.DateUtils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,7 +35,7 @@ public class NotificationSetting extends AbstractSuperIdEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "event_id")
-	private Event event;
+	private Event event; //Not yet implemented
 
 	/**
 	 * Calculates the time in minutes from now to the notification time

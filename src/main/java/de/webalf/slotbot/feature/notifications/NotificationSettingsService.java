@@ -1,10 +1,9 @@
-package de.webalf.slotbot.service;
+package de.webalf.slotbot.feature.notifications;
 
+import de.webalf.slotbot.feature.notifications.dto.NotificationSettingDto;
+import de.webalf.slotbot.feature.notifications.model.NotificationSetting;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.NotificationSetting;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.NotificationSettingDto;
-import de.webalf.slotbot.repository.NotificationSettingRepository;
 import de.webalf.slotbot.util.DtoUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public class NotificationSettingsService {
 	 * @param dtos new complete list with new or updated settings
 	 * @return saved public notification settings
 	 */
-	public List<NotificationSetting> updateGlobalNotificationSettings(User user, @NonNull List<NotificationSettingDto> dtos) {
+	List<NotificationSetting> updateGlobalNotificationSettings(User user, @NonNull List<NotificationSettingDto> dtos) {
 		List<NotificationSetting> notificationSettings = new ArrayList<>();
 		dtos.forEach(notificationSettingDto ->
 				notificationSettings.add(updateOrCreateNotificationSetting(user, notificationSettingDto)));
@@ -75,10 +74,11 @@ public class NotificationSettingsService {
 	 * @return saved setting
 	 */
 	private NotificationSetting updateOrCreateNotificationSetting(User user, @NonNull NotificationSettingDto dto) {
-		final NotificationSetting notificationSetting = notificationSettingRepository.findById(dto.getId()).orElseGet(() -> NotificationSetting.builder().user(user).build());
+		final NotificationSetting notificationSetting = notificationSettingRepository.findById(dto.id())
+				.orElseGet(() -> NotificationSetting.builder().user(user).build());
 
-		DtoUtils.ifPresent(dto.getHoursBeforeEvent(), notificationSetting::setHoursBeforeEvent);
-		DtoUtils.ifPresent(dto.getMinutesBeforeEvent(), notificationSetting::setMinutesBeforeEvent);
+		DtoUtils.ifPresent(dto.hoursBeforeEvent(), notificationSetting::setHoursBeforeEvent);
+		DtoUtils.ifPresent(dto.minutesBeforeEvent(), notificationSetting::setMinutesBeforeEvent);
 
 		return notificationSettingRepository.save(notificationSetting);
 	}

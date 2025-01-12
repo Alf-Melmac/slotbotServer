@@ -1,4 +1,4 @@
-package de.webalf.slotbot.service.bot;
+package de.webalf.slotbot.feature.notifications;
 
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.NotificationMap;
@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.event.EventMetadataUpdateEvent;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import de.webalf.slotbot.service.EventService;
-import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.SchedulerService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.bot.DirectMessageHelper;

@@ -1,7 +1,7 @@
 package de.webalf.slotbot.controller.api;
 
-import de.webalf.slotbot.service.bot.EventNotificationService;
-import de.webalf.slotbot.service.bot.EventNotificationService.NotificationIdentifier;
+import de.webalf.slotbot.feature.notifications.EventNotificationService;
+import de.webalf.slotbot.feature.notifications.EventNotificationService.NotificationIdentifier;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

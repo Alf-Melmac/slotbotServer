@@ -7,10 +7,6 @@ import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 /**
  * @author Alf
  * @since 04.07.2021
@@ -33,25 +29,4 @@ public class EventDiscordInformationAssembler {
 				.slotListMsgPartTwo(LongUtils.parseLongWrapper(dto.getSlotListMsgPartTwo()))
 				.build();
 	}
-
-	private static EventDiscordInformationDto toDto(EventDiscordInformation discordInformation) {
-		if (discordInformation == null) {
-			return null;
-		}
-
-		return EventDiscordInformationDto.builder()
-				.channel(LongUtils.toString(discordInformation.getChannel()))
-				.guild(LongUtils.toString(discordInformation.getGuild().getId()))
-				.infoMsg(LongUtils.toString(discordInformation.getInfoMsg()))
-				.slotListMsgPartOne(LongUtils.toString(discordInformation.getSlotListMsgPartOne()))
-				.slotListMsgPartTwo(LongUtils.toString(discordInformation.getSlotListMsgPartTwo()))
-				.build();
-	}
-
-	static Set<EventDiscordInformationDto> toDtoSet(Iterable<? extends EventDiscordInformation> eventFields) {
-		return StreamSupport.stream(eventFields.spliterator(), true)
-				.map(EventDiscordInformationAssembler::toDto)
-				.collect(Collectors.toUnmodifiableSet());
-	}
-
 }

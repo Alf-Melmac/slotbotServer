@@ -2,10 +2,10 @@ package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.website.profile.UserProfileDtoAssembler;
 import de.webalf.slotbot.controller.website.FileWebController;
+import de.webalf.slotbot.feature.notifications.NotificationSettingsService;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.website.profile.UserOwnProfileDto;
 import de.webalf.slotbot.model.dtos.website.profile.UserProfileDto;
-import de.webalf.slotbot.service.NotificationSettingsService;
 import de.webalf.slotbot.service.UserUpdateService;
 import de.webalf.slotbot.util.EventCalendarUtil;
 import de.webalf.slotbot.util.LongUtils;
@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import static de.webalf.slotbot.assembler.NotificationSettingAssembler.toReferencelessDtoList;
+import static de.webalf.slotbot.feature.notifications.NotificationSettingAssembler.toReferencelessDtoList;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

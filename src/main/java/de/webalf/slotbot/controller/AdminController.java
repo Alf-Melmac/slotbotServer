@@ -1,11 +1,11 @@
 package de.webalf.slotbot.controller;
 
+import de.webalf.slotbot.feature.notifications.EventNotificationService;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.service.bot.EventNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
