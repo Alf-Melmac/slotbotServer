@@ -35,10 +35,15 @@ public class DiscordWebhookEventsHandler {
 
 		// Handle supported event types
 		if (payload.event().type() == EventType.APPLICATION_AUTHORIZED) {
+			log.trace("Received application authorized event: {}", body);
 			final ApplicationAuthorizedEvent applicationAuthorizedEvent = objectMapper.readValue(body, ApplicationAuthorizedEvent.class);
 			final ApplicationAuthorizedEvent.EventBody.ApplicationAuthorizedData data = applicationAuthorizedEvent.event().data();
 
 			final DiscordGuild guild = data.guild();
+			if (guild == null) {
+				log.warn("Received application authorized event without guild: {}", body);
+				return;
+			}
 			guildService.create(guild.id(), guild.name());
 			guildUsersService.add(guild.id(), data.user().getId(), Role.ADMINISTRATOR);
 		}
