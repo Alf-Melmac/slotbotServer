@@ -27,6 +27,4 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	GuildDto reservedFor;
 
 	List<EventDetailsSlotDto> slotList;
-
-	boolean notEmpty;
 }

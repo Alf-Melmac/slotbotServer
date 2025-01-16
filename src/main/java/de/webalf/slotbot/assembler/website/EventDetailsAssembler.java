@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
-
 /**
  * @author Alf
  * @since 30.10.2020
@@ -64,7 +62,6 @@ public class EventDetailsAssembler {
 				.name(squad.getName())
 				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
 				.slotList(slotList)
-				.notEmpty(slotList.stream().anyMatch(EventDetailsSlotDto::isOccupied))
 				.build();
 	}
 
@@ -77,15 +74,11 @@ public class EventDetailsAssembler {
 	private EventDetailsSlotDto toEventDetailsSlotDto(@NonNull Slot slot) {
 		final User user = slot.getUser();
 		String text = null;
-		boolean occupied = false;
-		boolean blocked = false;
 		if (user != null) {
 			if (user.isDefaultUser()) {
 				text = slot.getReplacementTextOrDefault();
-				blocked = true;
 			} else {
 				text = discordBotService.getName(user.getId(), slot.getSquad().getEvent().getOwnerGuild().getId());
-				occupied = true;
 			}
 		}
 
@@ -95,9 +88,6 @@ public class EventDetailsAssembler {
 				.number(slot.getNumber())
 				.reservedFor(GuildAssembler.toDto(slot.getEffectiveReservedForDisplay()))
 				.text(text)
-				.occupied(occupied)
-				.blocked(blocked)
-				.own(user != null && isLoggedInUser(user.getId()))
 				.slottable(SlottableAssembler.toDto(slotService.isSlottable(slot)))
 				.build();
 	}
