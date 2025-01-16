@@ -3,6 +3,7 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
@@ -23,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Boolean.TRUE;
+import static de.webalf.slotbot.model.enums.SlottableState.NOT_AVAILABLE;
+import static de.webalf.slotbot.model.enums.SlottableState.NO_BANNED;
 
 /**
  * @author Alf
@@ -118,15 +120,17 @@ public class SlotService {
 		return slot;
 	}
 
-	public Boolean isSlottable(@NonNull Slot slot) {
+	public Slottable isSlottable(@NonNull Slot slot) {
 		final User loggedIn = userService.getPotentialLoggedIn();
 		final Event slotEvent = slot.getEvent();
-		final Boolean slottable = loggedIn == null || !DateUtils.isInFuture(slotEvent.getDateTime())
-				? null
-				: slot.slotIsPossible(loggedIn);
-		if (TRUE.equals(slottable) && banService.isBanned(loggedIn, slotEvent.getOwnerGuild(), slot.getEffectiveReservedFor())) {
-			return null;
+		if (loggedIn == null || !DateUtils.isInFuture(slotEvent.getDateTime())) {
+			return new Slottable(NOT_AVAILABLE);
 		}
+		final Slottable slottable = slot.slotIsPossible(loggedIn);
+		if (slottable.state().isSlottingAllowed() && banService.isBanned(loggedIn, slotEvent.getOwnerGuild(), slot.getEffectiveReservedFor())) {
+			return new Slottable(NO_BANNED);
+		}
+
 		return slottable;
 	}
 

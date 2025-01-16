@@ -517,7 +517,8 @@ public class Event extends AbstractSuperIdEntity {
 	public Slot randomSlot(User user) {
 		final List<Slot> emptySlots = getSquadList().stream()
 				.filter(Squad::hasEmptySlot)
-				.flatMap(squad -> squad.getSlotList().stream().filter(slot -> slot.slotIsPossible(user)))
+				.flatMap(squad -> squad.getSlotList().stream()
+						.filter(slot -> slot.slotIsPossible(user).state().isSlottingAllowed()))
 				.toList();
 		if (CollectionUtils.isEmpty(emptySlots)) {
 			throw BusinessRuntimeException.builder().title("Kein freier Slot vorhanden.").build();

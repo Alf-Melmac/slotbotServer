@@ -3,6 +3,8 @@ package de.webalf.slotbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
+import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.util.SlotUtils;
 import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
 
+import static de.webalf.slotbot.model.enums.SlottableState.*;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
 
@@ -94,6 +97,10 @@ public class Slot extends AbstractSuperIdEntity {
 		return reservedFor != null ? reservedFor : getSquad().getReservedFor();
 	}
 
+	public Set<Requirement> getEffectiveRequirements() {
+		return getEvent().getRequirements();
+	}
+
 	/**
 	 * @see SlotUtils#getEffectiveReservedForDisplay(Guild, Squad)
 	 */
@@ -126,48 +133,60 @@ public class Slot extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * Checks if the given user is allowed to slot
+	 * Determines the usability of the slot for the given user
 	 *
 	 * @param user to be slotted
-	 * @return true if slot is possible
+	 * @return info about usability
 	 */
-	public boolean slotIsPossible(@NonNull User user) {
-		return !isSlotWithSlottedUser(user) &&
-				isEmpty() &&
-				allowedByReservation(user);
-	}
-
-	/**
-	 * Checks if the reservation of the current slots allows the given user to be slotted
-	 *
-	 * @param user to be slotted
-	 * @return true if user is allowed on this slot
-	 */
-	private boolean allowedByReservation(@NonNull User user) {
-		if (getEffectiveReservedFor() == null) {
-			return true;
+	public Slottable slotIsPossible(@NonNull User user) {
+		if (isNotEmpty()) {
+			if (isBlocked()) {
+				return new Slottable(NO_BLOCKED);
+			}
+			if (isSlotWithSlottedUser(user)) {
+				return new Slottable(YES_OWN);
+			}
+			return new Slottable(NO);
 		}
-		return user.getGuilds().contains(getEffectiveReservedFor());
+
+		if (!user.partOfGuild(getEffectiveReservedFor())) {
+			return new Slottable(NO_RESERVED);
+		}
+
+		final Set<Requirement> notFulfilledRequirements = user.getNotFulfilledRequirements(getEffectiveRequirements());
+		if (!notFulfilledRequirements.isEmpty()) {
+			final boolean includesEnforced = notFulfilledRequirements.stream().map(Requirement::getRequirementList).anyMatch(RequirementList::isEnforced);
+			return new Slottable(includesEnforced ? NO_REQUIREMENTS_NOT_MET : YES_REQUIREMENTS_NOT_MET, notFulfilledRequirements);
+		}
+
+		return new Slottable(YES);
 	}
 
 	/**
 	 * @throws BusinessRuntimeException if the given user can't be slotted to the slot
 	 */
 	public void assertSlotIsPossible(@NonNull User user) {
-		if (isSlotWithSlottedUser(user)) {
-			throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
-		} else if (isNotEmpty()) {
-			throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
-		} else if (!allowedByReservation(user)) {
-			throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
+		switch (slotIsPossible(user).state()) {
+			case YES, YES_REQUIREMENTS_NOT_MET -> {/*Allowed to slot*/}
+			case YES_OWN ->
+					throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
+			case NO ->
+					throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
+			case NO_BLOCKED -> throw BusinessRuntimeException.builder().title("Der Slot ist blockiert").build();
+			case NO_RESERVED ->
+					throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
+			case NO_REQUIREMENTS_NOT_MET ->
+					throw BusinessRuntimeException.builder().title("Die Person erfüllt nicht alle erforderlichen Anforderungen").build();
+			default ->
+					throw BusinessRuntimeException.builder().title("Der Slot ist für diese Person nicht verfügbar").build();
 		}
 	}
 
 	/**
-	 * @see Slot#slot(User)
 	 * Doesn't trigger the slotUpdate
 	 *
 	 * @throws BusinessRuntimeException if the user is already slotted on this slot or the slot is already occupied
+	 * @see Slot#slot(User)
 	 */
 	void slotWithoutUpdate(@NonNull User user) {
 		assertSlotIsPossible(user);
@@ -187,10 +206,10 @@ public class Slot extends AbstractSuperIdEntity {
 	}
 
 	/**
-	 * @see Slot#unslot(User)
 	 * Doesn't trigger the slotUpdate
 	 *
 	 * @throws BusinessRuntimeException If the slot is occupied by a user other than the given user
+	 * @see Slot#unslot(User)
 	 */
 	void unslotWithoutUpdate(User user) {
 		if (isSlotWithSlottedUser(user) || isEmpty()) {

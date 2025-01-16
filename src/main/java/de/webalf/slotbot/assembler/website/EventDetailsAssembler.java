@@ -3,6 +3,7 @@ package de.webalf.slotbot.assembler.website;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.assembler.GuildAssembler;
 import de.webalf.slotbot.assembler.referenceless.EventFieldReferencelessAssembler;
+import de.webalf.slotbot.feature.slot_rules.SlottableAssembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
@@ -97,7 +98,7 @@ public class EventDetailsAssembler {
 				.occupied(occupied)
 				.blocked(blocked)
 				.own(user != null && isLoggedInUser(user.getId()))
-				.slottable(slotService.isSlottable(slot))
+				.slottable(SlottableAssembler.toDto(slotService.isSlottable(slot)))
 				.build();
 	}
 }
