@@ -50,7 +50,30 @@ public class User extends AbstractDiscordIdEntity {
 		return getId() == DEFAULT_USER_ID;
 	}
 
-	public Set<Guild> getGuilds() {
-		return guilds.stream().map(GuildUser::getGuild).collect(Collectors.toUnmodifiableSet());
+	/**
+	 * Checks if user is part of given guild. If guild is <code>null</code>, <code>true</code> is returned
+	 *
+	 * @param guild to check membership for
+	 * @return true if no guild was given or user is part of the guild
+	 */
+	public boolean partOfGuild(Guild guild) {
+		if (guild == null) {
+			return true;
+		}
+		return guilds.stream()
+				.map(GuildUser::getGuild)
+				.anyMatch(userGuild -> userGuild.equals(guild));
+	}
+
+	/**
+	 * Returns all requirements that are not fulfilled by the user
+	 *
+	 * @param requirements to check
+	 * @return all requirements that are not fulfilled by the user
+	 */
+	public Set<Requirement> getNotFulfilledRequirements(Set<Requirement> requirements) {
+		return requirements.stream()
+				.filter(requirement -> !fulfilledRequirements.contains(requirement))
+				.collect(Collectors.toUnmodifiableSet());
 	}
 }

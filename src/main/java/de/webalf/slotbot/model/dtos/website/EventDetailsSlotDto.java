@@ -1,8 +1,10 @@
 package de.webalf.slotbot.model.dtos.website;
 
+import de.webalf.slotbot.feature.slot_rules.SlottableDto;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.GuildDto;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -29,19 +31,8 @@ public class EventDetailsSlotDto extends AbstractIdEntityDto {
 	String text;
 
 	/**
-	 * <code>true</code> if a human is slotted on this slot
+	 * Usability of the slot for the logged-in user
 	 */
-	boolean occupied;
-
-	boolean blocked;
-
-	/**
-	 * <code>true</code> if the logged-in user is slotted on this slot
-	 */
-	boolean own;
-
-	/**
-	 * <code>true</code> if the logged-in user can use this slot
-	 */
-	Boolean slottable;
+	@NotNull
+	SlottableDto slottable;
 }
