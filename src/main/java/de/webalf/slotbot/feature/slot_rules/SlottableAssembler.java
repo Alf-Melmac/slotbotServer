@@ -6,6 +6,7 @@ import de.webalf.slotbot.feature.requirement.model.Requirement;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,12 @@ public class SlottableAssembler {
 		final List<RequirementListDto> list = slottable.requirementsNotMet().stream()
 				.collect(Collectors.groupingBy(Requirement::getRequirementList))
 				.entrySet().stream()
-				.map(entry -> RequirementListAssembler.toDto(entry.getKey(), entry.getValue()))
+				.sorted(Comparator.comparing(entry -> entry.getKey().getName()))
+				.map(entry -> RequirementListAssembler
+						.toDto(
+								entry.getKey(),
+								entry.getValue().stream().sorted(Comparator.comparing(Requirement::getName)).toList()
+						))
 				.toList();
 
 		return SlottableDto.builder()
