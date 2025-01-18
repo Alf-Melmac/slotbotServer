@@ -1,8 +1,8 @@
 package de.webalf.slotbot;
 
+import de.webalf.slotbot.feature.notifications.EventNotificationService;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.bot.BotService;
-import de.webalf.slotbot.service.bot.EventNotificationService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
