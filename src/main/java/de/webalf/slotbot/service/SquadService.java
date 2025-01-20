@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSquadIdDto;
@@ -24,6 +25,7 @@ import java.util.List;
 public class SquadService {
 	private final SquadRepository squadRepository;
 	private final GuildService guildService;
+	private final RequirementService requirementService;
 	private final SlotService slotService;
 
 	/**
@@ -62,6 +64,7 @@ public class SquadService {
 
 		DtoUtils.ifPresent(dto.getName(), squad::setName);
 		squad.setReservedFor(guildService.evaluateReservedFor(dto.getReservedFor()));
+		DtoUtils.ifPresentObject(dto.getRequirements(), requirements -> squad.setRequirements(requirementService.find(requirements)));
 
 		if (dto.getSlotList() != null) {
 			slotService.updateSlotList(dto.getSlotList(), squad);

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
+
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
@@ -24,6 +26,8 @@ public class MinimalSlotDto {
 	private int number;
 
 	private String reservedFor;
+
+	private Set<Long> requirements;
 
 	private boolean blocked;
 

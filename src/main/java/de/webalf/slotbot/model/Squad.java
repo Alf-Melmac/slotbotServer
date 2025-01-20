@@ -18,6 +18,7 @@ import org.hibernate.annotations.FetchMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
@@ -104,6 +105,10 @@ public class Squad extends AbstractSuperIdEntity {
 
 	public boolean hasEmptySlot() {
 		return getSlotList().stream().anyMatch(Slot::isEmpty);
+	}
+
+	public Set<Long> getRequirementsIds() {
+		return requirements.stream().map(Requirement::getId).collect(Collectors.toUnmodifiableSet());
 	}
 
 	// Setter

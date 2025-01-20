@@ -21,6 +21,7 @@ final class MinimalSquadIdAssembler {
 				.name(squad.getName())
 				.slotList(MinimalSlotIdAssembler.toDtoList(squad.getSlotList()))
 				.reservedFor(GuildUtils.getReservedFor(squad))
+				.requirements(squad.getRequirementsIds())
 				.build();
 	}
 

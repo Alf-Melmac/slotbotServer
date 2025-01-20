@@ -14,7 +14,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.webalf.slotbot.model.enums.SlottableState.*;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
@@ -49,6 +52,12 @@ public class Slot extends AbstractSuperIdEntity {
 	@JoinColumn(name = "slot_reserved_for")
 	private Guild reservedFor;
 
+	@ManyToMany
+	@JoinTable(name = "slot_requirement",
+			joinColumns = @JoinColumn(name = "slot_id", foreignKey = @ForeignKey(name = "slot_fk")),
+			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
+	private Set<Requirement> requirements;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -56,12 +65,6 @@ public class Slot extends AbstractSuperIdEntity {
 	@Column(name = "slot_replacement", length = TEXT_DB)
 	@Size(max = TEXT)
 	private String replacementText;
-
-	@ManyToMany
-	@JoinTable(name = "slot_requirement",
-			joinColumns = @JoinColumn(name = "slot_id", foreignKey = @ForeignKey(name = "slot_fk")),
-			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
-	private Set<Requirement> requirements;
 
 	// Getter
 
@@ -98,7 +101,9 @@ public class Slot extends AbstractSuperIdEntity {
 	}
 
 	public Set<Requirement> getEffectiveRequirements() {
-		return getEvent().getRequirements();
+		return Stream.of(getEvent().getRequirements(), getSquad().getRequirements(), getRequirements())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**
@@ -118,6 +123,10 @@ public class Slot extends AbstractSuperIdEntity {
 			return null;
 		}
 		return StringUtils.isEmpty(replacementText) ? "Gesperrt" : replacementText;
+	}
+
+	public Set<Long> getRequirementsIds() {
+		return requirements.stream().map(Requirement::getId).collect(Collectors.toUnmodifiableSet());
 	}
 
 	// Setter

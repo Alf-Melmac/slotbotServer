@@ -3,6 +3,7 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.SlotDto;
@@ -37,6 +38,7 @@ import static de.webalf.slotbot.model.enums.SlottableState.NO_BANNED;
 public class SlotService {
 	private final SlotRepository slotRepository;
 	private final GuildService guildService;
+	private final RequirementService requirementService;
 	private final UserService userService;
 	private final ActionLogService actionLogService;
 	private final BanService banService;
@@ -109,6 +111,7 @@ public class SlotService {
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
 		slot.setReservedFor(guildService.evaluateReservedFor(dto.getReservedFor()));
+		DtoUtils.ifPresentObject(dto.getRequirements(), requirements -> slot.setRequirements(requirementService.find(requirements)));
 		if (dto.isBlocked()) {
 			final String replacementText = dto.getReplacementText();
 			blockSlot(slot, StringUtils.isNotEmpty(replacementText) ? replacementText.trim() : null);

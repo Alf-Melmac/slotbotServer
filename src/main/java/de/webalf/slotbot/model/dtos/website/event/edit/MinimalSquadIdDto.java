@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
@@ -27,4 +28,6 @@ public class MinimalSquadIdDto extends AbstractIdEntityDto {
 	List<MinimalSlotIdDto> slotList;
 
 	String reservedFor;
+
+	Set<Long> requirements;
 }

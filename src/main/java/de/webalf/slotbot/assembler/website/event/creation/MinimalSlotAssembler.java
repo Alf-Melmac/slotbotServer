@@ -1,5 +1,6 @@
 package de.webalf.slotbot.assembler.website.event.creation;
 
+import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSlotDto;
 import de.webalf.slotbot.service.GuildService;
@@ -23,6 +24,7 @@ import java.util.stream.StreamSupport;
 public final class MinimalSlotAssembler {
 	private final UserService userService;
 	private final GuildService guildService;
+	private final RequirementService requirementService;
 
 	private Slot fromDto(MinimalSlotDto slotDto) {
 		if (slotDto == null) {
@@ -35,6 +37,7 @@ public final class MinimalSlotAssembler {
 				.name(slotDto.getName().trim())
 				.number(slotDto.getNumber())
 				.reservedFor(guildService.evaluateReservedFor(slotDto.getReservedFor()))
+				.requirements(requirementService.find(slotDto.getRequirements()))
 				.user(blocked ? userService.getDefaultUser() : null)
 				.replacementText(blocked && StringUtils.isNotEmpty(replacementText) ? replacementText.trim() : null)
 				.build();
@@ -56,6 +59,7 @@ public final class MinimalSlotAssembler {
 				.name(slot.getName())
 				.number(slot.getNumber())
 				.reservedFor(GuildUtils.getReservedFor(slot))
+				.requirements(slot.getRequirementsIds())
 				.blocked(slot.isBlocked())
 				.replacementText(slot.getReplacementText());
 	}

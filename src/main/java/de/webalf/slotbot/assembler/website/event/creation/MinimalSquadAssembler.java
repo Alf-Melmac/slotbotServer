@@ -1,5 +1,6 @@
 package de.webalf.slotbot.assembler.website.event.creation;
 
+import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.model.Squad;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
 import de.webalf.slotbot.service.GuildService;
@@ -20,6 +21,7 @@ import java.util.stream.StreamSupport;
 final class MinimalSquadAssembler {
 	private final MinimalSlotAssembler slotAssembler;
 	private final GuildService guildService;
+	private final RequirementService requirementService;
 
 	private Squad fromDto(MinimalSquadDto squadDto) {
 		if (squadDto == null) {
@@ -30,6 +32,7 @@ final class MinimalSquadAssembler {
 				.name(squadDto.getName().trim())
 				.slotList(slotAssembler.fromDtoList(squadDto.getSlotList()))
 				.reservedFor(guildService.evaluateReservedFor(squadDto.getReservedFor()))
+				.requirements(requirementService.find(squadDto.getRequirements()))
 				.build();
 	}
 
@@ -48,6 +51,7 @@ final class MinimalSquadAssembler {
 				.name(squad.getName())
 				.slotList(MinimalSlotAssembler.toDtoList(squad.getSlotList()))
 				.reservedFor(GuildUtils.getReservedFor(squad))
+				.requirements(squad.getRequirementsIds())
 				.build();
 	}
 
