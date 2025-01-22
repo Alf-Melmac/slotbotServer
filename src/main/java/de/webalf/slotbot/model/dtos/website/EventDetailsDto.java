@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.website;
 
+import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.EventTypeDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
@@ -56,4 +57,6 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	List<EventDetailsSquadDto> squadList;
 
 	List<EventFieldReferencelessDto> details;
+
+	List<RequirementListDto> requirements;
 }

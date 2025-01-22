@@ -3,6 +3,7 @@ package de.webalf.slotbot.assembler.website;
 import de.webalf.slotbot.assembler.EventTypeAssembler;
 import de.webalf.slotbot.assembler.GuildAssembler;
 import de.webalf.slotbot.assembler.referenceless.EventFieldReferencelessAssembler;
+import de.webalf.slotbot.feature.requirement.RequirementListAssembler;
 import de.webalf.slotbot.feature.slot_rules.SlottableAssembler;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
@@ -46,6 +47,7 @@ public class EventDetailsAssembler {
 				.creator(event.getCreator())
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.details(eventFieldReferencelessAssembler.toDtoList(event))
+				.requirements(RequirementListAssembler.toDtoList(event.getRequirements()))
 				.build();
 	}
 
@@ -62,6 +64,7 @@ public class EventDetailsAssembler {
 				.name(squad.getName())
 				.reservedFor(GuildAssembler.toDto(squad.getReservedFor()))
 				.slotList(slotList)
+				.requirements(RequirementListAssembler.toDtoList(squad.getRequirements()))
 				.build();
 	}
 
@@ -88,6 +91,7 @@ public class EventDetailsAssembler {
 				.number(slot.getNumber())
 				.reservedFor(GuildAssembler.toDto(slot.getEffectiveReservedForDisplay()))
 				.text(text)
+				.requirements(RequirementListAssembler.toDtoList(slot.getRequirements()))
 				.slottable(SlottableAssembler.toDto(slotService.isSlottable(slot)))
 				.build();
 	}

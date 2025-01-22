@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.website;
 
+import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.feature.slot_rules.SlottableDto;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.GuildDto;
@@ -9,6 +10,8 @@ import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
@@ -29,6 +32,8 @@ public class EventDetailsSlotDto extends AbstractIdEntityDto {
 	GuildDto reservedFor;
 
 	String text;
+
+	List<RequirementListDto> requirements;
 
 	/**
 	 * Usability of the slot for the logged-in user

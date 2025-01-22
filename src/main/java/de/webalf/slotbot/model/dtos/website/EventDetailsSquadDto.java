@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.website;
 
+import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.GuildDto;
 import jakarta.validation.constraints.NotBlank;
@@ -27,4 +28,6 @@ public class EventDetailsSquadDto extends AbstractIdEntityDto {
 	GuildDto reservedFor;
 
 	List<EventDetailsSlotDto> slotList;
+
+	List<RequirementListDto> requirements;
 }

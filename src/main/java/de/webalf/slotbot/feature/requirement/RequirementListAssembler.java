@@ -8,7 +8,10 @@ import de.webalf.slotbot.model.Guild;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -47,6 +50,18 @@ public final class RequirementListAssembler {
 	static List<RequirementListDto> toDtoList(Iterable<? extends RequirementList> requirements) {
 		return StreamSupport.stream(requirements.spliterator(), false)
 				.map(RequirementListAssembler::toDto)
+				.toList();
+	}
+
+	public static List<RequirementListDto> toDtoList(Set<Requirement> requirements) {
+		return requirements.stream()
+				.collect(Collectors.groupingBy(Requirement::getRequirementList))
+				.entrySet().stream()
+				.sorted(Comparator.comparing(entry -> entry.getKey().getName()))
+				.map(entry -> toDto(
+						entry.getKey(),
+						entry.getValue().stream().sorted(Comparator.comparing(Requirement::getName)).toList()
+				))
 				.toList();
 	}
 }
