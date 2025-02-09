@@ -65,6 +65,10 @@ public class User extends AbstractDiscordIdEntity {
 				.anyMatch(userGuild -> userGuild.equals(guild));
 	}
 
+	public void addFulfilledRequirement(@NonNull Requirement requirement) {
+		fulfilledRequirements.add(requirement);
+	}
+
 	/**
 	 * Returns all requirements that are not fulfilled by the user
 	 *

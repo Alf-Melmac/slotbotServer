@@ -40,4 +40,8 @@ public class Requirement extends AbstractSuperIdEntity {
 	@JoinColumn(name = "requirement_list_id")
 	@NotNull
 	private RequirementList requirementList;
+
+	public boolean isMemberAssignable() {
+		return requirementList.isMemberAssignable();
+	}
 }

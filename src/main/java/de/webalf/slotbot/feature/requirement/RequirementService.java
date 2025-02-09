@@ -1,5 +1,6 @@
 package de.webalf.slotbot.feature.requirement;
 
+import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RequirementService {
 	private final RequirementRepository requirementRepository;
+
+	public Requirement find(long id) {
+		return requirementRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+	}
 
 	public Set<Requirement> find(Set<Long> ids) {
 		return new HashSet<>(requirementRepository.findAllById(ids));
