@@ -66,10 +66,4 @@ public class UserController {
 		userService.updateSettings(integrationActive);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
-	@PutMapping("/requirements/{requirementId}")
-	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public void fulfillRequirement(@PathVariable(name = "requirementId") long requirementId) {
-		userService.fulfillRequirement(requirementId);
-	}
 }

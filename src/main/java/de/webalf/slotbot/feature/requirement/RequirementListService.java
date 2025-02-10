@@ -36,6 +36,14 @@ public class RequirementListService {
 		return requirementListRepository.findByGuild_IdOrGuildNullOrderByName(guildId);
 	}
 
+	List<RequirementList> findAllManaged(long guildId) {
+		return requirementListRepository.findByGuild_IdAndMemberAssignableFalse(guildId);
+	}
+
+	boolean hasManagedRequirementLists(long guildId) {
+		return requirementListRepository.existsByGuild_IdAndMemberAssignableFalse(guildId);
+	}
+
 	RequirementList createOrUpdate(long guildId, RequirementListPostDto dto) {
 		final Long id = dto.id();
 		final Guild guild = guildService.findExisting(guildId);

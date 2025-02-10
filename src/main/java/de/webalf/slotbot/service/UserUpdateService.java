@@ -1,8 +1,5 @@
 package de.webalf.slotbot.service;
 
-import de.webalf.slotbot.exception.ForbiddenException;
-import de.webalf.slotbot.feature.requirement.RequirementService;
-import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +18,6 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUse
 public class UserUpdateService {
 	private final UserServiceImpl userService;
 	private final EventCalendarService eventCalendarService;
-	private final RequirementService requirementService;
 
 	public User updateSteamId(String steamId) {
 		final User user = find(getLoggedInUserId());
@@ -46,15 +42,5 @@ public class UserUpdateService {
 
 	public User find(String id) {
 		return find(Long.parseLong(id));
-	}
-
-	public void fulfillRequirement(long requirementId) {
-		final User user = find(getLoggedInUserId());
-
-		final Requirement requirement = requirementService.find(requirementId);
-		if (!requirement.isMemberAssignable()) {
-			throw new ForbiddenException("Requirement is not member assignable");
-		}
-		user.addFulfilledRequirement(requirement);
 	}
 }

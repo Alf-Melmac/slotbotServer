@@ -1,8 +1,10 @@
 package de.webalf.slotbot.feature.requirement;
 
 import de.webalf.slotbot.feature.requirement.dto.EventTypeRequirementListDto;
+import de.webalf.slotbot.feature.requirement.dto.ManagedRequirementListDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListPostDto;
+import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.List;
 public class RequirementListController {
 	private final RequirementListService requirementListService;
 	private final EventTypeRequirementListService eventTypeRequirementListService;
+	private final UserService userService;
 
 	@GetMapping("/{guildId}")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
@@ -51,5 +54,18 @@ public class RequirementListController {
 	public List<EventTypeRequirementListDto> getRequirementListsActive(@PathVariable(value = "guild") String guild,
 	                                                                   @PathVariable(value = "eventTypeId") long eventTypeId) {
 		return EventTypeRequirementListAssembler.toDtoList(eventTypeRequirementListService.findAllActive(guild, eventTypeId));
+	}
+
+	@GetMapping("/guild/{guildId}")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
+	public boolean hasManagedRequirementLists(@PathVariable(value = "guildId") long guildId) {
+		return requirementListService.hasManagedRequirementLists(guildId);
+	}
+
+	@GetMapping("/guild/{guildId}/user/{userId}")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
+	public List<ManagedRequirementListDto> getManagedRequirementLists(@PathVariable(value = "guildId") long guildId,
+	                                                                  @PathVariable(value = "userId") long userId) {
+		return ManagedRequirementListAssembler.toDtoList(requirementListService.findAllManaged(guildId), userService.find(userId));
 	}
 }

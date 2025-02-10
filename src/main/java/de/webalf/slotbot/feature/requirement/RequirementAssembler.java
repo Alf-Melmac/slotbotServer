@@ -5,6 +5,7 @@ import de.webalf.slotbot.feature.requirement.dto.RequirementPostDto;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -28,12 +29,16 @@ final class RequirementAssembler {
 				.toList();
 	}
 
-	private static RequirementDto toDto(@NonNull Requirement requirement) {
-		return RequirementDto.builder()
+	static <C extends RequirementDto, B extends RequirementDto.RequirementDtoBuilder<C, B>> B
+	toDto(RequirementDto.RequirementDtoBuilder<C, B> builder, @NotNull Requirement requirement) {
+		return builder
 				.id(requirement.getId())
 				.name(requirement.getName())
-				.icon(requirement.getIcon())
-				.build();
+				.icon(requirement.getIcon());
+	}
+
+	private static RequirementDto toDto(@NonNull Requirement requirement) {
+		return toDto(RequirementDto.builder(), requirement).build();
 	}
 
 	static List<RequirementDto> toDtoList(Iterable<? extends Requirement> requirements) {

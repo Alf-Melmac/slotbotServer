@@ -13,4 +13,8 @@ import java.util.List;
 @Repository
 interface RequirementListRepository extends SuperIdEntityJpaRepository<RequirementList> {
 	List<RequirementList> findByGuild_IdOrGuildNullOrderByName(long id);
+
+	List<RequirementList> findByGuild_IdAndMemberAssignableFalse(long id);
+
+	boolean existsByGuild_IdAndMemberAssignableFalse(long id);
 }

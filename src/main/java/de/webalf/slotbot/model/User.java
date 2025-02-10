@@ -66,7 +66,15 @@ public class User extends AbstractDiscordIdEntity {
 	}
 
 	public void addFulfilledRequirement(@NonNull Requirement requirement) {
-		fulfilledRequirements.add(requirement);
+		getFulfilledRequirements().add(requirement);
+	}
+
+	public void removeFulfilledRequirement(@NonNull Requirement requirement) {
+		getFulfilledRequirements().remove(requirement);
+	}
+
+	public boolean fulfillsRequirement(@NonNull Requirement requirement) {
+		return getFulfilledRequirements().contains(requirement);
 	}
 
 	/**
@@ -77,7 +85,7 @@ public class User extends AbstractDiscordIdEntity {
 	 */
 	public Set<Requirement> getNotFulfilledRequirements(Set<Requirement> requirements) {
 		return requirements.stream()
-				.filter(requirement -> !fulfilledRequirements.contains(requirement))
+				.filter(requirement -> !fulfillsRequirement(requirement))
 				.collect(Collectors.toUnmodifiableSet());
 	}
 }

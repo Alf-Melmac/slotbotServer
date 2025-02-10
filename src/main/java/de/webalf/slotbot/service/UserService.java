@@ -47,7 +47,7 @@ public class UserService {
 	 * @return User found by id
 	 * @throws ResourceNotFoundException if no user with this userId could be found
 	 */
-	User findExisting(long id) {
+	public User findExisting(long id) {
 		return userRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 	}
 
