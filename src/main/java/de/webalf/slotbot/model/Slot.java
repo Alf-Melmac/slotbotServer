@@ -100,17 +100,17 @@ public class Slot extends AbstractSuperIdEntity {
 		return reservedFor != null ? reservedFor : getSquad().getReservedFor();
 	}
 
-	public Set<Requirement> getEffectiveRequirements() {
-		return Stream.of(getEvent().getRequirements(), getSquad().getRequirements(), getRequirements())
-				.flatMap(Collection::stream)
-				.collect(Collectors.toUnmodifiableSet());
-	}
-
 	/**
 	 * @see SlotUtils#getEffectiveReservedForDisplay(Guild, Squad)
 	 */
 	public Guild getEffectiveReservedForDisplay() {
 		return SlotUtils.getEffectiveReservedForDisplay(getReservedFor(), getSquad());
+	}
+
+	public Set<Requirement> getEffectiveRequirements() {
+		return Stream.of(getEvent().getRequirements(), getSquad().getRequirements(), getRequirements())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class Slot extends AbstractSuperIdEntity {
 			case NO_RESERVED ->
 					throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
 			case NO_REQUIREMENTS_NOT_MET ->
-					throw BusinessRuntimeException.builder().title("Die Person erfüllt nicht alle erforderlichen Anforderungen").build();
+					throw BusinessRuntimeException.builder().title("Es werden nicht alle erforderlichen Anforderungen erfüllt").build();
 			default ->
 					throw BusinessRuntimeException.builder().title("Der Slot ist für diese Person nicht verfügbar").build();
 		}
