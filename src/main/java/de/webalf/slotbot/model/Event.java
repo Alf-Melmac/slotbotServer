@@ -384,22 +384,30 @@ public class Event extends AbstractSuperIdEntity {
 	private void moveReservists() {
 		findSquadByName(RESERVE_NAME).ifPresent(reserve -> {
 			if (!isFull()) {
-				//Fills empty slots with reservists
-				List<Slot> emptySlots = getSquadList().stream().flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty)).toList();
-				emptySlots.forEach(slot -> reserve.getSlotList().stream()
-						.filter(Slot::isNotEmpty).findFirst()
-						.ifPresent(reserveSlot -> {
-							User reserveSlotUser = reserveSlot.getUser();
-							reserveSlot.unslotWithoutUpdate(reserveSlotUser);
-							slot.slotWithoutUpdate(reserveSlotUser);
-						}));
+				final List<Slot> reserveSlots = reserve.getSlotList().stream()
+						.filter(Slot::isNotEmpty)
+						.collect(Collectors.toCollection(ArrayList::new));
+				getSquadList().stream()
+						//Empty slots
+						.flatMap(squad -> squad.getSlotList().stream().filter(Slot::isEmpty))
+						.forEach(emptySlot -> reserveSlots.stream()
+								//Only reserve that is allowed on the empty slot
+								//Banned users can't be part of the reserve, check therefore not needed here
+								.filter(reserveSlot -> emptySlot.getSlottable(reserveSlot.getUser()).state().isSlottingAllowed())
+								.findFirst()
+								.ifPresent(reserveSlot -> {
+									final User reserveSlotUser = reserveSlot.getUser();
+									reserveSlot.unslotWithoutUpdate(reserveSlotUser);
+									emptySlot.slotWithoutUpdate(reserveSlotUser);
+									reserveSlots.remove(reserveSlot); //Only set the remaining reserve on empty slots
+								}));
 			}
 
 			List<Slot> reserveSlots = reserve.getSlotList();
 			List<User> reserveUsers = reserveSlots.stream().filter(Slot::isNotEmpty).map(Slot::getUser).toList();
 
 			//Empty reserve
-			reserveSlots.forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));
+			reserveSlots.stream().filter(Slot::isNotEmpty).forEach(slot -> slot.unslotWithoutUpdate(slot.getUser()));
 			//Fill reserve from the beginning to close gaps
 			for (int i = 0; i < reserveUsers.size(); i++) {
 				reserveSlots.get(i).slotWithoutUpdate(reserveUsers.get(i));
@@ -500,30 +508,10 @@ public class Event extends AbstractSuperIdEntity {
 	 */
 	private void removeReserve(Squad reserve) {
 		if (reserve.getSlotList().stream().anyMatch(Slot::isNotEmpty)) {
-			log.error("Tried to delete non empty reserve in event " + getName());
+			log.error("Tried to delete non empty reserve in event {}", getId());
 			throw new IllegalArgumentException("Reserve is not empty. Can't delete");
 		}
 		removeSquad(reserve);
-	}
-
-	private static final Random RANDOM = new Random();
-
-	/**
-	 * Returns a random empty slot from the event.
-	 *
-	 * @param user to find slot for
-	 * @return random empty slot
-	 */
-	public Slot randomSlot(User user) {
-		final List<Slot> emptySlots = getSquadList().stream()
-				.filter(Squad::hasEmptySlot)
-				.flatMap(squad -> squad.getSlotList().stream()
-						.filter(slot -> slot.slotIsPossible(user).state().isSlottingAllowed()))
-				.toList();
-		if (CollectionUtils.isEmpty(emptySlots)) {
-			throw BusinessRuntimeException.builder().title("Kein freier Slot vorhanden.").build();
-		}
-		return emptySlots.get(RANDOM.nextInt(emptySlots.size()));
 	}
 
 	/**

@@ -3,12 +3,14 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.assembler.SlotAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.exception.SlottableException;
 import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
 import de.webalf.slotbot.model.enums.LogAction;
+import de.webalf.slotbot.model.enums.SlottableState;
 import de.webalf.slotbot.model.event.BanEvent;
 import de.webalf.slotbot.repository.SlotRepository;
 import de.webalf.slotbot.util.DateUtils;
@@ -25,8 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.webalf.slotbot.model.enums.SlottableState.NOT_AVAILABLE;
-import static de.webalf.slotbot.model.enums.SlottableState.NO_BANNED;
+import static de.webalf.slotbot.model.enums.SlottableState.*;
 
 /**
  * @author Alf
@@ -123,28 +124,72 @@ public class SlotService {
 		return slot;
 	}
 
-	public Slottable isSlottable(@NonNull Slot slot) {
+	/**
+	 * Determines the {@link Slottable} state of the given slot for the currently logged-in user
+	 *
+	 * @param slot to check
+	 * @return state of the slot for the user
+	 */
+	public Slottable getSlottable(@NonNull Slot slot) {
 		final User loggedIn = userService.getPotentialLoggedIn();
-		final Event slotEvent = slot.getEvent();
-		if (loggedIn == null || !DateUtils.isInFuture(slotEvent.getDateTime())) {
+		if (loggedIn == null) {
 			return new Slottable(NOT_AVAILABLE);
 		}
-		final Slottable slottable = slot.slotIsPossible(loggedIn);
-		if (slottable.state().isSlottingAllowed() && banService.isBanned(loggedIn, slotEvent.getOwnerGuild(), slot.getEffectiveReservedFor())) {
-			return new Slottable(NO_BANNED);
-		}
-
-		return slottable;
+		return getSlottable(slot, loggedIn);
 	}
 
 	/**
-	 * Slots the given user to the given Slot. If the user is already slotted, it is removed from the other slot
+	 * Determines the {@link Slottable} state of the given slot for the given user
+	 *
+	 * @param slot to check
+	 * @param user to slot
+	 * @return state of the slot for the user
+	 */
+	private Slottable getSlottable(@NonNull Slot slot, @NonNull User user) {
+		final Event slotEvent = slot.getEvent();
+		if (!DateUtils.isInFuture(slotEvent.getDateTime())) {
+			return new Slottable(NOT_AVAILABLE);
+		}
+		final Slottable slottable = slot.getSlottable(user);
+		if (slottable.state().isSlottingAllowed() && banService.isBanned(user, slotEvent.getOwnerGuild(), slot.getEffectiveReservedFor())) {
+			return new Slottable(NO_BANNED);
+		}
+		return slottable;
+	}
+
+	boolean isSlottable(@NonNull Slot slot, @NonNull User user) {
+		return getSlottable(slot, user).state().isSlottingAllowed();
+	}
+
+	/**
+	 * Validates the availability of the given slot for the given user.
+	 *
+	 * @param slot to check
+	 * @param user to slot
+	 * @throws SlottableException if the slot is not available for the user
+	 */
+	void assertSlotIsPossible(@NonNull Slot slot, @NonNull User user) {
+		final Slottable slottable = getSlottable(slot, user);
+		final SlottableState slottableState = slottable.state();
+		if (YES.equals(slottableState) || YES_REQUIREMENTS_NOT_MET.equals(slottableState)) {
+			return;
+		}
+		throw SlottableException.builder().slottable(slottable).build();
+	}
+
+	/**
+	 * Slots the given user to the given slot.
+	 * <p>
+	 * All {@link #assertSlotIsPossible(Slot, User) prerequisites should be checked} before calling this method.
+	 * <p>
+	 * If the user is already slotted, an {@link Event#unslotIfAlreadySlotted(User) unslot} should be performed and
+	 * persisted first to ensure notification order.
 	 *
 	 * @param slotId id of slot in which slot should be performed
 	 * @param user   to be slotted
 	 * @return the updated slot
 	 */
-	Slot slot(long slotId, User user) {
+	Slot slot(long slotId, @NonNull User user) {
 		final Slot slot = findById(slotId);
 		slot.slot(user);
 		actionLogService.logEventAction(LogAction.SLOT, slot.getEvent(), user);

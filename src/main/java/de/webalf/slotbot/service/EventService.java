@@ -2,9 +2,10 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.exception.SlottableException;
 import de.webalf.slotbot.feature.requirement.RequirementService;
+import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
@@ -28,10 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
+import static de.webalf.slotbot.model.enums.SlottableState.NOT_AVAILABLE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
 
 /**
@@ -336,14 +339,11 @@ public class EventService {
 	public Event slot(@NonNull Event event, int slotNumber, long userId) {
 		final Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
 		final User user = userService.find(userId);
-		if (banService.isBanned(user, event.getOwnerGuild(), slot.getEffectiveReservedFor())) {
-			throw new ForbiddenException("You're banned.");
-		}
 		return slot(event, slot, user);
 	}
 
 	/**
-	 * Slots the {@link UserService#getLoggedIn() logged-in user} into the slot found by given id
+	 * Slots the logged-in user into the slot found by given id
 	 */
 	public Event slot(long slotId) {
 		final Slot slot = slotService.findById(slotId);
@@ -351,8 +351,8 @@ public class EventService {
 	}
 
 	/**
-	 * Slots the given user into the given slot of the given event. Checks slotting permissions and ensures unslot
-	 * before slotting.
+	 * Slots the given user into the given slot of the given event. Checks availability and removes the user from any
+	 * other slot prior to slotting.
 	 *
 	 * @param event event
 	 * @param slot  slot to slot into
@@ -360,10 +360,11 @@ public class EventService {
 	 * @return event in which the person has been slotted
 	 */
 	private Event slot(@NonNull Event event, @NonNull Slot slot, @NonNull User user) {
-		slot.assertSlotIsPossible(user);
+		slotService.assertSlotIsPossible(slot, user);
+
 		event.unslotIfAlreadySlotted(user);
 		eventRepository.saveAndFlush(event);
-		//After the event was flushed the old slot can't be reused anymore
+		//After the event was flushed the old slot entity can't be reused anymore
 		slotService.slot(slot.getId(), user);
 		return event;
 	}
@@ -430,18 +431,30 @@ public class EventService {
 		return event;
 	}
 
+	private static final Random RANDOM = new Random();
+
 	/**
 	 * Searches for the given channel the matching event and enters the given user for a random empty slot, if available.
 	 *
 	 * @param channel event channel
 	 * @param userDto person that should be slotted
 	 * @return Event in which the person has been slotted
-	 * @throws BusinessRuntimeException if no slot is available
+	 * @throws SlottableException if no slot is available
 	 */
 	public Event randomSlot(long channel, UserDto userDto) {
-		Event event = findByChannel(channel);
-		User user = userService.find(userDto);
-		Slot slot = event.randomSlot(user);
+		final Event event = findByChannel(channel);
+		final User user = userService.find(userDto);
+
+		final List<Slot> availableSlots = event.getSquadList().stream()
+				.filter(Squad::hasEmptySlot)
+				.flatMap(squad -> squad.getSlotList().stream()
+						.filter(slot -> slotService.isSlottable(slot, user)))
+				.toList();
+		if (availableSlots.isEmpty()) {
+			throw SlottableException.builder().slottable(new Slottable(NOT_AVAILABLE)).build();
+		}
+		final Slot slot = availableSlots.get(RANDOM.nextInt(availableSlots.size()));
+
 		return slot(event, slot, user);
 	}
 

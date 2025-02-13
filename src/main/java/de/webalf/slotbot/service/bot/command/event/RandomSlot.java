@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.bot.command.event;
 
+import de.webalf.slotbot.exception.SlottableException;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
+import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
 
 /**
  * @author Alf
@@ -28,7 +30,12 @@ public class RandomSlot implements DiscordSlashCommand {
 	public void execute(@NonNull SlashCommandInteractionEvent event, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Slash command: randomSlot");
 
-		eventBotService.randomSlot(event.getChannel().getIdLong(), event.getUser().getId());
+		try {
+			eventBotService.randomSlot(event.getChannel().getIdLong(), event.getUser().getId());
+		} catch (SlottableException e) {
+			reply(event, locale.t(e.getSlottable().state().getMessageKey()));
+			return;
+		}
 
 		finishedVisibleInteraction(event);
 	}

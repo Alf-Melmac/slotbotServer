@@ -113,6 +113,10 @@ public class Slot extends AbstractSuperIdEntity {
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
+	public Set<Long> getRequirementsIds() {
+		return requirements.stream().map(Requirement::getId).collect(Collectors.toUnmodifiableSet());
+	}
+
 	/**
 	 * Returns the replacement text for this slot if it is blocked
 	 *
@@ -125,29 +129,13 @@ public class Slot extends AbstractSuperIdEntity {
 		return StringUtils.isEmpty(replacementText) ? "Gesperrt" : replacementText;
 	}
 
-	public Set<Long> getRequirementsIds() {
-		return requirements.stream().map(Requirement::getId).collect(Collectors.toUnmodifiableSet());
-	}
-
-	// Setter
-
-	/**
-	 * Adds the given user to the slot if no other user occupies the slot. If already slotted on another slot in the same event the slot will be changed
-	 *
-	 * @param user user to slot
-	 */
-	public void slot(User user) {
-		slotWithoutUpdate(user);
-		getEvent().slotUpdate();
-	}
-
 	/**
 	 * Determines the usability of the slot for the given user
 	 *
 	 * @param user to be slotted
 	 * @return info about usability
 	 */
-	public Slottable slotIsPossible(@NonNull User user) {
+	public Slottable getSlottable(@NonNull User user) {
 		if (isNotEmpty()) {
 			if (isBlocked()) {
 				return new Slottable(NO_BLOCKED);
@@ -171,36 +159,24 @@ public class Slot extends AbstractSuperIdEntity {
 		return new Slottable(YES);
 	}
 
+	// Setter
+
 	/**
-	 * @throws BusinessRuntimeException if the given user can't be slotted to the slot
+	 * Adds the given user to the slot. Requires any prerequisites to be already checked.
+	 *
+	 * @param user user to slot
 	 */
-	public void assertSlotIsPossible(@NonNull User user) {
-		switch (slotIsPossible(user).state()) {
-			case YES, YES_REQUIREMENTS_NOT_MET -> {/*Allowed to slot*/}
-			case YES_OWN ->
-					throw BusinessRuntimeException.builder().title("Die Person ist bereits auf diesem Slot").build();
-			case NO ->
-					throw BusinessRuntimeException.builder().title("Auf dem Slot befindet sich eine andere Person").build();
-			case NO_BLOCKED -> throw BusinessRuntimeException.builder().title("Der Slot ist blockiert").build();
-			case NO_RESERVED ->
-					throw BusinessRuntimeException.builder().title("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert").build();
-			case NO_REQUIREMENTS_NOT_MET ->
-					throw BusinessRuntimeException.builder().title("Es werden nicht alle erforderlichen Anforderungen erfüllt").build();
-			default ->
-					throw BusinessRuntimeException.builder().title("Der Slot ist für diese Person nicht verfügbar").build();
-		}
+	public void slot(@NonNull User user) {
+		slotWithoutUpdate(user);
+		getEvent().slotUpdate();
 	}
 
 	/**
 	 * Doesn't trigger the slotUpdate
 	 *
-	 * @throws BusinessRuntimeException if the user is already slotted on this slot or the slot is already occupied
-	 * @see Slot#slot(User)
+	 * @see #slot(User)
 	 */
 	void slotWithoutUpdate(@NonNull User user) {
-		assertSlotIsPossible(user);
-		//Remove the user from any other slot in the Event
-		getEvent().findSlotOfUser(user).ifPresent(slot -> slot.unslotWithoutUpdate(user));
 		setUser(user);
 	}
 

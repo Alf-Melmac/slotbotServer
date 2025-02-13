@@ -13,7 +13,6 @@ import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
 import static de.webalf.slotbot.model.SquadTest.buildReserveSquad;
 import static de.webalf.slotbot.model.enums.SlottableState.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -244,13 +243,13 @@ class SlotTest {
 		assertEquals(replacementText, sut.getReplacementTextOrDefault());
 	}
 
-	//slotIsPossible
+	//getSlottable
 	@Test
-	void slotIsPossibleWithBlocked() {
+	void getSlottableWithBlocked() {
 		final User userToSlot = User.builder().build();
 		final Slot sut = buildBlockedSlot();
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.extracting(Slottable::state)
 				.isEqualTo(NO_BLOCKED)
 				.extracting(SlottableState::isSlottingAllowed)
@@ -262,7 +261,7 @@ class SlotTest {
 		final User userToSlot = User.builder().build();
 		final Slot sut = Slot.builder().user(userToSlot).build();
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.extracting(Slottable::state)
 				.isEqualTo(YES_OWN)
 				.extracting(SlottableState::isSlottingAllowed)
@@ -275,7 +274,7 @@ class SlotTest {
 		final User otherUser = User.builder().id(5678).build();
 		final Slot sut = Slot.builder().user(otherUser).build();
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.extracting(Slottable::state)
 				.isEqualTo(NO)
 				.extracting(SlottableState::isSlottingAllowed)
@@ -289,7 +288,7 @@ class SlotTest {
 		final Slot sut = buildEmptySlot();
 		sut.setReservedFor(guild);
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.extracting(Slottable::state)
 				.isEqualTo(YES)
 				.extracting(SlottableState::isSlottingAllowed)
@@ -303,7 +302,7 @@ class SlotTest {
 				.reservedFor(Guild.builder().build())
 				.build();
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.extracting(Slottable::state)
 				.isEqualTo(NO_RESERVED)
 				.extracting(SlottableState::isSlottingAllowed)
@@ -311,14 +310,14 @@ class SlotTest {
 	}
 
 	@Test
-	void slotIsPossibleWithMissingOptionalRequirement() {
+	void getSlottableWithMissingOptionalRequirement() {
 		final User userToSlot = User.builder().build();
 		final Requirement requirement = Requirement.builder()
 				.requirementList(RequirementList.builder().enforced(false).build())
 				.build();
 		final Slot sut = buildSlotWithRequirements(Set.of(requirement));
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.returns(YES_REQUIREMENTS_NOT_MET, Slottable::state)
 				.returns(Set.of(requirement), Slottable::requirementsNotMet)
 				.extracting(slottable -> slottable.state().isSlottingAllowed())
@@ -326,14 +325,14 @@ class SlotTest {
 	}
 
 	@Test
-	void slotIsPossibleWithMissingEnforcedRequirement() {
+	void getSlottableWithMissingEnforcedRequirement() {
 		final User userToSlot = User.builder().build();
 		final Requirement requirement = Requirement.builder()
 				.requirementList(RequirementList.builder().enforced(true).build())
 				.build();
 		final Slot sut = buildSlotWithRequirements(Set.of(requirement));
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.returns(NO_REQUIREMENTS_NOT_MET, Slottable::state)
 				.returns(Set.of(requirement), Slottable::requirementsNotMet)
 				.extracting(slottable -> slottable.state().isSlottingAllowed())
@@ -345,7 +344,7 @@ class SlotTest {
 		final User userToSlot = User.builder().build();
 		final Slot sut = buildEmptySlot();
 
-		assertThat(sut.slotIsPossible(userToSlot))
+		assertThat(sut.getSlottable(userToSlot))
 				.extracting(Slottable::state)
 				.isEqualTo(YES)
 				.extracting(SlottableState::isSlottingAllowed)
@@ -354,97 +353,13 @@ class SlotTest {
 
 	//slotWithoutUpdate
 	@Test
-	void slotPreventsSlottingOnSameSlot() {
-		final User userToSlot = User.builder().build();
-		final Slot sut = Slot.builder().user(userToSlot).build();
-
-		assertThatThrownBy(() -> sut.slotWithoutUpdate(userToSlot))
-				.isInstanceOf(BusinessRuntimeException.class)
-				.hasMessage("Die Person ist bereits auf diesem Slot");
-	}
-
-	@Test
-	void slotSlotsOnEmptySlot() {
+	void slotSlots() {
 		final User userToSlot = User.builder().build();
 		final Slot sut = buildEmptySlot();
 
 		assertThat(sut.getUser()).isNull();
 		sut.slotWithoutUpdate(userToSlot);
 		assertThat(userToSlot).isEqualTo(sut.getUser());
-	}
-
-	@Test
-	void slotSwitchesSlot() {
-		final User userToSlot = User.builder().build();
-		final Slot slot1 = buildEmptySlot();
-		slot1.setUser(userToSlot);
-		final Slot sut = buildEmptySlot();
-		sut.getSquad().setSlotList(new ArrayList<>(sut.getSquad().getSlotList()) {{
-			add(slot1);
-		}});
-
-		sut.slotWithoutUpdate(userToSlot);
-
-		assertThat(slot1.getUser()).isNull(); //Removed from old slot
-		assertThat(sut.getUser()).isEqualTo(userToSlot); //Slotted in new slot
-	}
-
-	@Test
-	void slotDoesNotOverrideOccupiedSlot() {
-		final User userToSlot = User.builder().id(1234).build();
-		final User otherUser = User.builder().id(5678).build();
-
-		final Slot sut = Slot.builder().user(otherUser).build();
-
-		assertThatThrownBy(() -> sut.slotWithoutUpdate(userToSlot))
-				.isInstanceOf(BusinessRuntimeException.class)
-				.hasMessage("Auf dem Slot befindet sich eine andere Person");
-	}
-
-	@Test
-	void slotAllowsSlottingInReservedSlot() {
-		final User userToSlot = User.builder().build();
-		final Guild guild = userInGuild(userToSlot);
-		final Slot sut = buildEmptySlot();
-		sut.setReservedFor(guild);
-
-		assertThat(sut.getUser()).isNull();
-		sut.slotWithoutUpdate(userToSlot);
-		assertThat(userToSlot).isEqualTo(sut.getUser());
-	}
-
-	@Test
-	void slotAllowsSlottingInReservedSquad() {
-		final User userToSlot = User.builder().build();
-		final Guild guild = userInGuild(userToSlot);
-		final Slot sut = buildEmptySlot();
-		sut.getSquad().setReservedFor(guild);
-
-		assertThat(sut.getUser()).isNull();
-		sut.slotWithoutUpdate(userToSlot);
-		assertThat(userToSlot).isEqualTo(sut.getUser());
-	}
-
-	@Test
-	void slotPreventsSlottingInReservedSlot() {
-		final User userToSlot = User.builder().build();
-		final Slot sut = buildEmptySlot();
-		sut.setReservedFor(Guild.builder().build());
-
-		assertThatThrownBy(() -> sut.slotWithoutUpdate(userToSlot))
-				.isInstanceOf(BusinessRuntimeException.class)
-				.hasMessage("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert");
-	}
-
-	@Test
-	void slotPreventsSlottingInReservedSquad() {
-		final User userToSlot = User.builder().build();
-		final Slot sut = buildEmptySlot();
-		sut.getSquad().setReservedFor(Guild.builder().build());
-
-		assertThatThrownBy(() -> sut.slotWithoutUpdate(userToSlot))
-				.isInstanceOf(BusinessRuntimeException.class)
-				.hasMessage("Dieser Slot ist für Mitglieder einer anderen Gruppe reserviert");
 	}
 
 	//unslotWithoutUpdate

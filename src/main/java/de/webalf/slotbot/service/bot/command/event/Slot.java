@@ -1,7 +1,10 @@
 package de.webalf.slotbot.service.bot.command.event;
 
+import de.webalf.slotbot.exception.SlottableException;
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.bot.TranslatableOptionData;
+import de.webalf.slotbot.model.enums.SlottableState;
 import de.webalf.slotbot.service.bot.EventBotService;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
@@ -13,8 +16,10 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
+import static de.webalf.slotbot.util.bot.InteractionUtils.reply;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getIntegerOption;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalUserOption;
 
@@ -50,10 +55,21 @@ public class Slot implements DiscordSlashCommand {
 		final int slotNumber = getIntegerOption(event, OPTION_SLOT_NUMBER);
 
 		final Long user = getOptionalUserOption(event, OPTION_SLOT_USER);
-		if (user == null) { //Self slot
-			eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
-		} else { //Slot others
-			eventBotService.slot(event.getChannel().getIdLong(), slotNumber, Long.toString(user));
+		try {
+			if (user == null) { //Self slot
+				eventBotService.slot(event.getChannel().getIdLong(), slotNumber, event.getUser().getId());
+			} else { //Slot others
+				eventBotService.slot(event.getChannel().getIdLong(), slotNumber, Long.toString(user));
+			}
+		} catch (SlottableException e) {
+			final SlottableState slottableState = e.getSlottable().state();
+			if (SlottableState.NO_REQUIREMENTS_NOT_MET.equals(slottableState)) {
+				reply(event, locale.t(slottableState.getMessageKey()) + ": " +
+						e.getSlottable().requirementsNotMet().stream().map(Requirement::getName).collect(Collectors.joining(", ")));
+			} else {
+				reply(event, locale.t(slottableState.getMessageKey()));
+			}
+			return;
 		}
 
 		finishedVisibleInteraction(event);

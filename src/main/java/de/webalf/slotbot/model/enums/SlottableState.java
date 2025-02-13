@@ -10,15 +10,16 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum SlottableState {
-	YES(true),
-	YES_OWN(true),
-	YES_REQUIREMENTS_NOT_MET(true),
-	NO(false),
-	NO_BLOCKED(false),
-	NO_RESERVED(false),
-	NO_REQUIREMENTS_NOT_MET(false),
-	NO_BANNED(false),
-	NOT_AVAILABLE(false);
+	YES(true, null),
+	YES_OWN(true, "slottableState.yes.own"),
+	YES_REQUIREMENTS_NOT_MET(true, "slottableState.yes.requirementsNotMet"),
+	NO(false, "slottableState.no"),
+	NO_BLOCKED(false, "slottableState.no.blocked"),
+	NO_RESERVED(false, "slottableState.no.reserved"),
+	NO_REQUIREMENTS_NOT_MET(false, "slottableState.no.requirementsNotMet"),
+	NO_BANNED(false, "slottableState.no.banned"),
+	NOT_AVAILABLE(false, "slottableState.no.notAvailable");
 
 	private final boolean isSlottingAllowed;
+	private final String messageKey;
 }

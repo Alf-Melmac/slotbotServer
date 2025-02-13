@@ -79,6 +79,7 @@ public class EventApiService {
 					.title(messageSource.getMessage("api.userId.error", null, event.getOwnerGuildLocale()))
 					.build();
 		}
+		//FIXME the api isn't yet able to use the SlottableException
 		return eventService.slot(event, slotNumber, Long.parseLong(userId));
 	}
 

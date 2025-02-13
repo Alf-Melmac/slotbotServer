@@ -92,7 +92,7 @@ public class EventDetailsAssembler {
 				.reservedFor(GuildAssembler.toDto(slot.getEffectiveReservedForDisplay()))
 				.text(text)
 				.requirements(RequirementListAssembler.toDtoList(slot.getRequirements()))
-				.slottable(SlottableAssembler.toDto(slotService.isSlottable(slot)))
+				.slottable(SlottableAssembler.toDto(slotService.getSlottable(slot)))
 				.build();
 	}
 }
