@@ -8,8 +8,6 @@ import java.util.concurrent.ScheduledFuture;
  * @since 31.08.2021
  */
 public class NotificationMap<K, V extends ScheduledFuture<?>> extends HashMap<K, V> {
-	private static final long serialVersionUID = -7586981330194453423L;
-
 	@Override
 	public V remove(Object key) {
 		final V value = get(key);

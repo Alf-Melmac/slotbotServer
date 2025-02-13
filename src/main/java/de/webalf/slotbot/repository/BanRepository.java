@@ -19,7 +19,7 @@ public interface BanRepository extends SuperIdEntityJpaRepository<Ban> {
 
 	@Query("""
 			SELECT (COUNT(b) > 0) FROM Ban b
-			WHERE (b.user = :user AND b.guild in :guilds) OR b.user = :user""")
+			WHERE (b.user = :user AND b.guild in :guilds) OR b.user = :user AND b.guild IS NULL""")
 	boolean existsByUserAndGuildInOrUser(@Param("user") User user, @Param("guilds") Guild[] guilds);
 
 	boolean existsByUserAndGuildNull(User user);

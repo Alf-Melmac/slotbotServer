@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class BusinessRuntimeException extends RuntimeException {
-	private static final long serialVersionUID = -3121618107868290626L;
 	private String description;
 
 	@Builder
