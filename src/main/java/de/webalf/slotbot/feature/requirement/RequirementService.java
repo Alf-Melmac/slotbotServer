@@ -4,8 +4,12 @@ import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.event.GuildUserDeleteEvent;
 import de.webalf.slotbot.service.UserService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,5 +64,13 @@ public class RequirementService {
 		} else {
 			user.removeFulfilledRequirement(requirement);
 		}
+	}
+
+	@EventListener
+	@Async
+	public void onGuildUserDeleteEvent(@NonNull GuildUserDeleteEvent event) {
+		final User user = userService.findExisting(event.userId());
+		user.getFulfilledRequirements()
+				.removeIf(requirement -> requirement.getRequirementList().getGuild().getId() == event.guildId());
 	}
 }
