@@ -38,6 +38,10 @@ public class DiscordWebhookEventsHandler {
 			log.trace("Received application authorized event: {}", body);
 			final ApplicationAuthorizedEvent applicationAuthorizedEvent = objectMapper.readValue(body, ApplicationAuthorizedEvent.class);
 			final ApplicationAuthorizedEvent.EventBody.ApplicationAuthorizedData data = applicationAuthorizedEvent.event().data();
+			if (data.integration_type() != 0) {
+				// Ignore non guild install events
+				return;
+			}
 
 			final DiscordGuild guild = data.guild();
 			if (guild == null) {

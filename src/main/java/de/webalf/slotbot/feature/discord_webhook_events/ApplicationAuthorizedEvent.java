@@ -15,6 +15,6 @@ record ApplicationAuthorizedEvent(
 		EventBody event
 ) {
 	record EventBody(String type, String timestamp, ApplicationAuthorizedData data) {
-		record ApplicationAuthorizedData(int integration_type, DiscordUser user, String[] scopes, DiscordGuild guild) {}
+		record ApplicationAuthorizedData(Integer integration_type, DiscordUser user, String[] scopes, DiscordGuild guild) {}
 	}
 }
