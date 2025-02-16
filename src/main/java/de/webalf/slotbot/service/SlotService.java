@@ -85,30 +85,35 @@ public class SlotService {
 	 * @param squad    to update
 	 */
 	void updateSlotList(@NonNull List<MinimalSlotIdDto> slotList, @NonNull Squad squad) {
-		List<Slot> squadSlots = squad.getSlotList();
-		if (squadSlots != null) {
-			squadSlots.clear();
-		} else {
+		if (squad.getSlotList() == null) {
 			squad.setSlotList(new ArrayList<>());
-			squadSlots = squad.getSlotList();
 		}
+		final List<Slot> squadSlots = squad.getSlotList();
+		//Remove slots that are not in the new list
+		squadSlots.removeIf(slot -> slotList.stream().noneMatch(slotDto -> slotDto.getId() == slot.getId()));
 
-		List<Slot> eventSlotList = new ArrayList<>();
-		slotList.forEach(slotDto -> eventSlotList.add(updateOrCreateSlot(slotDto, squad)));
-		squadSlots.addAll(eventSlotList);
+		//For each new slot, find the matching existing slot by id, if not found create a new one
+		slotList.forEach(slotDto -> {
+			final Slot slot = squadSlots.stream()
+					.filter(s -> s.getId() == slotDto.getId())
+					.findAny()
+					.orElseGet(() -> {
+						final Slot newSlot = Slot.builder().squad(squad).build();
+						squadSlots.add(newSlot);
+						return newSlot;
+					});
+			updateSlot(slotDto, slot);
+		});
 	}
 
 	/**
-	 * Updates a slot with the given values identified by its id. If no slot can be found, a new one is created.
+	 * Updates the given slot with the values from the given dto
 	 * (!) Squad can not be changed
 	 *
-	 * @param dto   with new values
-	 * @param squad is required when a new slot must be created
-	 * @return updated Slot
+	 * @param dto  new values
+	 * @param slot to update
 	 */
-	private Slot updateOrCreateSlot(@NonNull MinimalSlotIdDto dto, @NonNull Squad squad) {
-		Slot slot = slotRepository.findById(dto.getId()).orElseGet(() -> Slot.builder().squad(squad).build());
-
+	private void updateSlot(@NonNull MinimalSlotIdDto dto, @NonNull Slot slot) {
 		DtoUtils.ifPresent(dto.getName(), slot::setName);
 		DtoUtils.ifPresent(dto.getNumber(), slot::setNumber);
 		slot.setReservedFor(guildService.evaluateReservedFor(dto.getReservedFor()));
@@ -120,8 +125,6 @@ public class SlotService {
 			slot.setUser(null);
 			slot.setReplacementText(null);
 		}
-
-		return slot;
 	}
 
 	/**

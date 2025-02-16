@@ -108,6 +108,10 @@ public class Squad extends AbstractSuperIdEntity {
 		return getSlotList().stream().anyMatch(Slot::isEmpty);
 	}
 
+	boolean isEmpty() {
+		return getSlotList().isEmpty();
+	}
+
 	public Set<Long> getRequirementsIds() {
 		return requirements.stream().map(Requirement::getId).collect(Collectors.toUnmodifiableSet());
 	}
@@ -143,22 +147,11 @@ public class Squad extends AbstractSuperIdEntity {
 		}
 
 		getSlotList().remove(slot);
-		deleteSquadIfEmpty();
+		if (isEmpty()) {
+			getEvent().removeSquad(this);
+		}
 
 		getEvent().slotUpdate();
-	}
-
-	/**
-	 * Deletes the given squad, if no person is slotted on any slot
-	 *
-	 * @return true if Squad was deleted
-	 */
-	public boolean deleteSquadIfEmpty() {
-		if (getSlotList().isEmpty()) {
-			getEvent().removeSquad(this);
-			return true;
-		}
-		return false;
 	}
 
 	/**

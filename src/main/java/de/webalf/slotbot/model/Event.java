@@ -358,6 +358,18 @@ public class Event extends AbstractSuperIdEntity {
 		}
 	}
 
+	/**
+	 * Removes all {@link Squad#isEmpty() empty} squads
+	 */
+	public void removeEmptySquads() {
+		getSquadList().removeIf(Squad::isEmpty);
+	}
+
+	/**
+	 * Removes the given squad from the event
+	 *
+	 * @param squad to remove
+	 */
 	void removeSquad(Squad squad) {
 		getSquadList().remove(squad);
 	}
