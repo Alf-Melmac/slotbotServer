@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -99,7 +100,11 @@ public final class SqmParser {
 							slotName = squadNameSplit[0];
 						}
 
-						nextSquad = MinimalSquadDto.builder().name(squadName).slotList(new ArrayList<>()).build();
+						nextSquad = MinimalSquadDto.builder()
+								.name(squadName)
+								.slotList(new ArrayList<>())
+								.requirements(Collections.emptySet())
+								.build();
 						log.trace("Created new Squad '{}'", nextSquad.getName());
 						readSlot(slotName, nextSquad);
 						step = step.next();
@@ -178,9 +183,16 @@ public final class SqmParser {
 			final int end = END_OF_STRING_AND_LINE.matcher(s).find() ? s.indexOf("\";") : s.length();
 			final String slotName = s.substring(s.indexOf(slotNumber) + slotNumber.length(), end).trim();
 
-			slot = MinimalSlotDto.builder().number(Integer.parseInt(removeNonDigitCharacters(slotNumber))).name(slotName).build();
+			slot = MinimalSlotDto.builder()
+					.number(Integer.parseInt(removeNonDigitCharacters(slotNumber)))
+					.name(slotName)
+					.requirements(Collections.emptySet())
+					.build();
 		} else {
-			slot = MinimalSlotDto.builder().name(s.trim()).build();
+			slot = MinimalSlotDto.builder()
+					.name(s.trim())
+					.requirements(Collections.emptySet())
+					.build();
 		}
 		log.trace("Added slot '{}'", slot.getName());
 		squad.getSlotList().add(slot);
