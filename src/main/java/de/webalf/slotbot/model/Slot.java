@@ -224,4 +224,13 @@ public class Slot extends AbstractSuperIdEntity {
 		setUser(slot.getUser());
 		slot.setUser(slotUser);
 	}
+
+	/**
+	 * Removes the given requirement list from the list of requirements
+	 *
+	 * @param requirementList to remove
+	 */
+	public void removeRequirementList(RequirementList requirementList) {
+		requirements.removeIf(requirement -> requirement.getRequirementList().equals(requirementList));
+	}
 }

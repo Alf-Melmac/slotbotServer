@@ -59,4 +59,13 @@ public class EventType extends AbstractSuperIdEntity {
 
 	@OneToMany(mappedBy = "eventType")
 	private List<Event> events;
+
+	/**
+	 * Removes the given requirement list from the list of requirement lists
+	 *
+	 * @param requirementList to remove
+	 */
+	public void removeRequirementList(RequirementList requirementList) {
+		this.requirementList.remove(requirementList);
+	}
 }

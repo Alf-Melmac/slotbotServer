@@ -5,6 +5,7 @@ import de.webalf.slotbot.converter.persistence.LocalDateTimePersistenceConverter
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.feature.notifications.EventNotificationService;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.EventUtils;
@@ -527,5 +528,14 @@ public class Event extends AbstractSuperIdEntity {
 		if (getOwnerGuild().getId() == guildId) {
 			EventNotificationService.removeNotifications(getId());
 		}
+	}
+
+	/**
+	 * Removes the given requirement list from the list of requirements
+	 *
+	 * @param requirementList to remove
+	 */
+	public void removeRequirementList(RequirementList requirementList) {
+		requirements.removeIf(requirement -> requirement.getRequirementList().equals(requirementList));
 	}
 }

@@ -1,6 +1,7 @@
 package de.webalf.slotbot.model;
 
 import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -87,5 +88,14 @@ public class User extends AbstractDiscordIdEntity {
 		return requirements.stream()
 				.filter(requirement -> !fulfillsRequirement(requirement))
 				.collect(Collectors.toUnmodifiableSet());
+	}
+
+	/**
+	 * Removes the given requirement list from the list of requirements
+	 *
+	 * @param requirementList to remove
+	 */
+	public void removeRequirementList(RequirementList requirementList) {
+		fulfilledRequirements.removeIf(requirement -> requirement.getRequirementList().equals(requirementList));
 	}
 }

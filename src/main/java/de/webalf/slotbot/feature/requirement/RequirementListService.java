@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.webalf.slotbot.util.permissions.PermissionHelper.hasAdministratorPermission;
+
 /**
  * @author Alf
  * @since 15.11.2024
@@ -71,7 +73,7 @@ public class RequirementListService {
 	}
 
 	/**
-	 * Updates a requirement with the given values identified by its is. If no requirement with the given id exists, a new one is created.
+	 * Updates a requirement with the given values identified by its id. If no requirement with the given id exists, a new one is created.
 	 *
 	 * @param dto             new values
 	 * @param requirementList requirement list the requirement belongs to
@@ -88,5 +90,28 @@ public class RequirementListService {
 		requirement.setName(dto.name());
 		requirement.setIcon(dto.icon());
 		return requirement;
+	}
+
+	/**
+	 * Deletes the requirement list with the given id. Before deletion all usages are removed.
+	 *
+	 * @param id of the requirement list to delete
+	 * @throws ForbiddenException if the logged-in user has no permission to delete the requirement list
+	 */
+	void delete(long id) {
+		final RequirementList requirementList = requirementListRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+		if (!hasAdministratorPermission(requirementList.getGuild().getId())) {
+			throw new ForbiddenException("No permission to delete this requirement list");
+		}
+
+		requirementList.getEventTypes().forEach(eventType -> eventType.removeRequirementList(requirementList));
+		requirementList.getRequirements().forEach(requirement -> {
+			requirement.getEvents().forEach(event -> event.removeRequirementList(requirementList));
+			requirement.getSquads().forEach(squad -> squad.removeRequirementList(requirementList));
+			requirement.getSlots().forEach(slot -> slot.removeRequirementList(requirementList));
+			requirement.getUsers().forEach(user -> user.removeRequirementList(requirementList));
+		});
+
+		requirementListRepository.delete(requirementList);
 	}
 }

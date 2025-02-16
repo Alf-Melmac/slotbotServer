@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -158,5 +159,14 @@ public class Squad extends AbstractSuperIdEntity {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Removes the given requirement list from the list of requirements
+	 *
+	 * @param requirementList to remove
+	 */
+	public void removeRequirementList(RequirementList requirementList) {
+		requirements.removeIf(requirement -> requirement.getRequirementList().equals(requirementList));
 	}
 }

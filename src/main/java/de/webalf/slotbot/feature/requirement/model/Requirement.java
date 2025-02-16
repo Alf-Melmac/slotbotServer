@@ -1,6 +1,6 @@
 package de.webalf.slotbot.feature.requirement.model;
 
-import de.webalf.slotbot.model.AbstractSuperIdEntity;
+import de.webalf.slotbot.model.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.*;
 
@@ -40,6 +42,18 @@ public class Requirement extends AbstractSuperIdEntity {
 	@JoinColumn(name = "requirement_list_id")
 	@NotNull
 	private RequirementList requirementList;
+
+	@ManyToMany(mappedBy = Event_.REQUIREMENTS, fetch = FetchType.LAZY)
+	private Set<Event> events;
+
+	@ManyToMany(mappedBy = Squad_.REQUIREMENTS, fetch = FetchType.LAZY)
+	private Set<Squad> squads;
+
+	@ManyToMany(mappedBy = Slot_.REQUIREMENTS, fetch = FetchType.LAZY)
+	private Set<Slot> slots;
+
+	@ManyToMany(mappedBy = User_.FULFILLED_REQUIREMENTS, fetch = FetchType.LAZY)
+	private Set<User> users;
 
 	public boolean isMemberAssignable() {
 		return requirementList.isMemberAssignable();

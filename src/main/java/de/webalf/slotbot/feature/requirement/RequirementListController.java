@@ -35,6 +35,11 @@ public class RequirementListController {
 		return RequirementListAssembler.toDto(requirementListService.createOrUpdate(guildId, requirementList));
 	}
 
+	@DeleteMapping("/{requirementListId}")
+	public void deleteRequirementList(@PathVariable(value = "requirementListId") long requirementListId) {
+		requirementListService.delete(requirementListId);
+	}
+
 	@GetMapping("/{guildId}/event-type/{eventTypeId}")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public List<EventTypeRequirementListDto> getRequirementLists(@PathVariable(value = "guildId") long guildId,

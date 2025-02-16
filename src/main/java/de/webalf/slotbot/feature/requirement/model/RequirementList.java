@@ -1,6 +1,8 @@
 package de.webalf.slotbot.feature.requirement.model;
 
 import de.webalf.slotbot.model.AbstractSuperIdEntity;
+import de.webalf.slotbot.model.EventType;
+import de.webalf.slotbot.model.EventType_;
 import de.webalf.slotbot.model.Guild;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
+import java.util.Set;
 
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
@@ -37,7 +40,7 @@ public class RequirementList extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String name;
 
-	@OneToMany(mappedBy = "requirementList", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = Requirement_.REQUIREMENT_LIST, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@OrderBy("name")
 	private List<Requirement> requirements;
 
@@ -54,6 +57,9 @@ public class RequirementList extends AbstractSuperIdEntity {
 	@Column(name = "requirement_list_enforced", nullable = false)
 	@Builder.Default
 	private boolean enforced = false;
+
+	@ManyToMany(mappedBy = EventType_.REQUIREMENT_LIST, fetch = FetchType.LAZY)
+	private Set<EventType> eventTypes;
 
 	/**
 	 * Set parents in child objects
