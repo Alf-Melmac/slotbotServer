@@ -33,7 +33,7 @@ public class SquadService {
 	 * @param event     to update
 	 */
 	void updateSquadList(@NonNull List<MinimalSquadIdDto> squadList, @NonNull Event event) {
-		final List<Long> retainedSquadIds = squadList.stream().map(MinimalSquadIdDto::getId).filter(l -> l == 0).toList();
+		final List<Long> retainedSquadIds = squadList.stream().map(MinimalSquadIdDto::getId).filter(id -> id != 0).toList();
 		if (event.getSquadList() == null) {
 			event.setSquadList(new ArrayList<>());
 		}
@@ -53,7 +53,7 @@ public class SquadService {
 		squadList.forEach(squadDto -> {
 			final int squadIndex = squadsUpdated.getAndIncrement();
 			final Squad squad = eventSquads.stream()
-					.filter(s -> s.getId() == squadDto.getId())
+					.filter(s -> s.getId() == squadDto.getId() && squadDto.getId() != 0)
 					.findAny()
 					.orElseGet(() -> {
 						final Squad newSquad = Squad.builder().event(event).build();
@@ -71,7 +71,7 @@ public class SquadService {
 	 * Updates the given squad with the values from the given dto
 	 * (!) Event can not be changed
 	 *
-	 * @param dto new values
+	 * @param dto   new values
 	 * @param squad to update
 	 */
 	private void updateSquad(@NonNull MinimalSquadIdDto dto, @NonNull Squad squad) {

@@ -55,7 +55,6 @@ public class EventService {
 	private final EventDiscordInformationService eventDiscordInformationService;
 	private final GuildService guildService;
 	private final ActionLogService actionLogService;
-	private final BanService banService;
 	private final RequirementService requirementService;
 
 	/**

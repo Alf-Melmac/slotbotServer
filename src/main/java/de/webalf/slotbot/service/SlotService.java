@@ -85,17 +85,18 @@ public class SlotService {
 	 * @param squad    to update
 	 */
 	void updateSlotList(@NonNull List<MinimalSlotIdDto> slotList, @NonNull Squad squad) {
+		final List<Long> retainedSlotIds = slotList.stream().map(MinimalSlotIdDto::getId).filter(id -> id != 0).toList();
 		if (squad.getSlotList() == null) {
 			squad.setSlotList(new ArrayList<>());
 		}
 		final List<Slot> squadSlots = squad.getSlotList();
 		//Remove slots that are not in the new list
-		squadSlots.removeIf(slot -> slotList.stream().noneMatch(slotDto -> slotDto.getId() == slot.getId()));
+		squadSlots.removeIf(slot -> !retainedSlotIds.contains(slot.getId()));
 
 		//For each new slot, find the matching existing slot by id, if not found create a new one
 		slotList.forEach(slotDto -> {
 			final Slot slot = squadSlots.stream()
-					.filter(s -> s.getId() == slotDto.getId())
+					.filter(s -> s.getId() == slotDto.getId() && slotDto.getId() != 0)
 					.findAny()
 					.orElseGet(() -> {
 						final Slot newSlot = Slot.builder().squad(squad).build();
