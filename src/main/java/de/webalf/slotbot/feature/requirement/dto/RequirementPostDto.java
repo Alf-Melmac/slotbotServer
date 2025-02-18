@@ -15,4 +15,5 @@ import static de.webalf.slotbot.util.ConstraintConstants.URL;
  */
 public record RequirementPostDto(Long id,
                                  @Size(max = TEXT) @NotBlank String name,
+								 @Size(max = TEXT) String abbreviation,
                                  @Size(max = URL) String icon) {}

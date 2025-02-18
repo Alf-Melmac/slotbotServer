@@ -34,6 +34,7 @@ final class RequirementAssembler {
 		return builder
 				.id(requirement.getId())
 				.name(requirement.getName())
+				.abbreviation(requirement.getAbbreviation())
 				.icon(requirement.getIcon());
 	}
 

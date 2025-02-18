@@ -22,6 +22,9 @@ public class RequirementDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private final String name;
 
+	@Size(max = TEXT)
+	private final String abbreviation;
+
 	@Size(max = URL)
 	private final String icon;
 }

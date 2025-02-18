@@ -1,5 +1,6 @@
 package de.webalf.slotbot.util;
 
+import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
@@ -17,11 +18,10 @@ import org.springframework.stereotype.Service;
 import java.awt.*;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.LongSupplier;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.util.bot.EmbedUtils.addField;
 import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
@@ -113,6 +113,7 @@ public class EventHelper {
 	 */
 	public List<String> buildSlotList(@NonNull Event event, long guildId, @NonNull Locale guildLocale) {
 		StringBuilder slotListText = new StringBuilder("__**").append(messageSource.getMessage("event.slotlist.title", null, guildLocale)).append("**__");
+		addRequirements(slotListText, event.getRequirements());
 		List<String> messages = new ArrayList<>();
 		for (Squad squad : event.getSquadList()) {
 			final StringBuilder squadText = toSlotList(squad, guildId);
@@ -157,12 +158,13 @@ public class EventHelper {
 	 * @return squad in discord message format
 	 */
 	private StringBuilder toSlotList(@NonNull Squad squad, long guildId) {
-		StringBuilder squadText = new StringBuilder("**").append(squad.getName());
+		StringBuilder squadText = new StringBuilder("**").append(squad.getName()).append("**");
 		final Guild reservedFor = squad.getReservedFor();
 		if (reservedFor != null) {
 			squadText.append(" [").append(reservedFor.getGroupIdentifier()).append("]");
 		}
-		squadText.append("**");
+
+		addRequirements(squadText, squad.getRequirements());
 
 		for (Slot slot : squad.getSlotList()) {
 			squadText.append("\n").append(toSlotList(slot, guildId, reservedFor, squad.getSlotList()));
@@ -204,6 +206,8 @@ public class EventHelper {
 			slotText.append(" [").append(reservedForDisplay.getGroupIdentifier()).append("]");
 		}
 
+		addRequirements(slotText, slot.getRequirements());
+
 		slotText.append(":");
 
 		final boolean isBlocked = !isEmpty && slot.getUser().isDefaultUser();
@@ -213,5 +217,17 @@ public class EventHelper {
 			slotText.append(" *").append(slot.getReplacementTextOrDefault()).append("*");
 		}
 		return slotText;
+	}
+
+	private void addRequirements(StringBuilder text, Set<Requirement> requirements) {
+		if (requirements.isEmpty()) {
+			return;
+		}
+		text.append(" [")
+				.append(requirements.stream().map(requirement -> {
+					final String abbreviation = requirement.getAbbreviation();
+					return StringUtils.isEmpty(abbreviation) ? requirement.getName() : abbreviation;
+				}).collect(Collectors.joining(", ")))
+				.append("]");
 	}
 }

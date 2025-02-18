@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
+import org.hibernate.Hibernate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,15 @@ public class EventBotService {
 	private final ApplicationEventPublisher eventPublisher;
 
 	public Event findById(long eventId) {
-		return eventService.findById(eventId);
+		final Event event = eventService.findById(eventId);
+		//Manually initialize requirements for later usage outside the transaction.
+		// Every other solution I tried , e.g. EntityGraph, produced duplicate slots or didn't work
+		Hibernate.initialize(event.getRequirements());
+		event.getSquadList().forEach(squad -> {
+			Hibernate.initialize(squad.getRequirements());
+			squad.getSlotList().forEach(slot -> Hibernate.initialize(slot.getRequirements()));
+		});
+		return event;
 	}
 
 	public Optional<Event> findByChannel(long channel) {

@@ -33,6 +33,10 @@ public class Requirement extends AbstractSuperIdEntity {
 	@Size(max = TEXT)
 	private String name;
 
+	@Column(name = "requirement_abbreviation", length = TEXT_DB)
+	@Size(max = TEXT)
+	private String abbreviation;
+
 	@Column(name = "requirement_icon", length = URL_DB)
 	@Size(max = URL)
 	@Pattern(regexp = URL_PATTERN)

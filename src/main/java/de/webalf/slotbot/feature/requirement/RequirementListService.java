@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.hasAdministratorPermission;
 
 /**
@@ -87,7 +88,8 @@ public class RequirementListService {
 		} else {
 			requirement = requirementRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 		}
-		requirement.setName(dto.name());
+		requirement.setName(trimAndNullify(dto.name()));
+		requirement.setAbbreviation(trimAndNullify(dto.abbreviation()));
 		requirement.setIcon(dto.icon());
 		return requirement;
 	}
