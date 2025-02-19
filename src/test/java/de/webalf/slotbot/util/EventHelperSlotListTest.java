@@ -212,6 +212,6 @@ class EventHelperSlotListTest {
 
 		final List<String> slotList = sut.buildSlotList(event, 1L, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
-		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__ [er]\n\n**Squad** [sr]\n**1 Slot** [slr]:");
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__ | er\n\n**Squad** | sr\n**1 Slot** | slr:");
 	}
 }

@@ -223,11 +223,10 @@ public class EventHelper {
 		if (requirements.isEmpty()) {
 			return;
 		}
-		text.append(" [")
+		text.append(" | ")
 				.append(requirements.stream().map(requirement -> {
 					final String abbreviation = requirement.getAbbreviation();
 					return StringUtils.isEmpty(abbreviation) ? requirement.getName() : abbreviation;
-				}).collect(Collectors.joining(", ")))
-				.append("]");
+				}).collect(Collectors.joining(", ")));
 	}
 }
