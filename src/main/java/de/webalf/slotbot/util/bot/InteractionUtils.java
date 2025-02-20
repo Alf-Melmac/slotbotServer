@@ -56,11 +56,22 @@ public final class InteractionUtils {
 	/**
 	 * Sends an empty message with the given {@link StringSelectMenu}
 	 *
-	 * @param interaction   to add string select menu to
-	 * @param selectMenu to add
+	 * @param interaction to add string select menu to
+	 * @param selectMenu  to add
 	 */
 	public static void addSelectMenu(@NonNull IDeferrableCallback interaction, StringSelectMenu... selectMenu) {
-		WebhookMessageCreateAction<Message> messageAction = interaction.getHook().sendMessage(ZERO_WIDTH_SPACE);
+		addSelectMenu(interaction, ZERO_WIDTH_SPACE, selectMenu);
+	}
+
+	/**
+	 * Sends a message with the given {@link StringSelectMenu}
+	 *
+	 * @param interaction to add string select menu to
+	 * @param reply       message to send
+	 * @param selectMenu  to add
+	 */
+	public static void addSelectMenu(@NonNull IDeferrableCallback interaction, @NotBlank String reply, StringSelectMenu... selectMenu) {
+		WebhookMessageCreateAction<Message> messageAction = interaction.getHook().sendMessage(reply);
 		for (StringSelectMenu menu : selectMenu) {
 			messageAction = messageAction.addActionRow(menu);
 		}

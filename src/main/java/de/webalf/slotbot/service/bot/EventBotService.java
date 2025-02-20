@@ -1,5 +1,7 @@
 package de.webalf.slotbot.service.bot;
 
+import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
@@ -82,8 +84,17 @@ public class EventBotService {
 						.build()));
 	}
 
-	public void slot(long channel, int slotNumber, String userId) {
-		eventService.slot(findByChannelOrThrow(channel), slotNumber, Long.parseLong(userId));
+	public Slottable getSlottable(long channel, int slotNumber, long userId) {
+		final Slottable slottable = eventService.getSlottable(findByChannelOrThrow(channel), slotNumber, userId);
+		//Manually initialize requirement lists for later usage outside the transaction.
+		for (Requirement requirement : slottable.requirementsNotMet()) {
+			Hibernate.initialize(requirement.getRequirementList());
+		}
+		return slottable;
+	}
+
+	public void slot(long channel, int slotNumber, long userId) {
+		eventService.slot(findByChannelOrThrow(channel), slotNumber, userId);
 	}
 
 	public void blockSlot(long channel, int slotNumber, String replacementText) {

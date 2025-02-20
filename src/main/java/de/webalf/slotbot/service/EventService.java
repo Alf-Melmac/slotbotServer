@@ -327,6 +327,15 @@ public class EventService {
 	}
 
 	/**
+	 * @see SlotService#getSlottable(Slot, User)
+	 */
+	public Slottable getSlottable(@NonNull Event event, int slotNumber, long userId) {
+		final Slot slot = event.findSlot(slotNumber).orElseThrow(ResourceNotFoundException::new);
+		final User user = userService.find(userId);
+		return slotService.getSlottable(slot, user);
+	}
+
+	/**
 	 * Enters the given user for the slot with given number in given event, if available.
 	 *
 	 * @param event      event

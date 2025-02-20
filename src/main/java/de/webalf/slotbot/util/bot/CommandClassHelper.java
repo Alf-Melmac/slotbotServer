@@ -1,10 +1,7 @@
 package de.webalf.slotbot.util.bot;
 
 import de.webalf.slotbot.model.annotations.bot.*;
-import de.webalf.slotbot.service.bot.EventBotService;
-import de.webalf.slotbot.service.bot.GuildBotService;
-import de.webalf.slotbot.service.bot.GuildUsersBotService;
-import de.webalf.slotbot.service.bot.SwapRequestBotService;
+import de.webalf.slotbot.service.bot.*;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
 import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.service.bot.command.DiscordUserContext;
@@ -29,6 +26,7 @@ public class CommandClassHelper {
 	private final EventBotService eventBotService;
 	private final EventHelper eventHelper;
 	private final GuildBotService guildBotService;
+	private final RequirementBotService requirementBotService;
 	private final SwapRequestBotService swapRequestBotService;
 	private final GuildUsersBotService guildUsersBotService;
 
@@ -54,7 +52,7 @@ public class CommandClassHelper {
 				}
 				break;
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class})) {
-				//AddSlot, ArchiveEvent, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Slot, Unslot
+				//AddSlot, ArchiveEvent, BlockSlot, DelSlot, EventPing, RandomSlot, RenameSlot, Unslot
 				try {
 					constructor = declaredConstructor.newInstance(eventBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -73,6 +71,13 @@ public class CommandClassHelper {
 					constructor = declaredConstructor.newInstance(eventBotService, guildBotService);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 					log.error("Failed to create new constructor instance with EventBotService and GuildBotService parameter for class {}", commandClass.getName(), e);
+				}
+			} else if (Arrays.equals(parameterTypes, new Class<?>[]{EventBotService.class, RequirementBotService.class})) {
+				//Slot
+				try {
+					constructor = declaredConstructor.newInstance(eventBotService, requirementBotService);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					log.error("Failed to create new constructor instance with EventBotService and RequirementBotService parameter for class {}", commandClass.getName(), e);
 				}
 			} else if (Arrays.equals(parameterTypes, new Class<?>[]{SwapRequestBotService.class})) {
 				//Swap

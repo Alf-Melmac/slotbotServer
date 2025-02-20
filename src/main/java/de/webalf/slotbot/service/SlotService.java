@@ -149,7 +149,7 @@ public class SlotService {
 	 * @param user to slot
 	 * @return state of the slot for the user
 	 */
-	private Slottable getSlottable(@NonNull Slot slot, @NonNull User user) {
+	Slottable getSlottable(@NonNull Slot slot, @NonNull User user) {
 		final Event slotEvent = slot.getEvent();
 		if (!DateUtils.isInFuture(slotEvent.getDateTime())) {
 			return new Slottable(NOT_AVAILABLE);
