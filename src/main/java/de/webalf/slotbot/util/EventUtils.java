@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import net.dv8tion.jda.api.utils.MarkdownUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.context.MessageSource;
@@ -93,7 +94,7 @@ public final class EventUtils {
 	public static String buildArchiveMessage(@NonNull Event event) {
 		final MessageSource messageSource = StaticContextAccessor.getBean(MessageSource.class);
 		final Locale guildLocale = event.getOwnerGuildLocale();
-		String message = "**__" + event.getName() + "__** " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
+		String message = MarkdownUtil.maskedLink(event.getName(), buildUrl(event)) + " " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}
