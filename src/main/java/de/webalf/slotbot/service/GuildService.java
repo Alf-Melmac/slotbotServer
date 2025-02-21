@@ -33,7 +33,8 @@ public class GuildService {
 	private final GuildRepository guildRepository;
 
 	public Guild create(long id, String name) {
-		final Guild guild = Guild.builder().id(id).groupIdentifier(name.substring(0, Math.min(name.length(), TEXT))).build();
+		final Guild guild = guildRepository.findById(id).orElseGet(() -> Guild.builder().id(id).build());
+		guild.setGroupIdentifier(name.substring(0, Math.min(name.length(), TEXT)));
 		return guildRepository.saveAndFlush(guild);
 	}
 
