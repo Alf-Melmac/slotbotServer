@@ -20,6 +20,7 @@ final class RequirementAssembler {
 		return Requirement.builder()
 				.name(requirementPostDto.name())
 				.icon(requirementPostDto.icon())
+				.iconLight(requirementPostDto.iconLight())
 				.build();
 	}
 
@@ -35,7 +36,8 @@ final class RequirementAssembler {
 				.id(requirement.getId())
 				.name(requirement.getName())
 				.abbreviation(requirement.getAbbreviation())
-				.icon(requirement.getIcon());
+				.icon(requirement.getIcon())
+				.iconLight(requirement.getIconLight());
 	}
 
 	private static RequirementDto toDto(@NonNull Requirement requirement) {

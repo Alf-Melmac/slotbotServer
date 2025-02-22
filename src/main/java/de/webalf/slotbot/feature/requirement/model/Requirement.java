@@ -42,6 +42,11 @@ public class Requirement extends AbstractSuperIdEntity {
 	@Pattern(regexp = URL_PATTERN)
 	private String icon;
 
+	@Column(name = "requirement_icon_light", length = URL_DB)
+	@Size(max = URL)
+	@Pattern(regexp = URL_PATTERN)
+	private String iconLight;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "requirement_list_id")
 	@NotNull

@@ -91,6 +91,11 @@ public class RequirementListService {
 		requirement.setName(trimAndNullify(dto.name()));
 		requirement.setAbbreviation(trimAndNullify(dto.abbreviation()));
 		requirement.setIcon(dto.icon());
+		if (dto.icon() != null) {
+			requirement.setIconLight(dto.iconLight());
+		} else {
+			requirement.setIconLight(null);
+		}
 		return requirement;
 	}
 
