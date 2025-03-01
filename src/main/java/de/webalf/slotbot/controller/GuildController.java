@@ -53,6 +53,11 @@ public class GuildController {
 		return GuildDetailsAssembler.toDto(guildService.findExisting(guildId));
 	}
 
+	@GetMapping("/{guild}/advanced")
+	public boolean getGuildAdvanced(@PathVariable(value = "guild") String guild) {
+		return guildService.isAdvanced(guild);
+	}
+
 	@GetMapping("/{id}/config")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public GuildConfigDto getGuildConfig(@PathVariable(value = "id") long guildId) {
