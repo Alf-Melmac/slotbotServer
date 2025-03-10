@@ -36,7 +36,7 @@
 		<!--https://jsoup.org/news/ -->
 		<jsoup.version>1.18.3</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/releases -->
-		<ical4j.version>4.1.0</ical4j.version>
+		<ical4j.version>4.1.1</ical4j.version>
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>3.2.1263</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
