@@ -1,9 +1,10 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.feature.action_log.ActionLogService;
+import de.webalf.slotbot.feature.action_log.model.LogAction;
 import de.webalf.slotbot.model.Ban;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.enums.LogAction;
 import de.webalf.slotbot.model.event.BanEvent;
 import de.webalf.slotbot.repository.BanRepository;
 import jakarta.transaction.Transactional;

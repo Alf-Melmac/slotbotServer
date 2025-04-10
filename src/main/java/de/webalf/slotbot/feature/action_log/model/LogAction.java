@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.enums;
+package de.webalf.slotbot.feature.action_log.model;
 
 /**
  * @author Alf

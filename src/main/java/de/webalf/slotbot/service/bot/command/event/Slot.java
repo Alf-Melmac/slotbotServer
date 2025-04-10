@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,7 @@ public class Slot implements DiscordSlashCommand, DiscordStringSelect {
 			return;
 		}
 
-		if (requirementsNotMet != null) { //Only gets filled if selfSlot
+		if (!CollectionUtils.isEmpty(requirementsNotMet)) { //Only gets filled if selfSlot
 			addSelectMenu(event,
 					locale.t(YES_REQUIREMENTS_NOT_MET.getMessageKey())
 							+ "\n"

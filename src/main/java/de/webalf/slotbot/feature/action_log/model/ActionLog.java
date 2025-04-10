@@ -1,7 +1,8 @@
-package de.webalf.slotbot.model;
+package de.webalf.slotbot.feature.action_log.model;
 
 import de.webalf.slotbot.converter.persistence.DurationPersistenceConverter;
-import de.webalf.slotbot.model.enums.LogAction;
+import de.webalf.slotbot.model.AbstractSuperIdEntity;
+import de.webalf.slotbot.model.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,9 +38,4 @@ public class ActionLog extends AbstractSuperIdEntity {
 
 	@Column(name = "action_object_id")
 	private long actionObjectId;
-
-	public String getTimeGapString() {
-		long sec = getTimeGap().getSeconds();
-		return "%02d:%02d".formatted(sec / 3600, (sec % 3600) / 60);
-	}
 }
