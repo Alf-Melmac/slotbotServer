@@ -88,6 +88,7 @@ public class Slot implements DiscordSlashCommand, DiscordStringSelect {
 							+ "\n"
 							+ locale.t("slottableState.requirementsNotMet.memberAssignable"),
 					requirementsSelectMenu(requirementsNotMet));
+			return;
 		}
 		finishedVisibleInteraction(event);
 	}
