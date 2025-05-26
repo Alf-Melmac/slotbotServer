@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -45,16 +46,16 @@ public class GuildUsersBotService {
 	}
 
 	@Async
-	public void memberRolesAdd(long guildId, long userId, List<Role> addedDiscordRoles, List<Role> memberRoles) {
+	public void memberRolesAdd(long guildId, long userId, List<Role> addedDiscordRoles, Set<Role> memberRoles) {
 		scheduleRoleChange(guildId, userId, addedDiscordRoles, memberRoles);
 	}
 
 	@Async
-	public void memberRolesRemove(long guildId, long userId, List<Role> removedDiscordRoles, List<Role> memberRoles) {
+	public void memberRolesRemove(long guildId, long userId, List<Role> removedDiscordRoles, Set<Role> memberRoles) {
 		scheduleRoleChange(guildId, userId, removedDiscordRoles, memberRoles);
 	}
 
-	private void scheduleRoleChange(long guildId, long userId, List<Role> changedDiscordRoles, List<Role> memberRoles) {
+	private void scheduleRoleChange(long guildId, long userId, List<Role> changedDiscordRoles, Set<Role> memberRoles) {
 		final Set<Long> changedRoleIds = getRoleIds(changedDiscordRoles);
 		if (guildUsersService.noRoleConfiguredForGuild(guildId, changedRoleIds)) {
 			return;
@@ -77,7 +78,9 @@ public class GuildUsersBotService {
 				memberRoleIds));
 	}
 
-	private Set<Long> getRoleIds(List<Role> roles) {
-		return roles.stream().map(Role::getIdLong).collect(Collectors.toUnmodifiableSet());
+	private Set<Long> getRoleIds(Iterable<Role> roles) {
+		return StreamSupport.stream(roles.spliterator(), false)
+				.map(Role::getIdLong)
+				.collect(Collectors.toUnmodifiableSet());
 	}
 }

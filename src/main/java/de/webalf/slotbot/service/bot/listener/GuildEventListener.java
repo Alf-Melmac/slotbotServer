@@ -55,13 +55,13 @@ public class GuildEventListener extends ListenerAdapter {
 	@Override
 	public void onGuildMemberRoleAdd(@NonNull GuildMemberRoleAddEvent event) {
 		final Member member = event.getMember();
-		guildUsersBotService.memberRolesAdd(event.getGuild().getIdLong(), member.getIdLong(), event.getRoles(), member.getRoles());
+		guildUsersBotService.memberRolesAdd(event.getGuild().getIdLong(), member.getIdLong(), event.getRoles(), member.getUnsortedRoles());
 	}
 
 	@Override
 	public void onGuildMemberRoleRemove(@NonNull GuildMemberRoleRemoveEvent event) {
 		final Member member = event.getMember();
-		guildUsersBotService.memberRolesRemove(event.getGuild().getIdLong(), member.getIdLong(), event.getRoles(), member.getRoles());
+		guildUsersBotService.memberRolesRemove(event.getGuild().getIdLong(), member.getIdLong(), event.getRoles(), member.getUnsortedRoles());
 	}
 
 	@Override

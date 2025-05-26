@@ -53,7 +53,7 @@ public class DiscordGuildMember {
 				.user(DiscordUser.fromJda(member.getUser()))
 				.nick(member.getNickname())
 				.avatar(member.getAvatarId())
-				.roles(member.getRoles().stream().map(ISnowflake::getIdLong).collect(Collectors.toUnmodifiableSet()))
+				.roles(member.getUnsortedRoles().stream().map(ISnowflake::getIdLong).collect(Collectors.toUnmodifiableSet()))
 				.guild(member.getGuild().getIdLong())
 				.build();
 	}
