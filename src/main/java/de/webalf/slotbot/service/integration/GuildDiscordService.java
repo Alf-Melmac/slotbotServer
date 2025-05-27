@@ -69,4 +69,10 @@ public class GuildDiscordService {
 		}
 		return guild;
 	}
+
+	public void leaveGuild(long guildId) {
+		getGuild(guildId)
+				.leave()
+				.queue();
+	}
 }

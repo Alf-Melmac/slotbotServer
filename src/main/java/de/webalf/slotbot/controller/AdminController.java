@@ -1,19 +1,16 @@
 package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.feature.notifications.EventNotificationService;
-import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.EventCalendarService;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.service.integration.GuildDiscordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static de.webalf.slotbot.constant.Urls.ADMIN;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_SYS_ADMIN;
@@ -32,18 +29,18 @@ public class AdminController {
 	private final EventNotificationService eventNotificationService;
 	private final EventCalendarService eventCalendarService;
 	private final GuildService guildService;
+	private final GuildDiscordService guildDiscordService;
 
 	@PostMapping("/{action}")
-	public ResponseEntity<Void> postAction(@PathVariable String action) {
-		if ("listFiles".equals(action)) {
-			fileService.listFiles();
-		} else if ("deleteUnusedEventTypes".equals(action)) {
-			eventTypeService.deleteUnused();
-		} else if ("rebuildEventNotifications".equals(action)) {
-			eventNotificationService.rebuildAllNotifications();
-		} else if ("rebuildCalendars".equals(action)) {
-			for (Guild guild : guildService.findAll()) {
-				eventCalendarService.rebuildCalendar(guild);
+	public ResponseEntity<Void> postAction(@PathVariable String action, @RequestBody(required = false) String body) {
+		switch (action) {
+			case "listFiles" -> fileService.listFiles();
+			case "deleteUnusedEventTypes" -> eventTypeService.deleteUnused();
+			case "rebuildEventNotifications" -> eventNotificationService.rebuildAllNotifications();
+			case "rebuildCalendars" -> guildService.findAll().forEach(eventCalendarService::rebuildCalendar);
+			case "leaveGuild" -> guildDiscordService.leaveGuild(Long.parseLong(body));
+			default -> {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
