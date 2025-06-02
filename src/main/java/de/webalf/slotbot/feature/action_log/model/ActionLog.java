@@ -3,10 +3,7 @@ package de.webalf.slotbot.feature.action_log.model;
 import de.webalf.slotbot.model.AbstractSuperIdEntity;
 import de.webalf.slotbot.model.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.Duration;
@@ -26,7 +23,12 @@ public class ActionLog extends AbstractSuperIdEntity {
 	@NonNull
 	private LogAction action;
 
+	@Column(name = "time_gap_old")
+	@Setter
+	private String timeGapOld;
+
 	@Column(name = "time_gap")
+	@Setter
 	private Duration timeGap;
 
 	@ManyToOne

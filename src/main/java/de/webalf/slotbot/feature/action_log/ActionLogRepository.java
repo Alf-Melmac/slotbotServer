@@ -15,4 +15,6 @@ public interface ActionLogRepository extends SuperIdEntityJpaRepository<ActionLo
 	List<ActionLog> findByActionObjectIdOrderByTimeGapAsc(long actionObjectId);
 
 	void deleteByActionObjectId(long actionObjectId);
+
+	List<ActionLog> findByTimeGapOldNotNull();
 }
