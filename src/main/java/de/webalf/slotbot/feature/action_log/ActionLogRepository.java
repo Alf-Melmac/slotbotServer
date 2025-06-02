@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Repository
 public interface ActionLogRepository extends SuperIdEntityJpaRepository<ActionLog> {
-	List<ActionLog> findAllByActionObjectId(long actionObjectId);
+	List<ActionLog> findByActionObjectIdOrderByTimeGapAsc(long actionObjectId);
 
 	void deleteByActionObjectId(long actionObjectId);
 }

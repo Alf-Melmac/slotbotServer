@@ -49,7 +49,7 @@ public class ActionLogService {
 	}
 
 	List<ActionLog> getActionLogsByObjectId(long objectId) {
-		return logRepository.findAllByActionObjectId(objectId);
+		return logRepository.findByActionObjectIdOrderByTimeGapAsc(objectId);
 	}
 
 	public void removeActionLogsByObjectId(long objectId) {

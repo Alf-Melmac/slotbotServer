@@ -1,6 +1,5 @@
 package de.webalf.slotbot.feature.action_log.model;
 
-import de.webalf.slotbot.converter.persistence.DurationPersistenceConverter;
 import de.webalf.slotbot.model.AbstractSuperIdEntity;
 import de.webalf.slotbot.model.User;
 import jakarta.persistence.*;
@@ -28,11 +27,10 @@ public class ActionLog extends AbstractSuperIdEntity {
 	private LogAction action;
 
 	@Column(name = "time_gap")
-	@Convert(converter = DurationPersistenceConverter.class)
 	private Duration timeGap;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "log_user_fk"))
 	@NonNull
 	private User user;
 
