@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import org.springframework.util.CollectionUtils;
 
 import java.util.function.Consumer;
@@ -48,7 +49,7 @@ public final class MessageUtils {
 	}
 
 	/**
-	 * Sends the given text in the channel of the given message
+	 * Sends the given text in the channel of the given interaction
 	 * Shortcut for {@code sendMessage(interaction.getMessageChannel(), text)}
 	 *
 	 * @param interaction on which channel text should be sent
@@ -89,5 +90,19 @@ public final class MessageUtils {
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressedNotifications, Consumer<Message> success) {
 		channel.sendMessage(message).setSuppressedNotifications(suppressedNotifications).queue(success);
+	}
+
+	/**
+	 * Send the given message in the given channel of the given interaction
+	 *
+	 * @param interaction on which channel text should be sent
+	 * @param message     to send
+	 * @param components  to add to the message
+	 */
+	public static void sendMessage(@NonNull Interaction interaction, @NotBlank String message, ItemComponent... components) {
+		interaction.getMessageChannel()
+				.sendMessage(message)
+				.setActionRow(components)
+				.queue();
 	}
 }

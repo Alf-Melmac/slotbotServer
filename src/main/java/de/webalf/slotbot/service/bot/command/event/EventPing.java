@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,8 +59,19 @@ public class EventPing implements DiscordSlashCommand {
 
 		final String message = getStringOption(event, OPTION_MESSAGE);
 
-		splitEveryNth(message + "\n" + mentions, Message.MAX_CONTENT_LENGTH)
-				.forEach(messagePart -> sendMessage(event, messagePart));
+		final List<String> splitMessages = splitEveryNth(message + "\n" + mentions, Message.MAX_CONTENT_LENGTH);
+		for (int i = 0; i < splitMessages.size(); i++) {
+			final String messagePart = splitMessages.get(i);
+			if (i != splitMessages.size() - 1) {
+				sendMessage(event, messagePart);
+			} else {
+				// Add ping author to last message
+				sendMessage(event,
+						messagePart,
+						Button.secondary("author", locale.t("bot.slash.event.ping.author") + event.getInteraction().getUser().getName())
+								.asDisabled());
+			}
+		}
 
 		finishedVisibleInteraction(event);
 	}
