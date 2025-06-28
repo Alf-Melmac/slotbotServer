@@ -10,10 +10,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    ignore:
-      # Wait for springdoc fix https://github.com/springdoc/springdoc-openapi/issues/3005
-      - dependency-name: "org.springframework.boot:*"
-        update-types: [ "version-update:semver-minor" ]
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
