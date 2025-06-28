@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -56,7 +57,7 @@ public class GuildUserEventListener {
 
 		final Long oldDiscordRoleId = guild.getDiscordRole(event.oldRole());
 		final Long newDiscordRoleId = guild.getDiscordRole(event.newRole());
-		if (oldDiscordRoleId == null && newDiscordRoleId == null) {
+		if (Objects.equals(oldDiscordRoleId, newDiscordRoleId)) {
 			return;
 		}
 		final net.dv8tion.jda.api.entities.Guild discordGuild = getGuildById(guildId);
