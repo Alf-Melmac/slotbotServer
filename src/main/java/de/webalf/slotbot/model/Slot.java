@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,7 +57,8 @@ public class Slot extends AbstractSuperIdEntity {
 	@JoinTable(name = "slot_requirement",
 			joinColumns = @JoinColumn(name = "slot_id", foreignKey = @ForeignKey(name = "slot_fk")),
 			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
-	private Set<Requirement> requirements;
+	@Builder.Default
+	private Set<Requirement> requirements = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")

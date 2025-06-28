@@ -8,14 +8,12 @@ import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,7 +52,8 @@ public class Squad extends AbstractSuperIdEntity {
 	@JoinTable(name = "squad_requirement",
 			joinColumns = @JoinColumn(name = "squad_id", foreignKey = @ForeignKey(name = "squad_fk")),
 			inverseJoinColumns = @JoinColumn(name = "requirement_id", foreignKey = @ForeignKey(name = "requirement_fk")))
-	private Set<Requirement> requirements;
+	@Builder.Default
+	private Set<Requirement> requirements = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id")
