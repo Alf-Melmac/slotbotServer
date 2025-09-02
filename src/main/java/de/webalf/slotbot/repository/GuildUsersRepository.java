@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public interface GuildUsersRepository extends JpaRepository<GuildUser, GuildUser
 	Optional<GuildUser> findByGuildAndUser(Guild guild, User user);
 
 	void deleteById_GuildIdAndId_UserId(long guildId, long userId);
+
+	List<GuildUser> deleteByGuildAndId_UserIdNotIn(Guild guild, Set<Long> userIds);
 
 	void deleteById_UserId(long userId);
 }

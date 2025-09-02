@@ -9,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class GuildDiscordService {
 	}
 
 	public boolean isAllowedToManageRoles(long guildId) {
-		return isAllowedToManageRoles(getGuild(guildId));
+		return isAllowedToManageRoles(getGuildById(guildId));
 	}
 
 	public boolean isAllowedToManageRoles(@NonNull Guild guild) {
@@ -37,7 +38,7 @@ public class GuildDiscordService {
 	}
 
 	public List<DiscordCategory> getGuildChannels(long guildId) {
-		return getGuild(guildId).getCategoryCache().stream()
+		return getGuildById(guildId).getCategoryCache().stream()
 				.map(category -> DiscordCategory.builder()
 						.name(category.getName())
 						.textChannels(category.getTextChannels().stream()
@@ -50,8 +51,14 @@ public class GuildDiscordService {
 				.toList();
 	}
 
+	/**
+	 * Return all {@link DiscordRole}s the bot {@link Member#canInteract(Role) can interact} with
+	 *
+	 * @param guildId guid to get roles for
+	 * @return all roles that can be interacted with
+	 */
 	public List<DiscordRole> getGuildRoles(long guildId) {
-		final Guild guild = getGuild(guildId);
+		final Guild guild = getGuildById(guildId);
 		final Member selfMember = guild.getSelfMember();
 		return guild.getRoleCache().stream()
 				.filter(role -> !role.isPublicRole() && selfMember.canInteract(role))
@@ -62,7 +69,14 @@ public class GuildDiscordService {
 				.toList();
 	}
 
-	private Guild getGuild(long guildId) {
+	/**
+	 * Returns the {@link Guild} associated with the given id
+	 *
+	 * @param guildId to find guild for
+	 * @return Guild found by id
+	 * @throws BusinessRuntimeException if no guild with this id could be found
+	 */
+	public Guild getGuildById(long guildId) {
 		final Guild guild = botService.getJda().getGuildById(guildId);
 		if (guild == null) {
 			throw BusinessRuntimeException.builder().title("Guild " + guildId + " couldn't be found.").build();
@@ -71,7 +85,7 @@ public class GuildDiscordService {
 	}
 
 	public void leaveGuild(long guildId) {
-		getGuild(guildId)
+		getGuildById(guildId)
 				.leave()
 				.queue();
 	}

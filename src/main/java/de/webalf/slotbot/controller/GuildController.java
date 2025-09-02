@@ -13,6 +13,7 @@ import de.webalf.slotbot.model.dtos.website.pagination.FrontendPageable;
 import de.webalf.slotbot.service.BanService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
+import de.webalf.slotbot.service.bot.GuildMemberService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.Role;
@@ -42,6 +43,7 @@ public class GuildController {
 	private final UserInGuildAssembler userInGuildAssembler;
 	private final GuildBanAssembler guildBanAssembler;
 	private final BanService banService;
+	private final GuildMemberService guildMemberService;
 
 	@GetMapping
 	public List<GuildDto> getGuilds() {
@@ -80,6 +82,12 @@ public class GuildController {
 				.allowedToManageRoles(connected && guildDiscordService.isAllowedToManageRoles(guildId))
 				.roles(connected ? guildDiscordService.getGuildRoles(guildId) : Collections.emptyList())
 				.build();
+	}
+
+	@PutMapping("/{id}/discord/sync")
+	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
+	public void putDiscordSync(@PathVariable(value = "id") long guildId) {
+		guildMemberService.sync(guildId);
 	}
 
 	@GetMapping("/{id}/users")

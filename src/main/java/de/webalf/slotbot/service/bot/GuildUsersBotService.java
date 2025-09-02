@@ -2,6 +2,7 @@ package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.SchedulerService;
+import de.webalf.slotbot.util.bot.DiscordRoleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Role;
@@ -13,8 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -56,7 +55,7 @@ public class GuildUsersBotService {
 	}
 
 	private void scheduleRoleChange(long guildId, long userId, List<Role> changedDiscordRoles, Set<Role> memberRoles) {
-		final Set<Long> changedRoleIds = getRoleIds(changedDiscordRoles);
+		final Set<Long> changedRoleIds = DiscordRoleUtils.getRoleIds(changedDiscordRoles);
 		if (guildUsersService.noRoleConfiguredForGuild(guildId, changedRoleIds)) {
 			return;
 		}
@@ -70,17 +69,11 @@ public class GuildUsersBotService {
 				future.cancel(false);
 			}
 		}
-		final Set<Long> memberRoleIds = getRoleIds(memberRoles);
+		final Set<Long> memberRoleIds = DiscordRoleUtils.getRoleIds(memberRoles);
 		SCHEDULED_ROLE_CHANGE.put(guildMember, new RoleChange(schedulerService.schedule(
 				() -> guildUsersService.onRolesChanged(guildId, userId, memberRoleIds),
 				() -> SCHEDULED_ROLE_CHANGE.remove(guildMember),
 				2, SECONDS),
 				memberRoleIds));
-	}
-
-	private Set<Long> getRoleIds(Iterable<Role> roles) {
-		return StreamSupport.stream(roles.spliterator(), false)
-				.map(Role::getIdLong)
-				.collect(Collectors.toUnmodifiableSet());
 	}
 }

@@ -4,7 +4,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.service.bot.BotService;
+import de.webalf.slotbot.service.integration.GuildDiscordService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.ChannelUtils;
 import lombok.NonNull;
@@ -25,11 +25,11 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 @RequiredArgsConstructor
 public class EventArchiveBotListener {
 	private final GuildService guildService;
-	private final BotService botService;
+	private final GuildDiscordService guildDiscordService;
 
 	@EventListener
 	public void onEventArchiveEvent(@NonNull EventArchiveEvent event) {
-		onEventArchive(event.event(), guildService.find(event.guildId()), botService.getJda().getGuildById(event.guildId()));
+		onEventArchive(event.event(), guildService.find(event.guildId()), guildDiscordService.getGuildById(event.guildId()));
 	}
 
 	@EventListener

@@ -5,8 +5,8 @@ import de.webalf.slotbot.model.event.GuildUserCreatedEvent;
 import de.webalf.slotbot.model.event.GuildUserDeleteEvent;
 import de.webalf.slotbot.model.event.GuildUserRoleUpdateEvent;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
+import de.webalf.slotbot.util.bot.DiscordRoleUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,6 @@ import java.util.Set;
 @Slf4j
 public class GuildUserEventListener {
 	private final GuildService guildService;
-	private final BotService botService;
 	private final GuildDiscordService guildDiscordService;
 
 	@EventListener
@@ -42,9 +41,9 @@ public class GuildUserEventListener {
 		if (discordRoleId == null) {
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = getGuildById(guildId);
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
 		log.trace("Trying to add role {} to user {} in guild {}", discordRoleId, event.userId(), guildId);
-		final Role discordRole = getRoleById(discordGuild, discordRoleId);
+		final Role discordRole = DiscordRoleUtils.getRoleById(discordGuild, discordRoleId);
 		log.trace("Adding role {} to user {} in guild {}", discordRole, event.userId(), guildId);
 		discordGuild.addRoleToMember(getMemberById(discordGuild, event.userId()), discordRole).queue();
 	}
@@ -60,13 +59,13 @@ public class GuildUserEventListener {
 		if (Objects.equals(oldDiscordRoleId, newDiscordRoleId)) {
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = getGuildById(guildId);
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
 		if (!guildDiscordService.isAllowedToManageRoles(discordGuild)) {
 			log.debug("Bot is not allowed to manage roles in guild {}", guildId);
 			return;
 		}
-		final Role oldDiscordRole = getRoleById(discordGuild, oldDiscordRoleId);
-		final Role newDiscordRole = getRoleById(discordGuild, newDiscordRoleId);
+		final Role oldDiscordRole = DiscordRoleUtils.getRoleById(discordGuild, oldDiscordRoleId);
+		final Role newDiscordRole = DiscordRoleUtils.getRoleById(discordGuild, newDiscordRoleId);
 		log.trace("Updating roles for user {} in guild {}. Old role {}, new role {}", event.userId(), guildId, oldDiscordRole, newDiscordRole);
 		discordGuild.modifyMemberRoles(
 						getMemberById(discordGuild, event.userId()),
@@ -85,38 +84,17 @@ public class GuildUserEventListener {
 		if (discordRoleId == null) {
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = getGuildById(guildId);
-		final Role discordRole = getRoleById(discordGuild, discordRoleId);
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
+		final Role discordRole = DiscordRoleUtils.getRoleById(discordGuild, discordRoleId);
 		log.trace("Removing role {} from user {} in guild {}", discordRole, event.userId(), guildId);
 		discordGuild.removeRoleFromMember(getMemberById(discordGuild, event.userId()), discordRole).queue();
-	}
-
-	private static final String NOT_FOUND = " couldn't be found.";
-
-	private net.dv8tion.jda.api.entities.Guild getGuildById(long guildId) {
-		final net.dv8tion.jda.api.entities.Guild guild = botService.getJda().getGuildById(guildId);
-		if (guild == null) {
-			throw new IllegalStateException("Guild " + guildId + NOT_FOUND);
-		}
-		return guild;
 	}
 
 	private Member getMemberById(@NonNull net.dv8tion.jda.api.entities.Guild discordGuild, long userId) {
 		final Member member = discordGuild.getMemberById(userId);
 		if (member == null) {
-			throw new IllegalStateException("Member " + userId + NOT_FOUND);
+			throw new IllegalStateException("Member " + userId + " couldn't be found.");
 		}
 		return member;
-	}
-
-	private Role getRoleById(@NonNull net.dv8tion.jda.api.entities.Guild discordGuild, Long roleId) {
-		if (roleId == null) {
-			return null;
-		}
-		final Role role = discordGuild.getRoleById(roleId);
-		if (role == null) {
-			throw new IllegalStateException("Role " + roleId + NOT_FOUND);
-		}
-		return role;
 	}
 }

@@ -105,6 +105,17 @@ public class GuildUsersService {
 		invalidateSession(userId);
 	}
 
+	/**
+	 * Removes all users except the given ones from the given guild
+	 *
+	 * @param guild   to remove users from
+	 * @param userIds to keep
+	 */
+	public void removeExcept(@NonNull Guild guild, Set<Long> userIds) {
+		guildUsersRepository.deleteByGuildAndId_UserIdNotIn(guild, userIds)
+				.forEach(guildUser -> eventPublisher.publishEvent(new GuildUserDeleteEvent(guildUser)));
+	}
+
 	public void ban(long guildId, long userId, String reason) {
 		banService.ban(userId, guildId, reason);
 		remove(guildId, userId);
