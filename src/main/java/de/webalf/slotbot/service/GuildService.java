@@ -1,6 +1,7 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.website.guild.GuildConfigPutDto;
 import de.webalf.slotbot.repository.GuildRepository;
@@ -14,9 +15,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
@@ -44,6 +49,17 @@ public class GuildService {
 
 	public List<Guild> findAllExceptDefault() {
 		return guildRepository.findAllByOrderByGroupIdentifier().stream().filter(guild -> guild.getId() != GUILD_PLACEHOLDER).toList();
+	}
+
+	/**
+	 * Maps the ids of guilds to the date time of their {@link Event#getOwnerGuild() last owned event}. Doesn't include guilds without events.
+	 */
+	public Map<Long, LocalDateTime> findLastEventOfGuilds() {
+		return guildRepository.findDistinctByOwnerGuildOrderByDateTimeDesc().stream() //[guildId, eventDateTime]
+				.collect(Collectors.toMap(
+						obj -> (long) obj[0],
+						obj -> LocalDateTime.ofEpochSecond((long) obj[1], 0, ZoneOffset.UTC) //see LocalDateTimePersistenceConverter
+				));
 	}
 
 	public Guild find(long id) {

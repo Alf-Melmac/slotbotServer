@@ -15,6 +15,7 @@ import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.bot.GuildMemberService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
+import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.Role;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
@@ -48,6 +52,18 @@ public class GuildController {
 	@GetMapping
 	public List<GuildDto> getGuilds() {
 		return GuildAssembler.toDtoList(guildService.findAllExceptDefault());
+	}
+
+	@GetMapping("/categorised")
+	public GuildsCategorisedDto getGuildsCategorised() {
+		final Map<Long, LocalDateTime> lastEventsOfGuilds = guildService.findLastEventOfGuilds();
+		final Map<Boolean, List<Guild>> guildCategories = guildService.findAllExceptDefault().stream()
+				.collect(Collectors.partitioningBy(guild -> {
+					final LocalDateTime lastEvent = lastEventsOfGuilds.get(guild.getId());
+					return lastEvent != null && lastEvent.isAfter(DateUtils.now().minusMonths(6));
+				}));
+
+		return new GuildsCategorisedDto(GuildAssembler.toDtoList(guildCategories.get(true)), GuildAssembler.toDtoList(guildCategories.get(false)));
 	}
 
 	@GetMapping("/{id}")

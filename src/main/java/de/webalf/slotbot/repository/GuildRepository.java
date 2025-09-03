@@ -24,4 +24,12 @@ public interface GuildRepository extends DiscordIdEntityJpaRepository<Guild> {
 			SELECT COUNT(g) > 0 FROM Guild g
 			WHERE g.id = :id AND (g.memberRole IN :roles OR g.eventManageRole IN :roles OR g.adminRole IN :roles)""")
 	boolean existsByIdAndAnyRoleIn(@Param("id") long id, @Param("roles") Collection<Long> roles);
+
+	@Query(value = """
+			SELECT DISTINCT ON (e.event_owner_guild) guild.id, e.event_date
+			FROM event e
+			JOIN discord_guild guild on guild.id = e.event_owner_guild
+			ORDER BY e.event_owner_guild, e.event_date DESC""",
+			nativeQuery = true)
+	List<Object[]> findDistinctByOwnerGuildOrderByDateTimeDesc();
 }
