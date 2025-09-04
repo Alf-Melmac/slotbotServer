@@ -21,7 +21,7 @@ import static java.lang.Boolean.TRUE;
  * Util class to work with discord formatting
  *
  * @author Alf
- * @see <a href="https://support.discord.com/hc/en-us/articles/210298617" target"_top">https://support.discord.com/hc/en-us/articles/210298617</a>
+ * @see <a href="https://support.discord.com/hc/en-us/articles/210298617">https://support.discord.com/hc/en-us/articles/210298617</a>
  * @since 12.11.2020
  */
 @UtilityClass

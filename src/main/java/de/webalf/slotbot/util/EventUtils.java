@@ -6,7 +6,6 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.utils.MarkdownUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.context.MessageSource;
@@ -94,13 +93,20 @@ public final class EventUtils {
 	public static String buildArchiveMessage(@NonNull Event event) {
 		final MessageSource messageSource = StaticContextAccessor.getBean(MessageSource.class);
 		final Locale guildLocale = event.getOwnerGuildLocale();
-		String message = MarkdownUtil.maskedLink(event.getName(), buildUrl(event)) + " " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
+		String message = maskedLink(event.getName(), buildUrl(event)) + " " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}
 		message += messageSource.getMessage("from", null, guildLocale) + " " + event.getCreator() + "; "
 				+ event.getSlotCountWithoutReserve() + " " + messageSource.getMessage("event.archive.availableSlots", null, guildLocale);
 		return message;
+	}
+
+	/**
+	 * Workaround until JDA 6 is used: <a href="https://github.com/discord-jda/JDA/pull/2910">JDA#2910</a>
+	 */
+	private static String maskedLink(String text, String url) {
+		return "[" + text + "](" + url + ")";
 	}
 
 	public static String getDateTimeInDiscordFormat(@NonNull Event event) {
