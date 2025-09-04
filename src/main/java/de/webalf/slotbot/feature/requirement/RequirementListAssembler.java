@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.Guild;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -54,6 +55,9 @@ public final class RequirementListAssembler {
 	}
 
 	public static List<RequirementListDto> toDtoList(Set<Requirement> requirements) {
+		if (requirements == null) { //Should never be null, but sometimes happens
+			return Collections.emptyList();
+		}
 		return requirements.stream()
 				.collect(Collectors.groupingBy(Requirement::getRequirementList))
 				.entrySet().stream()

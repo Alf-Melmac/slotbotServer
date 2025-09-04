@@ -1,7 +1,6 @@
 package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +18,10 @@ public class UserUpdateService {
 	private final UserServiceImpl userService;
 	private final EventCalendarService eventCalendarService;
 
-	public User updateSteamId(String steamId) {
+	public User updateSteamId(Long steamId) {
 		final User user = find(getLoggedInUserId());
 
-		user.setSteamId64(LongUtils.parseLongWrapper(steamId));
+		user.setSteamId64(steamId);
 
 		return user;
 	}

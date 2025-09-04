@@ -111,7 +111,7 @@ public class GuildService {
 	}
 
 	public boolean isAdvanced(@NonNull String identifier) {
-		return guildRepository.isAdvancedByIdentifier(identifier);
+		return Boolean.TRUE.equals(guildRepository.isAdvancedByIdentifier(identifier));
 	}
 
 	public Guild evaluateReservedFor(String reservedFor) {

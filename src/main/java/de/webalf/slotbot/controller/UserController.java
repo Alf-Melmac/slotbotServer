@@ -55,7 +55,7 @@ public class UserController {
 
 	@PutMapping(value = {"/steamid/", "/steamid/{steamId}"})
 	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public ResponseEntity<Void> updateSteamId(@PathVariable(name = "steamId", required = false) String steamId) {
+	public ResponseEntity<Void> updateSteamId(@PathVariable(name = "steamId", required = false) Long steamId) {
 		userService.updateSteamId(steamId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
