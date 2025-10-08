@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.config.BootstrapMode;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @SpringBootApplication
 @EnableCaching
 @EnableAsync
+@EnableScheduling
 @EnableMethodSecurity
 @ConfigurationPropertiesScan("de.webalf.slotbot.configuration.properties")
 @EnableJpaRepositories(bootstrapMode = BootstrapMode.DEFERRED)

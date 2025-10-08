@@ -1,5 +1,6 @@
-package de.webalf.slotbot.configuration.authentication.website;
+package de.webalf.slotbot.feature.ip_filter;
 
+import de.webalf.slotbot.service.web.FeatureFlagService;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,10 +31,25 @@ public class SessionIpFilter extends OncePerRequestFilter {
 	/**
 	 * Session attribute to store an additional IP address to the authentication details remote address.
 	 * This is to allow switching between IPv4 and IPv6 within the same session.
+	 * <p>
+	 * Contains either an IPv4 or an IPv6 address.
 	 */
 	private static final String SESSION_ATTRIBUTE_OTHER_IP = "OTHER_IP";
+	/**
+	 * Session attribute to store if the current session is using Apple iCloud Private Relay.
+	 * <ul>
+	 *  <li>{@code null} Not yet determined</li>
+	 *  <li>{@code true} Is Private Relay</li>
+	 *  <li>{@code false} Is not Private Relay</li>
+	 * </ul>
+	 */
+	private static final String SESSION_ATTRIBUTE_PRIVATE_RELAY = "PRIVATE_RELAY";
+
+	private final FeatureFlagService featureFlagService;
+	private final PrivateRelayRangeService privateRelayRangeService;
 
 	@Override
+	@SuppressWarnings("java:S3776") // Filters are more useful if everything is in one method
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !authentication.isAuthenticated()) {
@@ -55,6 +71,21 @@ public class SessionIpFilter extends OncePerRequestFilter {
 			return;
 		}
 		// -> Ips don't match
+
+		// Private Relay handling
+		if (!Boolean.FALSE.equals(session.getAttribute(SESSION_ATTRIBUTE_PRIVATE_RELAY))) {
+			if (privateRelayRangeService.isFromPrivateRelay(currentIp)) {
+				log.debug("Session of {} detected as Private Relay: {}", PermissionHelper.getLoggedInUserId(), currentIp);
+				session.setAttribute(SESSION_ATTRIBUTE_PRIVATE_RELAY, true);
+				if (featureFlagService.getGlobal("sessionIpFilterPrivateRelay")) {
+					filterChain.doFilter(request, response);
+					return;
+				}
+			} else {
+				log.trace("Session of {} not detected as Private Relay: {}", PermissionHelper.getLoggedInUserId(), currentIp);
+				session.setAttribute(SESSION_ATTRIBUTE_PRIVATE_RELAY, false);
+			}
+		}
 
 		// If both ips are of the same version, invalidate session
 		if (loginIp.contains(":") == currentIp.contains(":")) {
