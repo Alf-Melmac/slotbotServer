@@ -21,3 +21,7 @@ discord.xml
 
 #JPA Buddy
 jpa*.xml
+
+# GitHub Copilot
+copilot.data.migration.*.xml
+copilotDiffState.xml

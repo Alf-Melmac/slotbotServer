@@ -173,7 +173,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			discordInformation.setSlotListMsgPartOne(slotListMsg.getId());
 
 			boolean allowedToPin = true;
-			if (botHasPermission(channel, Permission.MESSAGE_MANAGE)) {
+			if (botHasPermission(channel, Permission.MESSAGE_MANAGE)) { //JDA 6 pin message permission
 				//Pin slotlist msg
 				slotListMsg.pin().queue();
 			} else {

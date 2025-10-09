@@ -1,5 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
+import de.webalf.slotbot.feature.ip_filter.SessionIpFilter;
 import de.webalf.slotbot.service.BanService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.UserService;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
@@ -20,7 +22,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import static org.springframework.boot.web.server.Cookie.SameSite.STRICT;
 import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.COOKIES;
@@ -64,7 +66,7 @@ public class OAuth2EndpointConfig {
 
 				.logout(logout -> logout
 						.logoutSuccessUrl("/events")
-						.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+						.logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/logout")) //Consider using POST for logout requests (see logoutUrl JavaDoc)
 						.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES)))
 				)
 
