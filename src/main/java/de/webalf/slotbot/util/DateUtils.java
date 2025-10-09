@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import static java.time.ZoneOffset.UTC;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * @author Alf
@@ -24,10 +25,12 @@ public final class DateUtils {
 	}
 
 	/**
-	 * Checks if the given date time in utc offset if in the future
+	 * Checks if the given date time is more than 24 hours ago
+	 *
+	 * @param dateTime in utc to check
 	 */
-	public static boolean isInFuture(@NonNull LocalDateTime dateTime) {
-		return Instant.now().isBefore(dateTime.toInstant(UTC));
+	public static boolean isMoreThan24HoursAgo(@NonNull LocalDateTime dateTime) {
+		return Instant.now().minus(1, DAYS).isAfter(dateTime.toInstant(UTC));
 	}
 
 	/**

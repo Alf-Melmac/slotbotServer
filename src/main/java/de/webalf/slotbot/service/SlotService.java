@@ -152,7 +152,7 @@ public class SlotService {
 	 */
 	Slottable getSlottable(@NonNull Slot slot, @NonNull User user) {
 		final Event slotEvent = slot.getEvent();
-		if (!DateUtils.isInFuture(slotEvent.getDateTime())) {
+		if (DateUtils.isMoreThan24HoursAgo(slotEvent.getDateTime())) {
 			return new Slottable(NOT_AVAILABLE);
 		}
 		final Slottable slottable = slot.getSlottable(user);
