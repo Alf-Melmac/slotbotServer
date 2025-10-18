@@ -16,10 +16,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -126,7 +127,7 @@ public class Slot implements DiscordSlashCommand, DiscordStringSelect {
 
 	private StringSelectMenu requirementsSelectMenu(@NonNull Iterable<Requirement> requirements) {
 		final String menuId = getClass().getAnnotation(StringSelectInteraction.class).value()[0];
-		final StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create(menuId)
+		final Builder selectMenuBuilder = StringSelectMenu.create(menuId)
 				.setPlaceholder("Voraussetzungen auswählen")
 				.setMaxValues((int) requirements.spliterator().getExactSizeIfKnown());
 

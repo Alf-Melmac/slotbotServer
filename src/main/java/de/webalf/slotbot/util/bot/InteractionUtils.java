@@ -5,16 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.callbacks.IDeferrableCallback;
 import net.dv8tion.jda.api.interactions.callbacks.IMessageEditCallback;
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 import net.dv8tion.jda.api.interactions.components.ComponentInteraction;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 
-import static net.dv8tion.jda.api.EmbedBuilder.ZERO_WIDTH_SPACE;
+import java.util.Arrays;
 
 /**
  * Util class to work with {@link Interaction}s
@@ -54,28 +53,32 @@ public final class InteractionUtils {
 	}
 
 	/**
-	 * Sends an empty message with the given {@link StringSelectMenu}
+	 * Sends a message without text content, but the given {@link StringSelectMenu}
 	 *
-	 * @param interaction to add string select menu to
+	 * @param interaction to add select menu to
 	 * @param selectMenu  to add
+	 * @see #addSelectMenu(IDeferrableCallback, String, StringSelectMenu)
 	 */
 	public static void addSelectMenu(@NonNull IDeferrableCallback interaction, StringSelectMenu... selectMenu) {
-		addSelectMenu(interaction, ZERO_WIDTH_SPACE, selectMenu);
+		interaction.getHook()
+				.sendMessageComponents(Arrays.stream(selectMenu).map(ActionRow::of).toList())
+				.useComponentsV2()
+				.queue();
 	}
 
 	/**
 	 * Sends a message with the given {@link StringSelectMenu}
 	 *
-	 * @param interaction to add string select menu to
+	 * @param interaction to add select menu to
 	 * @param reply       message to send
 	 * @param selectMenu  to add
+	 * @see #addSelectMenu(IDeferrableCallback, StringSelectMenu...)
 	 */
-	public static void addSelectMenu(@NonNull IDeferrableCallback interaction, @NotBlank String reply, StringSelectMenu... selectMenu) {
-		WebhookMessageCreateAction<Message> messageAction = interaction.getHook().sendMessage(reply);
-		for (StringSelectMenu menu : selectMenu) {
-			messageAction = messageAction.addActionRow(menu);
-		}
-		messageAction.queue();
+	public static void addSelectMenu(@NonNull IDeferrableCallback interaction, @NotBlank String reply, StringSelectMenu selectMenu) {
+		interaction.getHook()
+				.sendMessage(reply)
+				.addComponents(ActionRow.of(selectMenu))
+				.queue();
 	}
 
 	/**

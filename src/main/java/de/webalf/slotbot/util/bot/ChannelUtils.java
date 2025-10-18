@@ -7,6 +7,12 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.internal.entities.channel.mixin.middleman.GuildMessageChannelMixin;
+
+import java.time.Instant;
+
+import static net.dv8tion.jda.api.Permission.MESSAGE_MANAGE;
+import static net.dv8tion.jda.api.Permission.PIN_MESSAGES;
 
 /**
  * Util class to work with discord channels
@@ -47,5 +53,19 @@ public final class ChannelUtils {
 	 */
 	public static boolean botHasPermission(@NonNull GuildMessageChannel channel, @NonNull Permission... permission) {
 		return channel.getGuild().getSelfMember().hasPermission(channel, permission);
+	}
+
+	private static final Instant PIN_PERMISSION_DEADLINE = Instant.parse("2026-01-12T00:00:00Z");
+
+	/**
+	 * Until {@link #PIN_PERMISSION_DEADLINE} Discord allows pinning with {@link Permission#MESSAGE_MANAGE}, afterwards only with {@link Permission#PIN_MESSAGES}
+	 *
+	 * @see GuildMessageChannelMixin#checkCanControlMessagePins()
+	 */
+	public static boolean botHasPermissionMessagePins(@NonNull GuildMessageChannel channel) {
+		if (Instant.now().isBefore(PIN_PERMISSION_DEADLINE) && botHasPermission(channel, MESSAGE_MANAGE)) {
+			return true;
+		}
+		return botHasPermission(channel, PIN_MESSAGES);
 	}
 }

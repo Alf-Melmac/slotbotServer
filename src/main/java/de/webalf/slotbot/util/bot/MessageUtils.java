@@ -5,14 +5,18 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.actionrow.ActionRowChildComponent;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.interactions.Interaction;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
@@ -99,10 +103,12 @@ public final class MessageUtils {
 	 * @param message     to send
 	 * @param components  to add to the message
 	 */
-	public static void sendMessage(@NonNull Interaction interaction, @NotBlank String message, ItemComponent... components) {
-		interaction.getMessageChannel()
-				.sendMessage(message)
-				.setActionRow(components)
-				.queue();
+	public static void sendMessage(@NonNull Interaction interaction, @NotBlank String message, ActionRowChildComponent... components) {
+		try (final MessageCreateData messageCreateData = new MessageCreateBuilder()
+				.setContent(message)
+				.addComponents(ActionRow.of(Arrays.asList(components)))
+				.build()) {
+			interaction.getMessageChannel().sendMessage(messageCreateData).queue();
+		}
 	}
 }

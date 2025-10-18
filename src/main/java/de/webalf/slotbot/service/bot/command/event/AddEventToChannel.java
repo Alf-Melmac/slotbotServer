@@ -17,18 +17,20 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
+import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermissionMessagePins;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
 import static de.webalf.slotbot.util.bot.MessageUtils.deletePinAddedMessages;
@@ -102,7 +104,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {
 		final String[] menuIds = getClass().getAnnotation(StringSelectInteraction.class).value();
-		final StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create(foreign ? menuIds[1] : menuIds[0])
+		final Builder selectMenuBuilder = StringSelectMenu.create(foreign ? menuIds[1] : menuIds[0])
 				.setPlaceholder(placeholder);
 
 		for (Event event : events) {
@@ -173,7 +175,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			discordInformation.setSlotListMsgPartOne(slotListMsg.getId());
 
 			boolean allowedToPin = true;
-			if (botHasPermission(channel, Permission.MESSAGE_MANAGE)) { //JDA 6 pin message permission
+			if (botHasPermissionMessagePins(channel)) {
 				//Pin slotlist msg
 				slotListMsg.pin().queue();
 			} else {

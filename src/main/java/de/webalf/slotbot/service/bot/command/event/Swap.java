@@ -80,7 +80,7 @@ public class Swap implements DiscordSlashCommand, DiscordButton {
 		} else if (SWAP_DECLINE.equals(interaction)) {
 			swapRequestBotService.decline(swapRequestId);
 		} else {
-			throw new IllegalStateException("Unknown swap button: " + event.getButton().getId());
+			throw new IllegalStateException("Unknown swap button: " + event.getButton().getCustomId());
 		}
 	}
 }

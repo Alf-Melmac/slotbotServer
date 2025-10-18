@@ -6,14 +6,18 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.actionrow.ActionRowChildComponent;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -61,8 +65,13 @@ public class DirectMessageHelper {
 	 * @param failure     action to execute on failure
 	 * @param components  components to add to the message
 	 */
-	public static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<Message> success, Consumer<? super Throwable> failure, ItemComponent... components) {
-		inPrivateChannel(user, privateChannel -> privateChannel.sendMessage(messageText).setActionRow(components), success, failure);
+	public static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<Message> success, Consumer<? super Throwable> failure, ActionRowChildComponent... components) {
+		try (final MessageCreateData messageCreateData = new MessageCreateBuilder()
+				.setContent(messageText)
+				.addComponents(ActionRow.of(Arrays.asList(components)))
+				.build()) {
+			inPrivateChannel(user, privateChannel -> privateChannel.sendMessage(messageCreateData), success, failure);
+		}
 	}
 
 	/**

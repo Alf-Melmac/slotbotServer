@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static net.dv8tion.jda.api.interactions.components.selections.SelectMenu.OPTIONS_MAX_AMOUNT;
+import static net.dv8tion.jda.api.components.selections.SelectMenu.OPTIONS_MAX_AMOUNT;
 
 /**
  * Wrapper for {@link EventService} to be used by discord bot

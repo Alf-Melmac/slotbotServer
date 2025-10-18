@@ -60,6 +60,6 @@ public final class ButtonUtils {
 	 */
 	public static String[] splitButtonId(@NonNull ButtonInteractionEvent buttonInteractionEvent) {
 		//noinspection DataFlowIssue interactable buttons always have an id
-		return buttonInteractionEvent.getButton().getId().split(BUTTON_ID_SEPARATOR);
+		return buttonInteractionEvent.getButton().getCustomId().split(BUTTON_ID_SEPARATOR);
 	}
 }
