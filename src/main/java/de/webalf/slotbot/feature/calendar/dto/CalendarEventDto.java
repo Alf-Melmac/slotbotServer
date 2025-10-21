@@ -1,16 +1,16 @@
-package de.webalf.slotbot.model.dtos.website;
+package de.webalf.slotbot.feature.calendar.dto;
 
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
-import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
+import de.webalf.slotbot.model.dtos.GuildDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-import static de.webalf.slotbot.util.ConstraintConstants.HEX_COLOR;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 
 /**
@@ -25,11 +25,14 @@ public class CalendarEventDto extends AbstractIdEntityDto {
 	@Size(max = TEXT)
 	private String title;
 
+	@NonNull
 	private LocalDateTime start;
 
-	@NotBlank
-	@Size(min = HEX_COLOR, max = HEX_COLOR)
-	private String color;
+	@NonNull
+	private VisibleEventTypeDto eventType;
+
+	@NonNull
+	private GuildDto ownerGuild;
 
 	private ShortEventInformationDto shortInformation;
 }

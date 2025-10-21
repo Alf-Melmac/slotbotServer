@@ -1,9 +1,10 @@
-package de.webalf.slotbot.assembler.website;
+package de.webalf.slotbot.feature.calendar;
 
+import de.webalf.slotbot.feature.calendar.dto.ShortEventInformationDto;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.Squad;
-import de.webalf.slotbot.model.dtos.ShortEventInformationDto;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -11,8 +12,8 @@ import lombok.experimental.UtilityClass;
  * @since 21.04.2022
  */
 @UtilityClass
-public final class ShortEventInformationAssembler {
-	public ShortEventInformationDto toDto(Event event) {
+final class ShortEventInformationAssembler {
+	ShortEventInformationDto toDto(@NonNull Event event) {
 		int emptySlots = 0;
 		int slotCount = 0;
 		int emptyReserveSlots = 0;

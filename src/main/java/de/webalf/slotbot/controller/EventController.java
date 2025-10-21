@@ -1,11 +1,9 @@
 package de.webalf.slotbot.controller;
 
-import de.webalf.slotbot.assembler.website.CalendarEventAssembler;
 import de.webalf.slotbot.assembler.website.EventDetailsAssembler;
 import de.webalf.slotbot.assembler.website.event.creation.EventPostAssembler;
 import de.webalf.slotbot.assembler.website.event.edit.EventEditAssembler;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.model.dtos.website.CalendarEventDto;
 import de.webalf.slotbot.model.dtos.website.EventDetailsDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventEditDto;
@@ -18,8 +16,6 @@ import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,19 +32,6 @@ import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYO
 public class EventController {
 	private final EventService eventService;
 	private final EventDetailsAssembler eventDetailsAssembler;
-
-	@GetMapping({"/list", "/{guild}/list"})
-	public List<CalendarEventDto> getBetween(@PathVariable(required = false) Optional<String> guild,
-	                                         @RequestParam LocalDateTime start,
-	                                         @RequestParam LocalDateTime end) {
-		return CalendarEventAssembler.toDtoList(eventService.findAllBetween(start, end, guild));
-	}
-
-	@GetMapping("/{guild}/around-today")
-	@PreAuthorize("@permissionChecker.isAdvancedGuild(#guild)")
-	public List<CalendarEventDto> getAroundToday(@PathVariable String guild) {
-		return CalendarEventAssembler.toDtoList(eventService.findAllAroundToday(guild));
-	}
 
 	@GetMapping("/{id}/details")
 	public EventDetailsDto getEventDetails(@PathVariable(value = "id") long eventId) {
