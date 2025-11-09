@@ -1,8 +1,8 @@
 package de.webalf.slotbot.service.bot;
 
-import de.webalf.slotbot.model.SwapRequest;
-import de.webalf.slotbot.model.enums.SwapRequestResult;
-import de.webalf.slotbot.service.SwapRequestService;
+import de.webalf.slotbot.feature.swap.SwapRequestResult;
+import de.webalf.slotbot.feature.swap.SwapRequestService;
+import de.webalf.slotbot.feature.swap.model.SwapRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

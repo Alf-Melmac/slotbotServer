@@ -8,10 +8,10 @@ import de.webalf.slotbot.feature.action_log.ActionLogService;
 import de.webalf.slotbot.feature.action_log.model.LogAction;
 import de.webalf.slotbot.feature.requirement.RequirementService;
 import de.webalf.slotbot.feature.slot_rules.Slottable;
+import de.webalf.slotbot.feature.slot_rules.SlottableState;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.MinimalSlotIdDto;
-import de.webalf.slotbot.model.enums.SlottableState;
 import de.webalf.slotbot.model.event.BanEvent;
 import de.webalf.slotbot.repository.SlotRepository;
 import de.webalf.slotbot.util.DateUtils;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.webalf.slotbot.model.enums.SlottableState.*;
+import static de.webalf.slotbot.feature.slot_rules.SlottableState.*;
 
 /**
  * @author Alf
@@ -64,7 +64,7 @@ public class SlotService {
 	 * @return slot in the event in which the user is slotted
 	 * @throws ResourceNotFoundException if no slot matching the user and event is found
 	 */
-	Slot findByUserAndEvent(@NonNull User user, @NonNull Event event) {
+	public Slot findByUserAndEvent(@NonNull User user, @NonNull Event event) {
 		return slotRepository.findByUserAndSquadEvent(user, event).orElseThrow(ResourceNotFoundException::new);
 	}
 
@@ -151,11 +151,23 @@ public class SlotService {
 	 * @return state of the slot for the user
 	 */
 	Slottable getSlottable(@NonNull Slot slot, @NonNull User user) {
+		return getSlottable(slot, user, false);
+	}
+
+	/**
+	 * Determines the {@link Slottable} state of the given slot for the given user
+	 *
+	 * @param slot           to check
+	 * @param user           to slot
+	 * @param ignoreOccupied ignores that the slot is occupied and handles it as empty
+	 * @return state of the slot for the user
+	 */
+	private Slottable getSlottable(@NonNull Slot slot, @NonNull User user, boolean ignoreOccupied) {
 		final Event slotEvent = slot.getEvent();
 		if (DateUtils.isMoreThan24HoursAgo(slotEvent.getDateTime())) {
 			return new Slottable(NOT_AVAILABLE);
 		}
-		final Slottable slottable = slot.getSlottable(user);
+		final Slottable slottable = slot.getSlottable(user, ignoreOccupied);
 		if (slottable.state().isSlottingAllowed() && banService.isBanned(user, slotEvent.getOwnerGuild(), slot.getEffectiveReservedFor())) {
 			return new Slottable(NO_BANNED);
 		}
@@ -163,7 +175,11 @@ public class SlotService {
 	}
 
 	boolean isSlottable(@NonNull Slot slot, @NonNull User user) {
-		return getSlottable(slot, user).state().isSlottingAllowed();
+		return isSlottable(slot, user, false);
+	}
+
+	public boolean isSlottable(@NonNull Slot slot, @NonNull User user, boolean ignoreOccupied) {
+		return getSlottable(slot, user, ignoreOccupied).state().isSlottingAllowed();
 	}
 
 	/**

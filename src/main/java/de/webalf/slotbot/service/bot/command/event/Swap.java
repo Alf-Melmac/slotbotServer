@@ -1,9 +1,9 @@
 package de.webalf.slotbot.service.bot.command.event;
 
+import de.webalf.slotbot.feature.swap.SwapRequestResult;
 import de.webalf.slotbot.model.annotations.bot.ButtonInteraction;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.bot.TranslatableOptionData;
-import de.webalf.slotbot.model.enums.SwapRequestResult;
 import de.webalf.slotbot.service.bot.SwapRequestBotService;
 import de.webalf.slotbot.service.bot.command.DiscordButton;
 import de.webalf.slotbot.service.bot.command.DiscordSlashCommand;
@@ -58,6 +58,10 @@ public class Swap implements DiscordSlashCommand, DiscordButton {
 		switch (swapRequestResult) {
 			case ERROR_OWN_SLOT -> reply(event, locale.t("bot.slash.event.swap.response.ownSlot"));
 			case ERROR_PENDING -> reply(event, locale.t("bot.slash.event.swap.response.pending"));
+			case ERROR_NOT_AVAILABLE_FOR_REQUESTER ->
+					reply(event, locale.t("bot.slash.event.swap.response.notAvailableRequester"));
+			case ERROR_NOT_AVAILABLE_FOR_FOREIGN ->
+					reply(event, locale.t("bot.slash.event.swap.response.notAvailableForeign"));
 			default -> finishedInteraction(event);
 		}
 	}

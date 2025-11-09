@@ -4,14 +4,14 @@ import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import de.webalf.slotbot.feature.slot_rules.Slottable;
-import de.webalf.slotbot.model.enums.SlottableState;
+import de.webalf.slotbot.feature.slot_rules.SlottableState;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
 import static de.webalf.slotbot.AssertionUtils.assertMessageEquals;
+import static de.webalf.slotbot.feature.slot_rules.SlottableState.*;
 import static de.webalf.slotbot.model.SquadTest.buildReserveSquad;
-import static de.webalf.slotbot.model.enums.SlottableState.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 

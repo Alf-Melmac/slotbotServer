@@ -1,7 +1,6 @@
 package de.webalf.slotbot.feature.slot_rules;
 
 import de.webalf.slotbot.feature.requirement.model.Requirement;
-import de.webalf.slotbot.model.enums.SlottableState;
 
 import java.util.Set;
 

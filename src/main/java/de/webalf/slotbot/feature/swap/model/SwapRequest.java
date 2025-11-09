@@ -1,5 +1,7 @@
-package de.webalf.slotbot.model;
+package de.webalf.slotbot.feature.swap.model;
 
+import de.webalf.slotbot.model.AbstractSuperIdEntity;
+import de.webalf.slotbot.model.Slot;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

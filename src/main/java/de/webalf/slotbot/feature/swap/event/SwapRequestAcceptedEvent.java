@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.event;
+package de.webalf.slotbot.feature.swap.event;
 
 import lombok.Builder;
 

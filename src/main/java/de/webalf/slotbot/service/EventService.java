@@ -34,8 +34,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static de.webalf.slotbot.feature.slot_rules.SlottableState.NOT_AVAILABLE;
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
-import static de.webalf.slotbot.model.enums.SlottableState.NOT_AVAILABLE;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.hasEventManagePermission;
 
 /**
@@ -455,9 +455,8 @@ public class EventService {
 		final User user = userService.find(userDto);
 
 		final List<Slot> availableSlots = event.getSquadList().stream()
-				.filter(Squad::hasEmptySlot)
 				.flatMap(squad -> squad.getSlotList().stream()
-						.filter(slot -> slotService.isSlottable(slot, user)))
+						.filter(slot -> slot.isEmpty() && slotService.isSlottable(slot, user)))
 				.toList();
 		if (availableSlots.isEmpty()) {
 			throw SlottableException.builder().slottable(new Slottable(NOT_AVAILABLE)).build();

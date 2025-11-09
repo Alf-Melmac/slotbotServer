@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.enums;
+package de.webalf.slotbot.feature.slot_rules;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

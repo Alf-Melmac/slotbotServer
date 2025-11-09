@@ -1,14 +1,14 @@
 package de.webalf.slotbot.service.bot;
 
+import de.webalf.slotbot.feature.swap.SwapRequestService;
+import de.webalf.slotbot.feature.swap.event.SwapRequestAcceptedEvent;
+import de.webalf.slotbot.feature.swap.event.SwapRequestCreatedEvent;
+import de.webalf.slotbot.feature.swap.event.SwapRequestDeclinedEvent;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
-import de.webalf.slotbot.model.event.SwapRequestAcceptedEvent;
-import de.webalf.slotbot.model.event.SwapRequestCreatedEvent;
-import de.webalf.slotbot.model.event.SwapRequestDeclinedEvent;
-import de.webalf.slotbot.service.SwapRequestService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.DirectMessageHelper;

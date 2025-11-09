@@ -103,10 +103,6 @@ public class Squad extends AbstractSuperIdEntity {
 		return getName().equals(RESERVE_NAME);
 	}
 
-	public boolean hasEmptySlot() {
-		return getSlotList().stream().anyMatch(Slot::isEmpty);
-	}
-
 	boolean isEmpty() {
 		return getSlotList().isEmpty();
 	}

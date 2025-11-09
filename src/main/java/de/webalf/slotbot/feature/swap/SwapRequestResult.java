@@ -1,4 +1,4 @@
-package de.webalf.slotbot.model.enums;
+package de.webalf.slotbot.feature.swap;
 
 /**
  * @author Alf
@@ -7,5 +7,7 @@ package de.webalf.slotbot.model.enums;
 public enum SwapRequestResult {
 	ERROR_OWN_SLOT,
 	ERROR_PENDING,
+	ERROR_NOT_AVAILABLE_FOR_REQUESTER,
+	ERROR_NOT_AVAILABLE_FOR_FOREIGN,
 	SUCCESS,
 }

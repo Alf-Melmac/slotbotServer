@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.webalf.slotbot.model.enums.SlottableState.*;
+import static de.webalf.slotbot.feature.slot_rules.SlottableState.*;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 import static de.webalf.slotbot.util.ConstraintConstants.TEXT_DB;
 
@@ -138,7 +138,18 @@ public class Slot extends AbstractSuperIdEntity {
 	 * @return info about usability
 	 */
 	public Slottable getSlottable(@NonNull User user) {
-		if (isNotEmpty()) {
+		return getSlottable(user, false);
+	}
+
+	/**
+	 * Determines the usability of the slot for the given user
+	 *
+	 * @param user           to be slotted
+	 * @param ignoreOccupied ignore that the slot is not empty
+	 * @return info about usability
+	 */
+	public Slottable getSlottable(@NonNull User user, boolean ignoreOccupied) {
+		if (!ignoreOccupied && isNotEmpty()) {
 			if (isBlocked()) {
 				return new Slottable(NO_BLOCKED);
 			}

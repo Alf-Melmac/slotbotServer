@@ -1,15 +1,15 @@
-package de.webalf.slotbot.service;
+package de.webalf.slotbot.feature.swap;
 
 import de.webalf.slotbot.exception.ResourceNotFoundException;
+import de.webalf.slotbot.feature.swap.event.SwapRequestAcceptedEvent;
+import de.webalf.slotbot.feature.swap.event.SwapRequestCreatedEvent;
+import de.webalf.slotbot.feature.swap.event.SwapRequestDeclinedEvent;
+import de.webalf.slotbot.feature.swap.model.SwapRequest;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.SwapRequest;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.enums.SwapRequestResult;
-import de.webalf.slotbot.model.event.SwapRequestAcceptedEvent;
-import de.webalf.slotbot.model.event.SwapRequestCreatedEvent;
-import de.webalf.slotbot.model.event.SwapRequestDeclinedEvent;
-import de.webalf.slotbot.repository.SwapRequestRepository;
+import de.webalf.slotbot.service.SlotService;
+import de.webalf.slotbot.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -54,6 +54,13 @@ public class SwapRequestService {
 		if (reversedRequest.isPresent()) {
 			performSwap(reversedRequest.get());
 			return SwapRequestResult.SUCCESS;
+		}
+
+		if (!slotService.isSlottable(foreignSlot, requester, true)) {
+			return SwapRequestResult.ERROR_NOT_AVAILABLE_FOR_REQUESTER;
+		}
+		if (!slotService.isSlottable(requesterSlot, foreign, true)) {
+			return SwapRequestResult.ERROR_NOT_AVAILABLE_FOR_FOREIGN;
 		}
 
 		final SwapRequest swapRequest = swapRequestRepository.save(SwapRequest.builder()
