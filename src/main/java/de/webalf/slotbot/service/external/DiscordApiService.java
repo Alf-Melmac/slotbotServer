@@ -101,6 +101,8 @@ public class DiscordApiService {
 	public DiscordGuildMember getGuildMemberWithUser(String userId, long guildId) {
 		DiscordGuildMember member = getGuildMember(userId, guildId);
 		if (member == null) {
+			@SuppressWarnings("java:S6809")
+			//Both methods are cached anyway. These methods are expected to be replaced by jda usage in the future
 			final DiscordUser user = getUser(userId);
 			member = DiscordGuildMember.builder().user(user).roles(Collections.emptySet()).build();
 		}

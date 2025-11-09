@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 /**
  * @author Alf
@@ -40,7 +41,7 @@ public final class DtoUtils {
 		}
 	}
 
-	public static void ifPresent(int value, Consumer<Integer> consumer) {
+	public static void ifPresent(int value, IntConsumer consumer) {
 		if (isPresent(value)) {
 			consumer.accept(value);
 		}
