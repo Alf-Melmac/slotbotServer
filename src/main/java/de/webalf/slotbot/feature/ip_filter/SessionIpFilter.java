@@ -116,7 +116,7 @@ public class SessionIpFilter extends OncePerRequestFilter {
 		try {
 			session.invalidate();
 			log.warn("Session of {} invalidated due to ip change: {} ({}) -> {}", PermissionHelper.getLoggedInUserId(), storedIp, loginIp, currentIp);
-		} catch (IllegalStateException ignored) {
+		} catch (IllegalStateException _) {
 			// Session already invalidated
 		}
 	}

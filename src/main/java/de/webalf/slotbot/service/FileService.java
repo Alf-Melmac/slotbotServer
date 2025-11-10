@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -43,7 +42,7 @@ public class FileService {
 	 */
 	@Cacheable("fileLoader")
 	public Resource loadAsResource(String filename) {
-		final Path file = Paths.get(storageProperties.getDownload()).resolve(filename);
+		final Path file = Path.of(storageProperties.getDownload()).resolve(filename);
 
 		return getResource(filename, file);
 	}
@@ -57,14 +56,14 @@ public class FileService {
 	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
 	 */
 	public Resource loadIcsAsResource(String filename) {
-		final Path file = Paths.get(storageProperties.getCalendarOutput()).resolve(filename);
+		final Path file = Path.of(storageProperties.getCalendarOutput()).resolve(filename);
 
 		return getResource(filename, file);
 	}
 
 	@Cacheable("userContentLoader")
 	public Resource loadUserContentAsResource(String userId, String filename) {
-		final Path path = Paths.get(storageProperties.getUserContent(), userId, filename);
+		final Path path = Path.of(storageProperties.getUserContent(), userId, filename);
 
 		return getResource(filename, path);
 	}
@@ -84,7 +83,7 @@ public class FileService {
 	 * @return set of file names
 	 */
 	public Set<String> listDownloadFilesAndFilter(@NonNull Pattern filterPattern) {
-		try (Stream<Path> list = Files.list(Paths.get(storageProperties.getDownload()))) {
+		try (Stream<Path> list = Files.list(Path.of(storageProperties.getDownload()))) {
 			return list
 					.filter(file -> Files.isRegularFile(file) && filterPattern.matcher(file.getFileName().toString()).matches())
 					.map(Path::getFileName)
@@ -110,7 +109,7 @@ public class FileService {
 			} else {
 				throw new ResourceNotFoundException(filename);
 			}
-		} catch (MalformedURLException e) {
+		} catch (MalformedURLException _) {
 			throw new ResourceNotFoundException(filename);
 		}
 	}

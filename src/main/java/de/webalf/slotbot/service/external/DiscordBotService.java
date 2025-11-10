@@ -63,7 +63,7 @@ public class DiscordBotService {
 		try {
 			final User user = jda.retrieveUserById(userId).complete();
 			return DiscordGuildMember.builder().user(DiscordUser.fromJda(user)).build();
-		} catch (ErrorResponseException ignored) {
+		} catch (ErrorResponseException _) {
 			/*ignore*/
 		}
 

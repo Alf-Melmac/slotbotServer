@@ -42,7 +42,7 @@ public class CommandsService {
 	private final CommandClassHelper commandClassHelper;
 	private final MessageSource messageSource;
 
-	private static final Set<DiscordLocale> LANGUAGES = Set.of(GERMAN);
+	private static final Set<DiscordLocale> LANGUAGES = EnumSet.of(GERMAN);
 
 	/**
 	 * Updates application commands in the given guild

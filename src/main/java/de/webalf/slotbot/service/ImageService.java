@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Alf
@@ -52,7 +51,7 @@ public class ImageService {
 		if (filename.isBlank()) {
 			throw BusinessRuntimeException.builder().title("File name is invalid").build();
 		}
-		final Path directory = Paths.get(storageProperties.getUserContent(), PermissionHelper.getLoggedInUserId());
+		final Path directory = Path.of(storageProperties.getUserContent(), PermissionHelper.getLoggedInUserId());
 		//noinspection ResultOfMethodCallIgnored
 		directory.toFile().mkdirs();
 		Path finalPath = directory.resolve(filename + extension);

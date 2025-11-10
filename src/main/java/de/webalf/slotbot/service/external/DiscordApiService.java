@@ -83,7 +83,7 @@ public class DiscordApiService {
 				waitUntil = (System.currentTimeMillis() / 1000) + LongUtils.parseCeilLongFromDoubleString(resetAfterHeaders.getFirst());
 			}
 			guildMember = response.getBody();
-		} catch (HttpClientErrorException e) { //Catch member not found exception
+		} catch (HttpClientErrorException _) { //Catch member not found exception
 			guildMember = null;
 		}
 		if (guildMember != null) guildMember.setGuild(guildId);

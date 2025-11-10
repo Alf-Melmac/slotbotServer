@@ -49,7 +49,7 @@ class PrivateRelayRangeServiceImpl implements PrivateRelayRangeService {
 				.get()
 				.uri(SOURCE_URL)
 				.retrieve()
-				.onStatus(HttpStatusCode::isError, (request, response) ->
+				.onStatus(HttpStatusCode::isError, (_, response) ->
 						log.error("Failed to download Private Relay IP ranges: {} {}", response.getStatusCode(), new String(response.getBody().readAllBytes())))
 				.body(String.class);
 		final Pair<IPv4AddressTrie, IPv6AddressTrie> ipRanges = parseRanges(csv);

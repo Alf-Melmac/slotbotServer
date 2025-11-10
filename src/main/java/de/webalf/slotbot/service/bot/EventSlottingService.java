@@ -105,7 +105,7 @@ public class EventSlottingService {
 						foreignSlot.getName()
 				}, locale),
 				dmMessage -> swapRequestService.addMessageId(swapRequest.swapRequestId(), dmMessage.getIdLong()),
-				error -> {
+				_ -> {
 					sendDm(requester, messageSource.getMessage("event.swapRequest.error", new String[]{foreign.getAsMention()}, locale));
 					eventPublisher.publishEvent(SwapRequestDeclinedEvent.builder()
 							.swapRequestId(swapRequest.swapRequestId())

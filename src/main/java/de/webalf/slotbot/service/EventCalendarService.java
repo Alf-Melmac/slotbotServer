@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -136,7 +136,7 @@ public class EventCalendarService {
 	private void deleteCalendar(long id) {
 		try {
 			log.trace("Deleting calendar {}", id);
-			final boolean deleted = Files.deleteIfExists(Paths.get(getCalendarPath(id)));
+			final boolean deleted = Files.deleteIfExists(Path.of(getCalendarPath(id)));
 			if (deleted && log.isDebugEnabled()) {
 				log.debug("Deleted calendar of {}", id);
 			}

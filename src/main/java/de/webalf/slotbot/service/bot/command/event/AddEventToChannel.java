@@ -198,7 +198,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 			if (allowedToPin) {
 				//Pin second slotlist msg and remove pin information
-				slotListMsg.pin().queue(unused -> deletePinAddedMessages(channel));
+				slotListMsg.pin().queue(_ -> deletePinAddedMessages(channel));
 			}
 
 			eventBotService.addDiscordInformation(eventId, discordInformation);

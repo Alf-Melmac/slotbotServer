@@ -49,7 +49,7 @@ public final class EventCalendarUtil {
 		final String eventUrl = EventUtils.buildUrl(event);
 		try {
 			calendarEvent.add(new Url(new URI(eventUrl)));
-		} catch (URISyntaxException e) {
+		} catch (URISyntaxException _) {
 			log.error("Event url '{}' isn't valid. Can't add to calendar event {}", eventUrl, eventName);
 		}
 
