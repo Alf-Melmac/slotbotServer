@@ -3,6 +3,7 @@ package de.webalf.slotbot.model.dtos.website;
 import de.webalf.slotbot.feature.requirement.dto.RequirementListDto;
 import de.webalf.slotbot.model.dtos.AbstractIdEntityDto;
 import de.webalf.slotbot.model.dtos.EventTypeDto;
+import de.webalf.slotbot.model.dtos.GuildDto;
 import de.webalf.slotbot.model.dtos.referenceless.EventFieldReferencelessDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,7 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 	boolean hidden;
 
 	@NotNull
-	String ownerGuildIdentifier;
+	private GuildDto ownerGuild;
 
 	@Size(max = TEXT)
 	String missionType;
