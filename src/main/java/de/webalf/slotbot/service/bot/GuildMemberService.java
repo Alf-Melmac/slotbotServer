@@ -7,10 +7,12 @@ import de.webalf.slotbot.service.integration.GuildDiscordService;
 import de.webalf.slotbot.util.bot.DiscordRoleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -46,13 +48,20 @@ public class GuildMemberService {
 				.collect(Collectors.toUnmodifiableSet());
 		discordGuild.findMembers(member -> !Collections.disjoint(member.getUnsortedRoles(), roles))
 				.onSuccess(members -> {
-					final Set<Long> updatedMembers = members.stream()
+					Collection<Member> membersToProcess = members;
+					if (adminRole == null) { //If there is no admin role, skip admins from processing
+						final Set<Long> admins = guildUsersService.findByGuildAndAdmin(guild);
+						membersToProcess = members.stream()
+								.filter(member -> !admins.contains(member.getIdLong()))
+								.collect(Collectors.toUnmodifiableSet());
+					}
+					final Set<Long> updatedMembers = membersToProcess.stream()
 							.map(member -> {
 								guildUsersService.onRolesChanged(discordGuild.getIdLong(), member.getIdLong(), DiscordRoleUtils.getRoleIds(member.getRoles()));
 								return member.getIdLong();
 							})
 							.collect(Collectors.toUnmodifiableSet());
-					guildUsersService.removeExcept(guild, updatedMembers);
+					guildUsersService.removeExcept(guild, updatedMembers, adminRole == null);
 				});
 	}
 }

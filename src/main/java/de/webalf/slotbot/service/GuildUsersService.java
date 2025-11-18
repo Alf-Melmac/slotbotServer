@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static de.webalf.slotbot.util.permissions.PermissionHelper.buildAuthenticationWithPrefix;
@@ -54,6 +55,16 @@ public class GuildUsersService {
 
 	public Set<GuildUser> findByUserId(long userId) {
 		return guildUsersRepository.findByIdUserId(userId);
+	}
+
+	/**
+	 * Finds all user IDs with admin role in the given guild
+	 *
+	 * @param guild to find admins in
+	 * @return user ids with admin role
+	 */
+	public Set<Long> findByGuildAndAdmin(@NonNull Guild guild) {
+		return guildUsersRepository.findByGuildAndRole(guild, Role.ADMINISTRATOR);
 	}
 
 	public GuildUser add(long guildId, long userId) {
@@ -108,12 +119,15 @@ public class GuildUsersService {
 	/**
 	 * Removes all users except the given ones from the given guild
 	 *
-	 * @param guild   to remove users from
-	 * @param userIds to keep
+	 * @param guild      to remove users from
+	 * @param userIds    to keep
+	 * @param keepAdmins if true, users with admin role will not be removed
 	 */
-	public void removeExcept(@NonNull Guild guild, Set<Long> userIds) {
-		guildUsersRepository.deleteByGuildAndId_UserIdNotIn(guild, userIds)
-				.forEach(guildUser -> eventPublisher.publishEvent(new GuildUserDeleteEvent(guildUser)));
+	public void removeExcept(@NonNull Guild guild, Set<Long> userIds, boolean keepAdmins) {
+		final List<GuildUser> removed = keepAdmins
+				? guildUsersRepository.deleteByGuildAndId_UserIdNotInAndRoleNot(guild, userIds, Role.ADMINISTRATOR)
+				: guildUsersRepository.deleteByGuildAndId_UserIdNotIn(guild, userIds);
+		removed.forEach(guildUser -> eventPublisher.publishEvent(new GuildUserDeleteEvent(guildUser)));
 	}
 
 	public void ban(long guildId, long userId, String reason) {
