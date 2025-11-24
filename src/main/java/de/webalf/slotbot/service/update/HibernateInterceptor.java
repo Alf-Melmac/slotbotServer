@@ -1,7 +1,6 @@
 package de.webalf.slotbot.service.update;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.CallbackException;
 import org.hibernate.Interceptor;
 import org.hibernate.type.Type;
 import org.springframework.stereotype.Component;
@@ -16,19 +15,19 @@ public class HibernateInterceptor implements Interceptor {
 	private final UpdateInterceptorService updateInterceptorService;
 
 	@Override
-	public boolean onFlushDirty(Object entity, Object id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) throws CallbackException {
+	public boolean onFlushDirty(Object entity, Object id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
 		updateInterceptorService.update(entity, currentState, previousState, propertyNames);
 		return Interceptor.super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
 	}
 
 	@Override
-	public void onRemove(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) throws CallbackException {
+	public void onRemove(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) {
 		updateInterceptorService.onDelete(entity);
 		Interceptor.super.onRemove(entity, id, state, propertyNames, types);
 	}
 
 	@Override
-	public void onCollectionUpdate(Object collection, Object key) throws CallbackException {
+	public void onCollectionUpdate(Object collection, Object key) {
 		updateInterceptorService.onCollectionUpdate(collection);
 		Interceptor.super.onCollectionUpdate(collection, key);
 	}

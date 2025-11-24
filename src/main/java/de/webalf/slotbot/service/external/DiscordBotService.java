@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DiscordBotService {
 	private final BotService botService;
-	private final DiscordApiService discordApiService;
 	private final DiscordBotService self;
 
 	/**
@@ -37,14 +36,12 @@ public class DiscordBotService {
 	 * @param guildId to search member in
 	 * @param userId  identifier
 	 * @return the member or null if not resolvable
-	 * @see DiscordApiService#getGuildMemberWithUser(String, long)
 	 */
 	@Cacheable("botGuildMember")
 	public DiscordGuildMember getGuildMember(long userId, long guildId) {
 		final JDA jda = botService.getJda();
 		if (jda == null) {
-			log.debug("JDA not available, fallback to own api call");
-			return discordApiService.getGuildMemberWithUser(Long.toString(userId), guildId);
+			throw new IllegalStateException("JDA is not available");
 		}
 		final Guild guild = jda.getGuildById(guildId);
 
@@ -75,8 +72,7 @@ public class DiscordBotService {
 	public DiscordUser getUser(long userId) {
 		final JDA jda = botService.getJda();
 		if (jda == null) {
-			log.debug("JDA not available, fallback to own api call");
-			return discordApiService.getUser(Long.toString(userId));
+			throw new IllegalStateException("JDA is not available");
 		}
 		try {
 			final User user = jda.retrieveUserById(userId).complete();

@@ -1,6 +1,5 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.external.discord.DiscordOauthUser;
@@ -15,8 +14,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -63,15 +62,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	 * @return user object
 	 */
 	private static DiscordOauthUser getDiscordUser(Map<String, Object> attributes) {
-		DiscordOauthUser discordUser;
-		try {
-			final String attributesAsJson = new ObjectMapper().writeValueAsString(attributes);
-			discordUser = new ObjectMapper().readValue(attributesAsJson, DiscordOauthUser.class);
-		} catch (IOException e) {
-			log.error("Failed to read discordUser", e);
-			return null;
-		}
-		return discordUser;
+		final String attributesAsJson = new ObjectMapper().writeValueAsString(attributes);
+		return new ObjectMapper().readValue(attributesAsJson, DiscordOauthUser.class);
 	}
 
 	/**
@@ -86,7 +78,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		final Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
 		authorities.forEach(grantedAuthority -> {
-			if (grantedAuthority.getAuthority().equals("OAUTH2_USER")) {
+			if ("OAUTH2_USER".equals(grantedAuthority.getAuthority())) {
 				guildUsersService.getApplicationRoles(discordUser.getId())
 						.forEach(role -> mappedAuthorities.add(new OAuth2UserAuthority(role, attributes)));
 			} else {
