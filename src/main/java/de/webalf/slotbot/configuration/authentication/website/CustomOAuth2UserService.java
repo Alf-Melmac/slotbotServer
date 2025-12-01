@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -62,8 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	 * @return user object
 	 */
 	private static DiscordOauthUser getDiscordUser(Map<String, Object> attributes) {
-		final String attributesAsJson = new ObjectMapper().writeValueAsString(attributes);
-		return new ObjectMapper().readValue(attributesAsJson, DiscordOauthUser.class);
+		return new JsonMapper().convertValue(attributes, DiscordOauthUser.class);
 	}
 
 	/**
