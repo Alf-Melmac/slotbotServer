@@ -55,9 +55,8 @@ public class UserController {
 
 	@PutMapping(value = {"/steamid/", "/steamid/{steamId}"})
 	@PreAuthorize(HAS_ROLE_EVERYONE)
-	public ResponseEntity<Void> updateSteamId(@PathVariable(name = "steamId", required = false) Long steamId) {
-		userService.updateSteamId(steamId);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public Long updateSteamId(@PathVariable(name = "steamId", required = false) Long steamId) {
+		return userService.updateSteamId(steamId);
 	}
 
 	@PutMapping("/externalcalendar/{integrationActive}")

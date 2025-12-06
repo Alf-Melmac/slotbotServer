@@ -18,12 +18,12 @@ public class UserUpdateService {
 	private final UserServiceImpl userService;
 	private final EventCalendarService eventCalendarService;
 
-	public User updateSteamId(Long steamId) {
+	public Long updateSteamId(Long steamId) {
 		final User user = find(getLoggedInUserId());
 
 		user.setSteamId64(steamId);
 
-		return user;
+		return steamId;
 	}
 
 	public User updateSettings(boolean externalCalendarIntegrationActive) {
