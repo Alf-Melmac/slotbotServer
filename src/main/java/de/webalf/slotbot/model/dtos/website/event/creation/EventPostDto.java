@@ -1,8 +1,12 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldDto;
 import de.webalf.slotbot.model.dtos.website.event.EventActionDto;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -12,8 +16,7 @@ import java.util.List;
  * @since 25.07.2022
  */
 @EqualsAndHashCode(callSuper = true)
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE) //Allow jackson to serialize this class
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator})
 @Value
 @SuperBuilder
 public class EventPostDto extends EventActionDto {

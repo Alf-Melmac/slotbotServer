@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.website.event.creation;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
  * @since 25.07.2022
  */
 @Data
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator})
 @Builder
 public class MinimalSquadDto {
 	@NotBlank

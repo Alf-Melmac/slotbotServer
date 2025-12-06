@@ -1,10 +1,11 @@
 package de.webalf.slotbot.model.dtos;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -16,7 +17,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
  * @since 08.04.2021
  */
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE) //Allow jackson to serialize this class
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator})
 @Value
 @SuperBuilder
 public class EventTypeDto extends AbstractIdEntityDto {

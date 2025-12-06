@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.minimal;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -12,7 +13,7 @@ import lombok.experimental.SuperBuilder;
  * @since 20.08.2022
  */
 @EqualsAndHashCode(callSuper = true)
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE, onConstructor_ = {@JsonCreator})
 @Getter
 @SuperBuilder
 //Just for the readability
