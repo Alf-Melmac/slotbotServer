@@ -1,6 +1,6 @@
 package de.webalf.slotbot.feature.notifications;
 
-import de.webalf.slotbot.feature.notifications.dto.NotificationSettingDto;
+import de.webalf.slotbot.feature.notifications.dto.NotificationSettingPutDto;
 import de.webalf.slotbot.feature.notifications.model.NotificationSetting;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.User;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * @author Alf
@@ -52,7 +53,7 @@ public class NotificationSettingsService {
 	 * @param dtos new complete list with new or updated settings
 	 * @return saved public notification settings
 	 */
-	List<NotificationSetting> updateGlobalNotificationSettings(User user, @NonNull List<NotificationSettingDto> dtos) {
+	List<NotificationSetting> updateGlobalNotificationSettings(User user, @NonNull List<NotificationSettingPutDto> dtos) {
 		List<NotificationSetting> notificationSettings = new ArrayList<>();
 		dtos.forEach(notificationSettingDto ->
 				notificationSettings.add(updateOrCreateNotificationSetting(user, notificationSettingDto)));
@@ -73,9 +74,12 @@ public class NotificationSettingsService {
 	 * @param dto  new or updated setting
 	 * @return saved setting
 	 */
-	private NotificationSetting updateOrCreateNotificationSetting(User user, @NonNull NotificationSettingDto dto) {
-		final NotificationSetting notificationSetting = notificationSettingRepository.findById(dto.id())
-				.orElseGet(() -> NotificationSetting.builder().user(user).build());
+	private NotificationSetting updateOrCreateNotificationSetting(User user, @NonNull NotificationSettingPutDto dto) {
+		final Supplier<NotificationSetting> newSetting = () -> NotificationSetting.builder().user(user).build();
+		final NotificationSetting notificationSetting = dto.id() == null
+				? newSetting.get()
+				: notificationSettingRepository.findById(dto.id())
+				.orElseGet(newSetting);
 
 		DtoUtils.ifPresent(dto.hoursBeforeEvent(), notificationSetting::setHoursBeforeEvent);
 		DtoUtils.ifPresent(dto.minutesBeforeEvent(), notificationSetting::setMinutesBeforeEvent);
