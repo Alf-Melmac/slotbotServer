@@ -38,11 +38,11 @@ public class DiscordWebhookEventsController {
 
 		if (!validateRequest(request, body)) {
 			log.debug("Invalid signature: {}", request.getRemoteAddr());
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
 		discordWebhookEventsHandler.handle(body);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.noContent().build();
 	}
 
 	/**

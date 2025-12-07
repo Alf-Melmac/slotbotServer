@@ -21,11 +21,10 @@ import static de.webalf.slotbot.exception.RestResponseEntityExceptionHandler.det
 public class OtherResponseEntityExceptionHandler {
 	@ExceptionHandler(ForbiddenException.class)
 	protected ResponseEntity<ExceptionResponse> handleConflict(RuntimeException ex, HttpServletRequest request) {
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
+		return ResponseEntity.status(determineHttpStatus(ex))
+				.body(ExceptionResponse.builder()
 						.errorMessage(ex.getMessage())
 						.requestedURI(request.getRequestURI())
-						.build(),
-				determineHttpStatus(ex));
+						.build());
 	}
 }

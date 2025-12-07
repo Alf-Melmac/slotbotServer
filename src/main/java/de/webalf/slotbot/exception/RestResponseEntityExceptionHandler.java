@@ -34,15 +34,13 @@ import java.util.stream.Collectors;
 @ControllerAdvice(annotations = RestController.class)
 @Order(1)
 class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-
 	@ExceptionHandler(value = {ResourceNotFoundException.class, BusinessRuntimeException.class, ForbiddenException.class})
 	protected ResponseEntity<ExceptionResponse> handleConflict(@NonNull RuntimeException ex, @NonNull HttpServletRequest request) {
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
+		return ResponseEntity.status(determineHttpStatus(ex))
+				.body(ExceptionResponse.builder()
 						.errorMessage(determineErrorMessage(ex))
 						.requestedURI(request.getRequestURI())
-						.build(),
-				determineHttpStatus(ex));
+						.build());
 	}
 
 	@Override
@@ -51,22 +49,20 @@ class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler 
 		final String errorMessage = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining(", "));
 
 		final boolean multiple = fieldErrors.size() > 1;
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
+		return ResponseEntity.badRequest()
+				.body(ExceptionResponse.builder()
 						.errorMessage(errorMessage + (multiple ? " are" : " is") + " invalid. Missing mandatory field" + (multiple ? "s" : "") + "?")
 						.requestedURI(((ServletWebRequest) request).getRequest().getRequestURI())
-						.build(),
-				HttpStatus.BAD_REQUEST);
+						.build());
 	}
 
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(@NonNull TypeMismatchException ex, @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
-		return new ResponseEntity<>(
-				ExceptionResponse.builder()
+		return ResponseEntity.badRequest()
+				.body(ExceptionResponse.builder()
 						.errorMessage("Failed to convert '" + ex.getPropertyName() + "' with value: '" + ex.getValue() + "'")
 						.requestedURI(((ServletWebRequest) request).getRequest().getRequestURI())
-						.build(),
-				HttpStatus.BAD_REQUEST);
+						.build());
 	}
 
 	/**

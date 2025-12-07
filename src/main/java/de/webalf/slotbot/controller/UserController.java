@@ -11,7 +11,6 @@ import de.webalf.slotbot.util.EventCalendarUtil;
 import de.webalf.slotbot.util.LongUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +62,6 @@ public class UserController {
 	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public ResponseEntity<Void> updateExternalCalendarIntegration(@PathVariable(name = "integrationActive") boolean integrationActive) {
 		userService.updateSettings(integrationActive);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 }

@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +35,7 @@ public class StatusApiController {
 	@Operation(summary = "Ping", description = "Check if the server is responsive.")
 	public ResponseEntity<Void> ping() {
 		log.trace("ping");
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/scheduledNotifications")

@@ -7,7 +7,6 @@ import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +39,9 @@ public class AdminController {
 			case "rebuildCalendars" -> guildService.findAll().forEach(eventCalendarService::rebuildCalendar);
 			case "leaveGuild" -> guildDiscordService.leaveGuild(Long.parseLong(body));
 			default -> {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				return ResponseEntity.badRequest().build();
 			}
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 }
