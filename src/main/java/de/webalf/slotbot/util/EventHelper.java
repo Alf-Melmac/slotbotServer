@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.awt.*;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
 
@@ -40,7 +40,7 @@ public class EventHelper {
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
 				.setTitle(event.getName(), EventUtils.buildUrl(event))
-				.setDescription(buildDescription(event.getDescription(), event::getId))
+				.setDescription(toMarkdown(event.getDescription(), MessageEmbed.DESCRIPTION_MAX_LENGTH, event::getId))
 				.setThumbnail(event.getPictureUrl())
 				.setFooter(messageSource.getMessage("bot.embed.event.footer", new String[]{event.getEventType().getName(), event.getCreator()}, guildLocale))
 				.setTimestamp(Instant.now());
@@ -54,14 +54,14 @@ public class EventHelper {
 		return embedBuilder.build();
 	}
 
-	private String buildDescription(String description, LongSupplier eventId) {
-		final String markdown = DiscordMarkdown.toMarkdown(description);
+	private String toMarkdown(String text, int maxLength, LongSupplier eventId) {
+		final String markdown = DiscordMarkdown.toMarkdown(text);
 		if (markdown == null) {
 			return null;
 		}
-		if (markdown.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH) {
-			log.warn("Event description too long {}", eventId.getAsLong());
-			return markdown.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH);
+		if (markdown.length() > maxLength) {
+			log.warn("Event field text too long. {} of {} - {}", markdown.length(), maxLength, eventId.getAsLong());
+			return markdown.substring(0, maxLength);
 		}
 		return markdown;
 	}
@@ -84,9 +84,8 @@ public class EventHelper {
 				text = messageSource.getMessage("yes", null, guildLocale);
 			} else if ("false".equals(text)) {
 				text = messageSource.getMessage("no", null, guildLocale);
-			}
-			if (StringUtils.isNotEmpty(field.getLink())) {
-				text = "[" + text + "](" + field.getLink() + ")";
+			} else {
+				text = toMarkdown(text, MessageEmbed.VALUE_MAX_LENGTH, event::getId);
 			}
 			addField(field.getTitle(), text, true, embedBuilder);
 		});

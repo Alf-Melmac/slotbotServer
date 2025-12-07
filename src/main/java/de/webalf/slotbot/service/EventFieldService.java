@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldIdDto;
 import de.webalf.slotbot.repository.EventFieldRepository;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class EventFieldService {
 		EventField eventField = eventFieldRepository.findById(dto.getId()).orElseGet(() -> EventField.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getTitle(), eventField::setTitle);
-		DtoUtils.ifPresent(dto.getText(), eventField::setText);
+		DtoUtils.ifPresentOrEmpty(EventUtils.sanitize(dto.getText()), eventField::setText);
 
 		return eventField;
 	}

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
-import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_VALUE;
 
 /**
  * @author Alf
@@ -25,8 +24,5 @@ public class EventFieldReferencelessDto extends AbstractIdEntityDto {
 	private String title;
 
 	@NotBlank
-	@Size(max = EMBEDDABLE_VALUE)
-	private String text;
-
-	private String link;
+	private String textAsHtml;
 }

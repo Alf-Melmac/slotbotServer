@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE_DB;
 
 /**
  * @author Alf
@@ -29,9 +30,8 @@ public class EventField extends AbstractSuperIdEntity {
 	@Size(max = EMBEDDABLE_TITLE)
 	private String title;
 
-	@Column(name = "event_field_text", length = EMBEDDABLE_VALUE_DB)
+	@Column(name = "event_field_text", columnDefinition = "text")
 	@NotBlank
-	@Size(max = EMBEDDABLE_VALUE)
 	private String text;
 
 	@ManyToOne(targetEntity = Event.class/*, fetch = FetchType.LAZY*/)
@@ -44,6 +44,7 @@ public class EventField extends AbstractSuperIdEntity {
 	 *
 	 * @return link or null
 	 */
+	@Deprecated //TODO Remove in favor of links in the field text
 	public String getLink() {
 		if ("Modset".equalsIgnoreCase(getTitle())) {
 			return Arma3ModsetUtils.getModSetUrl(getText(), getEvent().getOwnerGuild().getBaseRedirectUrl());

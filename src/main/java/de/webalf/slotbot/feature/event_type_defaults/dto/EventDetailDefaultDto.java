@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
-import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_VALUE;
 
 /**
  * @author Alf
@@ -31,6 +30,5 @@ public class EventDetailDefaultDto extends AbstractIdEntityDto {
 
 	List<String> selection;
 
-	@Size(max = EMBEDDABLE_VALUE)
 	String text;
 }

@@ -9,7 +9,6 @@ import lombok.NonNull;
 import java.util.List;
 
 import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
-import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_VALUE;
 
 /**
  * DTO for {@link EventDetailDefault}
@@ -21,4 +20,4 @@ public record EventDetailDefaultPostDto(Long id,
                                         @NotBlank @Size(max = EMBEDDABLE_TITLE) String title,
                                         @NonNull EventDetailType type,
                                         List<String> selection,
-                                        @Size(max = EMBEDDABLE_VALUE) String text) {}
+                                        String text) {}
