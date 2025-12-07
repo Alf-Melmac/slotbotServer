@@ -34,16 +34,16 @@ public class DiscordUserAssembler {
 
 	public static DiscordUserDto toDto(@NonNull DiscordUser user) {
 		return DiscordUserDto.builder()
-				.id(Long.toString(user.getId()))
+				.id(Long.toString(user.id()))
 				.name(user.getEffectiveName())
 				.avatarUrl(user.getAvatarUrl())
 				.build();
 	}
 
 	public static DiscordUserDto toDto(@NonNull DiscordGuildMember member) {
-		final DiscordUser user = member.getUser();
+		final DiscordUser user = member.user();
 		return DiscordUserDto.builder()
-				.id(Long.toString(user.getId()))
+				.id(Long.toString(user.id()))
 				.name(member.getEffectiveName())
 				.avatarUrl(member.getAvatarUrl())
 				.build();

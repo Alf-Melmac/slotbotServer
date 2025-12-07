@@ -20,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ExternalEndpointConfig {
 	@Bean
 	@Order(1)
-	SecurityFilterChain externalFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain externalFilterChain(HttpSecurity http) {
 		return http
 				// no session management required
 				.sessionManagement(sessionManagement -> sessionManagement

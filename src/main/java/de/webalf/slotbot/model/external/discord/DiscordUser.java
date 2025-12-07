@@ -1,7 +1,8 @@
 package de.webalf.slotbot.model.external.discord;
 
 import de.webalf.slotbot.util.bot.DiscordUserUtils;
-import lombok.*;
+import lombok.Builder;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.User;
 
 /**
@@ -12,17 +13,8 @@ import net.dv8tion.jda.api.entities.User;
  * @see <a href="https://discord.com/developers/docs/resources/user#user-object">User Object</a>
  * @since 27.01.2023
  */
-//This can't be @Value to allow RestTemplate to create an instance of this class
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class DiscordUser {
-	private long id;
-	private String username;
-	private String global_name;
-	private String avatar;
-
+public record DiscordUser(long id, String username, String global_name, String avatar) {
 	public static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
 
 	/**

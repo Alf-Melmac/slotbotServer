@@ -11,7 +11,7 @@ import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.SlotService;
 import de.webalf.slotbot.service.UserUpdateService;
-import de.webalf.slotbot.service.external.DiscordApiService;
+import de.webalf.slotbot.service.external.DiscordBotService;
 import de.webalf.slotbot.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.Optional;
 
-import static de.webalf.slotbot.service.external.DiscordApiService.isUnknownUser;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
 
 /**
@@ -29,15 +28,15 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser
 @Component
 @RequiredArgsConstructor
 public class UserProfileDtoAssembler {
-	private final DiscordApiService discordApiService;
+	private final DiscordBotService discordBotService;
 	private final GuildUsersService guildUsersService;
 	private final UserUpdateService userService;
 	private final SlotService slotService;
 	private final EventService eventService;
 
 	public UserProfileDto toDto(long userId) {
-		final DiscordUser discordUser = discordApiService.getUser(Long.toString(userId));
-		if (isUnknownUser(discordUser)) {
+		final DiscordUser discordUser = discordBotService.getUser(userId);
+		if (discordUser == null) {
 			throw new ResourceNotFoundException("Unknown discord user " + userId);
 		}
 

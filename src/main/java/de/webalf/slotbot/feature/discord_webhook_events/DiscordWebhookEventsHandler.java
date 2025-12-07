@@ -1,8 +1,5 @@
 package de.webalf.slotbot.feature.discord_webhook_events;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.webalf.slotbot.model.external.discord.DiscordGuild;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
@@ -11,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.EnumFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author Alf
@@ -20,14 +21,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class DiscordWebhookEventsHandler {
-	private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper = JsonMapper.builder()
+			.enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+			.build();
 	private final GuildUsersService guildUsersService;
 	private final GuildService guildService;
 
 	@Async
-	void handle(String body) throws JsonProcessingException {
-		objectMapper.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
-
+	void handle(String body) throws JacksonException {
 		final UnclassifiedDiscordWebhookEventPayload payload = objectMapper.readValue(body, UnclassifiedDiscordWebhookEventPayload.class);
 		if (payload.type() != WebhookType.EVENT) { // Ignore non-event payloads
 			return;
@@ -49,7 +50,7 @@ public class DiscordWebhookEventsHandler {
 				return;
 			}
 			guildService.create(guild.id(), guild.name());
-			guildUsersService.add(guild.id(), data.user().getId(), Role.ADMINISTRATOR);
+			guildUsersService.add(guild.id(), data.user().id(), Role.ADMINISTRATOR);
 		}
 	}
 }

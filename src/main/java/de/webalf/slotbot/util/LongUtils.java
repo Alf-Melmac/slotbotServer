@@ -23,7 +23,7 @@ public final class LongUtils {
 	/**
 	 * Parse Long that can handle null strings. Returns {@code fallback} if null
 	 *
-	 * @param s string to parse
+	 * @param s        string to parse
 	 * @param fallback to use if s is null
 	 * @return string converted to long or fallback if string was null
 	 */
@@ -33,16 +33,6 @@ public final class LongUtils {
 
 	public static Long parseLongWrapper(String s) {
 		return s != null ? Long.parseLong(s) : null;
-	}
-
-	/**
-	 * Returns the next whole long for the given double in a string
-	 *
-	 * @param s string including a double
-	 * @return rounded up long from the given double in a string
-	 */
-	public static long parseCeilLongFromDoubleString(String s) {
-		return (long) Math.ceil(Double.parseDouble(s));
 	}
 
 	public static String toString(Long l) {

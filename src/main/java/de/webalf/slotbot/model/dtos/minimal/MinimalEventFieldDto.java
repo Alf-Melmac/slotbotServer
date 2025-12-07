@@ -1,5 +1,6 @@
 package de.webalf.slotbot.model.dtos.minimal;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -15,7 +16,7 @@ import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_VALUE;
  * @since 25.07.2022
  */
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED, onConstructor_ = {@JsonCreator})
 @SuperBuilder
 public class MinimalEventFieldDto {
 	@NotBlank

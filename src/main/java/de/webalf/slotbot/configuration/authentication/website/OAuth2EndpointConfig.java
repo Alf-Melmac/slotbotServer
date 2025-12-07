@@ -5,7 +5,7 @@ import de.webalf.slotbot.service.BanService;
 import de.webalf.slotbot.service.GuildUsersService;
 import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
+import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,12 +43,11 @@ public class OAuth2EndpointConfig {
 	private final SessionIpFilter sessionIpFilter;
 
 	@Bean
-	SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) {
 		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
-		final CookieCsrfTokenRepository tokenRepository = new CookieCsrfTokenRepository();
+		final CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
 		tokenRepository.setCookieCustomizer(cookie -> cookie
 				.path("/")
-				.httpOnly(false)
 				.secure(true)
 				.sameSite(STRICT.attributeValue())
 		);
