@@ -2,25 +2,15 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
-import de.webalf.slotbot.util.Arma3ModsetUtils;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Alf
@@ -66,33 +56,6 @@ public class FileService {
 		final Path path = Path.of(storageProperties.getUserContent(), userId, filename);
 
 		return getResource(filename, path);
-	}
-
-	/**
-	 * Populates caches that need files from the file directories
-	 */
-	@Async
-	public void listFiles() {
-		Arma3ModsetUtils.fillDownloadableModSets(listDownloadFilesAndFilter(Arma3ModsetUtils.FILE_PATTERN));
-	}
-
-	/**
-	 * Return file names of every file in the download directory (non-recursive) matching the given pattern
-	 *
-	 * @param filterPattern that the file name must match
-	 * @return set of file names
-	 */
-	public Set<String> listDownloadFilesAndFilter(@NonNull Pattern filterPattern) {
-		try (Stream<Path> list = Files.list(Path.of(storageProperties.getDownload()))) {
-			return list
-					.filter(file -> Files.isRegularFile(file) && filterPattern.matcher(file.getFileName().toString()).matches())
-					.map(Path::getFileName)
-					.map(Path::toString)
-					.collect(Collectors.toUnmodifiableSet());
-		} catch (IOException e) {
-			log.error("Failed to list download files", e);
-		}
-		return Collections.emptySet();
 	}
 
 	/**

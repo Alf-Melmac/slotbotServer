@@ -1,7 +1,6 @@
 package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import de.webalf.slotbot.util.Arma3ModsetUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -38,18 +37,4 @@ public class EventField extends AbstractSuperIdEntity {
 	@JoinColumn(name = "event_id")
 	@JsonBackReference
 	private Event event;
-
-	/**
-	 * Returns a link if the field references something.
-	 *
-	 * @return link or null
-	 */
-	@Deprecated //TODO Remove in favor of links in the field text
-	public String getLink() {
-		if ("Modset".equalsIgnoreCase(getTitle())) {
-			return Arma3ModsetUtils.getModSetUrl(getText(), getEvent().getOwnerGuild().getBaseRedirectUrl());
-		}
-
-		return null;
-	}
 }

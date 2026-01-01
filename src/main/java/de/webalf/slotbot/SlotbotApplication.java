@@ -1,7 +1,6 @@
 package de.webalf.slotbot;
 
 import de.webalf.slotbot.feature.notifications.EventNotificationService;
-import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.bot.BotService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,9 +32,6 @@ public class SlotbotApplication {
 	public static void main(String[] args) {
 		//Start spring application
 		final ApplicationContext applicationContext = SpringApplication.run(SlotbotApplication.class, args);
-
-		//Initial fetch of file directories
-		applicationContext.getBean(FileService.class).listFiles();
 
 		//Start discord bot
 		applicationContext.getBean(BotService.class).startUp();
