@@ -114,7 +114,9 @@ class DiscordMarkdownTest {
 						"unescape escaped characters"),
 				Arguments.of("<p>\\\\ \\</p>", "\\\\\\\\ \\\\", "escaped backslashes"),
 				Arguments.of("<p>**</p>", "\\*\\*", "empty stars"),
-				Arguments.of("<p><strong>** </strong></p>", "**\\*\\* **", "bold stars")
+				Arguments.of("<p><strong>** </strong></p>", "**\\*\\* **", "bold stars"),
+				Arguments.of("<p><a rel=\"noopener noreferrer nofollow\" href=\"https://slotbot.de\">Link</a></p>", "[Link](https://slotbot.de)", "Link"),
+				Arguments.of("<p><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://slotbot.de\">Blank Link</a></p>", "[Blank Link](https://slotbot.de)", "Blank Link")
 		);
 	}
 }

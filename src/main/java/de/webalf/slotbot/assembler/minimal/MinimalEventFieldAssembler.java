@@ -19,7 +19,7 @@ public final class MinimalEventFieldAssembler {
 	private static EventField fromDto(@NonNull MinimalEventFieldDto dto) {
 		return EventField.builder()
 				.title(dto.getTitle().trim())
-				.text(EventUtils.sanitize(dto.getText()))
+				.text(EventUtils.sanitizeEventField(dto.getText()))
 				.build();
 	}
 

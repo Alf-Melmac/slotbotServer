@@ -58,7 +58,7 @@ public class EventFieldService {
 		EventField eventField = eventFieldRepository.findById(dto.getId()).orElseGet(() -> EventField.builder().event(event).build());
 
 		DtoUtils.ifPresent(dto.getTitle(), eventField::setTitle);
-		DtoUtils.ifPresentOrEmpty(EventUtils.sanitize(dto.getText()), eventField::setText);
+		DtoUtils.ifPresentOrEmpty(EventUtils.sanitizeEventField(dto.getText()), eventField::setText);
 
 		return eventField;
 	}

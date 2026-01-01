@@ -107,17 +107,30 @@ public final class EventUtils {
 		return DATE_TIME_SHORT.format(DateUtils.getDateTimeZoned(event.getDateTime()));
 	}
 
-	private static final Safelist SAFELIST = Safelist.none();
+	private static final Safelist DESCRIPTION_SAFELIST = Safelist.none();
+	private static final Safelist FIELD_SAFELIST = Safelist.none();
 
 	static {
-		SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p", "ul", "ol", "li", "small");
+		DESCRIPTION_SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p", "ul", "ol", "li", "small");
+		FIELD_SAFELIST.addTags("br", "s", "u", "strong", "em", "p", "small")
+				.addAttributes("a", "href", "target", "rel")
+				.addProtocols("a", "href", "https")
+				.addEnforcedAttribute("a", "rel", "noopener noreferrer nofollow");
 	}
 
-	public static String sanitize(String s) {
+	public static String sanitizeDescription(String s) {
+		return sanitize(s, DESCRIPTION_SAFELIST);
+	}
+
+	public static String sanitizeEventField(String s) {
+		return sanitize(s, FIELD_SAFELIST);
+	}
+
+	private static String sanitize(String s, Safelist safelist) {
 		final String out = trimAndNullify(s);
 		if (out == null) {
 			return null;
 		}
-		return Jsoup.clean(out, SAFELIST);
+		return Jsoup.clean(out, safelist);
 	}
 }
