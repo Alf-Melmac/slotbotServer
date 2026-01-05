@@ -78,6 +78,7 @@ public final class DiscordMarkdown {
 					case "em" -> result.append("*");
 					case "u" -> result.append("__");
 					case "s" -> result.append("~~");
+					case "a" -> result.append("[");
 				}
 			}
 		}
@@ -102,6 +103,7 @@ public final class DiscordMarkdown {
 					case "em" -> result.append("*");
 					case "u" -> result.append("__");
 					case "s" -> result.append("~~");
+					case "a" -> result.append("](").append(element.attr("href")).append(")");
 				}
 			} else if (node instanceof final TextNode textNode) {
 				String wholeText = textNode.getWholeText();

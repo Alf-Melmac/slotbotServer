@@ -15,7 +15,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE_DB;
 
 /**
  * @author Alf
@@ -44,8 +45,7 @@ public class EventDetailDefault extends AbstractSuperIdEntity {
 			uniqueConstraints = {@UniqueConstraint(name = "detail_default_selection_unique", columnNames = {"event_detail_default_id", "selection"})})
 	private List<String> selection;
 
-	@Column(name = "event_detail_default_text", length = EMBEDDABLE_VALUE_DB)
-	@Size(max = EMBEDDABLE_VALUE)
+	@Column(name = "event_detail_default_text", columnDefinition = "text")
 	private String text;
 
 	@ManyToOne(fetch = FetchType.LAZY)

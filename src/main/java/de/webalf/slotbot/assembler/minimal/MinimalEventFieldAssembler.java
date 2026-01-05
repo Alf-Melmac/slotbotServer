@@ -2,6 +2,7 @@ package de.webalf.slotbot.assembler.minimal;
 
 import de.webalf.slotbot.model.EventField;
 import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldDto;
+import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
@@ -18,7 +19,7 @@ public final class MinimalEventFieldAssembler {
 	private static EventField fromDto(@NonNull MinimalEventFieldDto dto) {
 		return EventField.builder()
 				.title(dto.getTitle().trim())
-				.text(dto.getText().trim())
+				.text(EventUtils.sanitizeEventField(dto.getText()))
 				.build();
 	}
 

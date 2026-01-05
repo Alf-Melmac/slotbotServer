@@ -30,15 +30,15 @@ public class EventFieldReferencelessAssembler {
 		if (reserveParticipating != null) {
 			detailDtos.add(EventFieldReferencelessDto.builder()
 					.title(messageSource.getMessage("event.details.reserveParticipating", null, guildLocale))
-					.text(reserveParticipating.toString())
+					.textAsHtml(reserveParticipating.toString())
 					.build());
 		}
 		detailDtos.forEach(detailDto -> {
-			final String detailText = detailDto.getText();
+			final String detailText = detailDto.getTextAsHtml();
 			if (detailText.equals("true")) {
-				detailDto.setText(messageSource.getMessage("yes", null, guildLocale));
+				detailDto.setTextAsHtml(messageSource.getMessage("yes", null, guildLocale));
 			} else if (detailText.equals("false")) {
-				detailDto.setText(messageSource.getMessage("no", null, guildLocale));
+				detailDto.setTextAsHtml(messageSource.getMessage("no", null, guildLocale));
 			}
 		});
 		return detailDtos;

@@ -39,7 +39,7 @@ public final class EventApiAssembler {
 				.dateTime(dto.getDateTime())
 				.creator(dto.getCreator().trim())
 				.eventType(eventTypeService.find(dto.getEventType(), ownerGuild))
-				.description(EventUtils.sanitize(dto.getDescription()))
+				.description(EventUtils.sanitizeDescription(dto.getDescription()))
 				.missionType(dto.getMissionType())
 				.missionLength(trim(dto.getMissionLength()))
 				.pictureUrl(trim(dto.getPictureUrl()))

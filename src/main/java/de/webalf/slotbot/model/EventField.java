@@ -1,7 +1,6 @@
 package de.webalf.slotbot.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import de.webalf.slotbot.util.Arma3ModsetUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE;
+import static de.webalf.slotbot.util.ConstraintConstants.EMBEDDABLE_TITLE_DB;
 
 /**
  * @author Alf
@@ -29,26 +29,12 @@ public class EventField extends AbstractSuperIdEntity {
 	@Size(max = EMBEDDABLE_TITLE)
 	private String title;
 
-	@Column(name = "event_field_text", length = EMBEDDABLE_VALUE_DB)
+	@Column(name = "event_field_text", columnDefinition = "text")
 	@NotBlank
-	@Size(max = EMBEDDABLE_VALUE)
 	private String text;
 
 	@ManyToOne(targetEntity = Event.class/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "event_id")
 	@JsonBackReference
 	private Event event;
-
-	/**
-	 * Returns a link if the field references something.
-	 *
-	 * @return link or null
-	 */
-	public String getLink() {
-		if ("Modset".equalsIgnoreCase(getTitle())) {
-			return Arma3ModsetUtils.getModSetUrl(getText(), getEvent().getOwnerGuild().getBaseRedirectUrl());
-		}
-
-		return null;
-	}
 }

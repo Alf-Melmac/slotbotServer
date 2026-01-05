@@ -18,8 +18,7 @@ public final class EventFieldAssembler {
 		return EventFieldReferencelessDto.builder()
 				.id(eventField.getId())
 				.title(eventField.getTitle())
-				.text(eventField.getText())
-				.link(eventField.getLink())
+				.textAsHtml(eventField.getText())
 				.build();
 	}
 

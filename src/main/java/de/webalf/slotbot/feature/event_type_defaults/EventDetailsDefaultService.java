@@ -8,6 +8,7 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.EventTypeService;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class EventDetailsDefaultService {
 		DtoUtils.ifPresent(dto.title(), detail::setTitle);
 		DtoUtils.ifPresentObject(dto.type(), detail::setType);
 		DtoUtils.ifPresentObject(dto.selection(), detail::setSelection);
-		final String text = dto.text();
+		final String text = EventUtils.sanitizeEventField(dto.text());
 		detail.setText(StringUtils.isEmpty(text) ? null : text); //Always set the text so that it can be emptied
 		return eventDetailDefaultRepository.save(detail);
 	}

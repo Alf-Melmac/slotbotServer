@@ -33,7 +33,6 @@ public class AdminController {
 	@PostMapping("/{action}")
 	public ResponseEntity<Void> postAction(@PathVariable String action, @RequestBody(required = false) String body) {
 		switch (action) {
-			case "listFiles" -> fileService.listFiles();
 			case "deleteUnusedEventTypes" -> eventTypeService.deleteUnused();
 			case "rebuildEventNotifications" -> eventNotificationService.rebuildAllNotifications();
 			case "rebuildCalendars" -> guildService.findAll().forEach(eventCalendarService::rebuildCalendar);

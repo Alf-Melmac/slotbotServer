@@ -12,8 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
@@ -195,38 +193,6 @@ class EventHelperEmbedTest {
 						tuple("event field title1", "event field text", true),
 						tuple("event field title2", "yes", true),
 						tuple("event field title3", "no", true)
-				);
-	}
-
-	@Test
-	void buildDetailsEmbedTransformsLinkField() {
-		final String eventFieldTitle = "Modset";
-		final String eventFieldText = "event field text";
-
-		final String eventFieldLink = "event field link";
-		final Event event = MINIMAL_EVENT
-				.squadList(Collections.emptyList())
-				.details(List.of(EventField.builder()
-						.title(eventFieldTitle)
-						.text(eventFieldText)
-						.build()))
-				.build();
-		event.setBackReferences();
-
-		final MessageEmbed result;
-		try (MockedStatic<Arma3ModsetUtils> fieldUtils = Mockito.mockStatic(Arma3ModsetUtils.class)) {
-			fieldUtils.when(() -> Arma3ModsetUtils.getModSetUrl(eventFieldText, GUILD_BASE_URL))
-					.thenReturn(eventFieldLink);
-
-			result = sut.buildDetailsEmbed(event, TEST_LOCALE);
-		}
-
-		assertThat(result.getFields())
-				.filteredOn(field -> eventFieldTitle.equals(field.getName()))
-				.hasSize(1)
-				.extracting("value", "inline")
-				.containsExactly(
-						tuple("[" + eventFieldText + "](" + eventFieldLink + ")", true)
 				);
 	}
 }
