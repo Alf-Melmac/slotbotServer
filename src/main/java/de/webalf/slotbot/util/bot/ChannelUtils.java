@@ -55,7 +55,7 @@ public final class ChannelUtils {
 		return channel.getGuild().getSelfMember().hasPermission(channel, permission);
 	}
 
-	private static final Instant PIN_PERMISSION_DEADLINE = Instant.parse("2026-01-12T00:00:00Z");
+	private static final Instant PIN_PERMISSION_DEADLINE = Instant.parse("2026-02-23T00:00:00Z");
 
 	/**
 	 * Until {@link #PIN_PERMISSION_DEADLINE} Discord allows pinning with {@link Permission#MESSAGE_MANAGE}, afterwards only with {@link Permission#PIN_MESSAGES}

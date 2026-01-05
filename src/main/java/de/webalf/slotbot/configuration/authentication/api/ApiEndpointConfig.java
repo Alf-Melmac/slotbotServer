@@ -27,7 +27,7 @@ public class ApiEndpointConfig {
 
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
-	SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain apiFilterChain(HttpSecurity http) {
 		http
 				// no session management required
 				.sessionManagement(sessionManagement -> sessionManagement

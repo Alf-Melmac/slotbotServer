@@ -8,6 +8,8 @@
 /data_source_mapping.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+# Database window
+/db-forest-config.xml
 
 /libraries
 
