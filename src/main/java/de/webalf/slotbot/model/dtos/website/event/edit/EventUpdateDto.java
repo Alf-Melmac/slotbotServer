@@ -3,6 +3,7 @@ package de.webalf.slotbot.model.dtos.website.event.edit;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldIdDto;
 import de.webalf.slotbot.model.dtos.website.event.EventActionDto;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class EventUpdateDto extends EventActionDto {
+	@Size(max = 22)
 	private List<MinimalEventFieldIdDto> details;
 
 	private List<MinimalSquadIdDto> squadList;

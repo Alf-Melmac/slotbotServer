@@ -160,7 +160,7 @@ class EventTest {
 	@Test
 	void validateDetectsTooManyDetails() {
 		final ArrayList<EventField> details = new ArrayList<>();
-		for (int i = 0; i < 24; i++) {
+		for (int i = 0; i < 23; i++) {
 			details.add(EventField.builder().build());
 		}
 		final Event sut = Event.builder()
@@ -169,7 +169,7 @@ class EventTest {
 				.build();
 
 		final BusinessRuntimeException exception = assertThrows(BusinessRuntimeException.class, sut::validate);
-		assertMessageEquals("Es dürfen nur 23 Detailfelder angegeben werden.", exception);
+		assertMessageEquals("Es dürfen nur 22 Detailfelder angegeben werden.", exception);
 	}
 
 	//slotUpdate

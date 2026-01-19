@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.webalf.slotbot.model.dtos.api.event.EventActionApiDto;
 import de.webalf.slotbot.model.dtos.minimal.IdEntity;
 import de.webalf.slotbot.model.dtos.minimal.MinimalEventFieldIdDto;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
@@ -24,6 +25,7 @@ public class EventApiIdDto extends EventActionApiDto implements IdEntity {
 
 	boolean hidden;
 
+	@Size(max = 22)
 	List<MinimalEventFieldIdDto> details;
 
 	List<SquadApiIdDto> squadList;

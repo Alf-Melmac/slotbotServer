@@ -26,7 +26,7 @@ public class EventApiDto extends EventActionApiDto {
 	@Schema(defaultValue = "false", description = "Allows other groups to add this event ot their calendar and add participants through it.")
 	private final Boolean shareable;
 
-	@Schema(description = "Up to 23 additional details about an event.")
+	@Schema(description = "Up to 22 additional details about an event.")
 	private final List<MinimalEventFieldDto> details;
 
 	private final List<SquadApiDto> squadList;

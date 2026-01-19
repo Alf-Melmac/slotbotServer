@@ -112,7 +112,7 @@ public class EventApiController {
 													}"""),
 											@ExampleObject(name = "Too many detail fields", value = """
 													{
-													    "errorMessage": "Es dürfen nur 23 Detailfelder angegeben werden.",
+													    "errorMessage": "Es dürfen nur 22 Detailfelder angegeben werden.",
 													    "requestedURI": "/backend/slotbot/api/v1/events/1234"
 													}""")
 									}))

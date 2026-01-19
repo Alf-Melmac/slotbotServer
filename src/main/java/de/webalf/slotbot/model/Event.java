@@ -88,6 +88,7 @@ public class Event extends AbstractSuperIdEntity {
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@OrderColumn
 	@JsonManagedReference
+	@Size(max = 22)
 	private List<EventField> details;
 
 	@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -317,8 +318,8 @@ public class Event extends AbstractSuperIdEntity {
 			throw BusinessRuntimeException.builder().title("Slotnummern müssen innerhalb eines Events eindeutig sein.").build();
 		}
 
-		if (getDetails().size() > 23) { //Discord only allows 25 fields. Time plan, mission type and reserveParticipating each block one field
-			throw BusinessRuntimeException.builder().title("Es dürfen nur 23 Detailfelder angegeben werden.").build();
+		if (getDetails().size() > 22) { //Discord only allows 25 fields. Time plan, mission type and reserveParticipating each block one field
+			throw BusinessRuntimeException.builder().title("Es dürfen nur 22 Detailfelder angegeben werden.").build();
 		}
 	}
 
