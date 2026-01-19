@@ -7,6 +7,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
 import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.callbacks.IDeferrableCallback;
 import net.dv8tion.jda.api.interactions.callbacks.IMessageEditCallback;
@@ -88,7 +89,17 @@ public final class InteractionUtils {
 	 * @param reply       reply text
 	 */
 	public static void replyAndRemoveComponents(@NonNull ComponentInteraction interaction, @NotBlank String reply) {
-		interaction.getHook().editOriginal(reply).setComponents().queue();
+		if (interaction.getMessage().isUsingComponentsV2()) {
+			interaction.getHook()
+					.editOriginalComponents(TextDisplay.of(reply))
+					.useComponentsV2()
+					.queue();
+			return;
+		}
+		interaction.getHook()
+				.editOriginal(reply)
+				.setComponents()
+				.queue();
 	}
 
 	/**
