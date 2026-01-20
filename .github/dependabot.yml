@@ -10,6 +10,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 14
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
