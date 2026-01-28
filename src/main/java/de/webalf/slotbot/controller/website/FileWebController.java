@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static de.webalf.slotbot.util.EventCalendarUtil.ICS_FILE_EXTENSION;
+import static de.webalf.slotbot.util.EventCalendarUtil.getCalendarName;
 
 /**
  * @author Alf
@@ -34,6 +35,8 @@ public class FileWebController {
 
 	private final Tika tika = new Tika();
 
+	private static final MediaType TEXT_CALENDAR_UTF8 = new MediaType("text", "calendar", StandardCharsets.UTF_8);
+
 	@GetMapping("/download/{filename:.+}")
 	public ResponseEntity<Resource> getFile(@PathVariable String filename) {
 		final Resource file = fileService.loadAsResource(filename);
@@ -46,13 +49,13 @@ public class FileWebController {
 	public ResponseEntity<Resource> getCalendar(@PathVariable String filename) {
 		final Optional<Guild> guild = guildService.findByName(filename);
 		if (guild.isPresent()) {
-			filename = guild.get().getId() + ICS_FILE_EXTENSION;
+			filename = getCalendarName(guild.get().getId());
 		}
 
 		final Resource file = fileService.loadIcsAsResource(filename);
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
-				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.contentType(TEXT_CALENDAR_UTF8)
 				.body(file);
 	}
 
