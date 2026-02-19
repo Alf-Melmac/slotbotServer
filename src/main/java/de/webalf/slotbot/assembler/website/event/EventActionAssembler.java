@@ -22,6 +22,7 @@ public final class EventActionAssembler {
 				.creator(event.getCreator())
 				.eventType(EventTypeAssembler.toDto(event.getEventType()))
 				.description(event.getDescription())
+				.extendedDescription(event.getExtendedDescription())
 				.missionType(event.getMissionType())
 				.missionLength(event.getMissionLength())
 				.pictureUrl(event.getPictureUrl())

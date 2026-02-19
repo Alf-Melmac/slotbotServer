@@ -44,6 +44,7 @@ public class EventDetailsAssembler {
 				.dateTime(event.getDateTime())
 				.missionLength(event.getMissionLength())
 				.descriptionAsHtml(event.getDescription())
+				.extendedDescriptionAsHtml(event.getExtendedDescription())
 				.creator(event.getCreator())
 				.squadList(toEventDetailsDtoList(event.getSquadList()))
 				.details(eventFieldReferencelessAssembler.toDtoList(event))

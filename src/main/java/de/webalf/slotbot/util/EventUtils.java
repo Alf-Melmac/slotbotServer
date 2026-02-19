@@ -108,10 +108,27 @@ public final class EventUtils {
 	}
 
 	private static final Safelist DESCRIPTION_SAFELIST = Safelist.none();
+	private static final Safelist EXTENDED_DESCRIPTION_SAFELIST = Safelist.none();
 	private static final Safelist FIELD_SAFELIST = Safelist.none();
 
 	static {
-		DESCRIPTION_SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p", "ul", "ol", "li", "small");
+		DESCRIPTION_SAFELIST.addTags("br", "s", "u", "strong", "em", "h1", "h2", "h3", "p", "ul", "ol", "li", "small"); //NOSONAR java:S1192
+
+		EXTENDED_DESCRIPTION_SAFELIST.addTags("p", "br", "strong", "em", "u", "s", "mark", "sub", "sup", "code", "h1", "h2", "h3", "h4", "ul", "li", "ol", "blockquote", "hr", "a", "img")
+				.addAttributes("p", "style") //NOSONAR java:S1192
+				.addAttributes("h1", "style")
+				.addAttributes("h2", "style")
+				.addAttributes("h3", "style")
+				.addAttributes("h4", "style")
+				.addAttributes("a", "href", "target", "rel")
+				.addAttributes("img", "src")
+
+				.addProtocols("a", "href", "https")
+
+				.addEnforcedAttribute("a", "rel", "noopener noreferrer nofollow")
+				.addEnforcedAttribute("img", "loading", "lazy")
+				.addEnforcedAttribute("img", "style", "max-width: 100%;");
+
 		FIELD_SAFELIST.addTags("br", "s", "u", "strong", "em", "p", "small")
 				.addAttributes("a", "href", "target", "rel")
 				.addProtocols("a", "href", "https")
@@ -120,6 +137,10 @@ public final class EventUtils {
 
 	public static String sanitizeDescription(String s) {
 		return sanitize(s, DESCRIPTION_SAFELIST);
+	}
+
+	public static String sanitizeExtendedDescription(String s) {
+		return sanitize(s, EXTENDED_DESCRIPTION_SAFELIST);
 	}
 
 	public static String sanitizeEventField(String s) {

@@ -35,6 +35,7 @@ public class EventPostAssembler {
 				.creator(trimAndNullify(dto.getCreator()))
 				.eventType(eventTypeService.find(dto.getEventType(), ownerGuild))
 				.description(EventUtils.sanitizeDescription(dto.getDescription()))
+				.extendedDescription(EventUtils.sanitizeExtendedDescription(dto.getExtendedDescription()))
 				.missionType(trimAndNullify(dto.getMissionType()))
 				.missionLength(trimAndNullify(dto.getMissionLength()))
 				.pictureUrl(trimAndNullify(dto.getPictureUrl()))

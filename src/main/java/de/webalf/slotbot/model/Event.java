@@ -72,6 +72,9 @@ public class Event extends AbstractSuperIdEntity {
 	@Column(name = "event_description", columnDefinition = "text")
 	private String description;
 
+	@Column(name = "event_extended_description", columnDefinition = "text")
+	private String extendedDescription;
+
 	@Column(name = "event_mission_type", length = TEXT_DB)
 	@Size(max = TEXT)
 	private String missionType;

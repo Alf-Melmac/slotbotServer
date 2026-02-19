@@ -51,6 +51,8 @@ public class EventDetailsDto extends AbstractIdEntityDto {
 
 	String descriptionAsHtml;
 
+	String extendedDescriptionAsHtml;
+
 	@NotBlank
 	@Size(max = TEXT)
 	String creator;
