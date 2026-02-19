@@ -131,6 +131,9 @@ public final class EventUtils {
 		if (out == null) {
 			return null;
 		}
+		if ("<p></p>".equals(out)) { //Empty editor should empty the field
+			return "";
+		}
 		return Jsoup.clean(out, safelist);
 	}
 }
