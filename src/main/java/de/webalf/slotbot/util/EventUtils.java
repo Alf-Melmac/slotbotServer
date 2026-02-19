@@ -128,7 +128,7 @@ public final class EventUtils {
 
 	private static String sanitize(String s, Safelist safelist) {
 		final String out = trimAndNullify(s);
-		if (out == null) {
+		if (out == null || "<p></p>".equals(out)) {
 			return null;
 		}
 		return Jsoup.clean(out, safelist);
