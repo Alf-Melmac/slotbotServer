@@ -285,6 +285,7 @@ public class EventService {
 		DtoUtils.ifPresent(dto.getCreator(), event::setCreator);
 		DtoUtils.ifPresentObject(dto.getEventType(), eventType -> event.setEventType(eventTypeService.find(eventType, event.getOwnerGuild())));
 		DtoUtils.ifPresentOrEmpty(EventUtils.sanitizeDescription(dto.getDescription()), event::setDescription);
+		DtoUtils.ifPresentOrEmpty(EventUtils.sanitizeExtendedDescription(dto.getExtendedDescription()), event::setExtendedDescription);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionType(), event::setMissionType);
 		DtoUtils.ifPresentOrEmpty(dto.getMissionLength(), event::setMissionLength);
 		DtoUtils.ifPresentOrEmpty(dto.getPictureUrl(), pictureUrl -> {

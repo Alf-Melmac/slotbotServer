@@ -45,6 +45,8 @@ public abstract class EventActionDto {
 
 	private String description;
 
+	private String extendedDescription;
+
 	@Size(max = TEXT)
 	private String missionType;
 
