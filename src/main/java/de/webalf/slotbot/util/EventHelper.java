@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.ScheduledEvent;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class EventHelper {
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
 				.setTitle(event.getName(), EventUtils.buildUrl(event))
-				.setDescription(toMarkdown(event.getDescription(), MessageEmbed.DESCRIPTION_MAX_LENGTH, event::getId))
+				.setDescription(toMarkdown(event.getDescription(), MessageEmbed.DESCRIPTION_MAX_LENGTH, true, event::getId))
 				.setThumbnail(event.getPictureUrl())
 				.setFooter(messageSource.getMessage("bot.embed.event.footer", new String[]{event.getEventType().getName(), event.getCreator()}, guildLocale))
 				.setTimestamp(Instant.now());
@@ -54,13 +55,15 @@ public class EventHelper {
 		return embedBuilder.build();
 	}
 
-	private String toMarkdown(String text, int maxLength, LongSupplier eventId) {
+	private static String toMarkdown(String text, int maxLength, boolean warnOversized, LongSupplier eventId) {
 		final String markdown = DiscordMarkdown.toMarkdown(text);
 		if (markdown == null) {
 			return null;
 		}
 		if (markdown.length() > maxLength) {
-			log.warn("Event field text too long. {} of {} - {}", markdown.length(), maxLength, eventId.getAsLong());
+			if (warnOversized) {
+				log.warn("Event field text too long. {} of {} - {}", markdown.length(), maxLength, eventId.getAsLong());
+			}
 			return markdown.substring(0, maxLength);
 		}
 		return markdown;
@@ -68,7 +71,7 @@ public class EventHelper {
 
 	private void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull Event event, @NonNull Locale guildLocale) {
 		addField(messageSource.getMessage("bot.embed.event.details.schedule", null, guildLocale),
-				buildScheduleField(DateUtils.getDateTimeAtUtcOffset(event.getDateTime()), event.getMissionLength(), guildLocale),
+				buildScheduleField(event.getDateTimeAtUtcOffset(), event.getMissionLength(), guildLocale),
 				embedBuilder);
 		addField(messageSource.getMessage("bot.embed.event.details.missionType", null, guildLocale),
 				event.getMissionType(),
@@ -85,7 +88,7 @@ public class EventHelper {
 			} else if ("false".equals(text)) {
 				text = messageSource.getMessage("no", null, guildLocale);
 			} else {
-				text = toMarkdown(text, MessageEmbed.VALUE_MAX_LENGTH, event::getId);
+				text = toMarkdown(text, MessageEmbed.VALUE_MAX_LENGTH, true, event::getId);
 			}
 			addField(field.getTitle(), text, true, embedBuilder);
 		});
@@ -156,7 +159,7 @@ public class EventHelper {
 	 * @param guildId to prepare slotlist for
 	 * @return squad in discord message format
 	 */
-	private StringBuilder toSlotList(@NonNull Squad squad, long guildId) {
+	private static StringBuilder toSlotList(@NonNull Squad squad, long guildId) {
 		StringBuilder squadText = new StringBuilder("**").append(squad.getName()).append("**");
 		final Guild reservedFor = squad.getReservedFor();
 		if (reservedFor != null) {
@@ -179,7 +182,7 @@ public class EventHelper {
 	 * @param squadSlots       all slots of the squad containing this slot
 	 * @return slot in discord message format
 	 */
-	private StringBuilder toSlotList(@NonNull Slot slot, long guildId, Guild squadReservedFor, List<Slot> squadSlots) {
+	private static StringBuilder toSlotList(@NonNull Slot slot, long guildId, Guild squadReservedFor, List<Slot> squadSlots) {
 		StringBuilder slotText = new StringBuilder();
 
 		boolean notReservedForOthers;
@@ -218,7 +221,7 @@ public class EventHelper {
 		return slotText;
 	}
 
-	private void addRequirements(StringBuilder text, Set<Requirement> requirements) {
+	private static void addRequirements(StringBuilder text, Set<Requirement> requirements) {
 		if (requirements.isEmpty()) {
 			return;
 		}
@@ -227,5 +230,9 @@ public class EventHelper {
 					final String abbreviation = requirement.getAbbreviation();
 					return StringUtils.isEmpty(abbreviation) ? requirement.getName() : abbreviation;
 				}).collect(Collectors.joining(", ")));
+	}
+
+	public static String buildScheduledEventDescription(@NonNull Event event) {
+		return toMarkdown(event.getDescription(), ScheduledEvent.MAX_DESCRIPTION_LENGTH, false, event::getId);
 	}
 }

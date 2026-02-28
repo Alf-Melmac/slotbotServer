@@ -6,7 +6,6 @@ import lombok.experimental.UtilityClass;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -17,13 +16,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
  */
 @UtilityClass
 public final class DateUtils {
-	/**
-	 * Returns the given date time in utc offset
-	 */
-	public static OffsetDateTime getDateTimeAtUtcOffset(@NonNull LocalDateTime dateTime) {
-		return dateTime.atOffset(UTC);
-	}
-
 	/**
 	 * Checks if the given date time is more than 24 hours ago
 	 *

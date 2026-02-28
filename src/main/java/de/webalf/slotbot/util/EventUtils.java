@@ -104,7 +104,7 @@ public final class EventUtils {
 	}
 
 	public static String getDateTimeInDiscordFormat(@NonNull Event event) {
-		return DATE_TIME_SHORT.format(DateUtils.getDateTimeAtUtcOffset(event.getDateTime()));
+		return DATE_TIME_SHORT.format(event.getDateTimeAtUtcOffset());
 	}
 
 	private static final Safelist DESCRIPTION_SAFELIST = Safelist.none();

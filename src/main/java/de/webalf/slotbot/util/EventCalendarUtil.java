@@ -15,7 +15,6 @@ import net.fortuna.ical4j.model.property.Url;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,10 +40,7 @@ public final class EventCalendarUtil {
 	}
 
 	private static VEvent buildVEvent(@NonNull Event event) {
-		final String eventName = event.getName();
-		final OffsetDateTime eventDateTime = DateUtils.getDateTimeAtUtcOffset(event.getDateTime());
-
-		final VEvent vEvent = new VEvent(eventDateTime, eventName);
+		final VEvent vEvent = new VEvent(event.getDateTimeAtUtcOffset(), event.getName());
 		final String eventUrl = EventUtils.buildUrl(event);
 		try {
 			vEvent.add(new Url(new URI(eventUrl)));

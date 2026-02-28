@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static java.time.ZoneOffset.UTC;
 
 /**
  * @author Alf
@@ -117,6 +119,13 @@ public class Event extends AbstractSuperIdEntity {
 	private Guild ownerGuild;
 
 	// Getter
+
+	/**
+	 * Returns the event date time in utc offset
+	 */
+	public OffsetDateTime getDateTimeAtUtcOffset() {
+		return dateTime.atOffset(UTC);
+	}
 
 	/**
 	 * Returns the picture url or the guild logo if no picture url is set

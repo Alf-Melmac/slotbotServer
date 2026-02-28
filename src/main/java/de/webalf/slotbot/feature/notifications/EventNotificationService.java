@@ -7,7 +7,6 @@ import de.webalf.slotbot.model.event.EventMetadataUpdateEvent;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.SchedulerService;
-import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.bot.DirectMessageHelper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +81,7 @@ public class EventNotificationService {
 			}
 			SCHEDULED_NOTIFICATIONS.computeIfAbsent(buildNotificationIdentifier(event, user, delay),
 					k -> schedulerService.schedule(
-							() -> directMessageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(DateUtils.getDateTimeAtUtcOffset(event.getDateTime()))}, guildLocale)),
+							() -> directMessageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(event.getDateTimeAtUtcOffset())}, guildLocale)),
 							() -> SCHEDULED_NOTIFICATIONS.remove(k),
 							delay));
 		});

@@ -19,13 +19,20 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
+import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -129,7 +136,26 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			return;
 		}
 
-		addEventAndPrint(event, selectMenuEvent.getChannel().asGuildMessageChannel(), guildId);
+		final GuildMessageChannel channel = selectMenuEvent.getChannel().asGuildMessageChannel();
+		addEventAndPrint(event, channel, guildId);
+
+		if (botHasPermission(channel, Permission.CREATE_SCHEDULED_EVENTS)) {
+			ScheduledEventAction scheduledEvent = selectMenuEvent.getGuild()
+					.createScheduledEvent(
+							event.getName(),
+							channel.getJumpUrl(),
+							event.getDateTimeAtUtcOffset(),
+							OffsetDateTime.now()) //TODO estimate end time
+					.setDescription(EventHelper.buildScheduledEventDescription(event));
+			try (final InputStream inputStream = new URI(event.getPictureUrl()).toURL().openStream()) { //TODO RestClient call with timeout for security
+				scheduledEvent = scheduledEvent
+						.setImage(Icon.from(inputStream));
+			} catch (URISyntaxException | IOException e) {
+				log.error("Failed to set event picture for event {} - {}", event.getId(), event.getPictureUrl(), e);
+			}
+			scheduledEvent.queue();
+		}
+
 		finishedVisibleInteraction(selectMenuEvent);
 	}
 
