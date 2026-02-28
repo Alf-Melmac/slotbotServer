@@ -82,7 +82,7 @@ public class EventNotificationService {
 			}
 			SCHEDULED_NOTIFICATIONS.computeIfAbsent(buildNotificationIdentifier(event, user, delay),
 					k -> schedulerService.schedule(
-							() -> directMessageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(DateUtils.getDateTimeZoned(event.getDateTime()))}, guildLocale)),
+							() -> directMessageHelper.sendDmToRecipient(user, messageSource.getMessage("event.reminder", new String[]{event.getName(), RELATIVE.format(DateUtils.getDateTimeAtUtcOffset(event.getDateTime()))}, guildLocale)),
 							() -> SCHEDULED_NOTIFICATIONS.remove(k),
 							delay));
 		});

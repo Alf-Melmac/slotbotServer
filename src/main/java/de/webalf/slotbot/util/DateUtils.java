@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -20,8 +20,8 @@ public final class DateUtils {
 	/**
 	 * Returns the given date time in utc offset
 	 */
-	public static ZonedDateTime getDateTimeZoned(@NonNull LocalDateTime dateTime) {
-		return dateTime.atZone(UTC);
+	public static OffsetDateTime getDateTimeAtUtcOffset(@NonNull LocalDateTime dateTime) {
+		return dateTime.atOffset(UTC);
 	}
 
 	/**

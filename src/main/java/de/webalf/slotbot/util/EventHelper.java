@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.time.Instant;
-import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.List;
 import java.util.function.LongSupplier;
@@ -68,7 +68,7 @@ public class EventHelper {
 
 	private void addFields(@NonNull EmbedBuilder embedBuilder, @NonNull Event event, @NonNull Locale guildLocale) {
 		addField(messageSource.getMessage("bot.embed.event.details.schedule", null, guildLocale),
-				buildScheduleField(DateUtils.getDateTimeZoned(event.getDateTime()), event.getMissionLength(), guildLocale),
+				buildScheduleField(DateUtils.getDateTimeAtUtcOffset(event.getDateTime()), event.getMissionLength(), guildLocale),
 				embedBuilder);
 		addField(messageSource.getMessage("bot.embed.event.details.missionType", null, guildLocale),
 				event.getMissionType(),
@@ -91,7 +91,7 @@ public class EventHelper {
 		});
 	}
 
-	private String buildScheduleField(ZonedDateTime eventDateTime, String missionLength, @NonNull Locale guildLocale) {
+	private String buildScheduleField(TemporalAccessor eventDateTime, String missionLength, @NonNull Locale guildLocale) {
 		final String dateTimeText = DATE_TIME_SHORT.format(eventDateTime) + (guildLocale.getLanguage().equals("de") ? " Uhr" : "");
 		return StringUtils.isNotEmpty(missionLength) ?
 				messageSource.getMessage("bot.embed.event.details.schedule.text", new String[]{dateTimeText, missionLength}, guildLocale) : dateTimeText;
