@@ -6,6 +6,8 @@ import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.UserSnowflake;
+import net.dv8tion.jda.api.utils.DiscordAssets;
+import net.dv8tion.jda.api.utils.ImageFormat;
 
 /**
  * @author Alf
@@ -20,7 +22,7 @@ public final class DiscordUserUtils {
 		if (avatar == null) {
 			return getDefaultAvatarUrl(id);
 		}
-		return User.AVATAR_URL.formatted(id, avatar, avatar.startsWith("a_") ? "gif" : "png");
+		return DiscordAssets.userAvatar(ImageFormat.ANIMATED_WEBP, id, avatar).getUrl();
 	}
 
 	/**
@@ -30,7 +32,7 @@ public final class DiscordUserUtils {
 		if (avatar == null) {
 			return getDefaultAvatarUrl(id);
 		}
-		return Member.AVATAR_URL.formatted(guild, id, avatar, avatar.startsWith("a_") ? "gif" : "png");
+		return DiscordAssets.memberAvatar(ImageFormat.ANIMATED_WEBP, guild, id, avatar).getUrl();
 	}
 
 	private static String getDefaultAvatarUrl(@NonNull String id) {

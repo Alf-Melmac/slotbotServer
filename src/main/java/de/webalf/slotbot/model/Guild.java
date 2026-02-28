@@ -8,12 +8,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import net.dv8tion.jda.api.utils.DiscordAssets;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.util.ConstraintConstants.*;
+import static net.dv8tion.jda.api.utils.ImageFormat.STATIC_WEBP;
 
 /**
  * @author Alf
@@ -82,7 +84,7 @@ public class Guild extends AbstractDiscordIdEntity {
 	}
 
 	public String buildEmojiUrl() {
-		return emoji != null ? "https://cdn.discordapp.com/emojis/" + emoji + ".webp" : null;
+		return emoji != null ? DiscordAssets.customEmoji(STATIC_WEBP, Long.toString(emoji)).getUrl() : null;
 	}
 
 	public String getSpacerUrl() {

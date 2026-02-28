@@ -14,8 +14,8 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/hibernate/orm/hibernate-processor/7.2.1.Final/hibernate-processor-7.2.1.Final.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/hibernate/orm/hibernate-core/7.2.1.Final/hibernate-core-7.2.1.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/hibernate/orm/hibernate-processor/7.2.4.Final/hibernate-processor-7.2.4.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/hibernate/orm/hibernate-core/7.2.4.Final/hibernate-core-7.2.4.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/jakarta/persistence/jakarta.persistence-api/3.2.0/jakarta.persistence-api-3.2.0.jar" />
           <entry name="$MAVEN_REPOSITORY$/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar" />
           <entry name="$MAVEN_REPOSITORY$/com/fasterxml/classmate/1.7.1/classmate-1.7.1.jar" />
@@ -35,7 +35,7 @@
           <entry name="$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy/1.17.8/byte-buddy-1.17.8.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/jboss/logging/jboss-logging/3.6.1.Final/jboss-logging-3.6.1.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/atteo/classindex/classindex/3.13/classindex-3.13.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/4.0.2/spring-boot-configuration-processor-4.0.2.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/4.0.3/spring-boot-configuration-processor-4.0.3.jar" />
         </processorPath>
         <module name="slotbotServer" />
       </profile>
