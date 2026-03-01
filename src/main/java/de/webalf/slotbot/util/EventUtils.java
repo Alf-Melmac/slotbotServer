@@ -17,7 +17,6 @@ import java.util.Locale;
 import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.hasReadPermission;
 import static de.webalf.slotbot.util.permissions.ApiPermissionHelper.isCurrentGuild;
-import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 
 /**
  * @author Alf
@@ -94,17 +93,13 @@ public final class EventUtils {
 	public static String buildArchiveMessage(@NonNull Event event) {
 		final MessageSource messageSource = StaticContextAccessor.getBean(MessageSource.class);
 		final Locale guildLocale = event.getOwnerGuildLocale();
-		String message = MarkdownUtil.maskedLink(event.getName(), buildUrl(event)) + " " + getDateTimeInDiscordFormat(event) + " " + event.getEventType().getName() + " ";
+		String message = MarkdownUtil.maskedLink(event.getName(), buildUrl(event)) + " " + event.getDateTimeInDiscordFormat() + " " + event.getEventType().getName() + " ";
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}
 		message += messageSource.getMessage("from", null, guildLocale) + " " + event.getCreator() + "; "
 				+ event.getSlotCountWithoutReserve() + " " + messageSource.getMessage("event.archive.availableSlots", null, guildLocale);
 		return message;
-	}
-
-	public static String getDateTimeInDiscordFormat(@NonNull Event event) {
-		return DATE_TIME_SHORT.format(event.getDateTimeAtUtcOffset());
 	}
 
 	private static final Safelist DESCRIPTION_SAFELIST = Safelist.none();

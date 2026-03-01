@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -145,13 +144,15 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 							event.getName(),
 							channel.getJumpUrl(),
 							event.getDateTimeAtUtcOffset(),
-							OffsetDateTime.now()) //TODO estimate end time
+							event.getEstimatedEndDateTimeAtUtcOffset())
 					.setDescription(EventHelper.buildScheduledEventDescription(event));
-			try (final InputStream inputStream = new URI(event.getPictureUrl()).toURL().openStream()) { //TODO RestClient call with timeout for security
-				scheduledEvent = scheduledEvent
-						.setImage(Icon.from(inputStream));
-			} catch (URISyntaxException | IOException e) {
-				log.error("Failed to set event picture for event {} - {}", event.getId(), event.getPictureUrl(), e);
+			if (event.getPictureUrl() != null) {
+				try (final InputStream inputStream = new URI(event.getPictureUrl()).toURL().openStream()) { //TODO RestClient call with timeout for security
+					scheduledEvent = scheduledEvent
+							.setImage(Icon.from(inputStream));
+				} catch (URISyntaxException | IOException e) {
+					log.error("Failed to set event picture for event {} - {}", event.getId(), event.getPictureUrl(), e);
+				}
 			}
 			scheduledEvent.queue();
 		}

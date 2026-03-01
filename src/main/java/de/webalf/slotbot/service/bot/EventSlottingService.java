@@ -10,7 +10,6 @@ import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import de.webalf.slotbot.util.DateUtils;
-import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.DirectMessageHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -53,14 +52,14 @@ public class EventSlottingService {
 
 		if (changedEvent.previousUserIs()) {
 			directMessageHelper.sendDmToRecipient(changedEvent.previousUser(),
-					messageSource.getMessage("event.unslotted", new String[]{event.getName(), EventUtils.getDateTimeInDiscordFormat(event)}, guildLocale));
+					messageSource.getMessage("event.unslotted", new String[]{event.getName(), event.getDateTimeInDiscordFormat()}, guildLocale));
 		}
 
 		if (changedEvent.currentUserIs()) {
 			final User currentUser = changedEvent.currentUser();
 			final Slot slot = changedEvent.slot();
 			directMessageHelper.sendDmToRecipient(currentUser,
-					messageSource.getMessage("event.slotted", new String[]{event.getName(), EventUtils.getDateTimeInDiscordFormat(event), Integer.toString(slot.getNumber()), slot.getName()}, guildLocale));
+					messageSource.getMessage("event.slotted", new String[]{event.getName(), event.getDateTimeInDiscordFormat(), Integer.toString(slot.getNumber()), slot.getName()}, guildLocale));
 			final Guild ownerGuild = event.getOwnerGuild();
 			if (isAMB(ownerGuild)) {
 				longTimeNoSee(currentUser, ownerGuild);

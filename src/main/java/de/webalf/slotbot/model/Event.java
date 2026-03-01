@@ -18,18 +18,22 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.utils.TimeFormat;
 import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.model.Guild.GUILD_PLACEHOLDER;
 import static de.webalf.slotbot.model.Squad.RESERVE_NAME;
 import static de.webalf.slotbot.util.ConstraintConstants.*;
 import static java.time.ZoneOffset.UTC;
+import static net.dv8tion.jda.api.utils.TimeFormat.DATE_TIME_SHORT;
 
 /**
  * @author Alf
@@ -125,6 +129,102 @@ public class Event extends AbstractSuperIdEntity {
 	 */
 	public OffsetDateTime getDateTimeAtUtcOffset() {
 		return dateTime.atOffset(UTC);
+	}
+
+	/**
+	 * Returns the event date time in {@link TimeFormat#DATE_TIME_SHORT}
+	 */
+	public String getDateTimeInDiscordFormat() {
+		return DATE_TIME_SHORT.format(getDateTimeAtUtcOffset());
+	}
+
+	public OffsetDateTime getEstimatedEndDateTimeAtUtcOffset() {
+		Duration estimatedEventLength;
+		try {
+			estimatedEventLength = estimateEventLength();
+		} catch (Exception _) {
+			estimatedEventLength = DEFAULT_DURATION;
+		}
+		return getDateTimeAtUtcOffset().plus(estimatedEventLength);
+	}
+
+	private static final Duration DEFAULT_DURATION = Duration.ofHours(1);
+	private static final String HOURS_KEYWORD_PATTERN = "(?:h|hours?|std?n?|st?unden?)";
+	private static final String MINUTES_KEYWORD_PATTERN = "(?:m|minuten?|min)";
+	private static final java.util.regex.Pattern DIGIT_PATTERN = java.util.regex.Pattern.compile("\\d");
+	private static final java.util.regex.Pattern FRAC_MATCHER = java.util.regex.Pattern.compile( //NOSONAR java:S5852 - maximum of 100 chars is not at risk
+			"(\\d+)\\s+1/2");
+	private static final java.util.regex.Pattern DECIMAL_MATCHER = java.util.regex.Pattern.compile(
+			"(?i)(\\d+)[,.](\\d+)\\s*%s".formatted(HOURS_KEYWORD_PATTERN));
+	private static final java.util.regex.Pattern COMBINED_MATCHER = java.util.regex.Pattern.compile(
+			"(?i)(\\d+)\\s*%s\\s?(?:(?:und|and)\\s+)?(\\d+)\\s*%s".formatted(HOURS_KEYWORD_PATTERN, MINUTES_KEYWORD_PATTERN));
+	private static final String FROM_TO_PATTERN = "(?i)(\\d+)\\s*(?:(?:[+\\-–—~]|bis|to)\\s*\\d*\\s*)?%s";
+	private static final java.util.regex.Pattern HOUR_MATCHER = java.util.regex.Pattern.compile(
+			FROM_TO_PATTERN.formatted(HOURS_KEYWORD_PATTERN));
+	private static final java.util.regex.Pattern MINUTE_MATCHER = java.util.regex.Pattern.compile(
+			FROM_TO_PATTERN.formatted(MINUTES_KEYWORD_PATTERN));
+
+	/**
+	 * Estimates the event length based on the mission length. The mission length is a free text field.
+	 * If no estimate can be made, 1 hour is returned as default.
+	 *
+	 * @throws NumberFormatException if a time pattern is detected but the number can't be parsed
+	 */
+	Duration estimateEventLength() {
+		if (missionLength == null || missionLength.isBlank()) {
+			return DEFAULT_DURATION;
+		}
+
+		// Step 1: Strip clock-time patterns (e.g. "22:30", "22 Uhr", "24.00") to avoid misidentifying them as durations
+		final String input = missionLength
+				.replaceAll("(?i)\\d{1,2}\\s*(?:[:.]\\s*\\d{2}|(?:uhr|pm|am|o'clock))", "")
+				.trim();
+		//If no more numbers are left, return
+		if (input.isEmpty() || !DIGIT_PATTERN.matcher(input).find()) {
+			return DEFAULT_DURATION;
+		}
+
+		// Step 2: Match "X 1/2" fractional hours (e.g. "3 1/2 Stunden")
+		final Matcher fracMatcher = FRAC_MATCHER.matcher(input);
+		if (fracMatcher.find()) {
+			int hours = Integer.parseInt(fracMatcher.group(1));
+			return Duration.ofHours(hours).plusMinutes(30);
+		}
+
+		// Step 3: Match decimal comma hours (e.g. "2,5h", "1,5 Stunden")
+		final Matcher decimalMatcher = DECIMAL_MATCHER.matcher(input);
+		if (decimalMatcher.find()) {
+			int whole = Integer.parseInt(decimalMatcher.group(1));
+			double frac = Double.parseDouble("0." + decimalMatcher.group(2));
+			return Duration.ofHours(whole).plusMinutes(Math.round(frac * 60));
+		}
+
+		// Step 4: Match combined "Xh Ym" (e.g. "2h 30m", "2 Stunden und 30 Minuten")
+		final Matcher combinedMatcher = COMBINED_MATCHER.matcher(input);
+		if (combinedMatcher.find()) {
+			int hours = Integer.parseInt(combinedMatcher.group(1));
+			int minutes = Integer.parseInt(combinedMatcher.group(2));
+			return Duration.ofHours(hours).plusMinutes(minutes);
+		}
+
+		// Step 5: Match "X" with hour unit keywords — first number wins (handles ranges like "2-3h", "3 bis 4 Stunden")
+		final Matcher hourMatcher = HOUR_MATCHER.matcher(input);
+		if (hourMatcher.find()) {
+			return Duration.ofHours(Integer.parseInt(hourMatcher.group(1)));
+		}
+
+		// Step 5 (continued): Match "X" with minute unit keywords
+		final Matcher minuteMatcher = MINUTE_MATCHER.matcher(input);
+		if (minuteMatcher.find()) {
+			return Duration.ofMinutes(Integer.parseInt(minuteMatcher.group(1)));
+		}
+
+		// Step 6: Bare integer as hours (e.g. "4" → 4h)
+		if (input.matches("\\d+")) {
+			return Duration.ofHours(Integer.parseInt(input));
+		}
+
+		return DEFAULT_DURATION;
 	}
 
 	/**
