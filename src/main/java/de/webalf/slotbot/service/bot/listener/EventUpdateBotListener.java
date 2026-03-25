@@ -46,10 +46,12 @@ public class EventUpdateBotListener {
 			if (updateEvent.embedChanged()) {
 				log.trace("Edit embed of {} in {}", event.getId(), discordInformation.getChannel());
 				eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(event, guildLocale)).queue();
+
+				//TODO Update scheduled event
 			}
 			if (updateEvent.slotlistChanged()) {
 				log.trace("Edit slotlist of {} in {}", event.getId(), discordInformation.getChannel());
-				final List<String> slotList = eventHelper.buildSlotList(event, discordInformation.getGuild().getId(),guildLocale);
+				final List<String> slotList = eventHelper.buildSlotList(event, discordInformation.getGuild().getId(), guildLocale);
 				eventChannel.editMessageById(discordInformation.getSlotListMsgPartOne(), ListUtils.shift(slotList)).queue();
 				eventChannel.editMessageById(discordInformation.getSlotListMsgPartTwo(), spacerCharIfEmpty(ListUtils.shift(slotList))).queue();
 			}

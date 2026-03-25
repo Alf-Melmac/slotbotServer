@@ -12,11 +12,13 @@ import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
@@ -93,7 +95,7 @@ public final class MessageUtils {
 	 * @param success                 message consumer
 	 */
 	public static void sendMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressedNotifications, Consumer<Message> success) {
-		channel.sendMessage(message).setSuppressedNotifications(suppressedNotifications).queue(success);
+		createMessage(channel, message, suppressedNotifications).queue(success);
 	}
 
 	/**
@@ -110,5 +112,21 @@ public final class MessageUtils {
 				.build()) {
 			interaction.getMessageChannel().sendMessage(messageCreateData).queue();
 		}
+	}
+
+	/**
+	 * Sends the given message in the given channel
+	 *
+	 * @param channel                 to send into
+	 * @param message                 to send
+	 * @param suppressedNotifications suppress notifications for this message
+	 * @return future completing with the message being sent
+	 */
+	public static CompletableFuture<Message> submitMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressedNotifications) {
+		return createMessage(channel, message, suppressedNotifications).submit();
+	}
+
+	private static MessageCreateAction createMessage(@NonNull MessageChannel channel, @NotBlank String message, boolean suppressedNotifications) {
+		return channel.sendMessage(message).setSuppressedNotifications(suppressedNotifications);
 	}
 }

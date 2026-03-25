@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service.bot.command.event;
 
+import de.webalf.slotbot.constant.Emojis;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
@@ -13,6 +14,7 @@ import de.webalf.slotbot.service.bot.command.DiscordStringSelect;
 import de.webalf.slotbot.util.EventHelper;
 import de.webalf.slotbot.util.ListUtils;
 import de.webalf.slotbot.util.bot.DiscordLocaleHelper;
+import de.webalf.slotbot.util.bot.MessageUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.ScheduledEvent;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -33,15 +36,16 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermissionMessagePins;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 import static de.webalf.slotbot.util.bot.InteractionUtils.*;
-import static de.webalf.slotbot.util.bot.MessageUtils.deletePinAddedMessages;
 import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
+import static de.webalf.slotbot.util.bot.MessageUtils.submitMessage;
 import static de.webalf.slotbot.util.bot.StringSelectUtils.buildSelectLabel;
+import static net.dv8tion.jda.api.Permission.CREATE_SCHEDULED_EVENTS;
 
 /**
  * @author Alf
@@ -125,7 +129,8 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 	public void process(@NonNull StringSelectInteractionEvent selectMenuEvent, @NonNull DiscordLocaleHelper locale) {
 		log.trace("Selection menu: addEventToChannel");
 
-		final Event event = eventBotService.findById(Long.parseLong(selectMenuEvent.getValues().getFirst()));
+		final long eventId = Long.parseLong(selectMenuEvent.getValues().getFirst());
+		final Event event = eventBotService.findById(eventId);
 
 		//noinspection DataFlowIssue Guild only command
 		final long guildId = selectMenuEvent.getGuild().getIdLong();
@@ -136,9 +141,80 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 		}
 
 		final GuildMessageChannel channel = selectMenuEvent.getChannel().asGuildMessageChannel();
-		addEventAndPrint(event, channel, guildId);
 
-		if (botHasPermission(channel, Permission.CREATE_SCHEDULED_EVENTS)) {
+		final EventDiscordInformationDto newInformation = EventDiscordInformationDto.builder()
+				.channel(channel.getIdLong())
+				.guild(guildId)
+				.build();
+
+		final CompletableFuture<Void> printFuture = print(channel, event, guildBotService.getGuildLocale(guildId), newInformation);
+		final CompletableFuture<Long> scheduledEventIdFuture = createScheduledEvent(selectMenuEvent, channel, event);
+		printFuture.thenCombine(scheduledEventIdFuture, (ignored, scheduledId) -> scheduledId)
+				.thenAccept(scheduledId -> {
+					newInformation.setScheduledEvent(scheduledId);
+					eventBotService.addDiscordInformation(eventId, newInformation);
+					finishedVisibleInteraction(selectMenuEvent);
+				})
+				.exceptionally(e -> {
+					final String message = e.getMessage();
+					final String errorCode = message != null ? UUID.nameUUIDFromBytes(message.getBytes()).toString() : UUID.randomUUID().toString();
+					log.error("Failed to print event {} in guild {} channel {} - {}", eventId, guildId, channel.getId(), errorCode, e);
+					replyAndRemoveComponents(selectMenuEvent, Emojis.CROSS_MARK.getFormatted() + "Sorry. Error Code: `" + errorCode + "`");
+					return null;
+				});
+	}
+
+	private CompletableFuture<Void> print(@NonNull GuildMessageChannel channel, @NonNull Event event, @NonNull Locale guildLocale, @NonNull EventDiscordInformationDto newInformation) {
+		final List<String> slotListMessages = eventHelper.buildSlotList(event, newInformation.getGuild(), guildLocale);
+		if (slotListMessages.size() > 2) {
+			throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
+		}
+
+		final boolean allowedToPin = botHasPermissionMessagePins(channel);
+		if (!allowedToPin) {
+			log.trace("Missing permission to pin messages in channel {} of guild {}", channel.getId(), channel.getGuild().getId());
+		}
+
+		return channel
+				// Send info msg
+				.sendMessageEmbeds(eventHelper.buildDetailsEmbed(event, guildLocale)).submit()
+				.thenCompose(infoMsg -> {
+					//Set info msg
+					newInformation.setInfoMsg(infoMsg.getIdLong());
+
+					// Send spacer
+					sendMessage(channel, event.getOwnerGuild().getSpacerUrl(), true);
+
+					// Send slot list part one
+					return submitMessage(channel, ListUtils.shift(slotListMessages), true);
+				})
+				.thenCompose(slotListMsgOne -> {
+					//Set slot list msg part one
+					newInformation.setSlotListMsgPartOne(slotListMsgOne.getIdLong());
+
+					if (allowedToPin) {
+						//Pin slotlist msg
+						slotListMsgOne.pin().queue();
+					}
+
+					// Send slot list part two
+					return submitMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true);
+				})
+				.thenAccept(slotListMsgTwo -> {
+					//Set slot list msg part two
+					newInformation.setSlotListMsgPartTwo(slotListMsgTwo.getIdLong());
+
+					if (allowedToPin) {
+						//Pin second slotlist msg and remove pin information
+						slotListMsgTwo.pin().queue(_ -> MessageUtils.deletePinAddedMessages(channel));
+					}
+				});
+	}
+
+	private static CompletableFuture<Long> createScheduledEvent(@NonNull StringSelectInteractionEvent selectMenuEvent, @NonNull GuildMessageChannel channel, @NonNull Event event) {
+		final CompletableFuture<Long> scheduledEventIdFuture;
+		if (botHasPermission(channel, CREATE_SCHEDULED_EVENTS)) {
+			//noinspection DataFlowIssue Guild only command
 			ScheduledEventAction scheduledEvent = selectMenuEvent.getGuild()
 					.createScheduledEvent(
 							event.getName(),
@@ -148,87 +224,20 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 					.setDescription(EventHelper.buildScheduledEventDescription(event));
 			if (event.getPictureUrl() != null) {
 				try (final InputStream inputStream = new URI(event.getPictureUrl()).toURL().openStream()) { //TODO RestClient call with timeout for security
-					scheduledEvent = scheduledEvent
-							.setImage(Icon.from(inputStream));
+					scheduledEvent = scheduledEvent.setImage(Icon.from(inputStream));
 				} catch (URISyntaxException | IOException e) {
 					log.error("Failed to set event picture for event {} - {}", event.getId(), event.getPictureUrl(), e);
 				}
 			}
-			scheduledEvent.queue();
+			scheduledEventIdFuture = scheduledEvent.submit()
+					.thenApply(ScheduledEvent::getIdLong)
+					.exceptionally(ex -> {
+						log.error("Failed to create scheduled event for event {}", event.getId(), ex);
+						return null;
+					});
+		} else {
+			scheduledEventIdFuture = CompletableFuture.completedFuture(null);
 		}
-
-		finishedVisibleInteraction(selectMenuEvent);
-	}
-
-	private void addEventAndPrint(@NonNull Event event, GuildMessageChannel channel, long guildId) {
-		//Set event channel and guild
-		final EventDiscordInformationDto newInformation = EventDiscordInformationDto.builder()
-				.channel(channel.getId())
-				.guild(Long.toString(guildId))
-				.build();
-
-		final Locale guildLocale = guildBotService.getGuildLocale(guildId);
-		channel.sendMessageEmbeds(eventHelper.buildDetailsEmbed(event, guildLocale)) //Send event details
-				.queue(infoMsgConsumer(channel, event, newInformation, guildId, guildLocale));
-	}
-
-	/**
-	 * Called after the event details have been sent, to then send the first part of the slot list
-	 */
-	private Consumer<Message> infoMsgConsumer(GuildMessageChannel channel, @NonNull Event event, @NonNull EventDiscordInformationDto discordInformation, long guildId, @NonNull Locale guildLocale) {
-		return infoMsg -> {
-			//Set info msg
-			discordInformation.setInfoMsg(infoMsg.getId());
-
-			//Send Spacer
-			sendMessage(channel, event.getOwnerGuild().getSpacerUrl(), true);
-
-			final List<String> slotListMessages = eventHelper.buildSlotList(event, guildId, guildLocale);
-			if (slotListMessages.size() > 2) {
-				throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
-			}
-			//Send SlotList
-			sendMessage(channel, ListUtils.shift(slotListMessages), true,
-					slotListMsgConsumer(channel, event.getId(), discordInformation, slotListMessages));
-		};
-	}
-
-	/**
-	 * Must be called after {@link #infoMsgConsumer(GuildMessageChannel, Event, EventDiscordInformationDto, long, Locale)} to update the event with both message ids
-	 */
-	private Consumer<Message> slotListMsgConsumer(GuildMessageChannel channel, long eventId, @NonNull EventDiscordInformationDto discordInformation, List<String> slotListMessages) {
-		return slotListMsg -> {
-			//Set slot list msg part one
-			discordInformation.setSlotListMsgPartOne(slotListMsg.getId());
-
-			boolean allowedToPin = true;
-			if (botHasPermissionMessagePins(channel)) {
-				//Pin slotlist msg
-				slotListMsg.pin().queue();
-			} else {
-				log.trace("Missing permission to pin messages in channel {} of guild {}", channel.getId(), channel.getGuild().getId());
-				allowedToPin = false;
-			}
-
-			sendMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true,
-					slotListMsgLastConsumer(channel, eventId, discordInformation, allowedToPin));
-		};
-	}
-
-	/**
-	 * Must be called after {@link #slotListMsgConsumer(GuildMessageChannel, long, EventDiscordInformationDto, List)} to update the event with the last message id
-	 */
-	private Consumer<Message> slotListMsgLastConsumer(GuildMessageChannel channel, long eventId, @NonNull EventDiscordInformationDto discordInformation, boolean allowedToPin) {
-		return slotListMsg -> {
-			//Set slot list msg part two
-			discordInformation.setSlotListMsgPartTwo(slotListMsg.getId());
-
-			if (allowedToPin) {
-				//Pin second slotlist msg and remove pin information
-				slotListMsg.pin().queue(_ -> deletePinAddedMessages(channel));
-			}
-
-			eventBotService.addDiscordInformation(eventId, discordInformation);
-		};
+		return scheduledEventIdFuture;
 	}
 }

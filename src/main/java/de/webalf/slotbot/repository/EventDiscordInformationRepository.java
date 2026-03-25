@@ -20,4 +20,8 @@ public interface EventDiscordInformationRepository extends JpaRepository<EventDi
 	@Modifying
 	@Query("DELETE FROM EventDiscordInformation i WHERE i.guild.id = :guildId")
 	void deleteByGuildId(@Param("guildId") long guildId);
+
+	@Modifying
+	@Query("UPDATE EventDiscordInformation i SET i.scheduledEvent = NULL WHERE i.scheduledEvent = :scheduledEventId")
+	void removeScheduledEvent(@Param("scheduledEventId") long scheduledEventId);
 }

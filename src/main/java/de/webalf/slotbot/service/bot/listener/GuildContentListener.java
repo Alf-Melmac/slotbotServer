@@ -5,8 +5,10 @@ import de.webalf.slotbot.service.bot.GuildBotService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateLockedEvent;
+import net.dv8tion.jda.api.events.guild.scheduledevent.ScheduledEventDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -14,10 +16,14 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
+import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
+import static net.dv8tion.jda.api.Permission.MANAGE_EVENTS;
+
 /**
  * This requires Intents
  * <ul>
- *     <li>{@link GatewayIntent#GUILD_MESSAGES} to check for deleted messages</li>
+ *     <li>{@link GatewayIntent#GUILD_MESSAGES} to listen for deleted messages</li>
+ *     <li>{@link GatewayIntent#SCHEDULED_EVENTS} to listen for deleted scheduled events</li>
  * </ul>
  *
  * @author Alf
@@ -56,11 +62,25 @@ public class GuildContentListener extends ListenerAdapter {
 	@Override
 	public void onMessageDelete(@NonNull MessageDeleteEvent event) {
 		if (!event.isFromGuild()) return;
-		log.trace("Message {} deleted in channel {} in guild {}", event.getMessageId(), event.getChannel().getId(), event.getGuild().getId());
+		final GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
+		log.trace("Message {} deleted in channel {} in guild {}", event.getMessageId(), channel.getId(), event.getGuild().getId());
 
-		eventDiscordInformationService.removeByMessage(event.getChannel().getIdLong(), event.getMessageIdLong(), () -> {
+		eventDiscordInformationService.removeByMessage(channel.getIdLong(), event.getMessageIdLong(), discordInformation -> {
 			final Locale guildLocale = guildBotService.getGuildLocale(event.getGuild().getIdLong());
-			event.getChannel().sendMessage(messageSource.getMessage("event.discordInformation.broken", null, guildLocale)).queue();
+			channel.sendMessage(messageSource.getMessage("event.discordInformation.broken", null, guildLocale)).queue();
+
+			final Long scheduledEventId = discordInformation.getScheduledEvent();
+			if (scheduledEventId != null && botHasPermission(channel, MANAGE_EVENTS)) { //FIXME This is currently broken in JDA https://github.com/discord-jda/JDA/issues/3059
+				channel.getGuild().retrieveScheduledEventById(scheduledEventId).queue(
+						scheduledEvent -> scheduledEvent.delete().queue());
+			}
 		});
+	}
+
+	@Override
+	public void onScheduledEventDelete(@NonNull ScheduledEventDeleteEvent event) {
+		log.trace("Event {} deleted in guild {}", event.getScheduledEvent().getId(), event.getGuild().getId());
+
+		eventDiscordInformationService.removeScheduledEvent(event.getScheduledEvent().getIdLong());
 	}
 }

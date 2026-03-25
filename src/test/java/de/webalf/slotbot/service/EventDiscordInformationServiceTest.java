@@ -8,7 +8,6 @@ import de.webalf.slotbot.model.EventDiscordInformation_;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.repository.EventDiscordInformationRepository;
-import de.webalf.slotbot.util.LongUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,7 +47,7 @@ class EventDiscordInformationServiceTest {
 		when(discordInformationRepository.existsByChannelIn(Set.of(channelId))).thenReturn(false);
 
 		assertFalse(sut.existsByChannelInDtos(
-				Set.of(EventDiscordInformationDto.builder().channel(Long.toString(channelId)).build())
+				Set.of(EventDiscordInformationDto.builder().channel(channelId).build())
 		));
 	}
 
@@ -59,7 +58,7 @@ class EventDiscordInformationServiceTest {
 		when(discordInformationRepository.existsByChannelIn(Set.of(channelId))).thenReturn(true);
 
 		assertTrue(sut.existsByChannelInDtos(
-				Set.of(EventDiscordInformationDto.builder().channel(Long.toString(channelId)).build())
+				Set.of(EventDiscordInformationDto.builder().channel(channelId).build())
 		));
 	}
 
@@ -145,8 +144,8 @@ class EventDiscordInformationServiceTest {
 	private Set<EventDiscordInformationDto> buildInformationSet(Map<Long, Long> guilds) {
 		return guilds.entrySet().stream()
 				.map(guild -> EventDiscordInformationDto.builder()
-						.guild(Long.toString(guild.getKey()))
-						.channel(Long.toString(guild.getValue()))
+						.guild(guild.getKey())
+						.channel(guild.getValue())
 						.build())
 				.collect(Collectors.toSet());
 	}
@@ -154,17 +153,17 @@ class EventDiscordInformationServiceTest {
 	private Set<EventDiscordInformation> buildActualInformationSet(Set<EventDiscordInformationDto> informationDtos, Event event) {
 		return informationDtos.stream().map(informationDto -> EventDiscordInformation.builder()
 						.event(event)
-						.guild(Guild.builder().id(LongUtils.parseLong(informationDto.getGuild())).build())
-						.channel(LongUtils.parseLong(informationDto.getChannel()))
-						.infoMsg(LongUtils.parseLong(informationDto.getInfoMsg()))
-						.slotListMsgPartOne(LongUtils.parseLong(informationDto.getSlotListMsgPartOne()))
-						.slotListMsgPartTwo(LongUtils.parseLong(informationDto.getSlotListMsgPartTwo()))
+						.guild(Guild.builder().id(informationDto.getGuild()).build())
+						.channel(informationDto.getChannel())
+						.infoMsg(informationDto.getInfoMsg())
+						.slotListMsgPartOne(informationDto.getSlotListMsgPartOne())
+						.slotListMsgPartTwo(informationDto.getSlotListMsgPartTwo())
 						.build())
 				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	private void mockAssembler(long channel, long guild) {
-		when(discordInformationAssembler.fromDto(EventDiscordInformationDto.builder().channel(Long.toString(channel)).guild(Long.toString(guild)).build()))
+		when(discordInformationAssembler.fromDto(EventDiscordInformationDto.builder().channel(channel).guild(guild).build()))
 				.thenReturn(EventDiscordInformation.builder().channel(channel).guild(Guild.builder().id(guild).build()).build());
 	}
 }

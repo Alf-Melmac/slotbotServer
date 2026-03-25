@@ -12,7 +12,8 @@ import lombok.*;
 @Entity
 @Table(name = "event_discord_information", uniqueConstraints = {
 		@UniqueConstraint(columnNames = {"discord_information_channel"}), @UniqueConstraint(columnNames = {"discord_information_info_msg"}),
-		@UniqueConstraint(columnNames = {"discord_information_slotlist_msg_one"}), @UniqueConstraint(columnNames = {"discord_information_slotlist_msg_two"})})
+		@UniqueConstraint(columnNames = {"discord_information_slotlist_msg_one"}), @UniqueConstraint(columnNames = {"discord_information_slotlist_msg_two"}),
+		@UniqueConstraint(columnNames = {"discord_information_scheduled_event"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,6 +36,9 @@ public class EventDiscordInformation {
 
 	@Column(name = "discord_information_slotlist_msg_two", unique = true)
 	private Long slotListMsgPartTwo;
+
+	@Column(name = "discord_information_scheduled_event", unique = true)
+	private Long scheduledEvent;
 
 	@ManyToOne(targetEntity = Event.class, optional = false)
 	@JoinColumn(name = "event_id")
