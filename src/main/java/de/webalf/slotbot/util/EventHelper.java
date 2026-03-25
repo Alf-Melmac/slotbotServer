@@ -13,6 +13,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.ScheduledEvent;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.managers.ScheduledEventManager;
+import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
+import net.dv8tion.jda.api.utils.AttachmentProxy;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,7 @@ import java.time.Instant;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
 
@@ -232,7 +237,42 @@ public class EventHelper {
 				}).collect(Collectors.joining(", ")));
 	}
 
-	public static String buildScheduledEventDescription(@NonNull Event event) {
+	public static CompletableFuture<ScheduledEvent> submitScheduledEvent(@NonNull Event event, @NonNull GuildChannel channel, @NonNull Message eventEmbed) {
+		final ScheduledEventAction action = channel.getGuild()
+				.createScheduledEvent(
+						event.getName(),
+						channel.getJumpUrl(),
+						event.getDateTimeAtUtcOffset(),
+						event.getEstimatedEndDateTimeAtUtcOffset())
+				.setDescription(EventHelper.buildScheduledEventDescription(event));
+
+		return getEmbedThumbnailProxy(event, eventEmbed)
+				.map(proxy -> proxy.downloadAsIcon().thenCompose(icon -> action.setImage(icon).submit()))
+				.orElseGet(action::submit);
+	}
+
+	public static void updateScheduledEvent(@NonNull Event event, @NonNull ScheduledEvent scheduledEvent, @NonNull Message eventEmbed) {
+		final ScheduledEventManager manager = scheduledEvent.getManager()
+				.setName(event.getName())
+				.setLocation(eventEmbed.getGuildChannel().getJumpUrl())
+				.setStartTime(event.getDateTimeAtUtcOffset())
+				.setEndTime(event.getEstimatedEndDateTimeAtUtcOffset())
+				.setDescription(EventHelper.buildScheduledEventDescription(event));
+
+		getEmbedThumbnailProxy(event, eventEmbed)
+				.ifPresentOrElse(
+						proxy -> proxy.downloadAsIcon().thenAccept(icon -> manager.setImage(icon).queue()),
+						manager::queue
+				);
+	}
+
+	private static String buildScheduledEventDescription(@NonNull Event event) {
 		return toMarkdown(event.getDescription(), ScheduledEvent.MAX_DESCRIPTION_LENGTH, false, event::getId);
+	}
+
+	private static Optional<AttachmentProxy> getEmbedThumbnailProxy(@NonNull Event event, @NonNull Message eventEmbed) {
+		return Optional.ofNullable(event.getPictureUrl())
+				.map(_ -> eventEmbed.getEmbeds().getFirst().getThumbnail())
+				.map(MessageEmbed.Thumbnail::getProxy);
 	}
 }

@@ -21,23 +21,18 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
-import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.ScheduledEvent;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
-import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static de.webalf.slotbot.util.EventHelper.submitScheduledEvent;
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermissionMessagePins;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
@@ -147,9 +142,8 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 				.guild(guildId)
 				.build();
 
-		final CompletableFuture<Void> printFuture = print(channel, event, guildBotService.getGuildLocale(guildId), newInformation);
-		final CompletableFuture<Long> scheduledEventIdFuture = createScheduledEvent(selectMenuEvent, channel, event);
-		printFuture.thenCombine(scheduledEventIdFuture, (ignored, scheduledId) -> scheduledId)
+		print(channel, event, guildBotService.getGuildLocale(guildId), newInformation)
+				.thenCompose(infoMsg -> createScheduledEvent(channel, event, infoMsg))
 				.thenAccept(scheduledId -> {
 					newInformation.setScheduledEvent(scheduledId);
 					eventBotService.addDiscordInformation(eventId, newInformation);
@@ -164,7 +158,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 				});
 	}
 
-	private CompletableFuture<Void> print(@NonNull GuildMessageChannel channel, @NonNull Event event, @NonNull Locale guildLocale, @NonNull EventDiscordInformationDto newInformation) {
+	private CompletableFuture<Message> print(@NonNull GuildMessageChannel channel, @NonNull Event event, @NonNull Locale guildLocale, @NonNull EventDiscordInformationDto newInformation) {
 		final List<String> slotListMessages = eventHelper.buildSlotList(event, newInformation.getGuild(), guildLocale);
 		if (slotListMessages.size() > 2) {
 			throw BusinessRuntimeException.builder().title("Currently, only a maximum of two slotlist messages with " + Message.MAX_CONTENT_LENGTH + " characters each are possible.").build();
@@ -186,58 +180,44 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 					sendMessage(channel, event.getOwnerGuild().getSpacerUrl(), true);
 
 					// Send slot list part one
-					return submitMessage(channel, ListUtils.shift(slotListMessages), true);
-				})
-				.thenCompose(slotListMsgOne -> {
-					//Set slot list msg part one
-					newInformation.setSlotListMsgPartOne(slotListMsgOne.getIdLong());
+					return submitMessage(channel, ListUtils.shift(slotListMessages), true)
+							.thenCompose(slotListMsgOne -> {
+								//Set slot list msg part one
+								newInformation.setSlotListMsgPartOne(slotListMsgOne.getIdLong());
 
-					if (allowedToPin) {
-						//Pin slotlist msg
-						slotListMsgOne.pin().queue();
-					}
+								if (allowedToPin) {
+									//Pin slotlist msg
+									slotListMsgOne.pin().queue();
+								}
 
-					// Send slot list part two
-					return submitMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true);
-				})
-				.thenAccept(slotListMsgTwo -> {
-					//Set slot list msg part two
-					newInformation.setSlotListMsgPartTwo(slotListMsgTwo.getIdLong());
+								// Send slot list part two
+								return submitMessage(channel, spacerCharIfEmpty(ListUtils.shift(slotListMessages)), true);
+							})
+							.thenApply(slotListMsgTwo -> {
+								//Set slot list msg part two
+								newInformation.setSlotListMsgPartTwo(slotListMsgTwo.getIdLong());
 
-					if (allowedToPin) {
-						//Pin second slotlist msg and remove pin information
-						slotListMsgTwo.pin().queue(_ -> MessageUtils.deletePinAddedMessages(channel));
-					}
+								if (allowedToPin) {
+									//Pin second slotlist msg and remove pin information
+									slotListMsgTwo.pin().queue(_ -> MessageUtils.deletePinAddedMessages(channel));
+								}
+
+								return infoMsg;
+							});
 				});
 	}
 
-	private static CompletableFuture<Long> createScheduledEvent(@NonNull StringSelectInteractionEvent selectMenuEvent, @NonNull GuildMessageChannel channel, @NonNull Event event) {
-		final CompletableFuture<Long> scheduledEventIdFuture;
+	private static CompletableFuture<Long> createScheduledEvent(@NonNull GuildMessageChannel channel, @NonNull Event event, @NonNull Message infoMsg) {
 		if (botHasPermission(channel, CREATE_SCHEDULED_EVENTS)) {
-			//noinspection DataFlowIssue Guild only command
-			ScheduledEventAction scheduledEvent = selectMenuEvent.getGuild()
-					.createScheduledEvent(
-							event.getName(),
-							channel.getJumpUrl(),
-							event.getDateTimeAtUtcOffset(),
-							event.getEstimatedEndDateTimeAtUtcOffset())
-					.setDescription(EventHelper.buildScheduledEventDescription(event));
-			if (event.getPictureUrl() != null) {
-				try (final InputStream inputStream = new URI(event.getPictureUrl()).toURL().openStream()) { //TODO RestClient call with timeout for security
-					scheduledEvent = scheduledEvent.setImage(Icon.from(inputStream));
-				} catch (URISyntaxException | IOException e) {
-					log.error("Failed to set event picture for event {} - {}", event.getId(), event.getPictureUrl(), e);
-				}
-			}
-			scheduledEventIdFuture = scheduledEvent.submit()
+			return submitScheduledEvent(event, channel, infoMsg)
 					.thenApply(ScheduledEvent::getIdLong)
 					.exceptionally(ex -> {
 						log.error("Failed to create scheduled event for event {}", event.getId(), ex);
 						return null;
 					});
 		} else {
-			scheduledEventIdFuture = CompletableFuture.completedFuture(null);
+			log.trace("Missing permission to create scheduled event in guild {}", channel.getGuild().getId());
+			return CompletableFuture.completedFuture(null);
 		}
-		return scheduledEventIdFuture;
 	}
 }

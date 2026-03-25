@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Locale;
 
+import static de.webalf.slotbot.util.EventHelper.updateScheduledEvent;
 import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 
 /**
@@ -45,9 +46,16 @@ public class EventUpdateBotListener {
 			final Locale guildLocale = discordInformation.getGuild().getLocale();
 			if (updateEvent.embedChanged()) {
 				log.trace("Edit embed of {} in {}", event.getId(), discordInformation.getChannel());
-				eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(event, guildLocale)).queue();
+				eventChannel.editMessageEmbedsById(discordInformation.getInfoMsg(), eventHelper.buildDetailsEmbed(event, guildLocale)).queue(
+						message -> {
+							if (discordInformation.getScheduledEvent() == null || !message.isFromGuild()) {
+								return;
+							}
 
-				//TODO Update scheduled event
+							message.getGuild().retrieveScheduledEventById(discordInformation.getScheduledEvent()).queue(
+									scheduledEvent -> updateScheduledEvent(event, scheduledEvent, message)
+							);
+						});
 			}
 			if (updateEvent.slotlistChanged()) {
 				log.trace("Edit slotlist of {} in {}", event.getId(), discordInformation.getChannel());
