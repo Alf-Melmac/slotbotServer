@@ -26,7 +26,7 @@
 		<!--Versions-->
 		<maven.compiler.release>25</maven.compiler.release>
 		<!--https://github.com/apache/tika/blob/main/CHANGES.txt -->
-		<apache.tika.version>3.2.3</apache.tika.version>
+		<apache.tika.version>3.3.0</apache.tika.version>
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
