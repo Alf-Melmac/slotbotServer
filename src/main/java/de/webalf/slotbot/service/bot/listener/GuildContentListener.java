@@ -17,7 +17,7 @@ import org.springframework.context.MessageSource;
 import java.util.Locale;
 
 import static de.webalf.slotbot.util.bot.ChannelUtils.botHasPermission;
-import static net.dv8tion.jda.api.Permission.MANAGE_EVENTS;
+import static net.dv8tion.jda.api.Permission.CREATE_SCHEDULED_EVENTS;
 
 /**
  * This requires Intents
@@ -70,7 +70,7 @@ public class GuildContentListener extends ListenerAdapter {
 			channel.sendMessage(messageSource.getMessage("event.discordInformation.broken", null, guildLocale)).queue();
 
 			final Long scheduledEventId = discordInformation.getScheduledEvent();
-			if (scheduledEventId != null && botHasPermission(channel, MANAGE_EVENTS)) { //FIXME This is currently broken in JDA https://github.com/discord-jda/JDA/issues/3059
+			if (scheduledEventId != null && botHasPermission(channel, CREATE_SCHEDULED_EVENTS)) {
 				channel.getGuild().retrieveScheduledEventById(scheduledEventId).queue(
 						scheduledEvent -> scheduledEvent.delete().queue());
 			}
