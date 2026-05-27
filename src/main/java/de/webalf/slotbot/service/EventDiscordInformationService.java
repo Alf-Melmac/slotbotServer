@@ -45,6 +45,16 @@ public class EventDiscordInformationService {
 	}
 
 	/**
+	 * Returns an optional discord information found by scheduled event id
+	 *
+	 * @param scheduledEventId scheduled event id to find discord information for
+	 * @return discord information
+	 */
+	Optional<EventDiscordInformation> findByScheduledEvent(long scheduledEventId) {
+		return discordInformationRepository.findByScheduledEvent(scheduledEventId);
+	}
+
+	/**
 	 * Checks if an information with any of the given channelIds already exists
 	 *
 	 * @param channelIds to check existence of

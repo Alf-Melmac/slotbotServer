@@ -39,4 +39,6 @@ public interface SlotRepository extends SuperIdEntityJpaRepository<Slot> {
 			AND s.squad.event.dateTime > :dateTime
 			""")
 	List<Slot> findByUserAndEventAfter(User user, LocalDateTime dateTime);
+
+	boolean existsBySquad_EventAndUser_Id(Event event, long userId);
 }

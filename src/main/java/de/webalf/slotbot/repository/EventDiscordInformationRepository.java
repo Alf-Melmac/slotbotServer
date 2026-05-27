@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author Alf
@@ -16,6 +17,8 @@ import java.util.Collection;
 @Repository
 public interface EventDiscordInformationRepository extends JpaRepository<EventDiscordInformation, Long> {
 	boolean existsByChannelIn(Collection<Long> channels);
+
+	Optional<EventDiscordInformation> findByScheduledEvent(long scheduledEvent);
 
 	@Modifying
 	@Query("DELETE FROM EventDiscordInformation i WHERE i.guild.id = :guildId")

@@ -14,6 +14,7 @@ import de.webalf.slotbot.model.dtos.SlotDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
+import de.webalf.slotbot.model.event.InterestedWithoutSlotEvent;
 import de.webalf.slotbot.repository.EventRepository;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.DtoUtils;
@@ -21,9 +22,11 @@ import de.webalf.slotbot.util.EventUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +60,7 @@ public class EventService {
 	private final GuildService guildService;
 	private final ActionLogService actionLogService;
 	private final RequirementService requirementService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	/**
 	 * Returns an optional for the event associated with the given channelId
@@ -517,5 +521,24 @@ public class EventService {
 	 */
 	public void renameSlot(@NonNull Event event, int slotNumber, String slotName) {
 		slotService.renameSlot(event, slotNumber, slotName);
+	}
+
+	/**
+	 * Processes the user's interest in the (scheduled) event
+	 *
+	 * @param scheduledEventId scheduled event id to find event for
+	 * @param userId           interested user
+	 */
+	@Async
+	public void interested(long scheduledEventId, long userId) {
+		final Optional<EventDiscordInformation> optionalInformation = eventDiscordInformationService.findByScheduledEvent(scheduledEventId);
+		if (optionalInformation.isEmpty()) { //No event associated with the scheduled event
+			return;
+		}
+		final EventDiscordInformation discordInformation = optionalInformation.get();
+		if (slotService.existsByUserAndEvent(userId, discordInformation.getEvent())) { //They're already slotted
+			return;
+		}
+		eventPublisher.publishEvent(new InterestedWithoutSlotEvent(discordInformation, userId));
 	}
 }

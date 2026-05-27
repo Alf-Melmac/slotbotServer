@@ -36,24 +36,34 @@ public class DirectMessageHelper {
 	private final BotService botService;
 
 	/**
-	 * Sends the given message to the given user. Logs an error if the message couldn't be sent.
+	 * Sends the given message to the given user
 	 *
 	 * @param user        to send private message to
 	 * @param messageText text to send
-	 * @see #sendDm(User, String)
 	 */
 	public void sendDmToRecipient(@NonNull de.webalf.slotbot.model.User user, @NotBlank String messageText) {
-		inPrivateChannel(user.getId(), channel -> channel.sendMessage(messageText), fail -> dmFailure(user.getId(), fail));
+		sendDmToRecipient(user.getId(), messageText);
 	}
 
 	/**
-	 * Sends the given message to the given user. Logs an error if the message couldn't be sent.
+	 * Sends the given message to the given user
+	 *
+	 * @param userId      to send private message to
+	 * @param messageText text to send
+	 * @param components  components to add to the message in a single action row
+	 */
+	public void sendDmToRecipient(long userId, @NotBlank String messageText, ActionRowChildComponent... components) {
+		inPrivateChannel(userId, channel -> channel.sendMessage(buildMessage(messageText, components)));
+	}
+
+	/**
+	 * Sends the given message to the given user
 	 *
 	 * @param user        to send private message to
 	 * @param messageText text to send
 	 */
 	public static void sendDm(@NonNull User user, @NotBlank String messageText) {
-		inPrivateChannel(user, privateChannel -> privateChannel.sendMessage(messageText), fail -> dmFailure(user.getIdLong(), fail));
+		sendDm(user, messageText, null, null);
 	}
 
 	/**
@@ -63,15 +73,25 @@ public class DirectMessageHelper {
 	 * @param messageText text to send
 	 * @param success     action to execute on success
 	 * @param failure     action to execute on failure
-	 * @param components  components to add to the message
+	 * @param components  components to add to the message in a single action row
 	 */
 	public static void sendDm(@NonNull User user, @NotBlank String messageText, Consumer<Message> success, Consumer<? super Throwable> failure, ActionRowChildComponent... components) {
-		try (final MessageCreateData messageCreateData = new MessageCreateBuilder()
-				.setContent(messageText)
-				.addComponents(ActionRow.of(Arrays.asList(components)))
-				.build()) {
-			inPrivateChannel(user, privateChannel -> privateChannel.sendMessage(messageCreateData), success, failure);
+		inPrivateChannel(user, channel -> channel.sendMessage(buildMessage(messageText, components)), success, failure);
+	}
+
+	/**
+	 * Constructs a message with the given text and components in an action row
+	 *
+	 * @param messageText text to add
+	 * @param components  components to add in a single action row
+	 * @return complete message
+	 */
+	private static MessageCreateData buildMessage(@NotBlank String messageText, ActionRowChildComponent... components) {
+		final MessageCreateBuilder builder = new MessageCreateBuilder().setContent(messageText);
+		if (components.length > 0) {
+			builder.addComponents(ActionRow.of(Arrays.asList(components)));
 		}
+		return builder.build();
 	}
 
 	/**
@@ -97,39 +117,28 @@ public class DirectMessageHelper {
 		inPrivateChannel(userId, channel -> channel.deleteMessageById(messageId));
 	}
 
-	private <T> void inPrivateChannel(long userId, Function<PrivateChannel, RestAction<T>> action) {
-		inPrivateChannel(userId, action, null);
-	}
-
 	/**
 	 * Executes the given action in the private channel of the given user
 	 *
 	 * @param userId id of the recipient
 	 * @param action action to execute in the private channel
 	 */
-	private <T> void inPrivateChannel(long userId, Function<PrivateChannel, RestAction<T>> action, Consumer<? super Throwable> failure) {
+	private <T> void inPrivateChannel(long userId, Function<PrivateChannel, RestAction<T>> action) {
 		final JDA jda = botService.getJda();
 		if (jda.getSelfUser().getId().equals(Long.toString(userId))) {
 			return; //Don't open a private channel with the bot
 		}
-		jda.retrieveUserById(userId)
-				.flatMap(User::openPrivateChannel)
-				.flatMap(action)
-				.queue(null, failure);
+		jda.retrieveUserById(userId).queue(user -> inPrivateChannel(user, action));
 	}
 
 	private static <T> void inPrivateChannel(@NonNull User user, Function<PrivateChannel, RestAction<T>> action) {
-		inPrivateChannel(user, action, null);
-	}
-
-	private static <T> void inPrivateChannel(@NonNull User user, Function<PrivateChannel, RestAction<T>> action, Consumer<? super Throwable> failure) {
-		inPrivateChannel(user, action, null, failure);
+		inPrivateChannel(user, action, null, null);
 	}
 
 	private static <T> void inPrivateChannel(@NonNull User user, Function<PrivateChannel, RestAction<T>> action, Consumer<T> success, Consumer<? super Throwable> failure) {
 		user.openPrivateChannel()
 				.flatMap(action)
-				.queue(success, failure);
+				.queue(success, failure != null ? failure : fail -> dmFailure(user.getIdLong(), fail));
 	}
 
 	private static void dmFailure(long userId, Throwable fail) {

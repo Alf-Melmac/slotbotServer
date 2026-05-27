@@ -58,25 +58,13 @@ public final class EventUtils {
 	}
 
 	/**
-	 * Builds the event details url for the given event information
-	 *
-	 * @param eventId    event id to open details for
-	 * @param ownerGuild guild owning the event
-	 * @return uri to event details
-	 */
-	public static String buildUrl(long eventId, Guild ownerGuild) {
-		return ownerGuild.getBaseRedirectUrl() + "/events/" + eventId;
-	}
-
-	/**
 	 * Builds the event details url for the given event
 	 *
 	 * @param event event to open details for
 	 * @return url to event details
-	 * @see #buildUrl(long, Guild)
 	 */
 	public static String buildUrl(@NonNull Event event) {
-		return buildUrl(event.getId(), event.getOwnerGuild());
+		return event.getOwnerGuild().getBaseRedirectUrl() + "/events/" + event.getId();
 	}
 
 	/**

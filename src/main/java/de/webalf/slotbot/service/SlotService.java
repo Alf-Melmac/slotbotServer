@@ -69,6 +69,17 @@ public class SlotService {
 	}
 
 	/**
+	 * Checks if the given user is slotted in the given event.
+	 *
+	 * @param userId  user to find slot for
+	 * @param event event in which the user may be slotted
+	 * @return true if slotted, false otherwise
+	 */
+	boolean existsByUserAndEvent(long userId, Event event) {
+		return slotRepository.existsBySquad_EventAndUser_Id(event, userId);
+	}
+
+	/**
 	 * Creates a new {@link Slot} with the values from the given {@link SlotDto}
 	 *
 	 * @param dto values

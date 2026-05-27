@@ -4,10 +4,8 @@ import de.webalf.slotbot.feature.swap.SwapRequestService;
 import de.webalf.slotbot.feature.swap.event.SwapRequestAcceptedEvent;
 import de.webalf.slotbot.feature.swap.event.SwapRequestCreatedEvent;
 import de.webalf.slotbot.feature.swap.event.SwapRequestDeclinedEvent;
-import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.Guild;
-import de.webalf.slotbot.model.Slot;
-import de.webalf.slotbot.model.User;
+import de.webalf.slotbot.model.*;
+import de.webalf.slotbot.model.event.InterestedWithoutSlotEvent;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.bot.BotService;
@@ -17,6 +15,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
@@ -135,5 +134,20 @@ public class EventSlottingBotListener {
 			editDmAndRemoveComponents(foreign, declinedEvent.messageId(), messageSource.getMessage("bot.button.swap.declined.decliner", new String[]{requester.getAsMention()}, declinedEvent.locale()));
 			sendDm(requester, messageSource.getMessage("bot.button.swap.declined.requester", new String[]{foreign.getAsMention()}, declinedEvent.locale()));
 		}
+	}
+
+	@EventListener
+	@Async
+	public void interestedWithoutSlot(@NonNull InterestedWithoutSlotEvent interestedEvent) {
+		final EventDiscordInformation discordInformation = interestedEvent.discordInformation();
+		final Event event = discordInformation.getEvent();
+		final Locale guildLocale = event.getOwnerGuildLocale();
+
+		directMessageHelper.sendDmToRecipient(interestedEvent.userId(),
+				messageSource.getMessage("scheduledEvent.interestedWithoutSlot", new String[]{event.getName()}, guildLocale),
+				Button.link(
+						GuildChannel.JUMP_URL.formatted(discordInformation.getGuild().getId(), discordInformation.getChannel()),
+						messageSource.getMessage("scheduledEvent.link", null, guildLocale)
+				));
 	}
 }

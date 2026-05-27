@@ -132,4 +132,8 @@ public class EventBotService {
 	private static UserDto userDtoWithId(String userId) {
 		return UserDto.builder().id(userId).build();
 	}
+
+	public void interested(long scheduledEventId, long userId) {
+		eventService.interested(scheduledEventId, userId);
+	}
 }

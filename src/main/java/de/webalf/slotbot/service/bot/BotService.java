@@ -1,10 +1,10 @@
 package de.webalf.slotbot.service.bot;
 
 import de.webalf.slotbot.configuration.properties.DiscordProperties;
-import de.webalf.slotbot.service.EventDiscordInformationService;
 import de.webalf.slotbot.service.bot.listener.GuildContentListener;
 import de.webalf.slotbot.service.bot.listener.GuildEventListener;
 import de.webalf.slotbot.service.bot.listener.InteractionListener;
+import de.webalf.slotbot.service.bot.listener.ScheduledEventListener;
 import de.webalf.slotbot.util.bot.CommandClassHelper;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
@@ -37,6 +37,7 @@ public class BotService {
 	private final CommandClassHelper commandClassHelper;
 	private final MessageSource messageSource;
 	private final GuildBotService guildBotService;
+	private final EventBotService eventBotService;
 
 	@Getter
 	private JDA jda;
@@ -51,7 +52,8 @@ public class BotService {
 				.addEventListeners(
 						new GuildEventListener(commandsService, eventDiscordInformationBotService, guildUsersBotService),
 						new InteractionListener(commandClassHelper, messageSource),
-						new GuildContentListener(eventDiscordInformationService, guildBotService, messageSource))
+						new GuildContentListener(eventDiscordInformationBotService, guildBotService, messageSource),
+						new ScheduledEventListener(eventBotService, eventDiscordInformationBotService))
 				.disableIntents(GUILD_MODERATION, GUILD_EXPRESSIONS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, DIRECT_MESSAGE_TYPING, MESSAGE_CONTENT, AUTO_MODERATION_CONFIGURATION, AUTO_MODERATION_EXECUTION)
 				.disableCache(ACTIVITY, VOICE_STATE, EMOJI, STICKER, SOUNDBOARD_SOUNDS, CLIENT_STATUS, MEMBER_OVERRIDES, ROLE_TAGS, FORUM_TAGS, ONLINE_STATUS)
 				.setMemberCachePolicy(MemberCachePolicy.ALL)

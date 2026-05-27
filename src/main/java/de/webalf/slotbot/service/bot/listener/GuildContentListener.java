@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent;
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateLockedEvent;
-import net.dv8tion.jda.api.events.guild.scheduledevent.ScheduledEventDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -23,7 +22,6 @@ import static net.dv8tion.jda.api.Permission.CREATE_SCHEDULED_EVENTS;
  * This requires Intents
  * <ul>
  *     <li>{@link GatewayIntent#GUILD_MESSAGES} to listen for deleted messages</li>
- *     <li>{@link GatewayIntent#SCHEDULED_EVENTS} to listen for deleted scheduled events</li>
  * </ul>
  *
  * @author Alf
@@ -75,12 +73,5 @@ public class GuildContentListener extends ListenerAdapter {
 						scheduledEvent -> scheduledEvent.delete().queue());
 			}
 		});
-	}
-
-	@Override
-	public void onScheduledEventDelete(@NonNull ScheduledEventDeleteEvent event) {
-		log.trace("Event {} deleted in guild {}", event.getScheduledEvent().getId(), event.getGuild().getId());
-
-		eventDiscordInformationService.removeScheduledEvent(event.getScheduledEvent().getIdLong());
 	}
 }
