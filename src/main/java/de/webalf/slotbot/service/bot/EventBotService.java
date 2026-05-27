@@ -3,7 +3,6 @@ package de.webalf.slotbot.service.bot;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.Event;
-import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
@@ -32,6 +31,7 @@ import static net.dv8tion.jda.api.components.selections.SelectMenu.OPTIONS_MAX_A
 public class EventBotService {
 	private final EventService eventService;
 	private final GuildBotService guildBotService;
+	private final EventDiscordInformationBotService eventDiscordInformationBotService;
 	private final ApplicationEventPublisher eventPublisher;
 
 	public Event findById(long eventId) {
@@ -62,16 +62,12 @@ public class EventBotService {
 		return eventService.findForeignNotAssignedInFutureForSelect(guildId, OPTIONS_MAX_AMOUNT);
 	}
 
-	public Optional<Event> findLastEventOfUser(User user, de.webalf.slotbot.model.Guild guild) {
-		return eventService.findLastEventOfUserInGuild(user, guild);
-	}
-
 	public void addDiscordInformation(long eventId, EventDiscordInformationDto dto) {
 		eventService.addDiscordInformation(eventId, dto);
 	}
 
 	public void archiveEvent(Guild guild, long channel) {
-		guildBotService.archiveByChannel(guild.getIdLong(), channel);
+		eventDiscordInformationBotService.removeByChannel(guild.getIdLong(), channel);
 	}
 
 	public void retriggerArchiveEvents(Guild guild) {

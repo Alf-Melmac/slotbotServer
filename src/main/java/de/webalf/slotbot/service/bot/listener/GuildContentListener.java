@@ -1,6 +1,6 @@
 package de.webalf.slotbot.service.bot.listener;
 
-import de.webalf.slotbot.service.EventDiscordInformationService;
+import de.webalf.slotbot.service.bot.EventDiscordInformationBotService;
 import de.webalf.slotbot.service.bot.GuildBotService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import static net.dv8tion.jda.api.Permission.CREATE_SCHEDULED_EVENTS;
 @RequiredArgsConstructor
 @Slf4j
 public class GuildContentListener extends ListenerAdapter {
-	private final EventDiscordInformationService eventDiscordInformationService;
+	private final EventDiscordInformationBotService eventDiscordInformationBotService;
 	private final GuildBotService guildBotService;
 	private final MessageSource messageSource;
 
@@ -55,7 +55,7 @@ public class GuildContentListener extends ListenerAdapter {
 	}
 
 	private void channelAccessRemoved(long guildId, long removedChannelId) {
-		eventDiscordInformationService.removeByChannel(guildId, removedChannelId);
+		eventDiscordInformationBotService.removeByChannel(guildId, removedChannelId);
 		guildBotService.removeArchiveChannelByChannel(guildId, removedChannelId);
 	}
 
@@ -65,7 +65,7 @@ public class GuildContentListener extends ListenerAdapter {
 		final GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
 		log.trace("Message {} deleted in channel {} in guild {}", event.getMessageId(), channel.getId(), event.getGuild().getId());
 
-		eventDiscordInformationService.removeByMessage(channel.getIdLong(), event.getMessageIdLong(), discordInformation -> {
+		eventDiscordInformationBotService.removeByMessage(channel.getIdLong(), event.getMessageIdLong(), discordInformation -> {
 			final Locale guildLocale = guildBotService.getGuildLocale(event.getGuild().getIdLong());
 			channel.sendMessage(messageSource.getMessage("event.discordInformation.broken", null, guildLocale)).queue();
 

@@ -1,4 +1,4 @@
-package de.webalf.slotbot.service.bot;
+package de.webalf.slotbot.service.bot.listener;
 
 import de.webalf.slotbot.feature.swap.SwapRequestService;
 import de.webalf.slotbot.feature.swap.event.SwapRequestAcceptedEvent;
@@ -9,6 +9,8 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.Slot;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.event.SlotUserChangedEvent;
+import de.webalf.slotbot.service.EventService;
+import de.webalf.slotbot.service.bot.BotService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.bot.DirectMessageHelper;
 import lombok.NonNull;
@@ -36,10 +38,10 @@ import static de.webalf.slotbot.util.bot.DirectMessageHelper.sendDm;
  */
 @Service
 @RequiredArgsConstructor
-public class EventSlottingService {
+public class EventSlottingBotListener {
 	private final DirectMessageHelper directMessageHelper;
 	private final MessageSource messageSource;
-	private final EventBotService eventBotService;
+	private final EventService eventService;
 	private final BotService botService;
 	private final SwapRequestService swapRequestService;
 	private final ApplicationEventPublisher eventPublisher;
@@ -75,7 +77,7 @@ public class EventSlottingService {
 	 * @param ownerGuild guild the event is hosted in
 	 */
 	private void longTimeNoSee(@NonNull User user, @NonNull Guild ownerGuild) {
-		eventBotService.findLastEventOfUser(user, ownerGuild).ifPresentOrElse(lastEvent -> {
+		eventService.findLastEventOfUserInGuild(user, ownerGuild).ifPresentOrElse(lastEvent -> {
 					if (lastEvent.getDateTime().plusMonths(3).isBefore(DateUtils.now())) {
 						directMessageHelper.sendDmToRecipient(user, "Über drei Monate haben wir dich nicht mehr gesehen. Schau doch gerne mal wieder öfter vorbei. Falls du einen neuen Technikcheck brauchst oder andere Fragen hast, melde dich doch bitte bei <@327385716977958913>.");
 					}

@@ -1,7 +1,7 @@
 package de.webalf.slotbot.service.bot.listener;
 
-import de.webalf.slotbot.service.EventDiscordInformationService;
 import de.webalf.slotbot.service.bot.CommandsService;
+import de.webalf.slotbot.service.bot.EventDiscordInformationBotService;
 import de.webalf.slotbot.service.bot.GuildUsersBotService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 @Slf4j
 public class GuildEventListener extends ListenerAdapter {
 	private final CommandsService commandsService;
-	private final EventDiscordInformationService eventDiscordInformationService;
+	private final EventDiscordInformationBotService eventDiscordInformationBotService;
 	private final GuildUsersBotService guildUsersBotService;
 
 	@Override
@@ -68,7 +68,7 @@ public class GuildEventListener extends ListenerAdapter {
 	public void onGuildLeave(@NonNull GuildLeaveEvent event) {
 		final Guild guild = event.getGuild();
 		log.info("Cleanup for guild: {}", guild.getName());
-		eventDiscordInformationService.removeByGuild(guild.getIdLong());
+		eventDiscordInformationBotService.removeByGuild(guild.getIdLong());
 	}
 
 	@Override

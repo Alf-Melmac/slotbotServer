@@ -28,14 +28,14 @@ import static de.webalf.slotbot.util.bot.EmbedUtils.spacerCharIfEmpty;
 @RequiredArgsConstructor
 @Slf4j
 public class EventUpdateBotListener {
-	private final EventBotService eventBotService;
+	private final EventBotService eventService; //Needs the initialised event which is made available in the bot service
 	private final BotService botService;
 	private final EventHelper eventHelper;
 
 	@EventListener
 	@Async
 	public void onEventUpdate(@NonNull EventUpdateEvent updateEvent) {
-		final Event event = eventBotService.findById(updateEvent.event());
+		final Event event = eventService.findById(updateEvent.event());
 
 		event.getDiscordInformation().forEach(discordInformation -> {
 			final MessageChannel eventChannel = botService.getJda().getChannelById(MessageChannel.class, discordInformation.getChannel());

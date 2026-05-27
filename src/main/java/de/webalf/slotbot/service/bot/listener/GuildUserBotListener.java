@@ -27,7 +27,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GuildUserEventListener {
+public class GuildUserBotListener {
 	private final GuildService guildService;
 	private final GuildDiscordService guildDiscordService;
 

@@ -32,7 +32,7 @@ import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
 public class BotService {
 	private final DiscordProperties discordProperties;
 	private final CommandsService commandsService;
-	private final EventDiscordInformationService eventDiscordInformationService;
+	private final EventDiscordInformationBotService eventDiscordInformationBotService;
 	private final GuildUsersBotService guildUsersBotService;
 	private final CommandClassHelper commandClassHelper;
 	private final MessageSource messageSource;
@@ -49,11 +49,11 @@ public class BotService {
 		jda = JDABuilder
 				.create(token, GUILD_MEMBERS, GUILD_MESSAGES, SCHEDULED_EVENTS)
 				.addEventListeners(
-						new GuildEventListener(commandsService, eventDiscordInformationService, guildUsersBotService),
+						new GuildEventListener(commandsService, eventDiscordInformationBotService, guildUsersBotService),
 						new InteractionListener(commandClassHelper, messageSource),
 						new GuildContentListener(eventDiscordInformationService, guildBotService, messageSource))
 				.disableIntents(GUILD_MODERATION, GUILD_EXPRESSIONS, GUILD_WEBHOOKS, GUILD_INVITES, GUILD_VOICE_STATES, GUILD_PRESENCES, GUILD_MESSAGE_REACTIONS, GUILD_MESSAGE_TYPING, DIRECT_MESSAGES, DIRECT_MESSAGE_REACTIONS, DIRECT_MESSAGE_TYPING, MESSAGE_CONTENT, AUTO_MODERATION_CONFIGURATION, AUTO_MODERATION_EXECUTION)
-				.disableCache(ACTIVITY, VOICE_STATE, EMOJI, STICKER, CLIENT_STATUS, ONLINE_STATUS)
+				.disableCache(ACTIVITY, VOICE_STATE, EMOJI, STICKER, SOUNDBOARD_SOUNDS, CLIENT_STATUS, MEMBER_OVERRIDES, ROLE_TAGS, FORUM_TAGS, ONLINE_STATUS)
 				.setMemberCachePolicy(MemberCachePolicy.ALL)
 				.setChunkingFilter(ChunkingFilter.ALL)
 				.setLargeThreshold(250)
