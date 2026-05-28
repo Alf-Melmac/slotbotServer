@@ -4,11 +4,9 @@ import de.webalf.slotbot.assembler.UserAssembler;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
-import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.UserNameDto;
 import de.webalf.slotbot.repository.UserRepository;
 import de.webalf.slotbot.service.external.DiscordBotService;
-import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +25,6 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final DiscordBotService discordBotService;
 	private final UserServiceImpl userServiceImpl;
-
-	User find(@NonNull UserDto userDto) {
-		return userRepository.findById(LongUtils.parseLong(userDto.getId()))
-				.orElseGet(() -> userServiceImpl.createUser(userDto));
-	}
 
 	/**
 	 * @see UserServiceImpl#find(long)

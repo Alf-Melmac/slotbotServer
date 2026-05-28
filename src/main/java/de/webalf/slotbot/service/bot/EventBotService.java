@@ -4,7 +4,6 @@ import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
-import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -97,16 +96,16 @@ public class EventBotService {
 		eventService.blockSlot(findByChannelOrThrow(channel), slotNumber, replacementText);
 	}
 
-	public void unslot(long channel, String userId) {
-		eventService.unslot(findByChannelOrThrow(channel), userDtoWithId(userId));
+	public void unslot(long channel, long userId) {
+		eventService.unslot(findByChannelOrThrow(channel), userId);
 	}
 
 	public void unslot(long channel, int slotNumber) {
 		eventService.unslot(findByChannelOrThrow(channel), slotNumber);
 	}
 
-	public void randomSlot(long channel, String userId) {
-		eventService.randomSlot(channel, userDtoWithId(userId));
+	public void randomSlot(long channel, long userId) {
+		eventService.randomSlot(channel, userId);
 	}
 
 	public void addSlot(long channel, int squadNumber, Integer slotNumber, String slotName) {
@@ -129,11 +128,11 @@ public class EventBotService {
 		return eventService.findAllParticipantIds(channel);
 	}
 
-	private static UserDto userDtoWithId(String userId) {
-		return UserDto.builder().id(userId).build();
-	}
-
 	public void interested(long scheduledEventId, long userId) {
 		eventService.interested(scheduledEventId, userId);
+	}
+
+	public void interestRemoved(long scheduledEventId, long userId) {
+		eventService.interestRemoved(scheduledEventId, userId);
 	}
 }

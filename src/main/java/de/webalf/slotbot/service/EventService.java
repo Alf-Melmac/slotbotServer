@@ -11,7 +11,6 @@ import de.webalf.slotbot.feature.slot_rules.Slottable;
 import de.webalf.slotbot.model.*;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.dtos.SlotDto;
-import de.webalf.slotbot.model.dtos.UserDto;
 import de.webalf.slotbot.model.dtos.website.event.creation.EventPostDto;
 import de.webalf.slotbot.model.dtos.website.event.edit.EventUpdateDto;
 import de.webalf.slotbot.model.event.InterestedWithoutSlotEvent;
@@ -398,15 +397,15 @@ public class EventService {
 	}
 
 	/**
-	 * Removes the user, found by userDto, from its slot in given event.
+	 * Removes the user from its slot in given event.
 	 *
-	 * @param event   event
-	 * @param userDto person that should be unslotted
+	 * @param event  event
+	 * @param userId person that should be unslotted
 	 * @return Event in which the person has been unslotted
 	 * @throws ResourceNotFoundException if the user is not slotted in the given event
 	 */
-	public Event unslot(@NonNull Event event, UserDto userDto) {
-		final User user = userService.find(userDto);
+	public Event unslot(@NonNull Event event, long userId) {
+		final User user = userService.find(userId);
 		final Slot slot = event.findSlotOfUser(user).orElseThrow(ResourceNotFoundException::new);
 		return unslot(event, slot, user);
 	}
@@ -451,13 +450,13 @@ public class EventService {
 	 * Searches for the given channel the matching event and enters the given user for a random empty slot, if available.
 	 *
 	 * @param channel event channel
-	 * @param userDto person that should be slotted
+	 * @param userId person that should be slotted
 	 * @return Event in which the person has been slotted
 	 * @throws SlottableException if no slot is available
 	 */
-	public Event randomSlot(long channel, UserDto userDto) {
+	public Event randomSlot(long channel, long userId) {
 		final Event event = findByChannel(channel);
-		final User user = userService.find(userDto);
+		final User user = userService.find(userId);
 
 		final List<Slot> availableSlots = event.getSquadList().stream()
 				.flatMap(squad -> squad.getSlotList().stream()
@@ -540,5 +539,26 @@ public class EventService {
 			return;
 		}
 		eventPublisher.publishEvent(new InterestedWithoutSlotEvent(discordInformation, userId));
+	}
+
+	/**
+	 * Processes the removed interest of a user in the (scheduled) event
+	 *
+	 * @param scheduledEventId scheduled event id to find event for
+	 * @param userId           no longer interested user
+	 */
+	@Async
+	public void interestRemoved(long scheduledEventId, long userId) {
+		final Optional<EventDiscordInformation> optionalInformation = eventDiscordInformationService.findByScheduledEvent(scheduledEventId);
+		if (optionalInformation.isEmpty()) { //No event associated with the scheduled event
+			return;
+		}
+		final Event event = optionalInformation.get().getEvent();
+		final User user = userService.find(userId);
+		final Optional<Slot> slot = event.findSlotOfUser(user);
+		if (slot.isEmpty()) {
+			return;
+		}
+		unslot(event, slot.get(), user);
 	}
 }

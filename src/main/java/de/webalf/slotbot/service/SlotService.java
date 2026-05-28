@@ -71,8 +71,8 @@ public class SlotService {
 	/**
 	 * Checks if the given user is slotted in the given event.
 	 *
-	 * @param userId  user to find slot for
-	 * @param event event in which the user may be slotted
+	 * @param userId user to find slot for
+	 * @param event  event in which the user may be slotted
 	 * @return true if slotted, false otherwise
 	 */
 	boolean existsByUserAndEvent(long userId, Event event) {

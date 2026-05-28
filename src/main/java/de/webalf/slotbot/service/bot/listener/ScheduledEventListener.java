@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.guild.scheduledevent.ScheduledEventDeleteEvent;
 import net.dv8tion.jda.api.events.guild.scheduledevent.ScheduledEventUserAddEvent;
+import net.dv8tion.jda.api.events.guild.scheduledevent.ScheduledEventUserRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
@@ -32,6 +33,15 @@ public class ScheduledEventListener extends ListenerAdapter {
 		log.trace("User {} interested to event {}", userId, scheduledEventId);
 
 		eventBotService.interested(scheduledEventId, userId);
+	}
+
+	@Override
+	public void onScheduledEventUserRemove(@NonNull ScheduledEventUserRemoveEvent event) {
+		final long userId = event.getUserIdLong();
+		final long scheduledEventId = event.getScheduledEvent().getIdLong();
+		log.trace("User {} no longer interested in event {}", userId, scheduledEventId);
+
+		eventBotService.interestRemoved(scheduledEventId, userId);
 	}
 
 	@Override

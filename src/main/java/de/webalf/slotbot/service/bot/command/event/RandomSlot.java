@@ -31,7 +31,7 @@ public class RandomSlot implements DiscordSlashCommand {
 		log.trace("Slash command: randomSlot");
 
 		try {
-			eventBotService.randomSlot(event.getChannel().getIdLong(), event.getUser().getId());
+			eventBotService.randomSlot(event.getChannel().getIdLong(), event.getUser().getIdLong());
 		} catch (SlottableException e) {
 			reply(event, locale.t(e.getSlottable().state().getMessageKey()));
 			return;

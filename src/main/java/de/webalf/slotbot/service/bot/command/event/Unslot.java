@@ -17,6 +17,7 @@ import java.util.List;
 import static de.webalf.slotbot.util.bot.InteractionUtils.finishedVisibleInteraction;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalIntegerOption;
 import static de.webalf.slotbot.util.bot.SlashCommandUtils.getOptionalUserOption;
+import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * @author Alf
@@ -53,10 +54,8 @@ public class Unslot implements DiscordSlashCommand {
 		final Long user = getOptionalUserOption(event, OPTION_USER);
 		if (slotNumber != null) { //Unslot by slot number
 			eventBotService.unslot(event.getChannel().getIdLong(), slotNumber);
-		} else if (user != null) { //Unslot by user
-			eventBotService.unslot(event.getChannel().getIdLong(), Long.toString(user));
-		} else { //Self unslot
-			eventBotService.unslot(event.getChannel().getIdLong(), event.getUser().getId());
+		} else { //Unslot by user if user != null or self unslot
+			eventBotService.unslot(event.getChannel().getIdLong(), requireNonNullElseGet(user, () -> event.getUser().getIdLong()));
 		}
 
 		finishedVisibleInteraction(event);
