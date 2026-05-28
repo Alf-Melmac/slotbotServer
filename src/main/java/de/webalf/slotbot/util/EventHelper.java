@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.ScheduledEvent;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.exceptions.HttpException;
 import net.dv8tion.jda.api.managers.ScheduledEventManager;
 import net.dv8tion.jda.api.requests.restaction.ScheduledEventAction;
 import net.dv8tion.jda.api.utils.AttachmentProxy;
@@ -26,6 +27,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
 
@@ -247,7 +249,16 @@ public class EventHelper {
 				.setDescription(EventHelper.buildScheduledEventDescription(event));
 
 		return getEmbedThumbnailProxy(event, eventEmbed)
-				.map(proxy -> proxy.downloadAsIcon().thenCompose(icon -> action.setImage(icon).submit()))
+				.map(proxy -> proxy.downloadAsIcon()
+						.thenCompose(icon -> action.setImage(icon).submit())
+						.exceptionallyCompose(ex -> {
+							final Throwable cause = ex instanceof CompletionException ? ex.getCause() : ex;
+							if (cause instanceof HttpException && "403: ".equals(cause.getMessage())) {
+								log.warn("Failed to create scheduled event for event {}. Guessing that the image upload failed {}, retrying without image", event.getId(), event.getPictureUrl());
+								return action.submit();
+							}
+							return CompletableFuture.failedFuture(cause);
+						}))
 				.orElseGet(action::submit);
 	}
 
