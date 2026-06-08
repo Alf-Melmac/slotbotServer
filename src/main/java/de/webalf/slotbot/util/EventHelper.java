@@ -278,7 +278,8 @@ public class EventHelper {
 	}
 
 	private static String buildScheduledEventDescription(@NonNull Event event) {
-		return toMarkdown(event.getDescription(), ScheduledEvent.MAX_DESCRIPTION_LENGTH, false, event::getId);
+		final String description = "<p>" + EventUtils.buildUrl(event) + "</p>" + event.getDescription();
+		return toMarkdown(description, ScheduledEvent.MAX_DESCRIPTION_LENGTH, false, event::getId);
 	}
 
 	private static Optional<AttachmentProxy> getEmbedThumbnailProxy(@NonNull Event event, @NonNull Message eventEmbed) {
