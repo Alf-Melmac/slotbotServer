@@ -15,7 +15,7 @@
 	<name>slotbot</name>
 	<description>Slotbot Server</description>
 	<scm>
-		<developerConnection>scm:git:https://github.com/Alf-Melmac/slotbotServer.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@github.com/Alf-Melmac/slotbotServer.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
