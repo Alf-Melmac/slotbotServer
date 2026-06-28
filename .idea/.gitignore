@@ -13,7 +13,8 @@
 
 /libraries
 
-misc.xml
+/compiler.xml
+/misc.xml
 
 #Sonarlint
 sonarlint-state.xml
