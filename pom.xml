@@ -26,15 +26,15 @@
 		<!--Versions-->
 		<maven.compiler.release>25</maven.compiler.release>
 		<!--https://github.com/apache/tika/blob/main/CHANGES.txt -->
-		<apache.tika.version>3.3.1</apache.tika.version>
+		<apache.tika.version>3.3.2</apache.tika.version>
 		<!--https://github.com/atteo/classindex/tags -->
 		<classindex.version>3.13</classindex.version>
 		<!--https://github.com/DV8FromTheWorld/JDA/releases -->
-		<jda.version>6.4.2</jda.version>
+		<jda.version>6.5.0</jda.version>
 		<!--https://github.com/NeilMadden/salty-coffee/releases -->
 		<salty-coffee.version>1.1.1</salty-coffee.version>
 		<!--https://jsoup.org/news/ -->
-		<jsoup.version>1.22.2</jsoup.version>
+		<jsoup.version>1.23.1</jsoup.version>
 		<!--https://github.com/ical4j/ical4j/releases -->
 		<ical4j.version>4.3.0</ical4j.version>
 		<!--https://github.com/seancfoley/IPAddress/releases -->
@@ -42,7 +42,7 @@
 		<!--https://github.com/vojtechhabarta/typescript-generator/releases -->
 		<typescript-generator.version>4.1.1</typescript-generator.version>
 		<!--https://github.com/springdoc/springdoc-openapi/releases -->
-		<springdoc-openapi-ui.version>3.0.3</springdoc-openapi-ui.version>
+		<springdoc-openapi-ui.version>3.1.0</springdoc-openapi-ui.version>
 	</properties>
 
 	<dependencies>
