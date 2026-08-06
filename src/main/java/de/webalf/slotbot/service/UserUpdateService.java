@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserIdLong;
 
 /**
  * @author Alf
@@ -19,7 +19,7 @@ public class UserUpdateService {
 	private final EventCalendarService eventCalendarService;
 
 	public Long updateSteamId(Long steamId) {
-		final User user = find(getLoggedInUserId());
+		final User user = find(getLoggedInUserIdLong());
 
 		user.setSteamId64(steamId);
 
@@ -27,7 +27,7 @@ public class UserUpdateService {
 	}
 
 	public User updateSettings(boolean externalCalendarIntegrationActive) {
-		final User user = find(getLoggedInUserId());
+		final User user = find(getLoggedInUserIdLong());
 
 		user.setExternalCalendarIntegrationActive(externalCalendarIntegrationActive);
 		eventCalendarService.rebuildCalendar(user);
@@ -37,9 +37,5 @@ public class UserUpdateService {
 
 	public User find(long id) {
 		return userService.find(id);
-	}
-
-	public User find(String id) {
-		return find(Long.parseLong(id));
 	}
 }

@@ -38,6 +38,19 @@ public class GuildService {
 	private final GuildRepository guildRepository;
 
 	/**
+	 * Creates a new guild
+	 *
+	 * @param groupIdentifier group identifier of the new guild
+	 * @return newly created guild
+	 */
+	public Guild create(@NonNull String groupIdentifier) {
+		final Guild guild = Guild.builder()
+				.groupIdentifier(groupIdentifier)
+				.build();
+		return guildRepository.saveAndFlush(guild);
+	}
+
+	/**
 	 * Finds the guild linked to the given Discord guild, or creates a new one if none is linked yet.
 	 *
 	 * @param discordId Discord snowflake of the guild

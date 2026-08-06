@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static de.webalf.slotbot.feature.notifications.NotificationSettingAssembler.toReferencelessDtoList;
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_ROLE_EVERYONE;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserIdLong;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -42,7 +42,7 @@ public class UserController {
 	@GetMapping("/own")
 	@PreAuthorize(HAS_ROLE_EVERYONE)
 	public UserOwnProfileDto getOwnProfileInfo() {
-		User user = userService.find(getLoggedInUserId());
+		User user = userService.find(getLoggedInUserIdLong());
 
 		return UserOwnProfileDto.builder()
 				.steamId64(LongUtils.toString(user.getSteamId64()))
