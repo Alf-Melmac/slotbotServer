@@ -25,20 +25,20 @@ import static net.dv8tion.jda.api.Permission.MANAGE_ROLES;
 public class GuildDiscordService {
 	private final BotService botService;
 
-	public boolean isConnected(long guildId) {
-		return botService.getJda().getGuildById(guildId) != null;
+	public boolean isConnected(long discordGuildId) {
+		return botService.getJda().getGuildById(discordGuildId) != null;
 	}
 
-	public boolean isAllowedToManageRoles(long guildId) {
-		return isAllowedToManageRoles(getGuildById(guildId));
+	public boolean isAllowedToManageRoles(long discordGuildId) {
+		return isAllowedToManageRoles(getGuildById(discordGuildId));
 	}
 
 	public boolean isAllowedToManageRoles(@NonNull Guild guild) {
 		return guild.getSelfMember().hasPermission(MANAGE_ROLES);
 	}
 
-	public List<DiscordCategory> getGuildChannels(long guildId) {
-		return getGuildById(guildId).getCategoryCache().stream()
+	public List<DiscordCategory> getGuildChannels(long discordGuildId) {
+		return getGuildById(discordGuildId).getCategoryCache().stream()
 				.map(category -> DiscordCategory.builder()
 						.name(category.getName())
 						.textChannels(category.getTextChannels().stream()
@@ -54,11 +54,11 @@ public class GuildDiscordService {
 	/**
 	 * Return all {@link DiscordRole}s the bot {@link Member#canInteract(Role) can interact} with
 	 *
-	 * @param guildId guid to get roles for
+	 * @param discordGuildId to get roles for
 	 * @return all roles that can be interacted with
 	 */
-	public List<DiscordRole> getGuildRoles(long guildId) {
-		final Guild guild = getGuildById(guildId);
+	public List<DiscordRole> getGuildRoles(long discordGuildId) {
+		final Guild guild = getGuildById(discordGuildId);
 		final Member selfMember = guild.getSelfMember();
 		return guild.getRoleCache().stream()
 				.filter(role -> !role.isPublicRole() && selfMember.canInteract(role))
@@ -72,20 +72,20 @@ public class GuildDiscordService {
 	/**
 	 * Returns the {@link Guild} associated with the given id
 	 *
-	 * @param guildId to find guild for
+	 * @param discordGuildId to find guild for
 	 * @return Guild found by id
 	 * @throws BusinessRuntimeException if no guild with this id could be found
 	 */
-	public Guild getGuildById(long guildId) {
-		final Guild guild = botService.getJda().getGuildById(guildId);
+	public Guild getGuildById(long discordGuildId) {
+		final Guild guild = botService.getJda().getGuildById(discordGuildId);
 		if (guild == null) {
-			throw BusinessRuntimeException.builder().title("Guild " + guildId + " couldn't be found.").build();
+			throw BusinessRuntimeException.builder().title("Guild " + discordGuildId + " couldn't be found.").build();
 		}
 		return guild;
 	}
 
-	public void leaveGuild(long guildId) {
-		getGuildById(guildId)
+	public void leaveGuild(long discordGuildId) {
+		getGuildById(discordGuildId)
 				.leave()
 				.queue();
 	}

@@ -6,7 +6,7 @@ import de.webalf.slotbot.model.dtos.api.event.creation.SlotApiDto;
 import de.webalf.slotbot.model.dtos.api.event.view.SlotApiIdDto;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.UserService;
-import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.EntityUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +52,8 @@ final class SlotApiAssembler {
 		builder
 				.name(slot.getName())
 				.number(slot.getNumber())
-				.reservedForGuildId(DtoUtils.getIdStringIfPresent(slot.getReservedFor()))
-				.userId(DtoUtils.getIdStringIfPresent(slot.getUser()))
+				.reservedForGuildId(EntityUtils.getIdStringIfPresent(slot.getReservedFor()))
+				.userId(EntityUtils.getIdStringIfPresent(slot.getUser()))
 				.replacementText(slot.getReplacementText());
 	}
 

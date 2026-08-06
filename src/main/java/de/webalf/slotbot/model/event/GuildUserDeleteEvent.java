@@ -12,6 +12,6 @@ import lombok.NonNull;
  */
 public record GuildUserDeleteEvent(long guildId, long userId, Role role) {
 	public GuildUserDeleteEvent(@NonNull GuildUser guildUser) {
-		this(guildUser.getGuild().getId(), guildUser.getUser().getId(), guildUser.getRole());
+		this(guildUser.getId().getGuildId(), guildUser.getId().getUserId(), guildUser.getRole());
 	}
 }

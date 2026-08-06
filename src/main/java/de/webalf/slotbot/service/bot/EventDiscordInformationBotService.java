@@ -18,16 +18,16 @@ import java.util.function.Consumer;
 public class EventDiscordInformationBotService {
 	private final EventDiscordInformationService eventDiscordInformationService;
 
-	public void removeByChannel(long guildId, long channelId) {
-		eventDiscordInformationService.removeByChannel(guildId, channelId);
+	public void removeByChannel(long discordGuildId, long channelId) {
+		eventDiscordInformationService.removeByChannel(discordGuildId, channelId);
 	}
 
 	public void removeByMessage(long channelId, long messageId, Consumer<EventDiscordInformation> onRemoval) {
 		eventDiscordInformationService.removeByMessage(channelId, messageId, onRemoval);
 	}
 
-	public void removeByGuild(long guildId) {
-		eventDiscordInformationService.removeByGuild(guildId);
+	public void removeByGuild(long discordGuildId) {
+		eventDiscordInformationService.removeByGuild(discordGuildId);
 	}
 
 	public void removeScheduledEvent(long scheduledEventId) {

@@ -37,10 +37,28 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 public class GuildService {
 	private final GuildRepository guildRepository;
 
-	public Guild create(long id, String name) {
-		final Guild guild = guildRepository.findById(id).orElseGet(() -> Guild.builder().id(id).build());
+	/**
+	 * Finds the guild linked to the given Discord guild, or creates a new one if none is linked yet.
+	 *
+	 * @param discordId Discord snowflake of the guild
+	 * @param name      Discord guild name, used to set/update {@link Guild#getGroupIdentifier()}
+	 * @return found or newly created guild
+	 */
+	public Guild findOrCreateByDiscordId(long discordId, String name) {
+		final Guild guild = guildRepository.findByDiscordId(discordId).orElseGet(() -> Guild.builder().id(discordId).discordId(discordId).build());
 		guild.setGroupIdentifier(name.substring(0, Math.min(name.length(), TEXT)));
 		return guildRepository.saveAndFlush(guild);
+	}
+
+	/**
+	 * Returns the guild linked to the given Discord guild.
+	 *
+	 * @param discordId Discord snowflake of the guild
+	 * @return guild linked to the given Discord guild
+	 * @throws ResourceNotFoundException if no guild is linked to this Discord guild
+	 */
+	public Guild findExistingByDiscordId(long discordId) {
+		return guildRepository.findByDiscordId(discordId).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public List<Guild> findAll() {
@@ -60,11 +78,6 @@ public class GuildService {
 						obj -> (long) obj[0],
 						obj -> LocalDateTime.ofEpochSecond((long) obj[1], 0, ZoneOffset.UTC) //see LocalDateTimePersistenceConverter
 				));
-	}
-
-	public Guild find(long id) {
-		return guildRepository.findById(id)
-				.orElseGet(() -> guildRepository.save(Guild.builder().id(id).build()));
 	}
 
 	public Guild findByIdentifier(@NonNull String identifier) {
@@ -88,14 +101,14 @@ public class GuildService {
 	}
 
 	/**
-	 * Returns the guild associated with the given guildId
+	 * Returns the guild associated with the given id
 	 *
-	 * @param guildId to find guild for
+	 * @param id to find guild for
 	 * @return Guild found by id
-	 * @throws ResourceNotFoundException if no guild with this guildId could be found
+	 * @throws ResourceNotFoundException if no guild with this id could be found
 	 */
-	public Guild findExisting(long guildId) {
-		return guildRepository.findById(guildId).orElseThrow(ResourceNotFoundException::new);
+	public Guild findExisting(long id) {
+		return guildRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	public Optional<Guild> findByName(String name) {
@@ -103,11 +116,11 @@ public class GuildService {
 	}
 
 	/**
-	 * Checks if there is any guild with the given id and any of the given role ids is configured
-	 * ({@link Guild#getMemberRole()}, {@link Guild#getEventManageRole()}, {@link Guild#getAdminRole()}) for this guild.
+	 * Checks if there is any guild with the given discord id and any of the given role ids ({@link Guild#getMemberRole()},
+	 * {@link Guild#getEventManageRole()}, {@link Guild#getAdminRole()}) is configured for this guild.
 	 */
-	public boolean existsByIdAndAnyRoleIn(long guildId, Set<Long> roles) {
-		return guildRepository.existsByIdAndAnyRoleIn(guildId, roles);
+	public boolean existsByDiscordIdAndAnyRoleIn(long discordGuildId, Set<Long> roles) {
+		return guildRepository.existsByDiscordIdAndAnyRoleIn(discordGuildId, roles);
 	}
 
 	public boolean isAdvanced(@NonNull String identifier) {
@@ -137,9 +150,15 @@ public class GuildService {
 		return guild;
 	}
 
+	/**
+	 * Removes the archive channel configuration of a removed channel
+	 *
+	 * @param discordGuildId   guild the channel was removed from
+	 * @param removedChannelId the removed channel
+	 */
 	@Async
-	public void removeArchiveChannelByChannel(long guildId, long removedChannelId) {
-		final Guild guild = find(guildId);
+	public void removeArchiveChannelByChannel(long discordGuildId, long removedChannelId) {
+		final Guild guild = findExistingByDiscordId(discordGuildId);
 
 		final Long archiveChannel = guild.getArchiveChannel();
 		if (archiveChannel != null && (archiveChannel == removedChannelId)) {

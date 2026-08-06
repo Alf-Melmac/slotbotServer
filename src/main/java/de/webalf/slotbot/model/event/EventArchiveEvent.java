@@ -5,9 +5,11 @@ import lombok.Builder;
 import lombok.NonNull;
 
 /**
+ * @param event          Archived event
+ * @param discordGuildId Archiving guild
  * @author Alf
  * @see EventArchiveInitializedEvent
  * @since 24.07.2023
  */
 @Builder
-public record EventArchiveEvent(@NonNull Event event, long guildId) {}
+public record EventArchiveEvent(@NonNull Event event, long discordGuildId) {}

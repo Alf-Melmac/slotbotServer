@@ -67,12 +67,11 @@ public class GuildUsersService {
 		return guildUsersRepository.findByGuildAndRole(guild, Role.ADMINISTRATOR);
 	}
 
-	public GuildUser add(long guildId, long userId) {
-		return add(guildId, userId, null);
+	public GuildUser add(long discordGuildId, long userId) {
+		return add(guildService.findExistingByDiscordId(discordGuildId), userId, null);
 	}
 
-	public GuildUser add(long guildId, long userId, Role role) {
-		final Guild guild = guildService.find(guildId);
+	public GuildUser add(@NonNull Guild guild, long userId, Role role) {
 		final User user = userService.find(userId);
 		if (banService.isBanned(user, guild)) {
 			throw BusinessRuntimeException.builder()
@@ -80,7 +79,7 @@ public class GuildUsersService {
 					.build();
 		}
 
-		log.trace("Adding user {} to guild {} with role {}", userId, guildId, role);
+		log.trace("Adding user {} to guild {} with role {}", userId, guild.getId(), role);
 		return guildUsersRepository.findByGuildAndUser(guild, user)
 				.orElseGet(() -> create(guild, user, role));
 	}
@@ -111,8 +110,9 @@ public class GuildUsersService {
 	}
 
 	@Async
-	public void removeOptional(long guildId, long userId) {
-		guildUsersRepository.deleteById_GuildIdAndId_UserId(guildId, userId);
+	public void removeOptional(long discordGuildId, long userId) {
+		final Guild guild = guildService.findExistingByDiscordId(discordGuildId);
+		guildUsersRepository.deleteById_GuildIdAndId_UserId(guild.getId(), userId);
 		invalidateSession(userId);
 	}
 
@@ -139,7 +139,7 @@ public class GuildUsersService {
 	 * @see #setRole(Guild, User, Role)
 	 */
 	public void setRole(long guildId, long userId, Role role) {
-		final Guild guild = guildService.find(guildId);
+		final Guild guild = guildService.findExisting(guildId);
 		final User user = userService.find(userId);
 		setRole(guild, user, role);
 	}
@@ -162,25 +162,24 @@ public class GuildUsersService {
 	 * Checks if one of the given roles is configured for any role in the given guild
 	 *
 	 * @return true if no role matches a configured role
-	 * @see GuildService#existsByIdAndAnyRoleIn(long, Set)
 	 */
-	public boolean noRoleConfiguredForGuild(long guildId, Set<Long> roles) {
-		return !guildService.existsByIdAndAnyRoleIn(guildId, roles);
+	public boolean noRoleConfiguredForGuild(long discordGuildId, Set<Long> roles) {
+		return !guildService.existsByDiscordIdAndAnyRoleIn(discordGuildId, roles);
 	}
 
 	/**
 	 * Processes changes in the roles of the given user in the given guild.
 	 *
-	 * @param guildId     guild the roles changed in
+	 * @param discordGuildId     guild the roles changed in
 	 * @param userId      user whose roles changed
 	 * @param memberRoles new set of roles of the user
 	 */
-	public void onRolesChanged(long guildId, long userId, Set<Long> memberRoles) {
-		final Guild guild = guildService.findExisting(guildId);
+	public void onRolesChanged(long discordGuildId, long userId, Set<Long> memberRoles) {
+		final Guild guild = guildService.findExistingByDiscordId(discordGuildId);
 		final User user = userService.find(userId);
 
 		if (banService.isBanned(user, guild)) {
-			log.trace("Skipping role change because user {} is banned in guild {}", userId, guildId);
+			log.trace("Skipping role change because user {} is banned in guild {}", userId, guild.getId());
 			return;
 		}
 

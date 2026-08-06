@@ -3,7 +3,7 @@ package de.webalf.slotbot.service.bot.listener;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
-import de.webalf.slotbot.service.GuildService;
+import de.webalf.slotbot.service.bot.GuildBotService;
 import de.webalf.slotbot.service.integration.GuildDiscordService;
 import de.webalf.slotbot.util.EventUtils;
 import de.webalf.slotbot.util.bot.ChannelUtils;
@@ -24,20 +24,22 @@ import static de.webalf.slotbot.util.bot.MessageUtils.sendMessage;
 @Service
 @RequiredArgsConstructor
 public class EventArchiveBotListener {
-	private final GuildService guildService;
+	private final GuildBotService guildBotService;
 	private final GuildDiscordService guildDiscordService;
 
 	@EventListener
 	public void onEventArchiveEvent(@NonNull EventArchiveEvent event) {
-		onEventArchive(event.event(), guildService.find(event.guildId()), guildDiscordService.getGuildById(event.guildId()));
+		final de.webalf.slotbot.model.Guild guild = guildBotService.find(event.discordGuildId());
+		final Guild discordGuild = guildDiscordService.getGuildById(guild.getDiscordId());
+		onEventArchive(event.event(), guild, discordGuild);
 	}
 
 	@EventListener
-	public void onEventArchiveEvent(@NonNull EventArchiveInitializedEvent event) {
+	public void onEventArchiveInitializedEvent(@NonNull EventArchiveInitializedEvent event) {
 		onEventArchive(event.event(), event.guild(), event.discordGuild());
 	}
 
-	private static void onEventArchive(@NotNull Event event, @NonNull de.webalf.slotbot.model.Guild guild, Guild discordGuild) {
+	private static void onEventArchive(@NotNull Event event, @NonNull de.webalf.slotbot.model.Guild guild, @NonNull Guild discordGuild) {
 		final Long archiveChannelId = guild.getArchiveChannel();
 		if (archiveChannelId != null) {
 			final TextChannel archiveChannel = ChannelUtils.getChannel(archiveChannelId, discordGuild, "archive");

@@ -135,7 +135,7 @@ class EventDiscordInformationServiceTest {
 
 	private Event buildEvent(long guildId, long channel) {
 		final Set<EventDiscordInformation> information = new HashSet<>();
-		information.add(EventDiscordInformation.builder().guild(Guild.builder().id(guildId).build()).channel(channel).build());
+		information.add(EventDiscordInformation.builder().guild(Guild.builder().discordId(guildId).build()).channel(channel).build());
 		final Event event = Event.builder().discordInformation(information).build();
 		event.getDiscordInformation().forEach(eventDiscordInformation -> eventDiscordInformation.setEvent(event));
 		return event;
@@ -153,7 +153,7 @@ class EventDiscordInformationServiceTest {
 	private Set<EventDiscordInformation> buildActualInformationSet(Set<EventDiscordInformationDto> informationDtos, Event event) {
 		return informationDtos.stream().map(informationDto -> EventDiscordInformation.builder()
 						.event(event)
-						.guild(Guild.builder().id(informationDto.getGuild()).build())
+						.guild(Guild.builder().discordId(informationDto.getGuild()).build())
 						.channel(informationDto.getChannel())
 						.infoMsg(informationDto.getInfoMsg())
 						.slotListMsgPartOne(informationDto.getSlotListMsgPartOne())
@@ -164,6 +164,6 @@ class EventDiscordInformationServiceTest {
 
 	private void mockAssembler(long channel, long guild) {
 		when(discordInformationAssembler.fromDto(EventDiscordInformationDto.builder().channel(channel).guild(guild).build()))
-				.thenReturn(EventDiscordInformation.builder().channel(channel).guild(Guild.builder().id(guild).build()).build());
+				.thenReturn(EventDiscordInformation.builder().channel(channel).guild(Guild.builder().discordId(guild).build()).build());
 	}
 }

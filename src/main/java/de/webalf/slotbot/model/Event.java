@@ -377,12 +377,13 @@ public class Event extends AbstractSuperIdEntity {
 	/**
 	 * Returns the matching {@link EventDiscordInformation} for the given guild
 	 *
-	 * @param guildId to find discord information for
+	 * @param discordGuildId to find discord information for
 	 * @return optional information
 	 */
-	public Optional<EventDiscordInformation> getDiscordInformation(long guildId) {
+	public Optional<EventDiscordInformation> getDiscordInformation(long discordGuildId) {
 		return getDiscordInformation().stream()
-				.filter(eventDiscordInformation -> eventDiscordInformation.getGuild().getId() == guildId).findAny();
+				.filter(eventDiscordInformation -> Objects.equals(eventDiscordInformation.getGuild().getDiscordId(), discordGuildId))
+				.findAny();
 	}
 
 	public boolean canRevokeShareable() {
@@ -644,13 +645,13 @@ public class Event extends AbstractSuperIdEntity {
 	 * Archives the event for the given guild. This removes the discord information for the guild and
 	 * removes all notifications for the event, if the guild is the owner guild.
 	 * <p>
-	 * Don't forget to {@link EventArchiveEvent inform other systems} about the archiving process.
+	 * Remember to {@link EventArchiveEvent inform other systems} about the archiving process.
 	 *
-	 * @param guildId to archive event for
+	 * @param discordGuildId to archive event for
 	 */
-	public void archive(long guildId) {
-		getDiscordInformation().removeIf(information -> information.getGuild().getId() == guildId);
-		if (getOwnerGuild().getId() == guildId) {
+	public void archive(long discordGuildId) {
+		getDiscordInformation().removeIf(information -> Objects.equals(information.getGuild().getDiscordId(), discordGuildId));
+		if (Objects.equals(getOwnerGuild().getDiscordId(), discordGuildId)) {
 			EventNotificationService.removeNotifications(getId());
 		}
 	}

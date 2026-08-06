@@ -362,13 +362,13 @@ class EventTest {
 		final long archivingGuild = 1;
 		final long otherGuild = 2;
 
-		final EventDiscordInformation infoToKeep = EventDiscordInformation.builder().guild(Guild.builder().id(otherGuild).build()).build();
+		final EventDiscordInformation infoToKeep = EventDiscordInformation.builder().guild(Guild.builder().discordId(otherGuild).build()).build();
 		final Event sut = Event.builder()
 				.discordInformation(new HashSet<>(Arrays.asList(
-						EventDiscordInformation.builder().guild(Guild.builder().id(archivingGuild).build()).build(),
+						EventDiscordInformation.builder().guild(Guild.builder().discordId(archivingGuild).build()).build(),
 						infoToKeep
 				)))
-				.ownerGuild(Guild.builder().build())
+				.ownerGuild(Guild.builder().discordId(archivingGuild).build())
 				.build();
 
 		sut.archive(archivingGuild);
@@ -380,9 +380,9 @@ class EventTest {
 
 	@Test
 	void archiveRemovesNotifications() {
-		final int ownerGuild = 1;
+		final long ownerGuild = 1;
 		final Event sut = Event.builder()
-				.ownerGuild(Guild.builder().id(ownerGuild).build())
+				.ownerGuild(Guild.builder().discordId(ownerGuild).build())
 				.discordInformation(Collections.emptySet())
 				.build();
 
@@ -395,10 +395,10 @@ class EventTest {
 
 	@Test
 	void archiveDoesntRemoveNotificationsForOtherGuild() {
-		final int ownerGuild = 1;
-		final int otherGuild = 2;
+		final long ownerGuild = 1;
+		final long otherGuild = 2;
 		final Event sut = Event.builder()
-				.ownerGuild(Guild.builder().id(ownerGuild).build())
+				.ownerGuild(Guild.builder().discordId(ownerGuild).build())
 				.discordInformation(Collections.emptySet())
 				.build();
 
