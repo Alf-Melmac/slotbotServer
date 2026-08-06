@@ -45,12 +45,12 @@ public class UserService {
 	}
 
 	/**
-	 * Return the currently {@link PermissionHelper#getLoggedInUserId() logged in user}
+	 * Return the currently {@link PermissionHelper#getLoggedInUserIdLong() logged in user}
 	 *
 	 * @see #getPotentialLoggedIn()
 	 */
 	public User getLoggedIn() {
-		return findExisting(Long.parseLong(PermissionHelper.getLoggedInUserId()));
+		return findExisting(PermissionHelper.getLoggedInUserIdLong());
 	}
 
 	/**
@@ -59,11 +59,11 @@ public class UserService {
 	 * @see #getLoggedIn()
 	 */
 	public User getPotentialLoggedIn() {
-		final String loggedInUserId = PermissionHelper.getLoggedInUserId();
-		if (loggedInUserId.isEmpty()) {
+		final Long loggedInUserId = PermissionHelper.getLoggedInUserIdLong();
+		if (loggedInUserId == null) {
 			return null;
 		}
-		return findExisting(Long.parseLong(loggedInUserId));
+		return findExisting(loggedInUserId);
 	}
 
 	public User getDefaultUser() {
