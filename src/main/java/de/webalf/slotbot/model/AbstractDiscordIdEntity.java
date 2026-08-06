@@ -12,12 +12,14 @@ import lombok.experimental.SuperBuilder;
  *
  * @author Alf
  * @since 04.01.2022
+ * @deprecated Migrate to {@link AbstractDiscordLinkable}
  */
 @MappedSuperclass
 @Getter
 @RequiredArgsConstructor
 @SuperBuilder
-public abstract class AbstractDiscordIdEntity {
+@Deprecated
+public abstract class AbstractDiscordIdEntity implements HasId {
 	@Id
 	@Column(name = "id", nullable = false, unique = true, updatable = false)
 	protected long id;

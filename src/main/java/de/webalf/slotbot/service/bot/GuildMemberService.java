@@ -41,7 +41,12 @@ public class GuildMemberService {
 			log.debug("No roles configured for guild {}, skipping sync", guild.getId());
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
+		final Long discordGuildId = guild.getDiscordId();
+		if (discordGuildId == null) {
+			log.debug("Guild {} has no linked Discord guild, skipping sync", guild.getId());
+			return;
+		}
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(discordGuildId);
 		final Set<Role> roles = Stream.of(memberRole, eventManageRole, adminRole)
 				.filter(Objects::nonNull)
 				.map(roleId -> DiscordRoleUtils.getRoleById(discordGuild, roleId))
@@ -57,7 +62,7 @@ public class GuildMemberService {
 					}
 					final Set<Long> updatedMembers = membersToProcess.stream()
 							.map(member -> {
-								guildUsersService.onRolesChanged(discordGuild.getIdLong(), member.getIdLong(), DiscordRoleUtils.getRoleIds(member.getRoles()));
+								guildUsersService.onRolesChanged(discordGuildId, member.getIdLong(), DiscordRoleUtils.getRoleIds(member.getRoles()));
 								return member.getIdLong();
 							})
 							.collect(Collectors.toUnmodifiableSet());

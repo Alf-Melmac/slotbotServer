@@ -91,12 +91,13 @@ public class GuildController {
 	@GetMapping("/{id}/discord")
 	@PreAuthorize("@permissionChecker.hasAdminPermission(#guildId)")
 	public GuildDiscordIntegrationDto getDiscordIntegration(@PathVariable(value = "id") long guildId) {
-		final boolean connected = guildDiscordService.isConnected(guildId);
+		final Long discordId = guildService.findExisting(guildId).getDiscordId();
+		final boolean connected = discordId != null && guildDiscordService.isConnected(discordId);
 		return GuildDiscordIntegrationDto.builder()
 				.connected(connected)
-				.categories(connected ? guildDiscordService.getGuildChannels(guildId) : Collections.emptyList())
-				.allowedToManageRoles(connected && guildDiscordService.isAllowedToManageRoles(guildId))
-				.roles(connected ? guildDiscordService.getGuildRoles(guildId) : Collections.emptyList())
+				.categories(connected ? guildDiscordService.getGuildChannels(discordId) : Collections.emptyList())
+				.allowedToManageRoles(connected && guildDiscordService.isAllowedToManageRoles(discordId))
+				.roles(connected ? guildDiscordService.getGuildRoles(discordId) : Collections.emptyList())
 				.build();
 	}
 

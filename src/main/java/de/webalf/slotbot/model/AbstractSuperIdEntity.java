@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @RequiredArgsConstructor
 @SuperBuilder
-public abstract class AbstractSuperIdEntity {
+public abstract class AbstractSuperIdEntity implements HasId {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false, unique = true, updatable = false)

@@ -15,8 +15,8 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @SuperBuilder
-public class GuildDto {
-	//String is needed, because the discord IDs exceed the maximum size of a JavaScript number.
+public class GuildDto { //TODO make this a record
+	//String is needed because internal ids can be discord IDs that exceed the maximum size of a JavaScript number
 	private String id;
 
 	@Size(max = TEXT)

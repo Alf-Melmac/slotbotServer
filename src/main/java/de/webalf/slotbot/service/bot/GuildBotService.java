@@ -18,19 +18,19 @@ import java.util.Locale;
 public class GuildBotService {
 	private final GuildService guildService;
 
-	Guild find(long guildId) {
-		return guildService.find(guildId);
+	public Guild find(long discordId) {
+		return guildService.findExistingByDiscordId(discordId);
 	}
 
-	public Locale getGuildLocale(long guildId) {
-		return find(guildId).getLocale();
+	public Locale getGuildLocale(long discordId) {
+		return find(discordId).getLocale();
 	}
 
-	public Long getGuildArchiveChannel(long guildId) {
-		return find(guildId).getArchiveChannel();
+	public Long getGuildArchiveChannel(long discordId) {
+		return find(discordId).getArchiveChannel();
 	}
 
-	public void removeArchiveChannelByChannel(long guildId, long removedChannelId) {
-		guildService.removeArchiveChannelByChannel(guildId, removedChannelId);
+	public void removeArchiveChannelByChannel(long discordId, long removedChannelId) {
+		guildService.removeArchiveChannelByChannel(discordId, removedChannelId);
 	}
 }

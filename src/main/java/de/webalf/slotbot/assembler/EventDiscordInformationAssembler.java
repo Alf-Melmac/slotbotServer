@@ -22,7 +22,7 @@ public class EventDiscordInformationAssembler {
 
 		return EventDiscordInformation.builder()
 				.channel(dto.getChannel())
-				.guild(guildService.find(dto.getGuild()))
+				.guild(guildService.findExistingByDiscordId(dto.getGuild()))
 				.infoMsg(dto.getInfoMsg())
 				.slotListMsgPartOne(dto.getSlotListMsgPartOne())
 				.slotListMsgPartTwo(dto.getSlotListMsgPartTwo())

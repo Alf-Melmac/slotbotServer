@@ -1,5 +1,6 @@
 package de.webalf.slotbot.feature.discord_webhook_events;
 
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.external.discord.DiscordGuild;
 import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.service.GuildUsersService;
@@ -44,13 +45,13 @@ public class DiscordWebhookEventsHandler {
 				return;
 			}
 
-			final DiscordGuild guild = data.guild();
-			if (guild == null) {
+			final DiscordGuild discordGuild = data.guild();
+			if (discordGuild == null) {
 				log.warn("Received application authorized event without guild: {}", body);
 				return;
 			}
-			guildService.create(guild.id(), guild.name());
-			guildUsersService.add(guild.id(), data.user().id(), Role.ADMINISTRATOR);
+			final Guild guild = guildService.findOrCreateByDiscordId(discordGuild.id(), discordGuild.name());
+			guildUsersService.add(guild, data.user().id(), Role.ADMINISTRATOR);
 		}
 	}
 }

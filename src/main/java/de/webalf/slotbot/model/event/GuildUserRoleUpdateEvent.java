@@ -12,6 +12,6 @@ import lombok.NonNull;
  */
 public record GuildUserRoleUpdateEvent(long guildId, long userId, Role oldRole, Role newRole) {
 	public GuildUserRoleUpdateEvent(@NonNull GuildUser guildUser, Role oldRole) {
-		this(guildUser.getGuild().getId(), guildUser.getUser().getId(), oldRole, guildUser.getRole());
+		this(guildUser.getId().getGuildId(), guildUser.getId().getUserId(), oldRole, guildUser.getRole());
 	}
 }

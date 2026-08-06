@@ -22,52 +22,52 @@ import static net.dv8tion.jda.api.utils.ImageFormat.STATIC_WEBP;
  * @since 04.01.2022
  */
 @Entity
-@Table(name = "discord_guild", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
+@Table(name = "guild", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}), @UniqueConstraint(columnNames = {"discord_id"})})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
-public class Guild extends AbstractDiscordIdEntity {
-	@Column(name = "discord_guild_advanced", nullable = false, updatable = false)
+public class Guild extends AbstractDiscordLinkable {
+	@Column(name = "guild_advanced", nullable = false, updatable = false)
 	@Builder.Default
 	private boolean advanced = false;
 
-	@Column(name = "discord_guild_url_pattern")
+	@Column(name = "guild_url_pattern")
 	@Convert(converter = PatternPersistenceConverter.class)
 	//Always set groupIdentifier when url pattern is defined!
 	private Pattern urlPattern;
 
-	@Column(name = "discord_guild_base_url", length = TEXT_DB)
+	@Column(name = "guild_base_url", length = TEXT_DB)
 	@Size(max = TEXT)
 	private String baseUrl;
 
-	@Column(name = "discord_guild_name", length = TEXT_DB)
+	@Column(name = "guild_name", length = TEXT_DB)
 	@Size(max = TEXT)
 	private String groupIdentifier;
 
-	@Column(name = "discord_guild_emoji")
+	@Column(name = "guild_discord_emoji")
 	private Long emoji;
 
-	@Column(name = "discord_guild_spacer_url", length = URL_DB)
+	@Column(name = "guild_spacer_url", length = URL_DB)
 	@Size(max = URL)
 	private String spacerUrl;
 
-	@Column(name = "discord_guild_language", nullable = false)
+	@Column(name = "guild_language", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@NonNull
 	@Builder.Default
 	private Language language = Language.DE;
 
-	@Column(name = "discord_guild_archive_channel")
+	@Column(name = "guild_discord_archive_channel")
 	private Long archiveChannel;
 
-	@Column(name = "discord_guild_member_role")
+	@Column(name = "guild_discord_member_role")
 	private Long memberRole;
 
-	@Column(name = "discord_guild_event_manage_role")
+	@Column(name = "guild_discord_event_manage_role")
 	private Long eventManageRole;
 
-	@Column(name = "discord_guild_admin_role")
+	@Column(name = "guild_discord_admin_role")
 	private Long adminRole;
 
 	@OneToMany(mappedBy = "guild", cascade = CascadeType.ALL, orphanRemoval = true)

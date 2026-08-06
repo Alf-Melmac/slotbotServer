@@ -35,13 +35,17 @@ public class GuildUserBotListener {
 	@Async
 	public void onGuildUserCreatedEvent(@NonNull GuildUserCreatedEvent event) {
 		final long guildId = event.guildId();
-		final Guild guild = guildService.find(guildId);
+		final Guild guild = guildService.findExisting(guildId);
 
+		final Long discordGuildId = guild.getDiscordId();
+		if (discordGuildId == null) {
+			return;
+		}
 		final Long discordRoleId = guild.getDiscordRole(event.role());
 		if (discordRoleId == null) {
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(discordGuildId);
 		log.trace("Trying to add role {} to user {} in guild {}", discordRoleId, event.userId(), guildId);
 		final Role discordRole = DiscordRoleUtils.getRoleById(discordGuild, discordRoleId);
 		log.trace("Adding role {} to user {} in guild {}", discordRole, event.userId(), guildId);
@@ -52,14 +56,18 @@ public class GuildUserBotListener {
 	@Async
 	public void onGuildUserRoleUpdateEvent(@NonNull GuildUserRoleUpdateEvent event) {
 		final long guildId = event.guildId();
-		final Guild guild = guildService.find(guildId);
+		final Guild guild = guildService.findExisting(guildId);
 
+		final Long discordGuildId = guild.getDiscordId();
+		if (discordGuildId == null) {
+			return;
+		}
 		final Long oldDiscordRoleId = guild.getDiscordRole(event.oldRole());
 		final Long newDiscordRoleId = guild.getDiscordRole(event.newRole());
 		if (Objects.equals(oldDiscordRoleId, newDiscordRoleId)) {
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(discordGuildId);
 		if (!guildDiscordService.isAllowedToManageRoles(discordGuild)) {
 			log.debug("Bot is not allowed to manage roles in guild {}", guildId);
 			return;
@@ -78,13 +86,17 @@ public class GuildUserBotListener {
 	@Async
 	public void onGuildUserDeleteEvent(@NonNull GuildUserDeleteEvent event) {
 		final long guildId = event.guildId();
-		final Guild guild = guildService.find(guildId);
+		final Guild guild = guildService.findExisting(guildId);
 
+		final Long discordGuildId = guild.getDiscordId();
+		if (discordGuildId == null) {
+			return;
+		}
 		final Long discordRoleId = guild.getDiscordRole(event.role());
 		if (discordRoleId == null) {
 			return;
 		}
-		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(guildId);
+		final net.dv8tion.jda.api.entities.Guild discordGuild = guildDiscordService.getGuildById(discordGuildId);
 		final Role discordRole = DiscordRoleUtils.getRoleById(discordGuild, discordRoleId);
 		log.trace("Removing role {} from user {} in guild {}", discordRole, event.userId(), guildId);
 		discordGuild.removeRoleFromMember(getMemberById(discordGuild, event.userId()), discordRole).queue();
