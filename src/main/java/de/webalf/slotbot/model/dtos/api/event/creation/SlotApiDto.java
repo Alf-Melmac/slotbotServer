@@ -25,7 +25,7 @@ public class SlotApiDto {
 
 	int number;
 
-	@Schema(format = "discord-snowflake", description = "Reservation of a slot. If the squad is already reserved, this value is inherited unless overwritten here.")
+	@Schema(description = "Reservation of a slot. If the squad is already reserved, this value is inherited unless overwritten here.")
 	String reservedForGuildId;
 
 	@Schema(format = "discord-snowflake")
