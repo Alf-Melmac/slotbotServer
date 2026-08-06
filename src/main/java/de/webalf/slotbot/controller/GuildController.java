@@ -18,9 +18,11 @@ import de.webalf.slotbot.service.integration.GuildDiscordService;
 import de.webalf.slotbot.util.DateUtils;
 import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.Role;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static de.webalf.slotbot.constant.AuthorizationCheckValues.IS_AUTHENTICATED;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserIdLong;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 /**
@@ -52,6 +56,15 @@ public class GuildController {
 	@GetMapping
 	public List<GuildDto> getGuilds() {
 		return GuildAssembler.toDtoList(guildService.findAllExceptDefault());
+	}
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize(IS_AUTHENTICATED)
+	public GuildDetailsDto createGuild(@Valid @RequestBody GuildCreateDto createDto) {
+		final Guild guild = guildService.create(createDto.groupIdentifier());
+		guildUsersService.add(guild, getLoggedInUserIdLong(), Role.ADMINISTRATOR);
+		return GuildDetailsAssembler.toDto(guild);
 	}
 
 	@GetMapping("/categorised")

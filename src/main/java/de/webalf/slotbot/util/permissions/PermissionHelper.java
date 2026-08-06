@@ -2,6 +2,7 @@ package de.webalf.slotbot.util.permissions;
 
 import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.enums.DiscordUserObjectFields;
+import de.webalf.slotbot.util.LongUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -35,6 +36,11 @@ public final class PermissionHelper {
 			return "";
 		}
 		return getAttribute(user, DiscordUserObjectFields.ID);
+	}
+
+	public static Long getLoggedInUserIdLong() {
+		final String userId = getLoggedInUserId();
+		return LongUtils.parseLongWrapper(userId);
 	}
 
 	public static Set<String> getAuthoritiesOfLoggedInUser() {
