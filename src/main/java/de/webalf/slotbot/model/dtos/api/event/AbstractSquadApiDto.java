@@ -22,6 +22,6 @@ public abstract class AbstractSquadApiDto {
 	@Size(max = TEXT)
 	private String name;
 
-	@Schema(format = "discord-snowflake")
+	@Schema
 	private String reservedForGuildId;
 }
