@@ -5,7 +5,7 @@ import de.webalf.slotbot.model.dtos.api.event.AbstractSquadApiDto;
 import de.webalf.slotbot.model.dtos.api.event.creation.SquadApiDto;
 import de.webalf.slotbot.model.dtos.api.event.view.SquadApiIdDto;
 import de.webalf.slotbot.service.GuildService;
-import de.webalf.slotbot.util.DtoUtils;
+import de.webalf.slotbot.util.EntityUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -45,7 +45,7 @@ final class SquadApiAssembler {
 	private static <C extends AbstractSquadApiDto, B extends AbstractSquadApiDto.AbstractSquadApiDtoBuilder<C, B>> void toDto(AbstractSquadApiDto.AbstractSquadApiDtoBuilder<C, B> builder, @NonNull Squad squad) {
 		builder
 				.name(squad.getName())
-				.reservedForGuildId(DtoUtils.getIdStringIfPresent(squad.getReservedFor()));
+				.reservedForGuildId(EntityUtils.getIdStringIfPresent(squad.getReservedFor()));
 	}
 
 	private static SquadApiIdDto toIdDto(@NonNull Squad squad) {

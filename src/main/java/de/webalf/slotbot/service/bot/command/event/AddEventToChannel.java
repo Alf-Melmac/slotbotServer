@@ -4,6 +4,7 @@ import de.webalf.slotbot.constant.Emojis;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.EventDiscordInformation;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.annotations.bot.SlashCommand;
 import de.webalf.slotbot.model.annotations.bot.StringSelectInteraction;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
@@ -73,14 +74,14 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 			return;
 		}
 		//noinspection DataFlowIssue Guild only command
-		final long guildId = event.getGuild().getIdLong();
-		if (isArchiveChannel(guildId, channelId)) {
+		final Guild persistentGuild = guildBotService.find(event.getGuild().getIdLong());
+		if (Objects.equals(persistentGuild.getArchiveChannel(), channelId)) {
 			reply(event, locale.t("bot.select.event.addEventToChannel.response.isArchive"));
 			return;
 		}
 
-		final List<Event> events = eventBotService.findNotAssignedInFutureForSelect(guildId);
-		final List<Event> foreignEvents = eventBotService.findForeignNotAssignedInFutureForSelect(guildId);
+		final List<Event> events = eventBotService.findNotAssignedInFutureForSelect(persistentGuild);
+		final List<Event> foreignEvents = eventBotService.findForeignNotAssignedInFutureForSelect(persistentGuild);
 		final boolean eventsEmpty = events.isEmpty();
 		final boolean foreignEventsEmpty = foreignEvents.isEmpty();
 		if (eventsEmpty && foreignEventsEmpty) {
@@ -101,10 +102,6 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 	private boolean existingEventInThisChannel(long channelId) {
 		return eventBotService.findByChannel(channelId).isPresent();
-	}
-
-	private boolean isArchiveChannel(long guildId, long channelId) {
-		return Objects.equals(guildBotService.getGuildArchiveChannel(guildId), channelId);
 	}
 
 	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {
@@ -128,8 +125,8 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 		final Event event = eventBotService.findById(eventId);
 
 		//noinspection DataFlowIssue Guild only command
-		final long guildId = selectMenuEvent.getGuild().getIdLong();
-		final Optional<EventDiscordInformation> discordInformation = event.getDiscordInformation(guildId);
+		final long discordGuildId = selectMenuEvent.getGuild().getIdLong();
+		final Optional<EventDiscordInformation> discordInformation = event.getDiscordInformation(discordGuildId);
 		if (discordInformation.isPresent()) {
 			replyAndRemoveComponents(selectMenuEvent, locale.t("bot.select.event.addEventToChannel.response.alreadyAssigned", discordInformation.get().getChannelAsMention()));
 			return;
@@ -139,10 +136,10 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 		final EventDiscordInformationDto newInformation = EventDiscordInformationDto.builder()
 				.channel(channel.getIdLong())
-				.guild(guildId)
+				.guild(discordGuildId)
 				.build();
 
-		print(channel, event, guildBotService.getGuildLocale(guildId), newInformation)
+		print(channel, event, guildBotService.getGuildLocale(discordGuildId), newInformation)
 				.thenCompose(infoMsg -> createScheduledEvent(channel, event, infoMsg))
 				.thenAccept(scheduledId -> {
 					newInformation.setScheduledEvent(scheduledId);
@@ -152,7 +149,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 				.exceptionally(e -> {
 					final String message = e.getMessage();
 					final String errorCode = message != null ? UUID.nameUUIDFromBytes(message.getBytes()).toString() : UUID.randomUUID().toString();
-					log.error("Failed to print event {} in guild {} channel {} - {}", eventId, guildId, channel.getId(), errorCode, e);
+					log.error("Failed to print event {} in guild {} channel {} - {}", eventId, discordGuildId, channel.getId(), errorCode, e);
 					replyAndRemoveComponents(selectMenuEvent, Emojis.CROSS_MARK.getFormatted() + "Sorry. Error Code: `" + errorCode + "`");
 					return null;
 				});

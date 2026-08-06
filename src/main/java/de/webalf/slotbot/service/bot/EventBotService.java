@@ -6,6 +6,7 @@ import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.dtos.EventDiscordInformationDto;
 import de.webalf.slotbot.model.event.EventArchiveInitializedEvent;
 import de.webalf.slotbot.service.EventService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import org.hibernate.Hibernate;
@@ -53,12 +54,12 @@ public class EventBotService {
 		return eventService.findByChannel(channel);
 	}
 
-	public List<Event> findNotAssignedInFutureForSelect(long guildId) {
-		return eventService.findNotAssignedInFutureForSelect(guildId, OPTIONS_MAX_AMOUNT);
+	public List<Event> findNotAssignedInFutureForSelect(de.webalf.slotbot.model.Guild guild) {
+		return eventService.findNotAssignedInFutureForSelect(guild, OPTIONS_MAX_AMOUNT);
 	}
 
-	public List<Event> findForeignNotAssignedInFutureForSelect(long guildId) {
-		return eventService.findForeignNotAssignedInFutureForSelect(guildId, OPTIONS_MAX_AMOUNT);
+	public List<Event> findForeignNotAssignedInFutureForSelect(de.webalf.slotbot.model.Guild guild) {
+		return eventService.findForeignNotAssignedInFutureForSelect(guild, OPTIONS_MAX_AMOUNT);
 	}
 
 	public void addDiscordInformation(long eventId, EventDiscordInformationDto dto) {
@@ -69,7 +70,7 @@ public class EventBotService {
 		eventDiscordInformationBotService.removeByChannel(guild.getIdLong(), channel);
 	}
 
-	public void retriggerArchiveEvents(Guild guild) {
+	public void retriggerArchiveEvents(@NonNull Guild guild) {
 		final de.webalf.slotbot.model.Guild persistentGuild = guildBotService.find(guild.getIdLong());
 		eventService.findAllInPast(persistentGuild)
 				.forEach(event -> eventPublisher.publishEvent(EventArchiveInitializedEvent.builder()

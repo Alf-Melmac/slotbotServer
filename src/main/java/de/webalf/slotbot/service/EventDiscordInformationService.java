@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -86,12 +87,12 @@ public class EventDiscordInformationService {
 		final Set<EventDiscordInformation> eventInformation = event.getDiscordInformation();
 		//Remove already present information
 		final Set<EventDiscordInformationDto> filteredInformationDtos = discordInformationDtos.stream().filter(informationDto -> eventInformation.stream()
-						.noneMatch(information -> information.getGuild().getId() == informationDto.getGuild() &&
+						.noneMatch(information -> Objects.equals(information.getGuild().getDiscordId(), informationDto.getGuild()) &&
 								information.getChannel() == informationDto.getChannel()))
 				.collect(Collectors.toSet());
 
 		if (eventInformation.stream().anyMatch(information -> filteredInformationDtos.stream()
-				.anyMatch(discordInformationDto -> information.getGuild().getId() == discordInformationDto.getGuild()))) {
+				.anyMatch(discordInformationDto -> Objects.equals(information.getGuild().getDiscordId(), discordInformationDto.getGuild())))) {
 			throw BusinessRuntimeException.builder().title("Mindestens einer der übergebenen Guilds ist dieses Event bereits zugeordnet.").build();
 		} else if (existsByChannelInDtos(filteredInformationDtos)) {
 			throw BusinessRuntimeException.builder().title("In mindestens einem der angegebenen Kanäle gibt es bereits ein Event.").build();
@@ -107,16 +108,16 @@ public class EventDiscordInformationService {
 	/**
 	 * If there is an event associated with the given channelId in the given guild, it is archived.
 	 *
-	 * @param guildId   to archive event in
+	 * @param discordGuildId   to archive event in
 	 * @param channelId to remove information for
 	 */
 	@Async
-	public void removeByChannel(long guildId, long channelId) {
+	public void removeByChannel(long discordGuildId, long channelId) {
 		final Optional<Event> optionalEvent = findEventByChannel(channelId);
 		if (optionalEvent.isPresent()) {
 			final Event event = optionalEvent.get();
-			event.archive(guildId);
-			eventPublisher.publishEvent(EventArchiveEvent.builder().event(event).guildId(guildId).build());
+			event.archive(discordGuildId);
+			eventPublisher.publishEvent(EventArchiveEvent.builder().event(event).discordGuildId(discordGuildId).build());
 		}
 	}
 
@@ -143,13 +144,13 @@ public class EventDiscordInformationService {
 	}
 
 	/**
-	 * Removes all discord information for the given server
+	 * Removes all discord information for the given guild
 	 *
-	 * @param guildId to remove information for
+	 * @param discordGuildId to remove information for
 	 */
 	@Async
-	public void removeByGuild(long guildId) {
-		discordInformationRepository.deleteByGuildId(guildId);
+	public void removeByGuild(long discordGuildId) {
+		discordInformationRepository.deleteByDiscordGuildId(discordGuildId);
 	}
 
 	/**

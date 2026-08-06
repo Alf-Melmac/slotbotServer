@@ -52,9 +52,9 @@ public class GuildContentListener extends ListenerAdapter {
 		channelAccessRemoved(guildId, channelId);
 	}
 
-	private void channelAccessRemoved(long guildId, long removedChannelId) {
-		eventDiscordInformationBotService.removeByChannel(guildId, removedChannelId);
-		guildBotService.removeArchiveChannelByChannel(guildId, removedChannelId);
+	private void channelAccessRemoved(long discordGuildId, long removedChannelId) {
+		eventDiscordInformationBotService.removeByChannel(discordGuildId, removedChannelId);
+		guildBotService.removeArchiveChannelByChannel(discordGuildId, removedChannelId);
 	}
 
 	@Override

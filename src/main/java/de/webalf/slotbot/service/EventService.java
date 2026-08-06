@@ -180,23 +180,23 @@ public class EventService {
 	/**
 	 * Returns events of the given owner guild that are scheduled in the future and have no discord information
 	 *
-	 * @param guildId   to find events for
-	 * @param maxAmount maximum amount of events to return
+	 * @param guild     to find events for
+	 * @param maxAmount maximum number of events to return
 	 * @return all events in the future that have no channel
 	 */
-	public List<Event> findNotAssignedInFutureForSelect(long guildId, int maxAmount) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuild(DateUtils.now(), guildId, PageRequest.of(0, maxAmount, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
+	public List<Event> findNotAssignedInFutureForSelect(@NonNull Guild guild, int maxAmount) {
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndOwnerGuildAndForGuild(DateUtils.now(), guild, PageRequest.of(0, maxAmount, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
 	}
 
 	/**
 	 * Returns events that the given guild is not owner of, that are scheduled in the future and have no discord information
 	 *
-	 * @param guildId   to exclude as owner guild
-	 * @param maxAmount maximum amount of events to return
+	 * @param guild     to exclude as owner guild
+	 * @param maxAmount maximum number of events to return
 	 * @return all events in the future that have no channel
 	 */
-	public List<Event> findForeignNotAssignedInFutureForSelect(long guildId, int maxAmount) {
-		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuild(DateUtils.now(), guildId, PageRequest.of(0, maxAmount, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
+	public List<Event> findForeignNotAssignedInFutureForSelect(@NonNull Guild guild, int maxAmount) {
+		return eventRepository.findAllByDateTimeIsAfterAndNotScheduledAndNotOwnerGuildAndForGuild(DateUtils.now(), guild, PageRequest.of(0, maxAmount, Sort.by(Sort.Direction.ASC, Event_.DATE_TIME)));
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class EventService {
 	 * Searches for the given channel the matching event and enters the given user for a random empty slot, if available.
 	 *
 	 * @param channel event channel
-	 * @param userId person that should be slotted
+	 * @param userId  person that should be slotted
 	 * @return Event in which the person has been slotted
 	 * @throws SlottableException if no slot is available
 	 */

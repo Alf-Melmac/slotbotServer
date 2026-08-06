@@ -36,31 +36,31 @@ public class GuildUsersBotService {
 
 	private record RoleChange(Future<?> future, Set<Long> memberRoles) {}
 
-	public void add(long guildId, long userId) {
-		guildUsersService.add(guildId, userId);
+	public void add(long discordGuildId, long userId) {
+		guildUsersService.add(discordGuildId, userId);
 	}
 
-	public void remove(long guildId, long userId) {
-		guildUsersService.removeOptional(guildId, userId);
-	}
-
-	@Async
-	public void memberRolesAdd(long guildId, long userId, List<Role> addedDiscordRoles, Set<Role> memberRoles) {
-		scheduleRoleChange(guildId, userId, addedDiscordRoles, memberRoles);
+	public void remove(long discordGuildId, long userId) {
+		guildUsersService.removeOptional(discordGuildId, userId);
 	}
 
 	@Async
-	public void memberRolesRemove(long guildId, long userId, List<Role> removedDiscordRoles, Set<Role> memberRoles) {
-		scheduleRoleChange(guildId, userId, removedDiscordRoles, memberRoles);
+	public void memberRolesAdd(long discordGuildId, long userId, List<Role> addedDiscordRoles, Set<Role> memberRoles) {
+		scheduleRoleChange(discordGuildId, userId, addedDiscordRoles, memberRoles);
 	}
 
-	private void scheduleRoleChange(long guildId, long userId, List<Role> changedDiscordRoles, Set<Role> memberRoles) {
+	@Async
+	public void memberRolesRemove(long discordGuildId, long userId, List<Role> removedDiscordRoles, Set<Role> memberRoles) {
+		scheduleRoleChange(discordGuildId, userId, removedDiscordRoles, memberRoles);
+	}
+
+	private void scheduleRoleChange(long discordGuildId, long userId, List<Role> changedDiscordRoles, Set<Role> memberRoles) {
 		final Set<Long> changedRoleIds = DiscordRoleUtils.getRoleIds(changedDiscordRoles);
-		if (guildUsersService.noRoleConfiguredForGuild(guildId, changedRoleIds)) {
+		if (guildUsersService.noRoleConfiguredForGuild(discordGuildId, changedRoleIds)) {
 			return;
 		}
 
-		final GuildMember guildMember = new GuildMember(guildId, userId);
+		final GuildMember guildMember = new GuildMember(discordGuildId, userId);
 		final RoleChange roleChange = SCHEDULED_ROLE_CHANGE.get(guildMember);
 		if (roleChange != null) {
 			final Future<?> future = roleChange.future();
@@ -71,7 +71,7 @@ public class GuildUsersBotService {
 		}
 		final Set<Long> memberRoleIds = DiscordRoleUtils.getRoleIds(memberRoles);
 		SCHEDULED_ROLE_CHANGE.put(guildMember, new RoleChange(schedulerService.schedule(
-				() -> guildUsersService.onRolesChanged(guildId, userId, memberRoleIds),
+				() -> guildUsersService.onRolesChanged(discordGuildId, userId, memberRoleIds),
 				() -> SCHEDULED_ROLE_CHANGE.remove(guildMember),
 				2, SECONDS),
 				memberRoleIds));
