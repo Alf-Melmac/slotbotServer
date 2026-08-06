@@ -22,7 +22,7 @@ public final class GuildAssembler {
 		}
 
 		return Guild.builder()
-				.id(LongUtils.parseLong(guildDto.getId(), GUILD_PLACEHOLDER))
+				.id(LongUtils.parseLong(guildDto.id(), GUILD_PLACEHOLDER))
 				.build();
 	}
 
