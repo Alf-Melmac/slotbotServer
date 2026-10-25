@@ -12,6 +12,9 @@ import lombok.Data;
 public class EventDiscordInformationDto {
 	private final long channel;
 
+	/**
+	 * Discord id of the guild
+	 */
 	private final long guild;
 
 	private Long infoMsg;

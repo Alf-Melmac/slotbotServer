@@ -33,7 +33,7 @@ public record DiscordGuildMember(DiscordUser user, String nick, String avatar, S
 
 	public String getAvatarUrl() {
 		if (avatar != null) {
-			return DiscordUserUtils.getAvatarUrl(Long.toString(guild), Long.toString(user.id()), avatar);
+			return DiscordUserUtils.getAvatarUrl(guild, user.id(), avatar);
 		}
 		return user.getAvatarUrl();
 	}

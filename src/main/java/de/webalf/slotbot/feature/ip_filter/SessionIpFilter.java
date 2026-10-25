@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.FilterRegistration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -20,11 +21,14 @@ import java.io.IOException;
 
 /**
  * Ensures that one session is only used from one ip
+ * <p>
+ * Not added to the {@link FilterRegistration#enabled() global servlet filter}, manually register in a security chain
  *
  * @author Alf
  * @since 02.08.2024
  */
 @Component
+@FilterRegistration(enabled = false) // Only used within the OAuth2EndpointConfig
 @RequiredArgsConstructor
 @Slf4j
 public class SessionIpFilter extends OncePerRequestFilter {
@@ -52,12 +56,9 @@ public class SessionIpFilter extends OncePerRequestFilter {
 	@SuppressWarnings("java:S3776") // Filters are more useful if everything is in one method
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !authentication.isAuthenticated()) {
-			filterChain.doFilter(request, response);
-			return;
-		}
 		final HttpSession session = request.getSession(false);
-		if (session == null || !(authentication.getDetails() instanceof final WebAuthenticationDetails details)) {
+		if (authentication == null || !authentication.isAuthenticated()
+				|| session == null || !(authentication.getDetails() instanceof final WebAuthenticationDetails details)) {
 			filterChain.doFilter(request, response);
 			return;
 		}

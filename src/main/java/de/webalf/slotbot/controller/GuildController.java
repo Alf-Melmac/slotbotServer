@@ -62,9 +62,7 @@ public class GuildController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize(IS_AUTHENTICATED)
 	public GuildDetailsDto createGuild(@Valid @RequestBody GuildCreateDto createDto) {
-		final Guild guild = guildService.create(createDto.groupIdentifier());
-		guildUsersService.add(guild, getLoggedInUserIdLong(), Role.ADMINISTRATOR);
-		return GuildDetailsAssembler.toDto(guild);
+		return GuildDetailsAssembler.toDto(guildUsersService.createGuildWithAdmin(createDto.groupIdentifier(), getLoggedInUserIdLong()));
 	}
 
 	@GetMapping("/categorised")

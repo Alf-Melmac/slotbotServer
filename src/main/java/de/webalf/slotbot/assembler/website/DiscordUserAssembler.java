@@ -1,15 +1,12 @@
 package de.webalf.slotbot.assembler.website;
 
+import de.webalf.slotbot.configuration.authentication.website.DiscordOAuthUser;
 import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
 import de.webalf.slotbot.model.external.discord.DiscordGuildMember;
 import de.webalf.slotbot.model.external.discord.DiscordUser;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import static de.webalf.slotbot.model.enums.DiscordUserObjectFields.*;
-import static de.webalf.slotbot.util.DiscordOAuthUtils.getAttribute;
-import static de.webalf.slotbot.util.bot.DiscordUserUtils.getAvatarUrl;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getAuthoritiesOfLoggedInUser;
 
 /**
@@ -18,16 +15,14 @@ import static de.webalf.slotbot.util.permissions.PermissionHelper.getAuthorities
  */
 @UtilityClass
 public class DiscordUserAssembler {
-	public static DiscordUserDto toDto(OAuth2User oAuth2User) {
-		if (oAuth2User == null) {
+	public static DiscordUserDto toDto(DiscordOAuthUser user) {
+		if (user == null) {
 			return null;
 		}
-		final String id = getAttribute(oAuth2User, ID);
-		final String globalName = getAttribute(oAuth2User, GLOBAL_NAME);
 		return DiscordUserDto.builder()
-				.id(id)
-				.name(globalName != null ? globalName : getAttribute(oAuth2User, USERNAME))
-				.avatarUrl(getAvatarUrl(id, getAttribute(oAuth2User, AVATAR)))
+				.id(Long.toString(user.getId()))
+				.name(user.getEffectiveName())
+				.avatarUrl(user.getAvatarUrl())
 				.authorities(getAuthoritiesOfLoggedInUser())
 				.build();
 	}

@@ -1,9 +1,6 @@
 package de.webalf.slotbot.configuration.authentication.website;
 
 import de.webalf.slotbot.feature.ip_filter.SessionIpFilter;
-import de.webalf.slotbot.service.BanService;
-import de.webalf.slotbot.service.GuildUsersService;
-import de.webalf.slotbot.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.server.servlet.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -35,9 +29,7 @@ import static org.springframework.security.web.header.writers.ClearSiteDataHeade
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class OAuth2EndpointConfig {
-	private final GuildUsersService guildUsersService;
-	private final UserService userService;
-	private final BanService banService;
+	private final CustomOAuth2UserService oAuthUserService;
 	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 	private final SessionRegistry sessionRegistry;
 	private final SessionIpFilter sessionIpFilter;
@@ -74,7 +66,7 @@ public class OAuth2EndpointConfig {
 						.defaultSuccessUrl("/events")
 						.successHandler(authenticationSuccessHandler)
 						.userInfoEndpoint(userInfo -> userInfo
-								.userService(oAuthUserService())
+								.userService(oAuthUserService)
 						)
 				)
 
@@ -90,10 +82,5 @@ public class OAuth2EndpointConfig {
 	CookieSameSiteSupplier sameSiteSupplier() {
 		// Force JSESSIONID cookie to be SameSite=Lax
 		return CookieSameSiteSupplier.ofLax();
-	}
-
-	@Bean
-	OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuthUserService() {
-		return new CustomOAuth2UserService(guildUsersService, userService, banService);
 	}
 }

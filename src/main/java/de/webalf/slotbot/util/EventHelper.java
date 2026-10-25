@@ -115,9 +115,12 @@ public class EventHelper {
 	}
 
 	/**
-	 * Returns the slotlist for the given guild as content of a Discord message
+	 * Returns the slotlist for the given guild as content of a Discord message.
 	 * The list includes messages that do not exceed the discord message size limit
 	 *
+	 * @param event       event to build slotlist message for
+	 * @param guildId     discord id of the guild
+	 * @param guildLocale localisation of the message
 	 * @return slotlist
 	 */
 	public List<String> buildSlotList(@NonNull Event event, long guildId, @NonNull Locale guildLocale) {
@@ -195,9 +198,9 @@ public class EventHelper {
 		boolean notReservedForOthers;
 		final Guild reservedFor = slot.getReservedFor();
 		if (reservedFor != null) { //Slot is reserved
-			notReservedForOthers = guildId == reservedFor.getId();
+			notReservedForOthers = Objects.equals(reservedFor.getDiscordId(), guildId);
 		} else { //Use reservedFor of Squad
-			notReservedForOthers = squadReservedFor == null || guildId == squadReservedFor.getId();
+			notReservedForOthers = squadReservedFor == null || Objects.equals(squadReservedFor.getDiscordId(), guildId);
 		}
 
 		final boolean isEmpty = slot.getUser() == null;

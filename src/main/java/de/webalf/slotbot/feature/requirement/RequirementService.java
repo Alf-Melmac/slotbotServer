@@ -3,6 +3,7 @@ package de.webalf.slotbot.feature.requirement;
 import de.webalf.slotbot.exception.ForbiddenException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
+import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.event.GuildUserDeleteEvent;
 import de.webalf.slotbot.service.UserService;
@@ -71,6 +72,9 @@ public class RequirementService {
 	public void onGuildUserDeleteEvent(@NonNull GuildUserDeleteEvent event) {
 		final User user = userService.findExisting(event.userId());
 		user.getFulfilledRequirements()
-				.removeIf(requirement -> requirement.getRequirementList().getGuild().getId() == event.guildId());
+				.removeIf(requirement -> {
+					final Guild guild = requirement.getRequirementList().getGuild();
+					return guild != null && guild.getId() == event.guildId();
+				});
 	}
 }

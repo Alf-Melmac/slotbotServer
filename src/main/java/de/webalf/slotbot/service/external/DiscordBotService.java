@@ -87,12 +87,12 @@ public class DiscordBotService {
 	 * Returns the name of the user in the given guild.
 	 * If no user can be found it returns {@link DiscordUser#UNKNOWN_USER_NAME}
 	 *
-	 * @param userId  user to get name for
-	 * @param guildId guild to get name in
+	 * @param userId         user to get name for
+	 * @param discordGuildId discord id of the guild to get name in
 	 * @return name of the user in the guild
 	 */
-	public String getName(long userId, long guildId) {
-		final DiscordGuildMember guildMember = self.getGuildMember(userId, guildId);
+	public String getName(long userId, long discordGuildId) {
+		final DiscordGuildMember guildMember = self.getGuildMember(userId, discordGuildId);
 		if (guildMember != null) {
 			return guildMember.getEffectiveName();
 		}

@@ -25,7 +25,7 @@ class ActionLogAssembler {
 
 	private ActionLogDto toDto(ActionLog actionLog) {
 		final Event event = eventService.findById(actionLog.getActionObjectId());
-		final DiscordGuildMember member = discordBotService.getGuildMember(actionLog.getUser().getId(), event.getOwnerGuild().getId());
+		final DiscordGuildMember member = discordBotService.getGuildMember(actionLog.getUser().getId(), event.getOwnerGuild().getDiscordId());
 
 		return ActionLogDto.builder()
 				.id(actionLog.getId())

@@ -18,14 +18,17 @@ public record DiscordUser(long id, String username, String global_name, String a
 	public static final String UNKNOWN_USER_NAME = "Unbekannter Nutzer";
 
 	/**
-	 * @see User#getEffectiveName()
+	 * @see DiscordUserUtils#getEffectiveName(String, String)
 	 */
 	public String getEffectiveName() {
-		return global_name != null ? global_name : username;
+		return DiscordUserUtils.getEffectiveName(global_name, username);
 	}
 
+	/**
+	 * @see DiscordUserUtils#getAvatarUrl(long, String)
+	 */
 	public String getAvatarUrl() {
-		return DiscordUserUtils.getAvatarUrl(Long.toString(id), avatar);
+		return DiscordUserUtils.getAvatarUrl(id, avatar);
 	}
 
 	public static DiscordUser fromJda(@NonNull User jdaUser) {

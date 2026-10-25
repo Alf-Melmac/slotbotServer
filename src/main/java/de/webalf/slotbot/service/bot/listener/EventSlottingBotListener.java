@@ -146,7 +146,7 @@ public class EventSlottingBotListener {
 		directMessageHelper.sendDmToRecipient(interestedEvent.userId(),
 				messageSource.getMessage("scheduledEvent.interestedWithoutSlot", new String[]{event.getName()}, guildLocale),
 				Button.link(
-						GuildChannel.JUMP_URL.formatted(discordInformation.getGuild().getId(), discordInformation.getChannel()),
+						GuildChannel.JUMP_URL.formatted(discordInformation.getGuild().getDiscordId(), discordInformation.getChannel()),
 						messageSource.getMessage("scheduledEvent.link", null, guildLocale)
 				));
 	}

@@ -29,8 +29,9 @@ public class EventArchiveBotListener {
 
 	@EventListener
 	public void onEventArchiveEvent(@NonNull EventArchiveEvent event) {
-		final de.webalf.slotbot.model.Guild guild = guildBotService.find(event.discordGuildId());
-		final Guild discordGuild = guildDiscordService.getGuildById(guild.getDiscordId());
+		final long discordGuildId = event.discordGuildId();
+		final de.webalf.slotbot.model.Guild guild = guildBotService.find(discordGuildId);
+		final Guild discordGuild = guildDiscordService.getGuildById(discordGuildId);
 		onEventArchive(event.event(), guild, discordGuild);
 	}
 

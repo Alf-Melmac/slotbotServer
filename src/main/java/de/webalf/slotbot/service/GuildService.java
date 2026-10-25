@@ -43,9 +43,9 @@ public class GuildService {
 	 * @param groupIdentifier group identifier of the new guild
 	 * @return newly created guild
 	 */
-	public Guild create(@NonNull String groupIdentifier) {
+	Guild create(@NonNull String groupIdentifier) {
 		final Guild guild = Guild.builder()
-				.groupIdentifier(groupIdentifier)
+				.groupIdentifier(groupIdentifier) //TODO duplicate names throw errors
 				.build();
 		return guildRepository.saveAndFlush(guild);
 	}
@@ -58,7 +58,7 @@ public class GuildService {
 	 * @return found or newly created guild
 	 */
 	public Guild findOrCreateByDiscordId(long discordId, String name) {
-		final Guild guild = guildRepository.findByDiscordId(discordId).orElseGet(() -> Guild.builder().id(discordId).discordId(discordId).build());
+		final Guild guild = guildRepository.findByDiscordId(discordId).orElseGet(() -> Guild.builder().discordId(discordId).build());
 		guild.setGroupIdentifier(name.substring(0, Math.min(name.length(), TEXT)));
 		return guildRepository.saveAndFlush(guild);
 	}

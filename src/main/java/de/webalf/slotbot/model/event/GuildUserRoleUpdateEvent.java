@@ -10,7 +10,7 @@ import lombok.NonNull;
  * @author Alf
  * @since 03.10.2023
  */
-public record GuildUserRoleUpdateEvent(long guildId, long userId, Role oldRole, Role newRole) {
+public record GuildUserRoleUpdateEvent(long guildId, long userId, Role oldRole, Role newRole) implements GuildUserEvent {
 	public GuildUserRoleUpdateEvent(@NonNull GuildUser guildUser, Role oldRole) {
 		this(guildUser.getId().getGuildId(), guildUser.getId().getUserId(), oldRole, guildUser.getRole());
 	}
