@@ -36,3 +36,4 @@ build/
 # Plugins
 .dcignore
 /.jpb/
+/.sonar/
