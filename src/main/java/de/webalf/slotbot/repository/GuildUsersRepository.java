@@ -31,7 +31,7 @@ public interface GuildUsersRepository extends JpaRepository<GuildUser, GuildUser
 	@Query("SELECT g.id.userId FROM GuildUser g WHERE g.guild = :guild AND g.role = :role")
 	Set<Long> findByGuildAndRole(@Param("guild") Guild guild, @Param("role") Role role);
 
-	void deleteById_GuildIdAndId_UserId(long guildId, long userId);
+	List<GuildUser> deleteById_GuildIdAndId_UserId(long guildId, long userId);
 
 	List<GuildUser> deleteByGuildAndId_UserIdNotIn(Guild guild, Set<Long> userIds);
 

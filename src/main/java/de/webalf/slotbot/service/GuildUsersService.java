@@ -7,7 +7,6 @@ import de.webalf.slotbot.model.User;
 import de.webalf.slotbot.model.event.BanEvent;
 import de.webalf.slotbot.model.event.GuildUserCreatedEvent;
 import de.webalf.slotbot.model.event.GuildUserDeleteEvent;
-import de.webalf.slotbot.model.event.GuildUserRoleUpdateEvent;
 import de.webalf.slotbot.repository.GlobalRoleRepository;
 import de.webalf.slotbot.repository.GuildUsersRepository;
 import de.webalf.slotbot.util.permissions.Role;
@@ -19,9 +18,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +41,6 @@ public class GuildUsersService {
 	private final UserService userService;
 	private final GuildService guildService;
 	private final GlobalRoleRepository globalRoleRepository;
-	private final SessionRegistry sessionRegistry;
 	private final ApplicationEventPublisher eventPublisher;
 	private final BanService banService;
 
@@ -84,6 +79,20 @@ public class GuildUsersService {
 				.orElseGet(() -> create(guild, user, role));
 	}
 
+	/**
+	 * Creates a new guild with the given user as its administrator
+	 *
+	 * @param groupIdentifier of the new guild
+	 * @param userId          user to become administrator
+	 * @return created guild
+	 * @see GuildService#create(String)
+	 */
+	public Guild createGuildWithAdmin(@NonNull String groupIdentifier, long userId) {
+		final Guild guild = guildService.create(groupIdentifier);
+		add(guild, userId, Role.ADMINISTRATOR);
+		return guild;
+	}
+
 	private GuildUser create(@NonNull Guild guild, @NonNull User user, Role role) {
 		final GuildUser guildUser = guildUsersRepository.save(GuildUser.builder().user(user).guild(guild).role(role).build());
 		eventPublisher.publishEvent(new GuildUserCreatedEvent(guildUser));
@@ -112,8 +121,8 @@ public class GuildUsersService {
 	@Async
 	public void removeOptional(long discordGuildId, long userId) {
 		final Guild guild = guildService.findExistingByDiscordId(discordGuildId);
-		guildUsersRepository.deleteById_GuildIdAndId_UserId(guild.getId(), userId);
-		invalidateSession(userId);
+		guildUsersRepository.deleteById_GuildIdAndId_UserId(guild.getId(), userId)
+				.forEach(guildUser -> eventPublisher.publishEvent(new GuildUserDeleteEvent(guildUser)));
 	}
 
 	/**
@@ -170,9 +179,9 @@ public class GuildUsersService {
 	/**
 	 * Processes changes in the roles of the given user in the given guild.
 	 *
-	 * @param discordGuildId     guild the roles changed in
-	 * @param userId      user whose roles changed
-	 * @param memberRoles new set of roles of the user
+	 * @param discordGuildId guild the roles changed in
+	 * @param userId         user whose roles changed
+	 * @param memberRoles    new set of roles of the user
 	 */
 	public void onRolesChanged(long discordGuildId, long userId, Set<Long> memberRoles) {
 		final Guild guild = guildService.findExistingByDiscordId(discordGuildId);
@@ -206,39 +215,10 @@ public class GuildUsersService {
 
 	@EventListener
 	@Async
-	public void onGuildUserCreatedEvent(@NonNull GuildUserCreatedEvent event) {
-		invalidateSession(event.userId());
-	}
-
-	@EventListener
-	@Async
-	public void onGuildUserRoleUpdateEvent(@NonNull GuildUserRoleUpdateEvent event) {
-		invalidateSession(event.userId());
-	}
-
-	@EventListener
-	@Async
-	public void onGuildUserDeleteEvent(@NonNull GuildUserDeleteEvent event) {
-		invalidateSession(event.userId());
-	}
-
-	@EventListener
-	@Async
 	public void onBanEvent(@NonNull BanEvent event) {
-		if (event.guildId() != null) return; // This has been triggered by #ban(long, long, String)
+		if (event.guildId() != null) return; // Only process global bans
 
-		final long userId = event.userId();
-		guildUsersRepository.deleteById_UserId(userId);
-		invalidateSession(userId);
-	}
-
-	private void invalidateSession(long userId) {
-		log.trace("Invalidating session for user {}", userId);
-		sessionRegistry.getAllPrincipals().stream()
-				.flatMap(principal -> sessionRegistry.getAllSessions(principal, false).stream())
-				.filter(sessionInformation -> sessionInformation.getPrincipal() instanceof final DefaultOAuth2User user
-						&& user.getAttributes().get("id").equals(Long.toString(userId)))
-				.forEach(SessionInformation::expireNow);
+		guildUsersRepository.deleteById_UserId(event.userId());
 	}
 
 	public Set<String> getApplicationRoles(long userId) {

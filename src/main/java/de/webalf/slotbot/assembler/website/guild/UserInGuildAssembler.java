@@ -20,7 +20,7 @@ public class UserInGuildAssembler {
 	private final DiscordBotService discordBotService;
 
 	public UserInGuildDto toDto(@NonNull GuildUser guildUser, @NonNull Guild guild) {
-		final DiscordGuildMember member = discordBotService.getGuildMember(guildUser.getId().getUserId(), guild.getId());
+		final DiscordGuildMember member = discordBotService.getGuildMember(guildUser.getId().getUserId(), guild.getDiscordId());
 		if (member == null) return null;
 
 		return UserInGuildDto.builder()

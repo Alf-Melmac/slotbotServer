@@ -82,7 +82,7 @@ public class EventDetailsAssembler {
 			if (user.isDefaultUser()) {
 				text = slot.getReplacementTextOrDefault();
 			} else {
-				text = discordBotService.getName(user.getId(), slot.getSquad().getEvent().getOwnerGuild().getId());
+				text = discordBotService.getName(user.getId(), slot.getSquad().getEvent().getOwnerGuild().getDiscordId());
 			}
 		}
 

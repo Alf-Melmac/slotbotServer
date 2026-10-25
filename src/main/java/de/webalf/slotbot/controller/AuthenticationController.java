@@ -1,6 +1,7 @@
 package de.webalf.slotbot.controller;
 
 import de.webalf.slotbot.assembler.website.DiscordUserAssembler;
+import de.webalf.slotbot.configuration.authentication.website.DiscordOAuthUser;
 import de.webalf.slotbot.model.dtos.website.DiscordUserDto;
 import de.webalf.slotbot.service.EventService;
 import de.webalf.slotbot.service.GuildService;
@@ -8,7 +9,6 @@ import de.webalf.slotbot.util.StringUtils;
 import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -27,8 +27,8 @@ public class AuthenticationController {
 	private final EventService eventService;
 
 	@GetMapping
-	public DiscordUserDto getAuthenticatedUser(@AuthenticationPrincipal OAuth2User oAuth2User) {
-		return DiscordUserAssembler.toDto(oAuth2User);
+	public DiscordUserDto getAuthenticatedUser(@AuthenticationPrincipal DiscordOAuthUser user) {
+		return DiscordUserAssembler.toDto(user);
 	}
 
 	@GetMapping({"/access/{requiredApplicationRole}", "/{guild}/access/{requiredApplicationRole}"})

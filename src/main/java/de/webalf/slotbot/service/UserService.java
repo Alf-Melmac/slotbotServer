@@ -50,7 +50,11 @@ public class UserService {
 	 * @see #getPotentialLoggedIn()
 	 */
 	public User getLoggedIn() {
-		return findExisting(PermissionHelper.getLoggedInUserIdLong());
+		final Long loggedInUserId = PermissionHelper.getLoggedInUserIdLong();
+		if (loggedInUserId == null) {
+			throw new IllegalStateException("Logged in user id is null"); //use getPotentiallyLoggedIn
+		}
+		return findExisting(loggedInUserId);
 	}
 
 	/**
@@ -75,7 +79,7 @@ public class UserService {
 			return null;
 		}
 
-		return toUserNameDto(user, discordBotService.getName(user.getId(), guild.getId()));
+		return toUserNameDto(user, discordBotService.getName(user.getId(), guild.getDiscordId()));
 	}
 
 	private UserNameDto toUserNameDto(@NonNull User user, String name) {

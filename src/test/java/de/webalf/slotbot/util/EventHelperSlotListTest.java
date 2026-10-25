@@ -84,36 +84,47 @@ class EventHelperSlotListTest {
 
 	@Test
 	void buildSlotListMarksReservationsForOneGuild() {
-		final long g1 = 1L;
-		final Event event = buildReservedEvent(g1, 2);
+		final long g1DiscordId = 1000;
+		final Event event = buildReservedEvent(g1DiscordId, 2000L);
 
-		final List<String> slotList = sut.buildSlotList(event, g1, TEST_LOCALE);
+		final List<String> slotList = sut.buildSlotList(event, g1DiscordId, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
 		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1** [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1** [g1]\n**4 Slot free** [g1]:\n**5 Slot g1** [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2** [g2]\n7 Slot free [g2]:\n**8 Slot g1** [g1]:\n9 Slot g2 [g2]:");
 	}
 
 	@Test
 	void buildSlotListMarksReservationsForOtherGuild() {
-		final long g2 = 2L;
-		final Event event = buildReservedEvent(1, g2);
+		final long g2DiscordId = 2000;
+		final Event event = buildReservedEvent(1000L, g2DiscordId);
 
-		final List<String> slotList = sut.buildSlotList(event, g2, TEST_LOCALE);
+		final List<String> slotList = sut.buildSlotList(event, g2DiscordId, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
 		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n**3 Slot g2** [g2]:\n\n**Squad g1** [g1]\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n**6 Slot g2** [g2]:\n\n**Squad g2** [g2]\n**7 Slot free** [g2]:\n8 Slot g1 [g1]:\n**9 Slot g2** [g2]:");
 	}
 
 	@Test
 	void buildSlotListMarksReservationsForForeignGuild() {
-		final Event event = buildReservedEvent(1, 2);
+		final Event event = buildReservedEvent(1000L, 2000L);
 
-		final List<String> slotList = sut.buildSlotList(event, 3L, TEST_LOCALE);
+		final List<String> slotList = sut.buildSlotList(event, 3, TEST_LOCALE);
 		assertThat(slotList).hasSize(1);
 		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n2 Slot g1 [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1** [g1]\n4 Slot free [g1]:\n5 Slot g1 [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2** [g2]\n7 Slot free [g2]:\n8 Slot g1 [g1]:\n9 Slot g2 [g2]:");
 	}
 
-	private Event buildReservedEvent(long guild1, long guild2) {
-		final Guild g1 = Guild.builder().id(guild1).groupIdentifier("g1").build();
-		final Guild g2 = Guild.builder().id(guild2).groupIdentifier("g2").build();
+	@Test
+	void buildSlotListMarksReservationsForGuildWithoutDiscordId() {
+		final long g1DiscordId = 1000;
+		final Event event = buildReservedEvent(g1DiscordId, null);
+
+		final List<String> slotList = sut.buildSlotList(event, g1DiscordId, TEST_LOCALE);
+		assertThat(slotList).hasSize(1);
+		assertThat(slotList.getFirst()).isEqualTo("__**" + TITLE + "**__\n\n**Squad free**\n**1 Slot free**:\n**2 Slot g1** [g1]:\n3 Slot g2 [g2]:\n\n**Squad g1** [g1]\n**4 Slot free** [g1]:\n**5 Slot g1** [g1]:\n6 Slot g2 [g2]:\n\n**Squad g2** [g2]\n7 Slot free [g2]:\n**8 Slot g1** [g1]:\n9 Slot g2 [g2]:");
+	}
+
+	@SuppressWarnings("SameParameterValue")
+	private Event buildReservedEvent(Long guild1DiscordId, Long guild2DiscordId) {
+		final Guild g1 = Guild.builder().id(1).discordId(guild1DiscordId).groupIdentifier("g1").build();
+		final Guild g2 = Guild.builder().id(2).discordId(guild2DiscordId).groupIdentifier("g2").build();
 
 		final Event event = Event.builder()
 				.squadList(List.of(

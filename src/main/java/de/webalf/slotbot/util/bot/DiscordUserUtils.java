@@ -1,6 +1,5 @@
 package de.webalf.slotbot.util.bot;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.Member;
@@ -16,9 +15,17 @@ import net.dv8tion.jda.api.utils.ImageFormat;
 @UtilityClass
 public final class DiscordUserUtils {
 	/**
+	 * @see User#getEffectiveName()
+	 */
+	public static String getEffectiveName(String globalName, String username) {
+		return globalName != null ? globalName : username;
+	}
+
+	/**
 	 * @see User#getEffectiveAvatarUrl()
 	 */
-	public static String getAvatarUrl(@NotBlank String id, String avatar) {
+	public static String getAvatarUrl(long idLong, String avatar) {
+		final String id = Long.toString(idLong);
 		if (avatar == null) {
 			return getDefaultAvatarUrl(id);
 		}
@@ -28,11 +35,12 @@ public final class DiscordUserUtils {
 	/**
 	 * @see Member#getEffectiveAvatarUrl()
 	 */
-	public static String getAvatarUrl(@NotBlank String guild, @NotBlank String id, String avatar) {
+	public static String getAvatarUrl(long guildIdLong, long idLong, String avatar) {
+		final String id = Long.toString(idLong);
 		if (avatar == null) {
 			return getDefaultAvatarUrl(id);
 		}
-		return DiscordAssets.memberAvatar(ImageFormat.ANIMATED_WEBP, guild, id, avatar).getUrl();
+		return DiscordAssets.memberAvatar(ImageFormat.ANIMATED_WEBP, Long.toString(guildIdLong), id, avatar).getUrl();
 	}
 
 	private static String getDefaultAvatarUrl(@NonNull String id) {
