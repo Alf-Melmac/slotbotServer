@@ -93,6 +93,16 @@ public class EventService {
 		return eventRepository.findById(eventId).orElseThrow(ResourceNotFoundException::new);
 	}
 
+	/**
+	 * Returns an optional for the event associated with the given eventId
+	 *
+	 * @param eventId to find event for
+	 * @return Event found by id or empty optional
+	 */
+	public Optional<Event> findOptionalById(long eventId) {
+		return eventRepository.findById(eventId);
+	}
+
 	public List<Event> findAllBetween(LocalDateTime start, LocalDateTime end, Optional<String> guild) {
 		final Guild currentGuild = guildService.findByIdentifier(guild);
 		return findAllBetween(start, end, hasEventManagePermission(currentGuild.getId()), currentGuild);
