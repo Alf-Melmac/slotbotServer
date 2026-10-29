@@ -107,7 +107,7 @@ public class WebsiteSessionAuthorityUpdater {
 				session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(updatedToken));
 				log.trace("Updated authorities of session {} for user {}", sessionId, userId);
 			} catch (IllegalStateException _) {
-				log.trace("Session {} of user {} has been invalidated in the meantime", sessionId, userId);
+				log.trace("Didn't update authorities for {}, session is invalidated", userId);
 			}
 		}
 	}
@@ -118,12 +118,11 @@ public class WebsiteSessionAuthorityUpdater {
 	 * @param session to read from
 	 * @return stored token, or {@code null} if there is no session, it has been invalidated or has no context yet (during login)
 	 */
-	private static OAuth2AuthenticationToken getToken(@NonNull HttpSession session) {
+	static OAuth2AuthenticationToken getToken(@NonNull HttpSession session) {
 		try {
 			return session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) instanceof final SecurityContext context
 					&& context.getAuthentication() instanceof final OAuth2AuthenticationToken token ? token : null;
 		} catch (IllegalStateException _) {
-			log.trace("Session {} already invalidated while fetching token", session.getId());
 			return null;
 		}
 	}

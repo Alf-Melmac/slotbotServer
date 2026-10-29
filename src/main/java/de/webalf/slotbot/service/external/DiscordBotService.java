@@ -38,12 +38,12 @@ public class DiscordBotService {
 	 * @return the member or null if not resolvable
 	 */
 	@Cacheable("botGuildMember")
-	public DiscordGuildMember getGuildMember(long userId, long guildId) {
+	public DiscordGuildMember getGuildMember(long userId, Long guildId) {
 		final JDA jda = botService.getJda();
 		if (jda == null) {
 			throw new IllegalStateException("JDA is not available");
 		}
-		final Guild guild = jda.getGuildById(guildId);
+		final Guild guild = guildId != null ? jda.getGuildById(guildId) : null;
 
 		if (guild != null) {
 			try {
@@ -91,7 +91,7 @@ public class DiscordBotService {
 	 * @param discordGuildId discord id of the guild to get name in
 	 * @return name of the user in the guild
 	 */
-	public String getName(long userId, long discordGuildId) {
+	public String getName(long userId, Long discordGuildId) {
 		final DiscordGuildMember guildMember = self.getGuildMember(userId, discordGuildId);
 		if (guildMember != null) {
 			return guildMember.getEffectiveName();
