@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getPotentiallyLoggedInUserId;
+
 /**
  * @author Alf
  * @since 06.09.2020
@@ -45,12 +47,12 @@ public class UserService {
 	}
 
 	/**
-	 * Return the currently {@link PermissionHelper#getLoggedInUserIdLong() logged in user}
+	 * Return the currently {@link PermissionHelper#getPotentiallyLoggedInUserId() logged in user}
 	 *
 	 * @see #getPotentialLoggedIn()
 	 */
 	public User getLoggedIn() {
-		final Long loggedInUserId = PermissionHelper.getLoggedInUserIdLong();
+		final Long loggedInUserId = getPotentiallyLoggedInUserId();
 		if (loggedInUserId == null) {
 			throw new IllegalStateException("Logged in user id is null"); //use getPotentiallyLoggedIn
 		}
@@ -63,7 +65,7 @@ public class UserService {
 	 * @see #getLoggedIn()
 	 */
 	public User getPotentialLoggedIn() {
-		final Long loggedInUserId = PermissionHelper.getLoggedInUserIdLong();
+		final Long loggedInUserId = getPotentiallyLoggedInUserId();
 		if (loggedInUserId == null) {
 			return null;
 		}

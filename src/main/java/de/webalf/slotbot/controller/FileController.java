@@ -4,7 +4,6 @@ import de.webalf.slotbot.controller.website.FileWebController;
 import de.webalf.slotbot.model.dtos.website.event.creation.MinimalSquadDto;
 import de.webalf.slotbot.service.ImageService;
 import de.webalf.slotbot.util.SqmParser;
-import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static de.webalf.slotbot.util.permissions.ApplicationRole.HAS_POTENTIALLY_ROLE_EVENT_MANAGE;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -35,7 +35,7 @@ public class FileController {
 	@PostMapping(value = "/uploadImage", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String postImageFile(@RequestParam(name = "file") MultipartFile file) throws IOException {
 		final String imageFileName = imageService.writeImage(file);
-		return linkTo(methodOn(FileWebController.class).getUserContent(PermissionHelper.getLoggedInUserId(), imageFileName)).toUri().toString();
+		return linkTo(methodOn(FileWebController.class).getUserContent(Long.toString(getLoggedInUserId()), imageFileName)).toUri().toString();
 	}
 
 	@PostMapping("/uploadSqm")

@@ -1,7 +1,6 @@
 package de.webalf.slotbot.feature.ip_filter;
 
 import de.webalf.slotbot.service.web.FeatureFlagService;
-import de.webalf.slotbot.util.permissions.PermissionHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getPotentiallyLoggedInUserId;
 
 /**
  * Ensures that one session is only used from one ip
@@ -76,14 +77,14 @@ public class SessionIpFilter extends OncePerRequestFilter {
 		// Private Relay handling
 		if (!Boolean.FALSE.equals(session.getAttribute(SESSION_ATTRIBUTE_PRIVATE_RELAY))) {
 			if (privateRelayRangeService.isFromPrivateRelay(currentIp)) {
-				log.debug("Session of {} detected as Private Relay: {}", PermissionHelper.getLoggedInUserId(), currentIp);
+				log.debug("Session of {} detected as Private Relay: {}", getPotentiallyLoggedInUserId(), currentIp);
 				session.setAttribute(SESSION_ATTRIBUTE_PRIVATE_RELAY, true);
 				if (featureFlagService.getGlobal("sessionIpFilterPrivateRelay")) {
 					filterChain.doFilter(request, response);
 					return;
 				}
 			} else {
-				log.trace("Session of {} not detected as Private Relay: {}", PermissionHelper.getLoggedInUserId(), currentIp);
+				log.trace("Session of {} not detected as Private Relay: {}", getPotentiallyLoggedInUserId(), currentIp);
 				session.setAttribute(SESSION_ATTRIBUTE_PRIVATE_RELAY, false);
 			}
 		}
@@ -99,7 +100,7 @@ public class SessionIpFilter extends OncePerRequestFilter {
 		// First time seeing a different ip version for this session, store it and allow
 		if (otherIp == null) {
 			session.setAttribute(SESSION_ATTRIBUTE_OTHER_IP, currentIp);
-			log.info("Session of {} used a different ip version: {} -> {}", PermissionHelper.getLoggedInUserId(), loginIp, currentIp);
+			log.info("Session of {} used a different ip version: {} -> {}", getPotentiallyLoggedInUserId(), loginIp, currentIp);
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -116,7 +117,7 @@ public class SessionIpFilter extends OncePerRequestFilter {
 	private static void invalidateSession(HttpSession session, String storedIp, String loginIp, String currentIp) {
 		try {
 			session.invalidate();
-			log.warn("Session of {} invalidated due to ip change: {} ({}) -> {}", PermissionHelper.getLoggedInUserId(), storedIp, loginIp, currentIp);
+			log.warn("Session of {} invalidated due to ip change: {} ({}) -> {}", getPotentiallyLoggedInUserId(), storedIp, loginIp, currentIp);
 		} catch (IllegalStateException _) {
 			// Session already invalidated
 		}

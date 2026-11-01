@@ -2,7 +2,6 @@ package de.webalf.slotbot.service;
 
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.exception.BusinessRuntimeException;
-import de.webalf.slotbot.util.permissions.PermissionHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
@@ -15,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 
 /**
  * @author Alf
@@ -55,7 +56,7 @@ public class ImageService {
 		if (filename.isBlank()) {
 			throw BusinessRuntimeException.builder().title("File name is invalid").build();
 		}
-		final Path directory = Path.of(storageProperties.getUserContent(), PermissionHelper.getLoggedInUserId());
+		final Path directory = Path.of(storageProperties.getUserContent(), Long.toString(getLoggedInUserId()));
 		//noinspection ResultOfMethodCallIgnored
 		directory.toFile().mkdirs();
 		Path finalPath = directory.resolve(filename + extension);
