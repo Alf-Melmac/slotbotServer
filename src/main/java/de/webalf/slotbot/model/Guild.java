@@ -23,7 +23,8 @@ import static net.dv8tion.jda.api.utils.ImageFormat.STATIC_WEBP;
  */
 @Entity
 @Table(name = "guild", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}),
-		@UniqueConstraint(columnNames = {"discord_id"}, name = "discord_id_unique")})
+		@UniqueConstraint(columnNames = {"discord_id"}, name = "discord_id_unique"),
+		@UniqueConstraint(columnNames = {"guild_name"}, name = "group_name_unique")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
