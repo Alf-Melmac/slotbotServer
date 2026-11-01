@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.IS_AUTHENTICATED;
+import static de.webalf.slotbot.util.StringUtils.trimAndNullify;
 import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
@@ -62,7 +63,8 @@ public class GuildController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize(IS_AUTHENTICATED)
 	public GuildDetailsDto createGuild(@Valid @RequestBody GuildCreateDto createDto) {
-		return GuildDetailsAssembler.toDto(guildUsersService.createGuildWithAdmin(createDto.groupIdentifier(), getLoggedInUserId()));
+		//noinspection DataFlowIssue Frontend doesn't allow empty groupIdentifier
+		return GuildDetailsAssembler.toDto(guildUsersService.createGuildWithAdmin(trimAndNullify(createDto.groupIdentifier()), getLoggedInUserId()));
 	}
 
 	@GetMapping("/categorised")

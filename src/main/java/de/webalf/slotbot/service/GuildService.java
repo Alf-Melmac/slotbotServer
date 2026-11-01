@@ -1,5 +1,6 @@
 package de.webalf.slotbot.service;
 
+import de.webalf.slotbot.exception.BusinessRuntimeException;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import de.webalf.slotbot.model.Event;
 import de.webalf.slotbot.model.Guild;
@@ -44,8 +45,12 @@ public class GuildService {
 	 * @return newly created guild
 	 */
 	Guild create(@NonNull String groupIdentifier) {
+		findByName(groupIdentifier).ifPresent(_ -> {
+			throw BusinessRuntimeException.builder().title("Guild with name " + groupIdentifier + " already exists").build();
+		});
+
 		final Guild guild = Guild.builder()
-				.groupIdentifier(groupIdentifier) //TODO duplicate names throw errors
+				.groupIdentifier(groupIdentifier)
 				.build();
 		return guildRepository.saveAndFlush(guild);
 	}
@@ -59,8 +64,28 @@ public class GuildService {
 	 */
 	public Guild findOrCreateByDiscordId(long discordId, String name) {
 		final Guild guild = guildRepository.findByDiscordId(discordId).orElseGet(() -> Guild.builder().discordId(discordId).build());
-		guild.setGroupIdentifier(name.substring(0, Math.min(name.length(), TEXT)));
+		guild.setGroupIdentifier(findUnusedName(name, guild));
 		return guildRepository.saveAndFlush(guild);
+	}
+
+	/**
+	 * Creates a unique name for the given guild
+	 *
+	 * @param name desired name
+	 * @param guild guild to exclude from name check
+	 * @return name not used by any other guild
+	 */
+	private String findUnusedName(@NonNull String name, @NonNull Guild guild) {
+		String candidate = name.substring(0, Math.min(name.length(), TEXT));
+		for (int i = 2; isNameUsedByOtherGuild(candidate, guild); i++) {
+			final String suffix = " (" + i + ")";
+			candidate = name.substring(0, Math.min(name.length(), TEXT - suffix.length())) + suffix;
+		}
+		return candidate;
+	}
+
+	private boolean isNameUsedByOtherGuild(String name, Guild guild) {
+		return findByName(name).filter(other -> other.getId() != guild.getId()).isPresent();
 	}
 
 	/**
@@ -104,7 +129,7 @@ public class GuildService {
 	}
 
 	public long getIdByIdentifier(@NonNull String identifier) {
-		return findByName(identifier).orElseThrow(ResourceNotFoundException::new).getId();
+		return findByIdentifier(identifier).getId();
 	}
 
 	public long getIdByIdentifier(Optional<String> identifier) {
