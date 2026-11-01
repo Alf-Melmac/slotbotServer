@@ -5,6 +5,7 @@ import de.webalf.slotbot.model.Guild;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,21 +25,27 @@ import static de.webalf.slotbot.util.permissions.Role.*;
 @UtilityClass
 public final class PermissionHelper {
 	/**
-	 * Returns the user id of the currently logged-in oauth user
+	 * Returns the user id of the currently logged-in oauth user, if there is one
 	 *
-	 * @return user id or empty string
+	 * @return user id or null
 	 */
-	public static String getLoggedInUserId() {
-		final Long userId = getLoggedInUserIdLong();
-		if (userId == null) {
-			return "";
-		}
-		return Long.toString(userId);
-	}
-
-	public static Long getLoggedInUserIdLong() {
+	public static Long getPotentiallyLoggedInUserId() {
 		final DiscordOAuthUser user = getLoggedIn();
 		return user != null ? user.getId() : null;
+	}
+
+	/**
+	 * Returns the user id of the currently logged-in oauth user
+	 *
+	 * @return user id
+	 * @throws AccessDeniedException if not logged in
+	 */
+	public static long getLoggedInUserId() {
+		final DiscordOAuthUser user = getLoggedIn();
+		if (user == null) {
+			throw new AccessDeniedException("Not logged in");
+		}
+		return user.getId();
 	}
 
 	public static Set<String> getAuthoritiesOfLoggedInUser() {
@@ -73,7 +80,7 @@ public final class PermissionHelper {
 	 * @return true if the logged in person has the given user id
 	 */
 	public static boolean isLoggedInUser(long userId) {
-		final Long loggedInUserId = getLoggedInUserIdLong();
+		final Long loggedInUserId = getPotentiallyLoggedInUserId();
 		if (loggedInUserId == null) {
 			return false;
 		}

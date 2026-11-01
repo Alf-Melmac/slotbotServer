@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.webalf.slotbot.constant.AuthorizationCheckValues.IS_AUTHENTICATED;
-import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserIdLong;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 /**
@@ -62,7 +62,7 @@ public class GuildController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize(IS_AUTHENTICATED)
 	public GuildDetailsDto createGuild(@Valid @RequestBody GuildCreateDto createDto) {
-		return GuildDetailsAssembler.toDto(guildUsersService.createGuildWithAdmin(createDto.groupIdentifier(), getLoggedInUserIdLong()));
+		return GuildDetailsAssembler.toDto(guildUsersService.createGuildWithAdmin(createDto.groupIdentifier(), getLoggedInUserId()));
 	}
 
 	@GetMapping("/categorised")

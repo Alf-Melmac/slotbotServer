@@ -19,6 +19,7 @@ import java.net.URLDecoder;
 import java.util.regex.Pattern;
 
 import static de.webalf.slotbot.service.ImageService.ALLOWED_FILE_NAME_CHARS;
+import static de.webalf.slotbot.util.permissions.PermissionHelper.getLoggedInUserId;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -62,7 +63,7 @@ public class BlogService {
 			}
 
 			final String uriString = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
-			return !Pattern.compile("^" + uriString + "/userContent/" + PermissionHelper.getLoggedInUserId() + "/" + fileName + "$").matcher(src).matches();
+			return !Pattern.compile("^" + uriString + "/userContent/" + getLoggedInUserId() + "/" + fileName + "$").matcher(src).matches();
 		})) {
 			throw new IllegalArgumentException();
 		}
