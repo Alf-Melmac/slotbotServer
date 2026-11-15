@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.ErrorResponse;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -25,8 +27,11 @@ import org.springframework.stereotype.Service;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Slf4j
 public class DiscordBotService {
+	static final String USER_CACHE = "botUser";
+
 	private final BotService botService;
 	private final DiscordBotService self;
+	private final CacheManager cacheManager;
 
 	/**
 	 * Tries to build a {@link DiscordGuildMember}. If the {@link Guild#retrieveMemberById(long) member in the given guild}
@@ -68,7 +73,7 @@ public class DiscordBotService {
 		return null;
 	}
 
-	@Cacheable("botUser")
+	@Cacheable(USER_CACHE)
 	public DiscordUser getUser(long userId) {
 		final JDA jda = botService.getJda();
 		if (jda == null) {
@@ -81,6 +86,29 @@ public class DiscordBotService {
 			log.warn("Failed to retrieve user {}", userId, e);
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the user from the cache of {@link #getUser(long)} or, if not present there, from the JDA cache without
+	 * requesting it from Discord
+	 *
+	 * @param userId identifier
+	 * @return the cached user or null if the user is not cached
+	 * @see JDA#getUserById(long)
+	 */
+	public DiscordUser getCachedUser(long userId) {
+		final Cache userCache = cacheManager.getCache(USER_CACHE);
+		final DiscordUser cachedUser = userCache != null ? userCache.get(userId, DiscordUser.class) : null;
+		if (cachedUser != null) {
+			return cachedUser;
+		}
+
+		final JDA jda = botService.getJda();
+		if (jda == null) {
+			return null;
+		}
+		final User user = jda.getUserById(userId);
+		return user != null ? DiscordUser.fromJda(user) : null;
 	}
 
 	/**

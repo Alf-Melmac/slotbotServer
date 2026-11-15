@@ -92,7 +92,7 @@ public class Guild extends AbstractDiscordIdEntity {
 	}
 
 	public Locale getLocale() {
-		return Locale.forLanguageTag(getLanguage().name());
+		return getLanguage().getRegionalLocale();
 	}
 
 	/**
