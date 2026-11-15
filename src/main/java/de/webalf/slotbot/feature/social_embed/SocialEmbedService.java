@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNullElse;
+
 /**
  * Builds Open Graph meta tags for one entity
  *
@@ -61,6 +63,7 @@ public class SocialEmbedService {
 		if (meta.locale() != null) {
 			tags.add(openGraphTag("og:locale", meta.locale().toString()));
 		}
+		tags.add(metaTag("name", "theme-color", requireNonNullElse(meta.themeColor(), "#00FFFF")));
 		tags.add(metaTag("name", "twitter:card", "summary"));
 		return tags;
 	}

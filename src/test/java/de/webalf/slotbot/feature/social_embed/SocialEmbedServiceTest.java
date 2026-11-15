@@ -42,17 +42,18 @@ class SocialEmbedServiceTest {
 	}
 
 	@Test
-	void omitsMissingOptionalFields() {
+	void getMetaTagsOmitsMissingOptionalFields() {
 		assertThat(sut.getMetaTags(TYPE, EXISTING_ID)).contains("""
 				<meta property="og:site_name" content="Slotbot">
 				<meta property="og:url" content="https://slotbot.de/events/1">
 				<meta property="og:title" content="Title">
 				<meta property="og:image" content="https://cdn.example/image.png">
+				<meta name="theme-color" content="#00FFFF">
 				<meta name="twitter:card" content="summary">""");
 	}
 
 	@Test
-	void usesResolvedFields() {
+	void getMetaTagsUsesResolvedFields() {
 		meta = OpenGraph.builder()
 				.type("profile")
 				.title("Title")
@@ -60,6 +61,7 @@ class SocialEmbedServiceTest {
 				.description("Description")
 				.imageUrl(IMAGE_URL)
 				.locale(Locale.GERMANY)
+				.themeColor("#AAAAAA")
 				.build();
 
 		assertThat(sut.getMetaTags(TYPE, EXISTING_ID)).contains("""
@@ -70,11 +72,12 @@ class SocialEmbedServiceTest {
 				<meta property="og:description" content="Description">
 				<meta property="og:image" content="https://cdn.example/image.png">
 				<meta property="og:locale" content="de_DE">
+				<meta name="theme-color" content="#AAAAAA">
 				<meta name="twitter:card" content="summary">""");
 	}
 
 	@Test
-	void escapesValues() {
+	void getMetaTagsEscapesValues() {
 		meta = OpenGraph.builder()
 				.title("\"><script>alert(1)</script>")
 				.url(URL)
@@ -87,12 +90,12 @@ class SocialEmbedServiceTest {
 	}
 
 	@Test
-	void emptyForMissingEntity() {
+	void getMetaTagsEmptyForMissingEntity() {
 		assertThat(sut.getMetaTags(TYPE, 2L)).isEmpty();
 	}
 
 	@Test
-	void emptyForTypeWithoutProvider() {
+	void getMetaTagsEmptyForTypeWithoutProvider() {
 		assertThat(sut.getMetaTags(SocialEmbedType.GUILDS, EXISTING_ID)).isEmpty();
 	}
 }

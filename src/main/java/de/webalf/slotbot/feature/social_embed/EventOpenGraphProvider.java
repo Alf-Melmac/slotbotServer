@@ -27,7 +27,7 @@ public class EventOpenGraphProvider implements OpenGraphProvider {
 
 	@Override
 	public Optional<OpenGraph> resolve(long id) {
-		// TODO findById eagerly loads the whole event including squads and slots. Use a projection of name, description, picture and owner guild instead
+		// TODO findById eagerly loads the whole event including squads and slots. Use a projection instead
 		return eventRepository.findById(id)
 				.map(event -> OpenGraph.builder()
 						.title(event.getName())
@@ -35,6 +35,7 @@ public class EventOpenGraphProvider implements OpenGraphProvider {
 						.description(StringUtils.abbreviate(toPlainText(event.getDescription()), 200))
 						.imageUrl(event.getPictureUrlWithDefault())
 						.locale(event.getOwnerGuildLocale())
+						.themeColor(event.getEventType().getColor())
 						.build());
 	}
 

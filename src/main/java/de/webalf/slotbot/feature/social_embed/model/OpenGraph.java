@@ -14,6 +14,7 @@ import java.util.Locale;
  * @param imageUrl    absolute <code>og:image</code> url
  * @param type        <code>og:type</code>, defaults to <code>website</code>
  * @param locale      <code>og:locale</code> in format language_TERRITORY
+ * @param themeColor  <code>theme-color</code> in format #rrggbb
  * @author Alf
  * @since 02.11.2026
  */
@@ -24,5 +25,6 @@ public record OpenGraph(
 		String description,
 		@NonNull String imageUrl,
 		String type,
-		Locale locale
+		Locale locale,
+		String themeColor
 ) {}

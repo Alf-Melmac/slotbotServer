@@ -7,8 +7,9 @@ import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * @author Alf
@@ -30,7 +31,7 @@ public class GuildOpenGraphProvider implements OpenGraphProvider {
 				.map(guild -> OpenGraph.builder()
 						.title(guild.getGroupIdentifier())
 						.url(guild.getBaseRedirectUrl() + "/guilds/" + guild.getId())
-						.imageUrl(Objects.requireNonNullElse(guild.buildEmojiUrl(), GuildService.getLogo(guild)))
+						.imageUrl(requireNonNullElseGet(guild.buildEmojiUrl(), () -> GuildService.getLogo(guild)))
 						.locale(guild.getLocale())
 						.build());
 	}
