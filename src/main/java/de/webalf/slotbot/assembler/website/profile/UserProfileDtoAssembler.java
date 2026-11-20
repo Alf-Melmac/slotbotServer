@@ -16,10 +16,10 @@ import de.webalf.slotbot.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.Optional;
 
 import static de.webalf.slotbot.util.permissions.PermissionHelper.isLoggedInUser;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * @author Alf
@@ -49,7 +49,7 @@ public class UserProfileDtoAssembler {
 			final Event event = lastEvent.get();
 			lastEventInfo = LastEventInfo.builder()
 					.id(event.getId())
-					.daysSince(Duration.between(event.getDateTime().toLocalDate().atStartOfDay(), DateUtils.now().toLocalDate().atStartOfDay()).toDays())
+					.daysSince(DAYS.between(event.getDateTime().toLocalDate(), DateUtils.now().toLocalDate()))
 					.build();
 		}
 		return UserProfileDto.builder()

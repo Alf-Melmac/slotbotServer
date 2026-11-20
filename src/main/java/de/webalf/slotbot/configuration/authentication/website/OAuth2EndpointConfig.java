@@ -19,8 +19,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
@@ -38,30 +36,23 @@ public class OAuth2EndpointConfig {
 	private final GuildUsersService guildUsersService;
 	private final UserService userService;
 	private final BanService banService;
-	private final AuthenticationSuccessHandler authenticationSuccessHandler;
 	private final SessionRegistry sessionRegistry;
 	private final SessionIpFilter sessionIpFilter;
 
 	@Bean
 	SecurityFilterChain oAuthUserFilterChain(HttpSecurity http) {
-		// https://docs.spring.io/spring-security/reference/5.8/migration/servlet/exploits.html#_i_am_using_angularjs_or_another_javascript_framework
+		// https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-token-repository-cookie
 		final CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
 		tokenRepository.setCookieCustomizer(cookie -> cookie
 				.path("/")
 				.secure(true)
 				.sameSite(STRICT.attributeValue())
 		);
-		final XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();
-		// set the name of the attribute the CsrfToken will be populated on
-		delegate.setCsrfRequestAttributeName("_csrf");
-		// Use only the handle() method of XorCsrfTokenRequestAttributeHandler and the
-		// default implementation of resolveCsrfTokenValue() from CsrfTokenRequestHandler
-		final CsrfTokenRequestHandler requestHandler = delegate::handle;
 
 		http // all non api requests handled here
 				.csrf(csrf -> csrf
-						.csrfTokenRepository(tokenRepository)
-						.csrfTokenRequestHandler(requestHandler))
+						.spa()
+						.csrfTokenRepository(tokenRepository))
 
 				.logout(logout -> logout
 						.logoutSuccessUrl("/events")
@@ -72,7 +63,6 @@ public class OAuth2EndpointConfig {
 				.oauth2Login(login -> login
 						.loginPage("/oauth2/authorization/discord")
 						.defaultSuccessUrl("/events")
-						.successHandler(authenticationSuccessHandler)
 						.userInfoEndpoint(userInfo -> userInfo
 								.userService(oAuthUserService())
 						)

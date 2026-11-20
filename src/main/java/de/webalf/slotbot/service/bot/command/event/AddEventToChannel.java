@@ -109,7 +109,7 @@ public class AddEventToChannel implements DiscordSlashCommand, DiscordStringSele
 
 	private void populateSelectMenuList(List<Event> events, @NonNull List<StringSelectMenu> selectMenus, String placeholder, boolean foreign) {
 		final String[] menuIds = getClass().getAnnotation(StringSelectInteraction.class).value();
-		final Builder selectMenuBuilder = StringSelectMenu.create(foreign ? menuIds[1] : menuIds[0])
+		final Builder selectMenuBuilder = StringSelectMenu.create(menuIds[foreign ? 1 : 0])
 				.setPlaceholder(placeholder);
 
 		for (Event event : events) {

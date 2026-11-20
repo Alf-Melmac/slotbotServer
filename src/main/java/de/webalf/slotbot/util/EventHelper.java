@@ -111,7 +111,7 @@ public class EventHelper {
 		if (reserveParticipating == null) {
 			return null;
 		}
-		return reserveParticipating ? messageSource.getMessage("yes", null, guildLocale) : messageSource.getMessage("no", null, guildLocale);
+		return messageSource.getMessage(reserveParticipating ? "yes" : "no", null, guildLocale);
 	}
 
 	/**

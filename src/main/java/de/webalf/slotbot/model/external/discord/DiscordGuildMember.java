@@ -17,17 +17,15 @@ import java.util.stream.Collectors;
  * @since 27.01.2023
  */
 @Builder
-public record DiscordGuildMember(DiscordUser user, String nick, String avatar, Set<Long> roles, long guild) {
+public record DiscordGuildMember(@NonNull DiscordUser user, String nick, String avatar, Set<Long> roles, long guild) {
 	/**
 	 * @see Member#getEffectiveName()
 	 */
 	public String getEffectiveName() {
 		if (nick != null) {
 			return nick;
-		} else if (user != null) {
-			return user.getEffectiveName();
 		} else {
-			return null;
+			return user.getEffectiveName();
 		}
 	}
 

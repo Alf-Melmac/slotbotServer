@@ -31,7 +31,7 @@ public final class ApiPermissionHelper {
 	 * @return true if permission is given
 	 */
 	public static boolean hasReadPermission(boolean publicItem, long guild) {
-		return publicItem ? hasPermissionForGuild(ApiTokenType.READ_PUBLIC, guild) : hasPermissionForGuild(ApiTokenType.READ, guild);
+		return hasPermissionForGuild(publicItem ? ApiTokenType.READ_PUBLIC : ApiTokenType.READ, guild);
 	}
 
 	/**
