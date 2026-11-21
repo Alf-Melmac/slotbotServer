@@ -7,6 +7,8 @@
         <option value="DIRECTORY:download" />
         <option value="DIRECTORY:calendar" />
         <option value="DIRECTORY:target" />
+        <option value="DIRECTORY:logs" />
+        <option value="DIRECTORY:userContent" />
       </list>
     </option>
     <option name="projectKey" value="Alf-Melmac_slotbotServer" />
