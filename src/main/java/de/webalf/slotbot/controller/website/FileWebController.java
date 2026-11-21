@@ -1,6 +1,5 @@
 package de.webalf.slotbot.controller.website;
 
-import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static de.webalf.slotbot.util.EventCalendarUtil.getCalendarName;
+import static de.webalf.slotbot.util.EventCalendarUtil.isCalendarName;
 
 /**
  * @author Alf
@@ -46,12 +45,11 @@ public class FileWebController {
 
 	@GetMapping("/calendar/{filename:.+}")
 	public ResponseEntity<Resource> getCalendar(@PathVariable String filename) {
-		final Optional<Guild> guild = guildService.findByName(filename);
-		if (guild.isPresent()) {
-			filename = getCalendarName(guild.get().getId());
-		}
+		final String calendarName = isCalendarName(filename) ? filename : guildService.findByName(filename)
+				.map(guild -> getCalendarName(guild.getId()))
+				.orElse(filename);
 
-		final Resource file = fileService.loadIcsAsResource(filename);
+		final Resource file = fileService.loadIcsAsResource(calendarName);
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
 				.contentType(TEXT_CALENDAR_UTF8)

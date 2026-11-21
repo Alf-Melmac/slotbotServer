@@ -62,4 +62,19 @@ public final class EventCalendarUtil {
 	public static String getCalendarName(long id) {
 		return id + ICS_FILE_EXTENSION;
 	}
+
+	/**
+	 * Checks if the given filename is a calendar file name as built by {@link #getCalendarName(long)}
+	 */
+	public static boolean isCalendarName(@NonNull String filename) {
+		if (!filename.endsWith(ICS_FILE_EXTENSION)) {
+			return false;
+		}
+		try {
+			Long.parseLong(filename.substring(0, filename.length() - ICS_FILE_EXTENSION.length()));
+			return true;
+		} catch (NumberFormatException _) {
+			return false;
+		}
+	}
 }
