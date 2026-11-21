@@ -3,13 +3,12 @@ package de.webalf.slotbot.service;
 import de.webalf.slotbot.configuration.properties.StorageProperties;
 import de.webalf.slotbot.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 /**
@@ -18,7 +17,6 @@ import java.nio.file.Path;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FileService {
 	private final StorageProperties storageProperties;
 
@@ -28,13 +26,11 @@ public class FileService {
 	 *
 	 * @param filename file to load
 	 * @return file as {@link Resource}
-	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
+	 * @throws ResourceNotFoundException if file doesn't exist or is outside the download directory
 	 */
 	@Cacheable("fileLoader")
 	public Resource loadAsResource(String filename) {
-		final Path file = Path.of(storageProperties.getDownload()).resolve(filename);
-
-		return getResource(filename, file);
+		return getResource(storageProperties.getDownload(), filename);
 	}
 
 	/**
@@ -43,37 +39,42 @@ public class FileService {
 	 *
 	 * @param filename ics file to load
 	 * @return file as {@link Resource}
-	 * @throws ResourceNotFoundException if file doesn't exist or the path is a malformedURL
+	 * @throws ResourceNotFoundException if file doesn't exist or is outside the calendar directory
 	 */
 	public Resource loadIcsAsResource(String filename) {
-		final Path file = Path.of(storageProperties.getCalendarOutput()).resolve(filename);
-
-		return getResource(filename, file);
+		return getResource(storageProperties.getCalendarOutput(), filename);
 	}
 
 	@Cacheable("userContentLoader")
 	public Resource loadUserContentAsResource(String userId, String filename) {
-		final Path path = Path.of(storageProperties.getUserContent(), userId, filename);
-
-		return getResource(filename, path);
+		return getResource(storageProperties.getUserContent(), userId, filename);
 	}
 
 	/**
-	 * @param filename only used for readable exception
-	 * @param path     to get resource from
+	 * Resolves the given path segments against the base directory and ensures the result stays inside of it
+	 *
+	 * @param baseDir  directory the resource must be located in
+	 * @param segments path segments to resolve against the base directory. The last one is the filename, used for readable exceptions
 	 * @return resource
-	 * @throws ResourceNotFoundException if resource doesn't exist in this location or the path is a malformedURL
+	 * @throws ResourceNotFoundException if resource doesn't exist, isn't readable or is located outside the base directory
 	 */
-	private Resource getResource(String filename, Path path) {
+	private Resource getResource(String baseDir, String... segments) {
+		final String filename = segments[segments.length - 1];
+		final Path root = Path.of(baseDir).toAbsolutePath().normalize();
+		final Path path;
 		try {
-			final Resource resource = new UrlResource(path.toUri());
-			if (resource.exists() && resource.isReadable()) {
-				return resource;
-			} else {
-				throw new ResourceNotFoundException(filename);
-			}
-		} catch (MalformedURLException _) {
+			path = root.resolve(Path.of("", segments)).normalize();
+		} catch (InvalidPathException _) {
 			throw new ResourceNotFoundException(filename);
 		}
+		if (!path.startsWith(root)) {
+			throw new ResourceNotFoundException(filename);
+		}
+
+		final Resource resource = new FileSystemResource(path);
+		if (resource.exists() && resource.isReadable()) {
+			return resource;
+		}
+		throw new ResourceNotFoundException(filename);
 	}
 }

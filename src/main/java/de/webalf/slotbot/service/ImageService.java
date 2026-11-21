@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -37,7 +38,10 @@ public class ImageService {
 	 */
 	public String writeImage(@NonNull MultipartFile file) throws IOException {
 		final String originalFilename = file.getOriginalFilename();
-		final String mediaType = tika.detect(file.getInputStream(), originalFilename);
+		final String mediaType;
+		try (final InputStream inputStream = file.getInputStream()) {
+			mediaType = tika.detect(inputStream, originalFilename);
+		}
 		if (!(mediaType.equals(MediaType.IMAGE_JPEG_VALUE) || mediaType.equals(MediaType.IMAGE_PNG_VALUE)) || file.getSize() == 0) {
 			throw BusinessRuntimeException.builder().title("File is not an image").build();
 		}

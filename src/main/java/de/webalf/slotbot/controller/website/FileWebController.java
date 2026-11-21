@@ -4,7 +4,6 @@ import de.webalf.slotbot.model.Guild;
 import de.webalf.slotbot.service.FileService;
 import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,6 @@ import static de.webalf.slotbot.util.EventCalendarUtil.getCalendarName;
  */
 @Controller
 @RequiredArgsConstructor
-@Slf4j
 public class FileWebController {
 	private final FileService fileService;
 	private final GuildService guildService;
@@ -62,13 +61,17 @@ public class FileWebController {
 	@GetMapping("/userContent/{userId}/{filename:.+}")
 	public ResponseEntity<Resource> getUserContent(@PathVariable String userId, @PathVariable String filename) throws IOException {
 		final Resource file = fileService.loadUserContentAsResource(userId, filename);
+		final MediaType mediaType;
+		try (final InputStream inputStream = file.getInputStream()) {
+			mediaType = MediaType.valueOf(tika.detect(inputStream, file.getFilename()));
+		}
 		return ResponseEntity.ok()
 				.cacheControl(CacheControl
 						.maxAge(30, TimeUnit.DAYS)
 						.cachePublic()
 						.immutable()
 						.staleWhileRevalidate(31, TimeUnit.DAYS))
-				.contentType(MediaType.valueOf(tika.detect(file.getInputStream(), file.getFilename())))
+				.contentType(mediaType)
 				.body(file);
 	}
 }
