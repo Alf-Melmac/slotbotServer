@@ -12,7 +12,6 @@ import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,20 +39,18 @@ public class DiscordOAuthUserService {
 	}
 
 	/**
-	 * Builds the {@link DiscordOAuthUser} with the given attributes and the
-	 * {@link GuildUsersService#getApplicationRoles(long) current application roles} as authorities
+	 * Returns the {@link GuildUsersService#getApplicationRoles(long) current application roles} of the given user as
+	 * authorities
 	 * <p>
-	 * Note: Spring provided authorities (OAUTH2_USER, SCOPE_*) are dropped
+	 * Note: Does not include Spring provided authorities (OAUTH2_USER, SCOPE_*)
 	 *
-	 * @param userId     id of the user
-	 * @param attributes of the oauth user
-	 * @return user with authorities
+	 * @param userId id of the user
+	 * @return application authorities
 	 */
-	DiscordOAuthUser buildUser(long userId, @NonNull Map<String, Object> attributes) {
-		final Set<GrantedAuthority> authorities = guildUsersService.getApplicationRoles(userId).stream()
+	Set<GrantedAuthority> getApplicationAuthorities(long userId) {
+		return guildUsersService.getApplicationRoles(userId).stream()
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toUnmodifiableSet());
-		return new DiscordOAuthUser(userId, authorities, attributes);
 	}
 
 	@EventListener

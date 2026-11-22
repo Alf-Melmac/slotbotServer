@@ -6,7 +6,6 @@ import de.webalf.slotbot.service.BanService;
 import de.webalf.slotbot.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	private final DiscordOAuthUserService discordOAuthUserService;
 	private final UserService userService;
@@ -43,6 +41,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			throw new ForbiddenException("You're banned.");
 		}
 
-		return discordOAuthUserService.buildUser(userId, oAuth2User.getAttributes());
+		return new DiscordOAuthUser(userId, discordOAuthUserService.getApplicationAuthorities(userId), oAuth2User.getAttributes());
 	}
 }

@@ -34,9 +34,6 @@ public final class DiscordOAuthUser extends DefaultOAuth2User {
 	 */
 	private final long id;
 
-	/**
-	 * @see DiscordOAuthUserService#buildUser(long, Map)
-	 */
 	DiscordOAuthUser(long id, Collection<? extends GrantedAuthority> authorities, @NonNull Map<String, Object> attributes) {
 		super(authorities, attributes, NAME_ATTRIBUTE_KEY);
 		this.id = id;

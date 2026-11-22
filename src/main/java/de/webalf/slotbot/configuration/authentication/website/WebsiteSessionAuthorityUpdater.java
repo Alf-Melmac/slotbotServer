@@ -82,17 +82,17 @@ public class WebsiteSessionAuthorityUpdater {
 	 */
 	@Synchronized // Concurrent role changes must not overwrite newer authorities with an older roles query result
 	private void writeAuthorities(long userId, Set<String> sessionIds) {
-		for (final String sessionId : sessionIds) { //NOSONAR java:S135
+		Set<GrantedAuthority> applicationAuthorities = null; // Same for all sessions, query lazily to skip if no session is logged in
+		for (final String sessionId : sessionIds) {
 			final HttpSession session = sessions.get(sessionId);
-			if (session == null) {
-				continue;
-			}
 			final OAuth2AuthenticationToken oldToken = getToken(session);
 			if (oldToken == null) {
 				continue;
 			}
-			final DiscordOAuthUser updatedUser = discordOAuthUserService.buildUser(userId, oldToken.getPrincipal().getAttributes());
-
+			if (applicationAuthorities == null) {
+				applicationAuthorities = discordOAuthUserService.getApplicationAuthorities(userId);
+			}
+			final DiscordOAuthUser updatedUser = new DiscordOAuthUser(userId, applicationAuthorities, oldToken.getPrincipal().getAttributes());
 			final Collection<? extends GrantedAuthority> updatedAuthorities = updatedUser.getAuthorities();
 			// Copies all other token state, e.g. the details needed by SessionIpFilter
 			final OAuth2AuthenticationToken updatedToken = oldToken.toBuilder()
@@ -118,9 +118,10 @@ public class WebsiteSessionAuthorityUpdater {
 	 * @param session to read from
 	 * @return stored token, or {@code null} if there is no session, it has been invalidated or has no context yet (during login)
 	 */
-	static OAuth2AuthenticationToken getToken(@NonNull HttpSession session) {
+	static OAuth2AuthenticationToken getToken(HttpSession session) {
 		try {
-			return session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) instanceof final SecurityContext context
+			return session != null
+					&& session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) instanceof final SecurityContext context
 					&& context.getAuthentication() instanceof final OAuth2AuthenticationToken token ? token : null;
 		} catch (IllegalStateException _) {
 			return null;

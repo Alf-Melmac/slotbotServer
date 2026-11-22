@@ -11,7 +11,6 @@ import de.webalf.slotbot.util.LongUtils;
 import de.webalf.slotbot.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,6 @@ import static de.webalf.slotbot.util.ConstraintConstants.TEXT;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class GuildService {
 	private final GuildRepository guildRepository;
 
@@ -71,7 +69,7 @@ public class GuildService {
 	/**
 	 * Creates a unique name for the given guild
 	 *
-	 * @param name desired name
+	 * @param name  desired name
 	 * @param guild guild to exclude from name check
 	 * @return name not used by any other guild
 	 */
@@ -210,15 +208,12 @@ public class GuildService {
 	private static final String TTT_LOGO = "https://events.tacticalteam.de/backend/userContent/1/slotbot_ttt-eventplatzhalter.png";
 
 	public static String getLogo(@NonNull Guild guild) {
-		return getLogo(guild.getId());
-	}
-
-	public static String getLogo(long guildId) {
-		if (GuildService.isAMB(guildId)) {
+		final Long discordId = guild.getDiscordId();
+		if (isAMB(discordId)) {
 			return AMB_LOGO;
-		} else if (GuildService.isDAA(guildId)) {
+		} else if (isDAA(discordId)) {
 			return DAA_LOGO;
-		} else if (GuildService.isTTT(guildId)) {
+		} else if (isTTT(discordId)) {
 			return TTT_LOGO;
 		}
 		return SLOTBOT_LOGO;
@@ -229,8 +224,8 @@ public class GuildService {
 		return guildRepository.findById(GUILD_PLACEHOLDER).orElseThrow(IllegalStateException::new);
 	}
 
-	private static boolean is(long guildId, long givenGuildId) {
-		return guildId == givenGuildId;
+	private static boolean is(long specialDiscordId, Long discordId) {
+		return discordId != null && discordId == specialDiscordId;
 	}
 
 	private static final long AMB = 706254758721224707L;
@@ -238,18 +233,18 @@ public class GuildService {
 	private static final long TTT = 121399943393968128L;
 
 	public static boolean isAMB(@NonNull Guild guild) {
-		return isAMB(guild.getId());
+		return isAMB(guild.getDiscordId());
 	}
 
-	public static boolean isAMB(long guildId) {
-		return is(AMB, guildId);
+	private static boolean isAMB(Long discordId) {
+		return is(AMB, discordId);
 	}
 
-	private static boolean isDAA(long guildId) {
-		return is(DAA, guildId);
+	private static boolean isDAA(Long discordId) {
+		return is(DAA, discordId);
 	}
 
-	private static boolean isTTT(long guildId) {
-		return is(TTT, guildId);
+	private static boolean isTTT(Long discordId) {
+		return is(TTT, discordId);
 	}
 }
