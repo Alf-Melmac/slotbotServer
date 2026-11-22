@@ -5,8 +5,6 @@ import de.webalf.slotbot.model.dtos.api.EventApiViewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static de.webalf.slotbot.util.EventUtils.buildUrl;
-
 /**
  * @author Alf
  * @since 08.06.2023
@@ -22,7 +20,7 @@ public final class EventApiViewAssembler {
 				.name(event.getName())
 				.dateTime(event.getDateTime())
 				.squadList(squadApiAssembler.toViewDtoList(event.getSquadList()))
-				.url(buildUrl(event))
+				.url(event.getUrl())
 				.build();
 	}
 }

@@ -18,6 +18,8 @@ import java.util.Optional;
  */
 @Repository
 public interface EventRepository extends SuperIdEntityJpaRepository<Event> {
+	<T> Optional<T> findById(long id, Class<T> type);
+
 	@Query("SELECT e.ownerGuild FROM Event e WHERE e.id = :id")
 	Optional<Guild> findOwnerGuildById(long id);
 

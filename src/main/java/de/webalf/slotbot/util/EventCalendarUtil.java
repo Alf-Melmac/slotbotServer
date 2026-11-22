@@ -41,7 +41,7 @@ public final class EventCalendarUtil {
 
 	private static VEvent buildVEvent(@NonNull Event event) {
 		final VEvent vEvent = new VEvent(event.getDateTimeAtUtcOffset(), event.getEstimatedEndDateTimeAtUtcOffset(), event.getName());
-		final String eventUrl = EventUtils.buildUrl(event);
+		final String eventUrl = event.getUrl();
 		try {
 			vEvent.add(new Url(new URI(eventUrl)));
 		} catch (URISyntaxException _) {

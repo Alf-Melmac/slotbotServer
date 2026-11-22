@@ -7,9 +7,7 @@ import de.webalf.slotbot.feature.notifications.EventNotificationService;
 import de.webalf.slotbot.feature.requirement.model.Requirement;
 import de.webalf.slotbot.feature.requirement.model.RequirementList;
 import de.webalf.slotbot.model.event.EventArchiveEvent;
-import de.webalf.slotbot.service.GuildService;
 import de.webalf.slotbot.util.EventUtils;
-import de.webalf.slotbot.util.StringUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -233,7 +231,16 @@ public class Event extends AbstractSuperIdEntity {
 	 * @return not empty picture url
 	 */
 	public String getPictureUrlWithDefault() {
-		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : GuildService.getLogo(getOwnerGuild());
+		return EventUtils.getPictureUrlWithDefault(getPictureUrl(), getOwnerGuild());
+	}
+
+	/**
+	 * Returns the event details url for this event
+	 *
+	 * @return url to event details
+	 */
+	public String getUrl() {
+		return EventUtils.getUrl(getOwnerGuild(), getId());
 	}
 
 	/**

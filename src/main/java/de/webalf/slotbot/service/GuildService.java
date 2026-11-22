@@ -202,49 +202,7 @@ public class GuildService {
 		}
 	}
 
-	private static final String SLOTBOT_LOGO = "https://slotbot.de/backend/userContent/1/AM-name-slotbot-small.png";
-	private static final String AMB_LOGO = "https://events.armamachtbock.de/backend/userContent/1/AM-Blau-small.jpg";
-	private static final String DAA_LOGO = "https://events.deutsche-arma-allianz.de/backend/userContent/1/DAA_transparent.gif";
-	private static final String TTT_LOGO = "https://events.tacticalteam.de/backend/userContent/1/slotbot_ttt-eventplatzhalter.png";
-
-	public static String getLogo(@NonNull Guild guild) {
-		final Long discordId = guild.getDiscordId();
-		if (isAMB(discordId)) {
-			return AMB_LOGO;
-		} else if (isDAA(discordId)) {
-			return DAA_LOGO;
-		} else if (isTTT(discordId)) {
-			return TTT_LOGO;
-		}
-		return SLOTBOT_LOGO;
-	}
-
-	//Special snowflakes
 	private Guild getDefault() {
 		return guildRepository.findById(GUILD_PLACEHOLDER).orElseThrow(IllegalStateException::new);
-	}
-
-	private static boolean is(long specialDiscordId, Long discordId) {
-		return discordId != null && discordId == specialDiscordId;
-	}
-
-	private static final long AMB = 706254758721224707L;
-	private static final long DAA = 874650742089203792L;
-	private static final long TTT = 121399943393968128L;
-
-	public static boolean isAMB(@NonNull Guild guild) {
-		return isAMB(guild.getDiscordId());
-	}
-
-	private static boolean isAMB(Long discordId) {
-		return is(AMB, discordId);
-	}
-
-	private static boolean isDAA(Long discordId) {
-		return is(DAA, discordId);
-	}
-
-	private static boolean isTTT(Long discordId) {
-		return is(TTT, discordId);
 	}
 }

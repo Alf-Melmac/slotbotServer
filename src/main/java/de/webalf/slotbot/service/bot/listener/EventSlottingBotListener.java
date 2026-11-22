@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
-import static de.webalf.slotbot.service.GuildService.isAMB;
 import static de.webalf.slotbot.service.bot.command.event.Swap.SWAP_ACCEPT;
 import static de.webalf.slotbot.service.bot.command.event.Swap.SWAP_DECLINE;
 import static de.webalf.slotbot.util.bot.ButtonUtils.buildButtonId;
@@ -62,7 +61,7 @@ public class EventSlottingBotListener {
 			directMessageHelper.sendDmToRecipient(currentUser,
 					messageSource.getMessage("event.slotted", new String[]{event.getName(), event.getDateTimeInDiscordFormat(), Integer.toString(slot.getNumber()), slot.getName()}, guildLocale));
 			final Guild ownerGuild = event.getOwnerGuild();
-			if (isAMB(ownerGuild)) {
+			if (ownerGuild.isAMB()) {
 				longTimeNoSee(currentUser, ownerGuild);
 			}
 		}

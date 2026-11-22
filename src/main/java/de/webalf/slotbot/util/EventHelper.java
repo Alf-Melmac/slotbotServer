@@ -47,7 +47,7 @@ public class EventHelper {
 	public MessageEmbed buildDetailsEmbed(@NonNull Event event, @NonNull Locale guildLocale) {
 		EmbedBuilder embedBuilder = new EmbedBuilder()
 				.setColor(Color.decode(event.getEventType().getColor()))
-				.setTitle(event.getName(), EventUtils.buildUrl(event))
+				.setTitle(event.getName(), event.getUrl())
 				.setDescription(toMarkdown(event.getDescription(), MessageEmbed.DESCRIPTION_MAX_LENGTH, true, event::getId))
 				.setThumbnail(event.getPictureUrl())
 				.setFooter(messageSource.getMessage("bot.embed.event.footer", new String[]{event.getEventType().getName(), event.getCreator()}, guildLocale))
@@ -281,7 +281,7 @@ public class EventHelper {
 	}
 
 	private static String buildScheduledEventDescription(@NonNull Event event) {
-		final String description = "<p>" + EventUtils.buildUrl(event) + "</p>" + event.getDescription();
+		final String description = "<p>" + event.getUrl() + "</p>" + event.getDescription();
 		return toMarkdown(description, ScheduledEvent.MAX_DESCRIPTION_LENGTH, false, event::getId);
 	}
 

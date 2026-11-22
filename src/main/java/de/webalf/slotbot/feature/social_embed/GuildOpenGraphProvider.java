@@ -3,7 +3,6 @@ package de.webalf.slotbot.feature.social_embed;
 import de.webalf.slotbot.feature.social_embed.model.OpenGraph;
 import de.webalf.slotbot.feature.social_embed.model.SocialEmbedType;
 import de.webalf.slotbot.repository.GuildRepository;
-import de.webalf.slotbot.service.GuildService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +30,7 @@ public class GuildOpenGraphProvider implements OpenGraphProvider {
 				.map(guild -> OpenGraph.builder()
 						.title(guild.getGroupIdentifier())
 						.url(guild.getBaseRedirectUrl() + "/guilds/" + guild.getId())
-						.imageUrl(requireNonNullElseGet(guild.buildEmojiUrl(), () -> GuildService.getLogo(guild)))
+						.imageUrl(requireNonNullElseGet(guild.buildEmojiUrl(), guild::getLogo))
 						.locale(guild.getLocale())
 						.build());
 	}

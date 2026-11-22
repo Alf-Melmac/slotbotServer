@@ -77,6 +77,36 @@ public class Guild extends AbstractDiscordLinkable {
 
 	public static final long GUILD_PLACEHOLDER = -1L;
 
+	private static final String SLOTBOT_LOGO = "https://slotbot.de/backend/userContent/1/AM-name-slotbot-small.png";
+	private static final String AMB_LOGO = "https://events.armamachtbock.de/backend/userContent/1/AM-Blau-small.jpg";
+	private static final String DAA_LOGO = "https://events.deutsche-arma-allianz.de/backend/userContent/1/DAA_transparent.gif";
+	private static final String TTT_LOGO = "https://events.tacticalteam.de/backend/userContent/1/slotbot_ttt-eventplatzhalter.png";
+
+	//Special snowflakes
+	private static final long AMB = 706254758721224707L;
+	private static final long DAA = 874650742089203792L;
+	private static final long TTT = 121399943393968128L;
+
+	public String getLogo() {
+		if (isAMB()) {
+			return AMB_LOGO;
+		} else if (is(DAA)) {
+			return DAA_LOGO;
+		} else if (is(TTT)) {
+			return TTT_LOGO;
+		}
+		return SLOTBOT_LOGO;
+	}
+
+	public boolean isAMB() {
+		return is(AMB);
+	}
+
+	private boolean is(long specialDiscordId) {
+		final Long discordId = getDiscordId();
+		return discordId != null && discordId == specialDiscordId;
+	}
+
 	public String getBaseRedirectUrl() {
 		return StringUtils.isNotEmpty(baseUrl) ? baseUrl : "https://slotbot.de";
 	}

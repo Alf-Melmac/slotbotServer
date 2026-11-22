@@ -58,13 +58,25 @@ public final class EventUtils {
 	}
 
 	/**
-	 * Builds the event details url for the given event
+	 * Returns the event details url for the event with the given id from the given guild
 	 *
-	 * @param event event to open details for
+	 * @param ownerGuild owner of event
+	 * @param eventId    id of event to open details for
 	 * @return url to event details
 	 */
-	public static String buildUrl(@NonNull Event event) {
-		return event.getOwnerGuild().getBaseRedirectUrl() + "/events/" + event.getId();
+	public static String getUrl(@NonNull Guild ownerGuild, long eventId) {
+		return ownerGuild.getBaseRedirectUrl() + "/events/" + eventId;
+	}
+
+	/**
+	 * Returns the given picture url or the guild logo if no picture url is set
+	 *
+	 * @param pictureUrl event picture url
+	 * @param ownerGuild owner of the event
+	 * @return not empty picture url
+	 */
+	public static String getPictureUrlWithDefault(String pictureUrl, @NonNull Guild ownerGuild) {
+		return StringUtils.isNotEmpty(pictureUrl) ? pictureUrl : ownerGuild.getLogo();
 	}
 
 	/**
@@ -81,7 +93,7 @@ public final class EventUtils {
 	public static String buildArchiveMessage(@NonNull Event event) {
 		final MessageSource messageSource = StaticContextAccessor.getBean(MessageSource.class);
 		final Locale guildLocale = event.getOwnerGuildLocale();
-		String message = MarkdownUtil.maskedLink(event.getName(), buildUrl(event)) + " " + event.getDateTimeInDiscordFormat() + " " + event.getEventType().getName() + " ";
+		String message = MarkdownUtil.maskedLink(event.getName(), event.getUrl()) + " " + event.getDateTimeInDiscordFormat() + " " + event.getEventType().getName() + " ";
 		if (StringUtils.isNotEmpty(event.getMissionType())) {
 			message += event.getMissionType() + " ";
 		}

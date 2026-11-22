@@ -1,5 +1,6 @@
 package de.webalf.slotbot.feature.social_embed;
 
+import de.webalf.slotbot.feature.social_embed.model.EventEmbedProjection;
 import de.webalf.slotbot.feature.social_embed.model.OpenGraph;
 import de.webalf.slotbot.feature.social_embed.model.SocialEmbedType;
 import de.webalf.slotbot.repository.EventRepository;
@@ -27,14 +28,13 @@ public class EventOpenGraphProvider implements OpenGraphProvider {
 
 	@Override
 	public Optional<OpenGraph> resolve(long id) {
-		// TODO findById eagerly loads the whole event including squads and slots. Use a projection instead
-		return eventRepository.findById(id)
+		return eventRepository.findById(id, EventEmbedProjection.class)
 				.map(event -> OpenGraph.builder()
 						.title(event.getName())
-						.url(EventUtils.buildUrl(event))
+						.url(EventUtils.getUrl(event.getOwnerGuild(), event.getId()))
 						.description(StringUtils.abbreviate(toPlainText(event.getDescription()), 200))
-						.imageUrl(event.getPictureUrlWithDefault())
-						.locale(event.getOwnerGuildLocale())
+						.imageUrl(EventUtils.getPictureUrlWithDefault(event.getPictureUrl(), event.getOwnerGuild()))
+						.locale(event.getOwnerGuild().getLocale())
 						.themeColor(event.getEventType().getColor())
 						.build());
 	}
